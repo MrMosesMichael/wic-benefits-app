@@ -1,9 +1,11 @@
 /**
  * Store Detection Service
  * Implements GPS-based store detection and geofence matching logic
+ * Enhanced with WiFi-based location hints (Task H3)
  */
 
 import LocationService from './LocationService';
+import WiFiService, { WiFiScanResult } from './WiFiService';
 import {
   Store,
   GeoPoint,
@@ -26,12 +28,14 @@ export interface StoreDetectionConfig {
 export class StoreDetectionService {
   private static instance: StoreDetectionService;
   private locationService: LocationService;
+  private wifiService: WiFiService;
   private config: StoreDetectionConfig;
   private storeCache: Store[] = [];
   private confirmedStores: Set<string> = new Set();
 
   private constructor(config?: Partial<StoreDetectionConfig>) {
     this.locationService = LocationService.getInstance();
+    this.wifiService = WiFiService.getInstance();
     this.config = {
       maxDistanceMeters: config?.maxDistanceMeters ?? 50,
       minConfidence: config?.minConfidence ?? 70,
@@ -50,7 +54,8 @@ export class StoreDetectionService {
   }
 
   /**
-   * Detect current store based on GPS location
+   * Detect current store based on GPS location and WiFi hints
+   * Enhanced with WiFi-based location hints (Task H3)
    */
   public async detectStore(): Promise<StoreDetectionResult> {
     try {
@@ -73,10 +78,16 @@ export class StoreDetectionService {
         };
       }
 
-      // Find best matching store using geofence or distance
-      const matchedStore = this.findBestMatch(currentPosition, nearbyStores);
+      // Try WiFi-based detection first if enabled
+      let wifiResult: StoreDetectionResult | null = null;
+      if (this.config.enableWifiMatching && this.wifiService.isSupported()) {
+        wifiResult = await this.detectStoreWithWifiHints(nearbyStores);
+      }
 
-      if (!matchedStore) {
+      // Find best matching store using geofence or distance
+      const gpsMatchedStore = this.findBestMatch(currentPosition, nearbyStores);
+
+      if (!gpsMatchedStore && !wifiResult) {
         return {
           store: null,
           confidence: 0,
@@ -86,30 +97,23 @@ export class StoreDetectionService {
         };
       }
 
-      // Calculate confidence based on distance and geofence status
-      const confidence = this.calculateConfidence(
-        matchedStore.distance,
-        matchedStore.insideGeofence
+      // Combine WiFi and GPS results for best accuracy
+      const finalResult = this.combineDetectionResults(
+        gpsMatchedStore,
+        wifiResult,
+        currentPosition,
+        nearbyStores
       );
 
-      // Determine detection method
-      const method = matchedStore.insideGeofence ? 'geofence' : 'gps';
-
       // Check if confirmation is needed
-      // Geofence matches with high confidence don't need confirmation
+      // Geofence matches or WiFi matches with high confidence don't need confirmation
       const requiresConfirmation =
-        !this.confirmedStores.has(matchedStore.store.id) &&
-        confidence < 95;
+        finalResult.store !== null &&
+        !this.confirmedStores.has(finalResult.store.id) &&
+        finalResult.confidence < 95;
 
       return {
-        store: matchedStore.store,
-        confidence,
-        method,
-        distanceMeters: matchedStore.distance,
-        insideGeofence: matchedStore.insideGeofence,
-        nearbyStores: nearbyStores.filter(
-          (s) => s.id !== matchedStore.store.id
-        ),
+        ...finalResult,
         requiresConfirmation,
       };
     } catch (error) {
@@ -161,6 +165,163 @@ export class StoreDetectionService {
       console.error('WiFi-based detection failed:', error);
       return null;
     }
+  }
+
+  /**
+   * Detect store using WiFi hints from nearby stores
+   * Scans WiFi networks and matches against store WiFi database
+   */
+  private async detectStoreWithWifiHints(
+    nearbyStores: Store[]
+  ): Promise<StoreDetectionResult | null> {
+    try {
+      // Get current WiFi network
+      const currentNetwork = await this.wifiService.getCurrentNetwork();
+      if (!currentNetwork) {
+        return null;
+      }
+
+      // Build WiFi database from nearby stores
+      const wifiDatabase = new Map<string, WiFiNetwork[]>();
+      for (const store of nearbyStores) {
+        if (store.wifiNetworks && store.wifiNetworks.length > 0) {
+          wifiDatabase.set(store.id, store.wifiNetworks);
+        }
+      }
+
+      if (wifiDatabase.size === 0) {
+        return null; // No WiFi data available for nearby stores
+      }
+
+      // Match WiFi networks to stores
+      const matches = this.wifiService.matchNetworksToStores(
+        [currentNetwork],
+        wifiDatabase
+      );
+
+      if (matches.length === 0) {
+        return null;
+      }
+
+      // Get best match
+      const bestMatch = matches[0];
+      const matchedStore = nearbyStores.find((s) => s.id === bestMatch.storeId);
+
+      if (!matchedStore) {
+        return null;
+      }
+
+      return {
+        store: matchedStore,
+        confidence: bestMatch.confidence,
+        method: 'wifi',
+        nearbyStores: nearbyStores.filter((s) => s.id !== bestMatch.storeId),
+        requiresConfirmation: !this.confirmedStores.has(matchedStore.id),
+      };
+    } catch (error) {
+      console.error('WiFi hint detection failed:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Combine GPS and WiFi detection results for best accuracy
+   * WiFi match + GPS proximity = very high confidence
+   * WiFi alone = high confidence
+   * GPS alone = moderate confidence
+   */
+  private combineDetectionResults(
+    gpsMatch: { store: Store; distance: number; insideGeofence: boolean } | null,
+    wifiResult: StoreDetectionResult | null,
+    currentPosition: GeoPoint,
+    nearbyStores: Store[]
+  ): StoreDetectionResult {
+    // Case 1: WiFi and GPS both match the same store
+    if (gpsMatch && wifiResult && gpsMatch.store.id === wifiResult.store.id) {
+      const gpsConfidence = this.calculateConfidence(
+        gpsMatch.distance,
+        gpsMatch.insideGeofence
+      );
+      // Boost confidence when both methods agree
+      const combinedConfidence = Math.min(100, Math.max(gpsConfidence, wifiResult.confidence) + 10);
+
+      return {
+        store: gpsMatch.store,
+        confidence: combinedConfidence,
+        method: 'wifi', // WiFi + GPS is most reliable
+        distanceMeters: gpsMatch.distance,
+        insideGeofence: gpsMatch.insideGeofence,
+        nearbyStores: nearbyStores.filter((s) => s.id !== gpsMatch.store.id),
+        requiresConfirmation: false, // Very high confidence, no confirmation needed
+      };
+    }
+
+    // Case 2: WiFi and GPS disagree - choose based on confidence
+    if (gpsMatch && wifiResult && gpsMatch.store.id !== wifiResult.store.id) {
+      const gpsConfidence = this.calculateConfidence(
+        gpsMatch.distance,
+        gpsMatch.insideGeofence
+      );
+
+      // If GPS has geofence match, prefer GPS
+      if (gpsMatch.insideGeofence && gpsConfidence >= 95) {
+        return {
+          store: gpsMatch.store,
+          confidence: gpsConfidence,
+          method: 'geofence',
+          distanceMeters: gpsMatch.distance,
+          insideGeofence: true,
+          nearbyStores: nearbyStores.filter((s) => s.id !== gpsMatch.store.id),
+          requiresConfirmation: false,
+        };
+      }
+
+      // Otherwise, prefer WiFi if it has higher confidence
+      if (wifiResult.confidence > gpsConfidence) {
+        return wifiResult;
+      } else {
+        return {
+          store: gpsMatch.store,
+          confidence: gpsConfidence,
+          method: gpsMatch.insideGeofence ? 'geofence' : 'gps',
+          distanceMeters: gpsMatch.distance,
+          insideGeofence: gpsMatch.insideGeofence,
+          nearbyStores: nearbyStores.filter((s) => s.id !== gpsMatch.store.id),
+          requiresConfirmation: false,
+        };
+      }
+    }
+
+    // Case 3: Only WiFi result available
+    if (wifiResult) {
+      return wifiResult;
+    }
+
+    // Case 4: Only GPS result available
+    if (gpsMatch) {
+      const confidence = this.calculateConfidence(
+        gpsMatch.distance,
+        gpsMatch.insideGeofence
+      );
+      return {
+        store: gpsMatch.store,
+        confidence,
+        method: gpsMatch.insideGeofence ? 'geofence' : 'gps',
+        distanceMeters: gpsMatch.distance,
+        insideGeofence: gpsMatch.insideGeofence,
+        nearbyStores: nearbyStores.filter((s) => s.id !== gpsMatch.store.id),
+        requiresConfirmation: false,
+      };
+    }
+
+    // Case 5: No results (should not happen due to earlier checks)
+    return {
+      store: null,
+      confidence: 0,
+      method: 'gps',
+      nearbyStores,
+      requiresConfirmation: false,
+    };
   }
 
   /**
