@@ -223,12 +223,12 @@
 *Goal: Know what's in stock, find supplemental food sources*
 
 ### Group H: Store Detection
-- [ ] H1 Implement GPS-based store detection
+- [x] ✅ H1 Implement GPS-based store detection
 - [ ] H2 Build geofence matching logic
 - [ ] H3 Add WiFi-based location hints
 - [ ] H4 Create store confirmation UX
 - [ ] H5 Build manual store selection (search, favorites)
-- [ ] H6 Implement location permission handling
+- [x] ✅ H6 Implement location permission handling
 
 ### Group I: Store Inventory
 
