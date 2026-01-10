@@ -4,6 +4,96 @@
 
 Enable WIC participants to scan product barcodes and instantly determine WIC eligibility for their state.
 
+## Goals and Objectives
+
+### Business Goals
+- Reduce shopping stress and uncertainty for WIC participants by providing instant, accurate product eligibility information
+- Minimize checkout rejections by helping participants verify products before reaching the register
+- Increase WIC benefit utilization rates by making it easier to identify eligible products
+- Support program compliance by ensuring participants purchase only approved products
+
+### User Goals
+- Quickly determine if a product is WIC-eligible before placing it in their cart
+- Avoid embarrassment at checkout from rejected items
+- Shop confidently without constantly asking store staff for help
+- Save time by scanning products while shopping rather than guessing
+- Understand which household member can use the scanned product
+
+### Success Metrics
+- Barcode scan success rate > 95% on first attempt
+- Average scan-to-result time < 2 seconds
+- Eligibility determination accuracy > 99% (matches state APL)
+- User adoption: > 70% of active users scan at least one product per shopping trip
+- Reduction in checkout issues: 50% fewer rejected items for app users vs non-users
+
+## Non-Functional Requirements
+
+### Performance
+- Barcode detection and decode: < 500ms
+- Eligibility lookup (online): < 1 second
+- Eligibility lookup (offline, cached APL): < 100ms
+- App remains responsive during scanning (no UI freezing)
+- Scanner can process consecutive scans without lag
+
+### Security
+- No product scan history transmitted to third parties
+- Scan history encrypted at rest on device
+- Camera access used only for barcode scanning (no photo storage)
+- State APL data cached locally with integrity verification
+- Secure API calls for product lookups with certificate pinning
+
+### Usability
+- Camera viewfinder works in varying lighting conditions (bright store lights, dim aisles)
+- Works with damaged or partially obscured barcodes when possible
+- Clear visual feedback when barcode is detected and recognized
+- Manual entry option for accessibility and barcode scanning failures
+- Multi-language support for scan results (English, Spanish minimum)
+- Screen reader announces eligibility results clearly
+
+### Reliability
+- Graceful degradation when network unavailable (use cached APL)
+- Handles poor connectivity in stores (retry logic, timeout handling)
+- Works with all standard barcode formats (UPC-A, UPC-E, EAN-13)
+- Recovers from camera errors without app crash
+- APL data syncs automatically and handles version updates
+
+### Error Handling
+- Clear message when camera permission denied: "Allow camera access to scan barcodes"
+- Unknown product: "Product not found. Try entering UPC manually or report this product"
+- Network error: "Using offline data from [date]. Connect for latest updates"
+- Invalid barcode: "Couldn't read barcode. Try manual entry or better lighting"
+- Ambiguous eligibility: "Eligible for [participant types]. Not eligible for [others]"
+
+## Technical Requirements
+
+### Platform Compatibility
+- iOS 14.0+ (supports iPhone 8 and newer)
+- Android 8.0+ (API level 26+)
+- React Native 0.72+
+- Camera API: react-native-camera or expo-camera
+- Works on devices with rear-facing camera (front camera optional)
+
+### Dependencies
+- Barcode scanning library: react-native-camera or ML Kit (Google) / VisionKit (Apple)
+- Supported formats: UPC-A, UPC-E, EAN-13, EAN-8
+- State APL API: RESTful API with JSON responses
+- Product database API: Third-party product data provider (e.g., UPCitemdb, USDA)
+- Offline storage: SQLite for cached APL data (50-100 MB per state)
+
+### Data Storage
+- Local APL cache: Encrypted SQLite database (one per state)
+- Scan history: Local storage with optional cloud backup
+- Cache invalidation: Check for APL updates on app launch and daily background sync
+- Privacy: Scan history stored locally only, not transmitted unless user opts in
+- Data retention: Scan history kept for 90 days, then auto-deleted
+
+### Integration Requirements
+- State WIC APL APIs: Direct integration with state databases for real-time eligibility (where available)
+- Fallback APL source: USDA FNS WIC APL aggregator or state-maintained CSV files
+- Product database: UPC lookup service for product name, brand, size, image
+- eWIC processor integration: FIS, Conduent, Xerox APIs for benefit balance (future)
+- Analytics: Privacy-preserving usage metrics (scan success rate, eligibility hit rate)
+
 ## Requirements
 
 ### Requirement: Barcode Scanning
