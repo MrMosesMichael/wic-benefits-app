@@ -53,6 +53,19 @@ export interface Beacon {
   minor: number;
 }
 
+export interface GeofencePolygon {
+  coordinates: GeoPoint[]; // Array of lat/lng points forming a closed polygon
+  type: 'polygon';
+}
+
+export interface GeofenceCircle {
+  center: GeoPoint;
+  radiusMeters: number;
+  type: 'circle';
+}
+
+export type Geofence = GeofencePolygon | GeofenceCircle;
+
 export interface Store {
   id: string;
   name: string;
@@ -60,6 +73,7 @@ export interface Store {
   chainId?: string;
   address: Address;
   location: GeoPoint;
+  geofence?: Geofence; // Store boundary for precise detection
   wicAuthorized: boolean;
   wicVendorId?: string;
   phone?: string;
@@ -79,7 +93,9 @@ export interface Store {
 export interface StoreDetectionResult {
   store: Store | null;
   confidence: number; // 0-100
-  method: 'gps' | 'wifi' | 'beacon' | 'manual';
+  method: 'gps' | 'wifi' | 'beacon' | 'manual' | 'geofence';
+  distanceMeters?: number; // Distance from user to store location
+  insideGeofence?: boolean; // Whether user is inside store's geofence
   nearbyStores?: Store[];
   requiresConfirmation: boolean;
 }

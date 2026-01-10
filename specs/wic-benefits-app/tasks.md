@@ -224,7 +224,7 @@
 
 ### Group H: Store Detection
 - [x] ✅ H1 Implement GPS-based store detection
-- [ ] H2 Build geofence matching logic
+- [x] ✅ H2 Build geofence matching logic
 - [ ] H3 Add WiFi-based location hints
 - [ ] H4 Create store confirmation UX
 - [ ] H5 Build manual store selection (search, favorites)

@@ -60,6 +60,46 @@ export const STORE_DETECTION_CONFIG = {
   // Permission request settings
   maxPermissionPrompts: 3,
   permissionPromptInterval: 86400000, // 24 hours in milliseconds
+
+  // Geofence matching settings
+  geofence: {
+    // Enable geofence-based matching
+    enabled: true,
+
+    // Confidence boost for geofence matches
+    insideGeofenceConfidence: 95,
+    insideGeofenceCloseToCenter: 100, // If also near center
+
+    // Distance thresholds for geofence confidence
+    closeToCenter: 25, // meters
+    moderateFromCenter: 100, // meters
+
+    // Geofence cache settings
+    enableCaching: true,
+    cacheExpiryMs: 300000, // 5 minutes
+
+    // Generate default geofences for stores without data
+    autoGenerateGeofences: true,
+
+    // Default geofence radii by store type (meters)
+    defaultRadii: {
+      bigBox: 100, // Walmart, Target, Costco
+      supermarket: 75, // Kroger, Safeway
+      pharmacy: 30, // CVS, Walgreens
+      convenience: 20, // Small stores
+      default: 50, // Unknown type
+    },
+
+    // Performance optimization
+    enableBoundingBoxPreFilter: true, // Use bounding box before full polygon check
+    maxPolygonVertices: 50, // Warn if polygon is too complex
+
+    // Validation
+    validateGeofencesOnLoad: true,
+    minPolygonVertices: 3,
+    maxCircleRadius: 500, // meters
+    minCircleRadius: 10, // meters
+  },
 };
 
 export default STORE_DETECTION_CONFIG;

@@ -1,6 +1,6 @@
 /**
  * Store Detection Service
- * Implements GPS-based store detection and matching logic
+ * Implements GPS-based store detection and geofence matching logic
  */
 
 import LocationService from './LocationService';
@@ -10,6 +10,11 @@ import {
   StoreDetectionResult,
   WiFiNetwork,
 } from '../types/store.types';
+import {
+  isPointInGeofence,
+  isPointInBoundingBox,
+  distanceToPolygonEdge,
+} from '../utils/geofence.utils';
 
 export interface StoreDetectionConfig {
   maxDistanceMeters: number; // Default: 50 meters
@@ -68,7 +73,7 @@ export class StoreDetectionService {
         };
       }
 
-      // Find best matching store
+      // Find best matching store using geofence or distance
       const matchedStore = this.findBestMatch(currentPosition, nearbyStores);
 
       if (!matchedStore) {
@@ -81,22 +86,27 @@ export class StoreDetectionService {
         };
       }
 
-      // Calculate confidence based on distance
-      const distance = LocationService.calculateDistance(
-        currentPosition,
-        matchedStore.store.location
+      // Calculate confidence based on distance and geofence status
+      const confidence = this.calculateConfidence(
+        matchedStore.distance,
+        matchedStore.insideGeofence
       );
-      const confidence = this.calculateConfidence(distance);
+
+      // Determine detection method
+      const method = matchedStore.insideGeofence ? 'geofence' : 'gps';
 
       // Check if confirmation is needed
+      // Geofence matches with high confidence don't need confirmation
       const requiresConfirmation =
         !this.confirmedStores.has(matchedStore.store.id) &&
-        confidence < 100;
+        confidence < 95;
 
       return {
         store: matchedStore.store,
         confidence,
-        method: 'gps',
+        method,
+        distanceMeters: matchedStore.distance,
+        insideGeofence: matchedStore.insideGeofence,
         nearbyStores: nearbyStores.filter(
           (s) => s.id !== matchedStore.store.id
         ),
@@ -154,14 +164,53 @@ export class StoreDetectionService {
   }
 
   /**
-   * Find best matching store based on distance
+   * Find best matching store based on geofence or distance
+   * Prioritizes geofence matching over distance-based matching
    */
   private findBestMatch(
     currentPosition: GeoPoint,
     stores: Store[]
-  ): { store: Store; distance: number } | null {
-    let bestMatch: { store: Store; distance: number } | null = null;
+  ): { store: Store; distance: number; insideGeofence: boolean } | null {
+    let bestMatch: { store: Store; distance: number; insideGeofence: boolean } | null = null;
 
+    // First pass: Check for geofence matches
+    for (const store of stores) {
+      if (store.geofence) {
+        // Quick pre-check with bounding box for polygons
+        if (store.geofence.type === 'polygon') {
+          if (!isPointInBoundingBox(currentPosition, store.geofence.coordinates)) {
+            continue; // Skip expensive polygon check if outside bounding box
+          }
+        }
+
+        // Check if point is inside geofence
+        const insideGeofence = isPointInGeofence(
+          currentPosition,
+          store.geofence,
+          LocationService.calculateDistance
+        );
+
+        if (insideGeofence) {
+          const distance = LocationService.calculateDistance(
+            currentPosition,
+            store.location
+          );
+
+          // Prioritize stores where user is actually inside geofence
+          // If both have geofence matches, pick the closer one
+          if (!bestMatch || distance < bestMatch.distance) {
+            bestMatch = { store, distance, insideGeofence: true };
+          }
+        }
+      }
+    }
+
+    // If we found a store with geofence match, return it
+    if (bestMatch && bestMatch.insideGeofence) {
+      return bestMatch;
+    }
+
+    // Second pass: Fall back to distance-based matching for stores without geofence
     for (const store of stores) {
       const distance = LocationService.calculateDistance(
         currentPosition,
@@ -170,7 +219,7 @@ export class StoreDetectionService {
 
       if (distance <= this.config.maxDistanceMeters) {
         if (!bestMatch || distance < bestMatch.distance) {
-          bestMatch = { store, distance };
+          bestMatch = { store, distance, insideGeofence: false };
         }
       }
     }
@@ -179,16 +228,29 @@ export class StoreDetectionService {
   }
 
   /**
-   * Calculate confidence score based on distance
+   * Calculate confidence score based on distance and geofence status
+   * Geofence match = very high confidence
    * Closer distance = higher confidence
    */
-  private calculateConfidence(distanceMeters: number): number {
+  private calculateConfidence(distanceMeters: number, insideGeofence: boolean = false): number {
+    // If inside geofence, confidence is very high
+    if (insideGeofence) {
+      if (distanceMeters <= 25) {
+        return 100; // Inside geofence and very close to center
+      } else if (distanceMeters <= 100) {
+        return 98; // Inside geofence, high confidence
+      } else {
+        return 95; // Inside geofence but far from center
+      }
+    }
+
+    // Distance-based confidence (fallback when no geofence)
     if (distanceMeters <= 10) {
       return 100; // Very close, high confidence
     } else if (distanceMeters <= 25) {
       return 95; // Close, high confidence
     } else if (distanceMeters <= 50) {
-      return 85; // Within store boundary
+      return 85; // Within likely store boundary
     } else if (distanceMeters <= 100) {
       return 70; // Nearby, moderate confidence
     } else if (distanceMeters <= 200) {
@@ -300,19 +362,24 @@ export class StoreDetectionService {
           const matchedStore = this.findBestMatch(position, nearbyStores);
 
           if (matchedStore) {
-            const distance = matchedStore.distance;
-            const confidence = this.calculateConfidence(distance);
+            const confidence = this.calculateConfidence(
+              matchedStore.distance,
+              matchedStore.insideGeofence
+            );
+            const method = matchedStore.insideGeofence ? 'geofence' : 'gps';
 
             onStoreChange({
               store: matchedStore.store,
               confidence,
-              method: 'gps',
+              method,
+              distanceMeters: matchedStore.distance,
+              insideGeofence: matchedStore.insideGeofence,
               nearbyStores: nearbyStores.filter(
                 (s) => s.id !== matchedStore.store.id
               ),
-              requiresConfirmation: !this.confirmedStores.has(
-                matchedStore.store.id
-              ),
+              requiresConfirmation:
+                !this.confirmedStores.has(matchedStore.store.id) &&
+                confidence < 95,
             });
           }
         } catch (error) {
