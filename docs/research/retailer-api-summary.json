@@ -1,0 +1,322 @@
+{
+  "metadata": {
+    "taskId": "I1.1",
+    "taskName": "Research retailer API availability",
+    "completedDate": "2026-01-10",
+    "version": "1.0"
+  },
+  "retailers": [
+    {
+      "name": "Walmart",
+      "priority": "HIGH",
+      "apiAvailable": true,
+      "apiProgram": "Walmart Open API (Affiliate + Marketplace)",
+      "method": "API",
+      "authType": "OAuth 2.0",
+      "registrationUrl": "https://developer.walmart.com/",
+      "approvalTime": "1-2 business days",
+      "rateLimit": "5000 requests/day (free tier)",
+      "cost": "Free tier available; $500-2000/mo for paid",
+      "dataQuality": {
+        "realtime": "Moderate (15-30 min updates)",
+        "accuracy": "Good",
+        "quantityData": false,
+        "aisleLocation": false
+      },
+      "coverage": "National",
+      "priorityStates": ["MI", "NC", "FL", "OR"],
+      "implementationEffort": "2-3 days",
+      "nextTask": "I1.2",
+      "notes": "Primary data source for Walmart stores. Binary in-stock/out-of-stock only."
+    },
+    {
+      "name": "Kroger",
+      "aliases": ["Fred Meyer", "Ralphs", "King Soopers", "Smith's"],
+      "priority": "HIGH",
+      "apiAvailable": true,
+      "apiProgram": "Kroger Developer Program",
+      "method": "API",
+      "authType": "OAuth 2.0",
+      "registrationUrl": "https://developer.kroger.com/",
+      "approvalTime": "1-2 weeks",
+      "rateLimit": "Configurable per partnership",
+      "cost": "Free for approved use cases",
+      "dataQuality": {
+        "realtime": "Good (15 min updates)",
+        "accuracy": "Very good",
+        "quantityData": "Limited (low/in stock indicators)",
+        "aisleLocation": "Available (pilot program)"
+      },
+      "coverage": "Regional (strong in MI, NC, FL, OR)",
+      "priorityStates": ["MI", "NC", "FL", "OR"],
+      "implementationEffort": "3-4 days",
+      "nextTask": "I1.3",
+      "notes": "Excellent API. Covers multiple banner brands. Strong coverage in priority states."
+    },
+    {
+      "name": "Target",
+      "priority": "MEDIUM",
+      "apiAvailable": "LIMITED",
+      "apiProgram": "Target API (restricted)",
+      "method": "Web Scraping + Future API",
+      "authType": "API Key (if partnership obtained)",
+      "registrationUrl": "Contact Target Developer Relations",
+      "approvalTime": "Requires business partnership",
+      "rateLimit": "Unknown",
+      "cost": "Partnership-based",
+      "dataQuality": {
+        "realtime": "Good (if API obtained)",
+        "accuracy": "Very good",
+        "quantityData": "Available (low/limited/in stock)",
+        "aisleLocation": false
+      },
+      "coverage": "National",
+      "priorityStates": ["MI", "NC", "FL", "OR"],
+      "implementationEffort": "3-4 days (scraping)",
+      "nextTask": "I1.4",
+      "notes": "API requires partnership. Implement web scraping initially, pursue partnership."
+    },
+    {
+      "name": "H-E-B",
+      "priority": "HIGH",
+      "priorityFor": ["TX"],
+      "apiAvailable": "PARTIAL",
+      "apiProgram": "H-E-B Digital Platform Partnership",
+      "method": "Partnership + Web Scraping",
+      "authType": "Partnership-based",
+      "registrationUrl": "Contact H-E-B Business Development",
+      "approvalTime": "Requires partnership negotiation",
+      "rateLimit": "Unknown",
+      "cost": "Partnership-based",
+      "dataQuality": {
+        "realtime": "Good (expected)",
+        "accuracy": "Very good (expected)",
+        "quantityData": "Likely available",
+        "aisleLocation": "Available in mobile app"
+      },
+      "coverage": "Texas only",
+      "priorityStates": ["TX"],
+      "implementationEffort": "4-5 days",
+      "nextTask": "I1.4",
+      "notes": "Critical for Texas. Pursue partnership + implement scraping fallback."
+    },
+    {
+      "name": "Publix",
+      "priority": "HIGH",
+      "priorityFor": ["FL"],
+      "apiAvailable": false,
+      "apiProgram": "None",
+      "method": "Web Scraping",
+      "authType": "N/A",
+      "registrationUrl": "N/A",
+      "approvalTime": "N/A",
+      "rateLimit": "N/A (respect robots.txt)",
+      "cost": "Free (infrastructure costs only)",
+      "dataQuality": {
+        "realtime": "Moderate (web data may lag)",
+        "accuracy": "Good",
+        "quantityData": false,
+        "aisleLocation": false
+      },
+      "coverage": "Southeast (strong in FL)",
+      "priorityStates": ["FL"],
+      "implementationEffort": "3-4 days",
+      "nextTask": "I1.4",
+      "notes": "Critical for Florida. No API available. Scraping required."
+    },
+    {
+      "name": "Safeway/Albertsons",
+      "aliases": ["Safeway", "Albertsons", "Vons", "Jewel-Osco"],
+      "priority": "MEDIUM",
+      "apiAvailable": "LIMITED",
+      "apiProgram": "Albertsons Companies Technology Partners",
+      "method": "Web Scraping + Instacart API",
+      "authType": "Enterprise partnership",
+      "registrationUrl": "Contact Albertsons Companies",
+      "approvalTime": "Enterprise partnership required",
+      "rateLimit": "Unknown",
+      "cost": "Enterprise pricing",
+      "dataQuality": {
+        "realtime": "Good (if API obtained)",
+        "accuracy": "Good (expected)",
+        "quantityData": "Unknown",
+        "aisleLocation": "Available in mobile app"
+      },
+      "coverage": "Western states (OR)",
+      "priorityStates": ["OR"],
+      "implementationEffort": "3-4 days",
+      "nextTask": "I1.4",
+      "notes": "Web scraping + explore Instacart API for inventory data."
+    },
+    {
+      "name": "Amazon Fresh/Whole Foods",
+      "priority": "LOW",
+      "apiAvailable": "PARTIAL",
+      "apiProgram": "Amazon Product Advertising API",
+      "method": "API (limited inventory)",
+      "authType": "AWS Signature",
+      "registrationUrl": "https://webservices.amazon.com/paapi5/",
+      "approvalTime": "Immediate (with affiliate account)",
+      "rateLimit": "Varies by affiliate performance",
+      "cost": "Free with affiliate account",
+      "dataQuality": {
+        "realtime": "Poor (no physical store inventory)",
+        "accuracy": "N/A for physical stores",
+        "quantityData": false,
+        "aisleLocation": false
+      },
+      "coverage": "Metro areas only",
+      "priorityStates": [],
+      "implementationEffort": "Defer",
+      "nextTask": null,
+      "notes": "Limited WIC acceptance. Not a priority for initial implementation."
+    }
+  ],
+  "implementationPriority": [
+    {
+      "phase": 1,
+      "tasks": [
+        {
+          "taskId": "I1.2",
+          "retailer": "Walmart",
+          "method": "API",
+          "effort": "2-3 days",
+          "dependencies": ["API registration approved"]
+        },
+        {
+          "taskId": "I1.3",
+          "retailer": "Kroger",
+          "method": "API",
+          "effort": "3-4 days",
+          "dependencies": ["Developer program approval (1-2 weeks)"]
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "tasks": [
+        {
+          "taskId": "I1.4",
+          "description": "Web scraping framework + retailer scrapers",
+          "retailers": ["Publix", "Target", "H-E-B", "Safeway/Albertsons"],
+          "effort": "4-5 days",
+          "dependencies": []
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "tasks": [
+        {
+          "taskId": "I1.5",
+          "description": "Inventory data normalization layer",
+          "effort": "2-3 days",
+          "dependencies": ["At least one data source implemented"]
+        }
+      ]
+    }
+  ],
+  "costEstimate": {
+    "apiCosts": {
+      "walmart": {
+        "freeTier": "5K req/day",
+        "paidTier": "$500-2000/month",
+        "estimatedAnnual": "$0-6000"
+      },
+      "kroger": {
+        "freeTier": "Approved use cases",
+        "paidTier": "Partnership negotiated",
+        "estimatedAnnual": "$0-12000"
+      },
+      "target": {
+        "freeTier": "N/A",
+        "paidTier": "Partnership negotiated",
+        "estimatedAnnual": "TBD"
+      }
+    },
+    "infrastructure": {
+      "scrapingInfra": {
+        "monthly": "$200-500",
+        "annual": "$2400-6000"
+      },
+      "proxyServices": {
+        "monthly": "$100-300",
+        "annual": "$1200-3600"
+      }
+    },
+    "totalEstimatedAnnual": {
+      "min": "$3600",
+      "max": "$27600"
+    }
+  },
+  "formulaTrackingRequirements": {
+    "criticalNeed": true,
+    "targetFreshness": "< 15 minutes",
+    "updateMethod": "Webhook or aggressive polling",
+    "multiSourceAggregation": true,
+    "proactiveAlerting": true,
+    "crossStoreSearch": true
+  },
+  "dataFreshnessTargets": {
+    "infantFormula": {
+      "targetFreshness": "< 15 minutes",
+      "updateMethod": "Real-time or near real-time"
+    },
+    "dairy": {
+      "targetFreshness": "1 hour",
+      "updateMethod": "Scheduled sync"
+    },
+    "shelfStable": {
+      "targetFreshness": "4-6 hours",
+      "updateMethod": "Scheduled sync"
+    },
+    "nonWIC": {
+      "targetFreshness": "12-24 hours",
+      "updateMethod": "Low priority sync"
+    }
+  },
+  "successMetrics": {
+    "stateCoverage": "> 95% of WIC stores in MI, NC, FL, OR",
+    "dataFreshness": "< 1 hour for formula, < 6 hours for other",
+    "dataAccuracy": "> 90% match between reported and actual",
+    "uptime": "99.5% availability",
+    "queryLatency": "< 500ms p95",
+    "dataConfidence": "> 80% high confidence products"
+  },
+  "legalConsiderations": {
+    "termsOfService": [
+      "Walmart: Must use API only, no scraping",
+      "Kroger: Requires proper attribution",
+      "Target: Scraping may violate ToS, partnership preferred",
+      "Publix: Review ToS for scraping permissions",
+      "H-E-B: No public API, scraping gray area"
+    ],
+    "recommendations": [
+      "Pursue official partnerships where possible",
+      "Implement robots.txt compliance for scraping",
+      "Consult legal counsel on scraping practices",
+      "Consider data licensing agreements for commercial launch",
+      "Respect rate limits and be good API citizen"
+    ]
+  },
+  "nextSteps": {
+    "immediate": [
+      "Register for Walmart Developer API",
+      "Apply for Kroger Developer Program",
+      "Begin Publix web scraping implementation",
+      "Set up scraping infrastructure (proxies, job scheduler)"
+    ],
+    "shortTerm": [
+      "Implement Walmart API integration (I1.2)",
+      "Implement Kroger API integration (I1.3)",
+      "Build generic scraping framework (I1.4)",
+      "Create data normalization layer (I1.5)"
+    ],
+    "mediumTerm": [
+      "Initiate H-E-B partnership discussions",
+      "Initiate Target partnership discussions",
+      "Build crowdsourced inventory system",
+      "Implement formula shortage detection"
+    ]
+  }
+}
