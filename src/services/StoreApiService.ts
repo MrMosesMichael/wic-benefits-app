@@ -91,15 +91,62 @@ export class StoreApiService {
   }
 
   /**
-   * Search stores
+   * Search stores by query string
    */
-  public async searchStores(query: string): Promise<Store[]> {
+  public async searchStores(query: string, options?: {
+    lat?: number;
+    lng?: number;
+    radius?: number;
+    wicOnly?: boolean;
+  }): Promise<Store[]> {
     const queryParams = new URLSearchParams({
       q: query,
     });
 
+    if (options?.lat !== undefined && options?.lng !== undefined) {
+      queryParams.append('lat', options.lat.toString());
+      queryParams.append('lng', options.lng.toString());
+    }
+
+    if (options?.radius) {
+      queryParams.append('radius', options.radius.toString());
+    }
+
+    if (options?.wicOnly) {
+      queryParams.append('wic_only', 'true');
+    }
+
     const response = await this.fetch(
       `/stores/search?${queryParams.toString()}`
+    );
+
+    return response.stores || [];
+  }
+
+  /**
+   * Search stores by city/zip code
+   */
+  public async searchStoresByLocation(
+    location: string,
+    options?: {
+      wicOnly?: boolean;
+      limit?: number;
+    }
+  ): Promise<Store[]> {
+    const queryParams = new URLSearchParams({
+      location: location,
+    });
+
+    if (options?.wicOnly) {
+      queryParams.append('wic_only', 'true');
+    }
+
+    if (options?.limit) {
+      queryParams.append('limit', options.limit.toString());
+    }
+
+    const response = await this.fetch(
+      `/stores/search/location?${queryParams.toString()}`
     );
 
     return response.stores || [];

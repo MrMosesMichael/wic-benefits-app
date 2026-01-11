@@ -11,12 +11,14 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
-import { Store } from '../types/store.types';
+import { Store, GeoPoint } from '../types/store.types';
+import { calculateDistance, formatDistance } from '../utils/distance.utils';
 
 interface NearbyStoresListProps {
   stores: Store[];
   onStoreSelect: (store: Store) => void;
   currentStoreId?: string;
+  userLocation?: GeoPoint; // Optional: if provided, shows distance
   isFavorite: (storeId: string) => boolean;
   onToggleFavorite: (store: Store) => Promise<boolean>;
 }
@@ -25,6 +27,7 @@ export const NearbyStoresList: React.FC<NearbyStoresListProps> = ({
   stores,
   onStoreSelect,
   currentStoreId,
+  userLocation,
   isFavorite,
   onToggleFavorite,
 }) => {
@@ -40,6 +43,11 @@ export const NearbyStoresList: React.FC<NearbyStoresListProps> = ({
     const isCurrentStore = item.id === currentStoreId;
     const isFav = isFavorite(item.id);
 
+    // Calculate distance if user location is provided
+    const distance = userLocation
+      ? calculateDistance(userLocation, item.location)
+      : undefined;
+
     return (
       <TouchableOpacity
         style={[
@@ -51,7 +59,14 @@ export const NearbyStoresList: React.FC<NearbyStoresListProps> = ({
       >
         <View style={styles.storeHeader}>
           <View style={styles.storeInfo}>
-            <Text style={styles.storeName}>{item.name}</Text>
+            <View style={styles.storeNameRow}>
+              <Text style={styles.storeName}>{item.name}</Text>
+              {distance !== undefined && (
+                <Text style={styles.distance}>
+                  {formatDistance(distance)}
+                </Text>
+              )}
+            </View>
             {item.chain && (
               <Text style={styles.storeChain}>{item.chain}</Text>
             )}
@@ -151,11 +166,23 @@ const styles = StyleSheet.create({
   storeInfo: {
     flex: 1,
   },
+  storeNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
   storeName: {
     fontSize: 16,
     fontWeight: '700',
     color: '#333',
-    marginBottom: 4,
+    flex: 1,
+  },
+  distance: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#4CAF50',
+    marginLeft: 8,
   },
   storeChain: {
     fontSize: 14,
