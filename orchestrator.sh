@@ -37,6 +37,26 @@ NC='\033[0m' # No Color
 # Create log directory
 mkdir -p "$LOG_DIR"
 
+# Rotate logs - keep only last N logs per agent type
+rotate_logs() {
+    local agent_type="$1"
+    local keep_count="${2:-10}"
+
+    local log_count=$(ls -1 "$LOG_DIR"/${agent_type}_*.log 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$log_count" -gt "$keep_count" ]; then
+        local to_delete=$((log_count - keep_count))
+        ls -1t "$LOG_DIR"/${agent_type}_*.log | tail -n "$to_delete" | xargs rm -f
+        log "INFO" "Rotated $to_delete old $agent_type logs"
+    fi
+}
+
+# Rotate all agent logs
+rotate_all_logs() {
+    rotate_logs "implementer" 10
+    rotate_logs "reviewer" 10
+    rotate_logs "daemon" 5
+}
+
 # Logging function
 log() {
     local level=$1
@@ -296,22 +316,28 @@ run_implementer() {
     local task_id="$1"
     local task_desc="$2"
 
-    local prompt="You are implementing a feature for the WIC Benefits Assistant app.
+    # Derive spec folder from task ID (H=store-detection, I=inventory, etc.)
+    local spec_hint=""
+    case "${task_id:0:1}" in
+        H) spec_hint="store-detection" ;;
+        I) spec_hint="inventory" ;;
+        J) spec_hint="store-finder" ;;
+        K) spec_hint="inventory" ;;
+        D) spec_hint="upc-scanner" ;;
+        C) spec_hint="benefits" ;;
+        E) spec_hint="shopping-cart" ;;
+        F) spec_hint="help-faq" ;;
+        G) spec_hint="internationalization" ;;
+    esac
 
-TASK: $task_id - $task_desc
+    local prompt="TASK: $task_id - $task_desc
+PROJECT: WIC Benefits Assistant (React Native/TypeScript)
+CONTEXT: Read .claude/MEMORY.md for architecture decisions
+SPEC: specs/wic-benefits-app/specs/${spec_hint:-*}/
 
-Instructions:
-1. Read the roadmap at specs/wic-benefits-app/tasks.md to understand context
-2. Read the relevant spec files in specs/wic-benefits-app/specs/
-3. Read the design.md for data models and architecture
-4. Implement the feature according to the specifications
-5. Create necessary files, components, and logic
-6. Do NOT write tests (that's the next agent's job)
-7. Do NOT commit (that's done by another agent)
-8. Do NOT mark the task as complete in tasks.md
-
-Focus on clean, working code that matches the specifications.
-When you are done implementing, output 'IMPLEMENTATION COMPLETE' as your final message."
+Implement this feature. Create files in src/.
+Do NOT: write tests, commit, or update tasks.md.
+Output 'IMPLEMENTATION COMPLETE' when done."
 
     run_claude_agent "implementer" "$prompt" "$task_id" "$task_desc" "$MODEL_HEAVY"
 }
@@ -321,48 +347,56 @@ run_reviewer() {
     local task_id="$1"
     local task_desc="$2"
 
-    local prompt="You are reviewing and testing code for the WIC Benefits Assistant app.
-
-TASK IMPLEMENTED: $task_id - $task_desc
-
-Instructions:
-1. Review the recently created/modified files in src/ for this task
-2. Check for bugs, issues, or deviations from the spec
-3. Fix any issues you find
-4. Write appropriate tests if a testing framework is set up
-5. If no testing framework exists, document what tests should be written
-6. Do NOT commit (that's done by another agent)
-7. Do NOT mark the task as complete in tasks.md
-
-Focus on code quality, correctness, and identifying any issues.
-When you are done reviewing, output 'REVIEW COMPLETE' as your final message."
+    local prompt="TASK: $task_id - $task_desc
+Review recent changes in src/ for this task.
+Fix any bugs or issues. Note tests needed (no framework yet).
+Do NOT: commit or update tasks.md.
+Output 'REVIEW COMPLETE' when done."
 
     run_claude_agent "reviewer" "$prompt" "$task_id" "$task_desc" "$MODEL_LIGHT"
 }
 
-# Agent 3: Commit and document
+# Agent 3: Commit (bash function - no Claude needed)
 run_committer() {
     local task_id="$1"
     local task_desc="$2"
 
-    local prompt="You are committing completed work for the WIC Benefits Assistant app.
+    log "INFO" "${BLUE}Running auto-commit (bash)...${NC}"
 
-TASK COMPLETED: $task_id - $task_desc
+    # Mark task complete in roadmap
+    mark_complete "$task_id"
 
-Instructions:
-1. Review what was implemented by checking git status and recent file changes
-2. Update the roadmap (specs/wic-benefits-app/tasks.md):
-   - Change the task from [~] 🔄 to [x] ✅ for task $task_id
-3. Stage all relevant files with git add (src/, specs/, any new files)
-4. Create a descriptive commit message that:
-   - Summarizes what was implemented
-   - References the task ID ($task_id)
-   - Includes 'Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>'
-5. Push to GitHub
+    # Stage all relevant files
+    git add src/ specs/ docs/ .claude/ *.md 2>/dev/null || true
+    git add -A 2>/dev/null || true
 
-When you are done, output 'COMMIT COMPLETE' as your final message."
+    # Check if there are changes to commit
+    if git diff --cached --quiet; then
+        log "WARN" "No changes to commit"
+        return 0
+    fi
 
-    run_claude_agent "committer" "$prompt" "$task_id" "$task_desc" "$MODEL_LIGHT"
+    # Create commit
+    local commit_msg="Implement $task_id: $task_desc
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+
+    if git commit -m "$commit_msg"; then
+        log "INFO" "Commit created successfully"
+    else
+        log "ERROR" "Commit failed"
+        return 1
+    fi
+
+    # Push to GitHub
+    if git push origin main; then
+        log "INFO" "${GREEN}Pushed to GitHub${NC}"
+    else
+        log "WARN" "Push failed - will retry later"
+    fi
+
+    log "INFO" "COMMIT COMPLETE"
+    return 0
 }
 
 # Process a single task through all phases
@@ -487,6 +521,9 @@ run_daemon() {
     log "INFO" "Interval: ${interval_minutes} minutes"
     log "INFO" "Duration: ${duration_hours} hours"
     log "INFO" "End time: $(date -r $end_time '+%Y-%m-%d %H:%M:%S')"
+
+    # Rotate old logs at startup
+    rotate_all_logs
     echo ""
 
     while [ $(date +%s) -lt $end_time ]; do
@@ -505,22 +542,31 @@ run_daemon() {
         fi
 
         # Handle different results
-        if [ $result -eq 1 ]; then
-            log "WARN" "${YELLOW}Task failed (likely rate limited). Will retry next iteration.${NC}"
+        if [ $result -eq 0 ]; then
+            log "INFO" "${GREEN}Task succeeded! Immediately starting next task...${NC}"
+            # No wait - proceed immediately to next task
+        elif [ $result -eq 1 ]; then
+            log "WARN" "${YELLOW}Task failed (likely rate limited). Waiting before retry...${NC}"
+            # Wait for interval before retrying
+            local remaining=$((end_time - $(date +%s)))
+            local wait_time=$interval_seconds
+            if [ $remaining -lt $wait_time ]; then
+                wait_time=$remaining
+            fi
+            if [ $wait_time -gt 0 ]; then
+                log "INFO" "Sleeping for $((wait_time / 60)) minutes..."
+                sleep $wait_time
+            fi
         elif [ $result -eq 2 ]; then
             log "INFO" "No tasks available. Waiting for next interval..."
-        fi
-
-        # Wait for next interval
-        local remaining=$((end_time - $(date +%s)))
-        local wait_time=$interval_seconds
-        if [ $remaining -lt $wait_time ]; then
-            wait_time=$remaining
-        fi
-
-        if [ $wait_time -gt 0 ]; then
-            log "INFO" "Sleeping for $((wait_time / 60)) minutes until next iteration..."
-            sleep $wait_time
+            local remaining=$((end_time - $(date +%s)))
+            local wait_time=$interval_seconds
+            if [ $remaining -lt $wait_time ]; then
+                wait_time=$remaining
+            fi
+            if [ $wait_time -gt 0 ]; then
+                sleep $wait_time
+            fi
         fi
 
         iteration=$((iteration + 1))
