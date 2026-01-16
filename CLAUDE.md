@@ -1,35 +1,68 @@
-# CLAUDE.md
+# CLAUDE.md - WIC Benefits App
 
-## Project Overview
+> Instructions for Claude Code. Read this on every session start.
 
-WIC Benefits Assistant - Mobile app helping WIC participants scan products, track benefits, and shop smarter.
+## Quick Start
 
-## Key Specs Location
+**Project**: WIC Benefits Assistant - Mobile app for WIC participants
+**Stack**: React Native + Expo, TypeScript, Node.js/PostgreSQL
+**Repo**: https://github.com/MrMosesMichael/wic-benefits-app
 
-All specifications are in `openspec/changes/wic-benefits-app/specs/`:
-- `upc-scanner/` - Barcode scanning, eligibility lookup, scan modes
-- `benefits/` - Household management, three-state tracking (Available/In Cart/Consumed)
-- `shopping-cart/` - Cart management, checkout flow, benefit queue
-- `store-detection/` - GPS/WiFi store detection
-- `inventory/` - Real-time stock, formula tracking
-- `product-catalog/` - Category browsing, filtering
-- `store-finder/` - Nearby stores, food banks, formula finder
-- `help-faq/` - WIC rules FAQ, contextual help
+### On "resume" or session start:
+1. Read `.claude/SESSION_STATE.md` for current work state
+2. Read `.orchestrator-logs/STATUS.md` for orchestrator status
+3. For deeper context: `.claude/MEMORY.md`
 
-## Priority States
+### On "save state" or session end:
+1. Update `.claude/SESSION_STATE.md`
+2. Commit uncommitted work to GitHub
+3. Report what to do next session
 
-Michigan, North Carolina, Florida, Oregon (different eWIC processors for testing)
+## Project Structure
+
+```
+wic_project/
+├── orchestrator.sh              # Automated task runner
+├── specs/wic-benefits-app/
+│   ├── tasks.md                 # Master task list [x]=done [~]=progress [ ]=pending
+│   ├── design.md                # Architecture & data models
+│   └── specs/                   # Feature specifications
+├── src/                         # Implementation code
+├── .claude/                     # Memory system
+│   ├── MEMORY.md               # Persistent context (decisions, milestones)
+│   └── SESSION_STATE.md        # Current session state
+└── .orchestrator-logs/
+    ├── STATUS.md               # Quick orchestrator status
+    └── *.log                   # Detailed logs
+```
 
 ## Core Concepts
 
 1. **Three-state benefits**: Available (green) → In Cart (amber) → Consumed (gray)
-2. **Hybrid household view**: Unified view of all participants with filter chips
+2. **Hybrid household view**: Unified view with participant filter chips
 3. **Scan modes**: "Check Eligibility" (default) vs "Shopping Mode"
-4. **Explicit cart confirmation**: Scanning ≠ adding to cart
+4. **Priority States**: Michigan, North Carolina, Florida, Oregon
 
-## Commands
+## Key Commands
 
 ```bash
-openspec list                    # View changes
-openspec show wic-benefits-app   # View full proposal
+./orchestrator.sh --status              # Orchestrator status
+./orchestrator.sh --daemon --phase 2    # Start daemon
+ps aux | grep orchestrator              # Check if running
+tail -20 .orchestrator-logs/orchestrator.log  # Recent logs
 ```
+
+## Token Efficiency Rules
+
+1. Read memory files first, not full specs
+2. Be concise in responses
+3. Batch tool calls in parallel
+4. Start fresh sessions daily
+5. Orchestrator uses haiku for simple tasks
+
+## User Preferences
+
+- Token efficiency over speed
+- Orchestrator runs overnight independently
+- Fresh sessions daily (close when limit hit)
+- Orchestrator waits on rate limits

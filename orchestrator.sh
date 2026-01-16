@@ -21,8 +21,9 @@ ROADMAP_FILE="$PROJECT_DIR/specs/wic-benefits-app/tasks.md"
 LOG_DIR="$PROJECT_DIR/.orchestrator-logs"
 STATE_FILE="$LOG_DIR/orchestrator.state"
 LOCK_FILE="$LOG_DIR/orchestrator.lock"
-MODEL="sonnet"
-RATE_LIMIT_WAIT=600  # 10 minutes wait on rate limit
+MODEL_HEAVY="sonnet"   # For implementation tasks
+MODEL_LIGHT="haiku"   # For review and commit tasks (token efficient)
+RATE_LIMIT_WAIT=600   # 10 minutes wait on rate limit
 MAX_RETRIES=10
 
 # Colors for output
@@ -78,6 +79,54 @@ clear_state() {
         mv "$STATE_FILE" "$STATE_FILE.completed.$(date +%Y%m%d_%H%M%S)"
         log "INFO" "State cleared after successful completion"
     fi
+}
+
+# Update STATUS.md for quick status checks
+update_status_file() {
+    local current_task="$1"
+    local current_phase="$2"
+    local status="$3"
+
+    local status_file="$LOG_DIR/STATUS.md"
+    local timestamp=$(date '+%Y-%m-%d %H:%M')
+
+    # Count completed tasks in Phase 2
+    local h_done=$(grep -c "^\- \[x\].*H[0-9]" "$ROADMAP_FILE" 2>/dev/null || echo "0")
+    local i_done=$(grep -c "^\- \[x\].*I[0-9]" "$ROADMAP_FILE" 2>/dev/null || echo "0")
+    local j_done=$(grep -c "^\- \[x\].*J[0-9]" "$ROADMAP_FILE" 2>/dev/null || echo "0")
+    local k_done=$(grep -c "^\- \[x\].*K[0-9]" "$ROADMAP_FILE" 2>/dev/null || echo "0")
+    local total_done=$((h_done + i_done + j_done + k_done))
+
+    cat > "$status_file" << EOF
+# Orchestrator Status
+
+> Auto-updated: $timestamp
+
+## Current Task
+
+**Task**: $current_task
+**Phase**: $current_phase
+**Status**: $status
+
+## Phase 2 Progress
+
+| Group | Complete | Total |
+|-------|----------|-------|
+| H - Store Detection | $h_done | 6 |
+| I - Inventory | $i_done | 9 |
+| J - Food Bank | $j_done | 6 |
+| K - Crowdsourced | $k_done | 4 |
+| **Total** | **$total_done** | **25** |
+
+## Quick Commands
+
+\`\`\`bash
+ps aux | grep orchestrator | grep -v grep  # Check if running
+tail -20 .orchestrator-logs/orchestrator.log  # Recent logs
+./orchestrator.sh --daemon --phase 2  # Restart daemon
+\`\`\`
+EOF
+    log "INFO" "Updated STATUS.md"
 }
 
 # Check if another instance is running
@@ -185,10 +234,11 @@ run_claude_agent() {
     local prompt="$2"
     local task_id="$3"
     local task_desc="$4"
+    local model="$5"  # Model to use (sonnet or haiku)
     local log_file="$LOG_DIR/${agent_name}_$(date +%Y%m%d_%H%M%S).log"
     local retry_count=0
 
-    log "INFO" "${BLUE}Starting $agent_name agent...${NC}"
+    log "INFO" "${BLUE}Starting $agent_name agent (model: $model)...${NC}"
 
     # Save state before running
     save_state "$task_id" "$task_desc" "$agent_name" ""
@@ -200,7 +250,7 @@ run_claude_agent() {
 
         # Run Claude Code (no timeout on macOS - relies on rate limit handling)
         claude --dangerously-skip-permissions \
-               --model "$MODEL" \
+               --model "$model" \
                --print \
                "$prompt" 2>&1 | tee "$log_file"
 
@@ -263,7 +313,7 @@ Instructions:
 Focus on clean, working code that matches the specifications.
 When you are done implementing, output 'IMPLEMENTATION COMPLETE' as your final message."
 
-    run_claude_agent "implementer" "$prompt" "$task_id" "$task_desc"
+    run_claude_agent "implementer" "$prompt" "$task_id" "$task_desc" "$MODEL_HEAVY"
 }
 
 # Agent 2: Review and test
@@ -287,7 +337,7 @@ Instructions:
 Focus on code quality, correctness, and identifying any issues.
 When you are done reviewing, output 'REVIEW COMPLETE' as your final message."
 
-    run_claude_agent "reviewer" "$prompt" "$task_id" "$task_desc"
+    run_claude_agent "reviewer" "$prompt" "$task_id" "$task_desc" "$MODEL_LIGHT"
 }
 
 # Agent 3: Commit and document
@@ -312,7 +362,7 @@ Instructions:
 
 When you are done, output 'COMMIT COMPLETE' as your final message."
 
-    run_claude_agent "committer" "$prompt" "$task_id" "$task_desc"
+    run_claude_agent "committer" "$prompt" "$task_id" "$task_desc" "$MODEL_LIGHT"
 }
 
 # Process a single task through all phases
@@ -372,6 +422,7 @@ process_task() {
 
     # All phases completed successfully
     clear_state
+    update_status_file "$task_id" "complete" "Done"
     log "INFO" "${GREEN}Task $task_id completed successfully through all phases!${NC}"
     return 0
 }
@@ -444,10 +495,8 @@ run_daemon() {
         log "INFO" "==========================================${NC}"
 
         # Run one task cycle (don't exit on failure in daemon mode)
-        set +e
-        run_single_task "$phase_filter" "false"
-        local result=$?
-        set -e
+        local result=0
+        run_single_task "$phase_filter" "false" || result=$?
 
         # Check if we should continue
         if [ $(date +%s) -ge $end_time ]; then
@@ -553,6 +602,7 @@ run_single_task() {
 
     # Mark task as in progress
     mark_in_progress "$task_id" "$line_num"
+    update_status_file "$task_id - $task_desc" "implementer" "Starting"
 
     # Process the task
     process_task "$task_id" "$task_desc" "$line_num" "implementer"
