@@ -21,10 +21,22 @@ WIC Benefits Assistant - Mobile app helping WIC participants scan products, trac
 
 ## Completed Milestones
 
-### Phase 1 - Specifications (Complete)
+### Phase 0 - Specifications (Complete)
 - All specs written in `specs/wic-benefits-app/specs/`
 - Design doc at `specs/wic-benefits-app/design.md`
 - Task roadmap at `specs/wic-benefits-app/tasks.md`
+
+### Phase 1 - Michigan Vertical Slice MVP ✅ **COMPLETE** (Jan 17, 2026)
+- **Backend**: PostgreSQL + Node.js/Express API running on localhost
+- **Frontend**: React Native + Expo with barcode scanner (react-native-vision-camera v4)
+- **Android Build**: Development .apk built via EAS, deployed to physical device
+- **Testing**: Validated end-to-end with real products (Cheerios, Kroger milk)
+- **Critical Features**:
+  - Barcode scanning (UPC-A, UPC-E, EAN-13)
+  - UPC normalization (handles leading zeros: `11110416605` ↔ `0011110416605`)
+  - Eligibility checking via local backend
+  - Network communication (phone → laptop via WiFi)
+- **Production Status**: ON HOLD until Phases 1-2 fully complete
 
 ### Phase 2 - Store Intelligence (In Progress)
 - **Group H - Store Detection**: 6/6 tasks complete
@@ -38,6 +50,8 @@ WIC Benefits Assistant - Mobile app helping WIC participants scan products, trac
 | Rate limits on Claude API | Orchestrator waits and retries; use haiku for simple tasks |
 | macOS lacks `timeout` command | Removed timeout, rely on rate limit handling |
 | Bash `${var^}` not on macOS | Use awk for string capitalization |
+| UPC leading zeros mismatch | Backend tries multiple UPC variants (with/without leading zeros) |
+| Android cleartext HTTP blocking | Use expo-build-properties plugin with usesCleartextTraffic: true |
 
 ## Key Files
 

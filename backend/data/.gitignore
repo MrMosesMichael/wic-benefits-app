@@ -1,0 +1,8 @@
+# Ignore all APL data files (large, shouldn't be in git)
+*.xlsx
+*.xls
+*.csv
+
+# Keep this README
+!README.md
+!.gitignore

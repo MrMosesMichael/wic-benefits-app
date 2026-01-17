@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "WIC Benefits",
+    "slug": "wic-benefits-app",
+    "owner": "mrmosesmichael",
+    "scheme": "wicbenefits",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "plugins": [
+      [
+        "react-native-vision-camera",
+        {
+          "enableCodeScanner": true
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ],
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.wicbenefits.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "We need camera access to scan product barcodes",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.wicbenefits.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "CAMERA"
+      ],
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7db6e2de-a668-4887-9fd2-74468f1e3db9"
+      }
+    }
+  }
+}
