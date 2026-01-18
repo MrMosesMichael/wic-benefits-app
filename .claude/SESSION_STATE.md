@@ -1,6 +1,6 @@
 # Current Session State
 
-> Updated: 2026-01-17 11:30
+> Updated: 2026-01-17 14:45
 > Read this file on "resume" to quickly understand current state.
 
 ## Active Work
@@ -159,13 +159,20 @@ const API_BASE_URL = __DEV__
 ## Quick Start Commands
 
 ```bash
-# Start backend (if not running)
+# Stop all WIC services (to free up system resources)
+./stop-wic-services.sh
+
+# Restart all WIC services
+./start-wic-services.sh
+
+# Manual service management
 cd /Users/moses/projects/wic_project/backend
-npm run dev
+npm run dev  # Start backend
 
 # Check what's running
 lsof -ti:3000  # Backend API
 lsof -ti:5432  # PostgreSQL
+ps aux | grep -i wic_project | grep -v grep  # All WIC processes
 
 # Build new Android version
 cd /Users/moses/projects/wic_project/app
@@ -185,6 +192,8 @@ tail -20 .orchestrator-logs/orchestrator.log
 - `backend/.env` - Added local network IP to CORS_ORIGIN
 - `backend/src/routes/eligibility.ts` - Added UPC variant matching logic
 - `backend database` - Added Kroger milk product
+- **`stop-wic-services.sh`** - NEW: Utility to stop all WIC backend processes
+- **`start-wic-services.sh`** - NEW: Utility to restart all WIC services
 
 ## Technology Stack Validated
 
