@@ -36,8 +36,12 @@ export interface BenefitAmount {
   category: BenefitCategory;
   categoryLabel: string;
   available: string;
+  inCart: string;
+  consumed: string;
   total: string;
   unit: 'gal' | 'oz' | 'lb' | 'doz' | 'count' | 'dollar';
+  periodStart?: string;
+  periodEnd?: string;
 }
 
 export interface Participant {
@@ -52,6 +56,54 @@ export interface Household {
   participants: Participant[];
 }
 
+// Shopping Cart Types
+export interface CartItem {
+  id: string;
+  upc: string;
+  product_name: string;
+  brand?: string;
+  size?: string;
+  category: string;
+  quantity: number;
+  unit: string;
+  participant_id: string;
+  participant_name: string;
+  participant_type: string;
+  added_at: string;
+}
+
+export interface Cart {
+  cartId: string;
+  items: CartItem[];
+  itemCount: number;
+}
+
+// Product Sightings Types (Crowdsourced Inventory)
+export type StockLevel = 'plenty' | 'some' | 'few' | 'out';
+
+export interface ProductSighting {
+  id: string;
+  storeName: string;
+  storeId?: string | null;
+  stockLevel: StockLevel;
+  reportedAt: string;
+  ageHours: number;
+  distance?: number | null;
+  confidence: number;
+  helpfulCount: number;
+  locationVerified: boolean;
+}
+
+export interface ReportSightingRequest {
+  upc: string;
+  storeName: string;
+  storeId?: string;
+  stockLevel: StockLevel;
+  latitude?: number;
+  longitude?: number;
+  reportedBy?: string;
+}
+
 // API Response Types
 export interface ApiResponse<T> {
   success: boolean;
@@ -62,4 +114,107 @@ export interface ApiResponse<T> {
 export interface EligibilityCheckRequest {
   upc: string;
   state: 'MI'; // Michigan only for MVP
+}
+
+// ==================== Formula Finder Types ====================
+
+export interface WicFormula {
+  id: number;
+  upc: string;
+  brand: string;
+  productName: string;
+  formulaType: FormulaType;
+  form: FormulaForm;
+  size: string | null;
+  sizeOz: number | null;
+  stateContractBrand: boolean;
+  statesApproved: string[] | null;
+  manufacturer: string | null;
+  imageUrl: string | null;
+  active: boolean;
+}
+
+export type FormulaType =
+  | 'standard'
+  | 'sensitive'
+  | 'gentle'
+  | 'hypoallergenic'
+  | 'organic'
+  | 'soy'
+  | 'specialty'
+  | 'store_brand';
+
+export type FormulaForm = 'powder' | 'ready_to_feed' | 'concentrate';
+
+export interface FormulaTypeOption {
+  value: FormulaType;
+  label: string;
+  description: string;
+  count: number;
+}
+
+export interface Store {
+  id: number;
+  storeId: string;
+  chain: string;
+  name: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zip: string;
+  latitude: number;
+  longitude: number;
+  phone: string | null;
+  wicAuthorized: boolean;
+  distanceMiles?: number;
+}
+
+export interface StoreResult {
+  id: number;
+  storeId: string;
+  chain: string;
+  name: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+  phone: string | null;
+  wicAuthorized: boolean;
+  distanceMiles: number;
+  likelihood: {
+    level: LikelihoodLevel;
+    notes: string | null;
+  } | null;
+  crowdsourced: {
+    status: 'in_stock' | 'low_stock' | 'out_of_stock';
+    quantityRange: 'few' | 'some' | 'plenty' | null;
+    lastUpdated: string;
+    confidence: number;
+    reportCount: number;
+  } | null;
+  score: number;
+}
+
+export type LikelihoodLevel = 'always' | 'usually' | 'sometimes' | 'rarely';
+
+export type QuantitySeen = 'none' | 'few' | 'some' | 'plenty';
+
+export interface ParticipantFormula {
+  upc: string;
+  name: string | null;
+  source: 'manual' | 'wic_auth' | 'imported';
+  details?: {
+    brand: string;
+    productName: string;
+    formulaType: FormulaType;
+    form: FormulaForm;
+    size: string | null;
+    imageUrl: string | null;
+  } | null;
 }

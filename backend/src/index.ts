@@ -4,6 +4,13 @@ import dotenv from 'dotenv';
 import pool from './config/database';
 import eligibilityRoutes from './routes/eligibility';
 import benefitsRoutes from './routes/benefits';
+import cartRoutes from './routes/cart';
+import sightingsRoutes from './routes/sightings';
+import formulaRoutes from './routes/formula';
+import inventoryRoutes from './routes/inventory';
+import formulaProductsRoutes from './routes/formula-products';
+import storesRoutes from './routes/stores';
+import formulaFinderRoutes from './routes/formula-finder';
 
 dotenv.config();
 
@@ -29,6 +36,13 @@ app.get('/health', async (req: Request, res: Response) => {
 // API routes
 app.use('/api/v1/eligibility', eligibilityRoutes);
 app.use('/api/v1/benefits', benefitsRoutes);
+app.use('/api/v1/cart', cartRoutes);
+app.use('/api/v1/sightings', sightingsRoutes);
+app.use('/api/v1/formula', formulaRoutes);
+app.use('/api/v1/inventory', inventoryRoutes);
+app.use('/api/v1/formula-products', formulaProductsRoutes);
+app.use('/api/v1/stores', storesRoutes);
+app.use('/api/v1/formula-finder', formulaFinderRoutes);
 
 // Start server
 app.listen(port, () => {

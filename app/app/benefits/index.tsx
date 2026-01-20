@@ -89,24 +89,59 @@ export default function Benefits() {
             {participant.benefits.length === 0 ? (
               <Text style={styles.noBenefitsText}>No active benefits</Text>
             ) : (
-              participant.benefits.map((benefit, index) => (
-                <View key={index} style={styles.benefitCard}>
-                  <Text style={styles.categoryName}>{benefit.categoryLabel}</Text>
-                  <View style={styles.amounts}>
-                    <Text style={styles.available}>
-                      {benefit.available} {benefit.unit}
-                    </Text>
+              participant.benefits.map((benefit, index) => {
+                const consumed = parseFloat(benefit.consumed);
+                const inCart = parseFloat(benefit.inCart);
+                const available = parseFloat(benefit.available);
+                const total = parseFloat(benefit.total);
+
+                return (
+                  <View key={index} style={styles.benefitCard}>
+                    <Text style={styles.categoryName}>{benefit.categoryLabel}</Text>
+
+                    {/* Three-state progress bar */}
+                    <View style={styles.progressBarContainer}>
+                      <View style={styles.progressBar}>
+                        {consumed > 0 && (
+                          <View style={[styles.progressSegment, styles.consumedSegment, { flex: consumed }]} />
+                        )}
+                        {inCart > 0 && (
+                          <View style={[styles.progressSegment, styles.inCartSegment, { flex: inCart }]} />
+                        )}
+                        {available > 0 && (
+                          <View style={[styles.progressSegment, styles.availableSegment, { flex: available }]} />
+                        )}
+                      </View>
+                    </View>
+
+                    {/* State labels */}
+                    <View style={styles.stateLabels}>
+                      <View style={styles.stateLabel}>
+                        <View style={[styles.stateDot, styles.consumedDot]} />
+                        <Text style={styles.stateLabelText}>Used: {benefit.consumed} {benefit.unit}</Text>
+                      </View>
+                      <View style={styles.stateLabel}>
+                        <View style={[styles.stateDot, styles.inCartDot]} />
+                        <Text style={styles.stateLabelText}>In Cart: {benefit.inCart} {benefit.unit}</Text>
+                      </View>
+                      <View style={styles.stateLabel}>
+                        <View style={[styles.stateDot, styles.availableDot]} />
+                        <Text style={styles.stateLabelText}>Available: {benefit.available} {benefit.unit}</Text>
+                      </View>
+                    </View>
+
                     <Text style={styles.total}>
-                      of {benefit.total} {benefit.unit}
+                      Total: {benefit.total} {benefit.unit}
                     </Text>
+
+                    {benefit.periodEnd && (
+                      <Text style={styles.expiration}>
+                        Expires: {new Date(benefit.periodEnd).toLocaleDateString()}
+                      </Text>
+                    )}
                   </View>
-                  {benefit.periodEnd && (
-                    <Text style={styles.expiration}>
-                      Expires: {new Date(benefit.periodEnd).toLocaleDateString()}
-                    </Text>
-                  )}
-                </View>
-              ))
+                );
+              })
             )}
           </View>
         </View>
@@ -238,6 +273,55 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 8,
   },
+  progressBarContainer: {
+    marginVertical: 12,
+  },
+  progressBar: {
+    flexDirection: 'row',
+    height: 24,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: '#E0E0E0',
+  },
+  progressSegment: {
+    height: '100%',
+  },
+  consumedSegment: {
+    backgroundColor: '#9E9E9E',
+  },
+  inCartSegment: {
+    backgroundColor: '#FFA000',
+  },
+  availableSegment: {
+    backgroundColor: '#2E7D32',
+  },
+  stateLabels: {
+    marginTop: 8,
+    gap: 4,
+  },
+  stateLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  stateDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  consumedDot: {
+    backgroundColor: '#9E9E9E',
+  },
+  inCartDot: {
+    backgroundColor: '#FFA000',
+  },
+  availableDot: {
+    backgroundColor: '#2E7D32',
+  },
+  stateLabelText: {
+    fontSize: 12,
+    color: '#666',
+  },
   amounts: {
     flexDirection: 'row',
     alignItems: 'baseline',
@@ -250,8 +334,9 @@ const styles = StyleSheet.create({
     color: '#2E7D32',
   },
   total: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#666',
+    marginTop: 8,
   },
   expiration: {
     fontSize: 12,

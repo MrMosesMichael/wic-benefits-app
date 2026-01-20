@@ -34,7 +34,7 @@ router.get('/', async (req: Request, res: Response) => {
     const participantsWithBenefits = await Promise.all(
       participants.rows.map(async (participant) => {
         const benefits = await pool.query(
-          `SELECT category, category_label, total_amount, available_amount, unit, period_start, period_end
+          `SELECT category, category_label, total_amount, available_amount, in_cart_amount, consumed_amount, unit, period_start, period_end
            FROM benefits
            WHERE participant_id = $1 AND period_end >= CURRENT_DATE
            ORDER BY category`,
@@ -49,6 +49,8 @@ router.get('/', async (req: Request, res: Response) => {
             category: b.category,
             categoryLabel: b.category_label,
             available: b.available_amount.toString(),
+            inCart: b.in_cart_amount.toString(),
+            consumed: b.consumed_amount.toString(),
             total: b.total_amount.toString(),
             unit: b.unit,
             periodStart: b.period_start,
@@ -73,6 +75,190 @@ router.get('/', async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch benefits',
+    });
+  }
+});
+
+/**
+ * PUT /api/v1/benefits/participants/:id/formula
+ * Assign a formula to a participant
+ * Body: { formulaUpc: string, formulaName?: string }
+ */
+router.put('/participants/:id/formula', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { formulaUpc, formulaName } = req.body;
+
+  if (!formulaUpc) {
+    return res.status(400).json({
+      success: false,
+      error: 'formulaUpc is required'
+    });
+  }
+
+  try {
+    // Verify participant exists
+    const participant = await pool.query(
+      'SELECT id, type, name FROM participants WHERE id = $1',
+      [id]
+    );
+
+    if (participant.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Participant not found'
+      });
+    }
+
+    // Get formula name from database if not provided
+    let resolvedFormulaName = formulaName;
+    if (!resolvedFormulaName) {
+      const formula = await pool.query(
+        'SELECT brand, product_name FROM wic_formulas WHERE upc = $1',
+        [formulaUpc]
+      );
+      if (formula.rows.length > 0) {
+        resolvedFormulaName = `${formula.rows[0].brand} ${formula.rows[0].product_name}`;
+      }
+    }
+
+    // Update participant's assigned formula
+    await pool.query(
+      `UPDATE participants
+       SET assigned_formula_upc = $1,
+           assigned_formula_name = $2,
+           formula_assignment_source = 'manual'
+       WHERE id = $3`,
+      [formulaUpc, resolvedFormulaName, id]
+    );
+
+    res.json({
+      success: true,
+      participant: {
+        id: participant.rows[0].id,
+        name: participant.rows[0].name,
+        type: participant.rows[0].type,
+        assignedFormula: {
+          upc: formulaUpc,
+          name: resolvedFormulaName,
+          source: 'manual'
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error assigning formula:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to assign formula'
+    });
+  }
+});
+
+/**
+ * GET /api/v1/benefits/participants/:id/formula
+ * Get participant's assigned formula
+ */
+router.get('/participants/:id/formula', async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT
+        p.id,
+        p.name,
+        p.type,
+        p.assigned_formula_upc,
+        p.assigned_formula_name,
+        p.formula_assignment_source,
+        wf.brand,
+        wf.product_name,
+        wf.formula_type,
+        wf.form,
+        wf.size,
+        wf.image_url
+      FROM participants p
+      LEFT JOIN wic_formulas wf ON p.assigned_formula_upc = wf.upc
+      WHERE p.id = $1`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Participant not found'
+      });
+    }
+
+    const row = result.rows[0];
+
+    res.json({
+      success: true,
+      participant: {
+        id: row.id,
+        name: row.name,
+        type: row.type
+      },
+      formula: row.assigned_formula_upc ? {
+        upc: row.assigned_formula_upc,
+        name: row.assigned_formula_name,
+        source: row.formula_assignment_source,
+        details: row.brand ? {
+          brand: row.brand,
+          productName: row.product_name,
+          formulaType: row.formula_type,
+          form: row.form,
+          size: row.size,
+          imageUrl: row.image_url
+        } : null
+      } : null
+    });
+  } catch (error) {
+    console.error('Error fetching participant formula:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch participant formula'
+    });
+  }
+});
+
+/**
+ * DELETE /api/v1/benefits/participants/:id/formula
+ * Remove formula assignment from a participant
+ */
+router.delete('/participants/:id/formula', async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `UPDATE participants
+       SET assigned_formula_upc = NULL,
+           assigned_formula_name = NULL,
+           formula_assignment_source = 'manual'
+       WHERE id = $1
+       RETURNING id, name, type`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Participant not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      participant: {
+        id: result.rows[0].id,
+        name: result.rows[0].name,
+        type: result.rows[0].type,
+        assignedFormula: null
+      }
+    });
+  } catch (error) {
+    console.error('Error removing formula assignment:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to remove formula assignment'
     });
   }
 });

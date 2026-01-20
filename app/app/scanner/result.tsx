@@ -1,5 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal, TextInput } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { getBenefits, addToCart, Participant, getSightings, reportSighting } from '@/lib/services/api';
+import type { ProductSighting, StockLevel } from '@/lib/types';
 
 export default function ScanResult() {
   const router = useRouter();
@@ -9,8 +12,148 @@ export default function ScanResult() {
   const upc = params.upc as string;
   const name = params.name as string;
   const brand = params.brand as string;
+  const size = params.size as string;
   const category = params.category as string;
   const reason = params.reason as string;
+  const scanMode = (params.scanMode as string) || 'check';
+
+  const [eligibleParticipants, setEligibleParticipants] = useState<Participant[]>([]);
+  const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [adding, setAdding] = useState(false);
+
+  // Sightings state
+  const [sightings, setSightings] = useState<ProductSighting[]>([]);
+  const [loadingSightings, setLoadingSightings] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportStoreName, setReportStoreName] = useState('');
+  const [reportStockLevel, setReportStockLevel] = useState<StockLevel>('plenty');
+  const [reporting, setReporting] = useState(false);
+
+  useEffect(() => {
+    if (isEligible && category) {
+      loadEligibleParticipants();
+    }
+    loadSightings();
+  }, [isEligible, category]);
+
+  const loadEligibleParticipants = async () => {
+    try {
+      setLoading(true);
+      const household = await getBenefits();
+
+      // Filter participants who have available benefits in this category
+      const eligible = household.participants.filter(p => {
+        const benefit = p.benefits.find(b => b.category === category);
+        return benefit && parseFloat(benefit.available) > 0;
+      });
+
+      setEligibleParticipants(eligible);
+
+      // Auto-select if only one participant
+      if (eligible.length === 1) {
+        setSelectedParticipantId(eligible[0].id);
+      }
+    } catch (err) {
+      console.error('Failed to load participants:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!selectedParticipantId) {
+      Alert.alert('Select Participant', 'Please select a participant to add this item to cart.');
+      return;
+    }
+
+    const participant = eligibleParticipants.find(p => p.id === selectedParticipantId);
+    if (!participant) return;
+
+    const benefit = participant.benefits.find(b => b.category === category);
+    if (!benefit) return;
+
+    // Default quantity to 1 for simplicity
+    const quantity = 1;
+
+    try {
+      setAdding(true);
+      await addToCart(
+        selectedParticipantId,
+        upc,
+        name,
+        category,
+        quantity,
+        benefit.unit,
+        brand,
+        size
+      );
+
+      Alert.alert(
+        'Added to Cart!',
+        `${name} has been added to your cart.`,
+        [
+          {
+            text: 'View Cart',
+            onPress: () => router.push('/cart'),
+          },
+          {
+            text: 'Continue Shopping',
+            onPress: () => {
+              router.back();
+              setTimeout(() => router.back(), 100);
+            },
+          },
+        ]
+      );
+    } catch (err: any) {
+      console.error('Failed to add to cart:', err);
+      Alert.alert('Error', err.message || 'Failed to add item to cart');
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const loadSightings = async () => {
+    try {
+      setLoadingSightings(true);
+      const recentSightings = await getSightings(upc);
+      setSightings(recentSightings);
+    } catch (err) {
+      console.error('Failed to load sightings:', err);
+    } finally {
+      setLoadingSightings(false);
+    }
+  };
+
+  const handleReportSighting = async () => {
+    if (!reportStoreName.trim()) {
+      Alert.alert('Store Required', 'Please enter the store name.');
+      return;
+    }
+
+    try {
+      setReporting(true);
+      await reportSighting({
+        upc,
+        storeName: reportStoreName.trim(),
+        stockLevel: reportStockLevel,
+      });
+
+      Alert.alert('Thank You!', 'Your sighting has been reported and will help other WIC participants.');
+      setShowReportModal(false);
+      setReportStoreName('');
+      setReportStockLevel('plenty');
+
+      // Reload sightings to show the new report
+      loadSightings();
+    } catch (err: any) {
+      console.error('Failed to report sighting:', err);
+      Alert.alert('Error', err.message || 'Failed to report sighting');
+    } finally {
+      setReporting(false);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -44,13 +187,113 @@ export default function ScanResult() {
         )}
       </View>
 
+      {/* Recent Sightings */}
+      <View style={styles.sightingsCard}>
+        <View style={styles.sightingsHeader}>
+          <Text style={styles.sightingsTitle}>Community Reports</Text>
+          <TouchableOpacity
+            style={styles.reportButton}
+            onPress={() => setShowReportModal(true)}
+          >
+            <Text style={styles.reportButtonText}>+ Report Sighting</Text>
+          </TouchableOpacity>
+        </View>
+
+        {loadingSightings ? (
+          <ActivityIndicator color="#1976D2" style={{ marginVertical: 16 }} />
+        ) : sightings.length > 0 ? (
+          <View style={styles.sightingsList}>
+            {sightings.slice(0, 3).map((sighting) => (
+              <View key={sighting.id} style={styles.sightingItem}>
+                <View style={styles.sightingHeader}>
+                  <Text style={styles.sightingStore}>{sighting.storeName}</Text>
+                  <View style={[
+                    styles.stockBadge,
+                    sighting.stockLevel === 'plenty' && styles.stockPlenty,
+                    sighting.stockLevel === 'some' && styles.stockSome,
+                    sighting.stockLevel === 'few' && styles.stockFew,
+                    sighting.stockLevel === 'out' && styles.stockOut,
+                  ]}>
+                    <Text style={styles.stockBadgeText}>
+                      {sighting.stockLevel === 'plenty' ? 'In Stock' :
+                       sighting.stockLevel === 'some' ? 'Some Left' :
+                       sighting.stockLevel === 'few' ? 'Low Stock' :
+                       'Out of Stock'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.sightingMeta}>
+                  <Text style={styles.sightingAge}>{sighting.ageHours < 1 ? 'Just now' : `${Math.round(sighting.ageHours)}h ago`}</Text>
+                  {sighting.distance && (
+                    <Text style={styles.sightingDistance}>{sighting.distance} mi</Text>
+                  )}
+                  <Text style={styles.sightingConfidence}>
+                    {sighting.confidence}% confidence
+                  </Text>
+                </View>
+              </View>
+            ))}
+            {sightings.length > 3 && (
+              <Text style={styles.sightingsMore}>+{sightings.length - 3} more reports</Text>
+            )}
+          </View>
+        ) : (
+          <Text style={styles.noSightings}>
+            No recent reports. Be the first to report where you found this product!
+          </Text>
+        )}
+      </View>
+
+      {/* Participant Selector (for eligible products with add to cart) */}
+      {isEligible && category && eligibleParticipants.length > 0 && (
+        <View style={styles.participantSelector}>
+          <Text style={styles.selectorTitle}>Select Participant:</Text>
+          {eligibleParticipants.map(participant => {
+            const benefit = participant.benefits.find(b => b.category === category);
+            return (
+              <TouchableOpacity
+                key={participant.id}
+                style={[
+                  styles.participantOption,
+                  selectedParticipantId === participant.id && styles.participantOptionSelected
+                ]}
+                onPress={() => setSelectedParticipantId(participant.id)}
+              >
+                <View style={styles.participantInfo}>
+                  <Text style={styles.participantOptionName}>{participant.name}</Text>
+                  <Text style={styles.participantOptionType}>{participant.type}</Text>
+                </View>
+                {benefit && (
+                  <Text style={styles.participantAvailable}>
+                    {benefit.available} {benefit.unit} available
+                  </Text>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      )}
+
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
+        {isEligible && category && eligibleParticipants.length > 0 && (
+          <TouchableOpacity
+            style={[styles.addToCartButton, adding && styles.addToCartButtonDisabled]}
+            onPress={handleAddToCart}
+            disabled={adding || !selectedParticipantId}
+          >
+            {adding ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.addToCartButtonText}>Add to Cart</Text>
+            )}
+          </TouchableOpacity>
+        )}
+
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => {
             router.back();
-            // Small delay to allow navigation to complete before re-enabling scanner
             setTimeout(() => router.back(), 100);
           }}
         >
@@ -82,6 +325,78 @@ export default function ScanResult() {
           </Text>
         </View>
       )}
+
+      {/* Report Sighting Modal */}
+      <Modal
+        visible={showReportModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowReportModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Report Product Sighting</Text>
+            <Text style={styles.modalSubtitle}>Help others find {name}</Text>
+
+            <Text style={styles.inputLabel}>Store Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="e.g., Walmart on Main St"
+              value={reportStoreName}
+              onChangeText={setReportStoreName}
+              autoCapitalize="words"
+            />
+
+            <Text style={styles.inputLabel}>Stock Level</Text>
+            <View style={styles.stockLevelButtons}>
+              {(['plenty', 'some', 'few', 'out'] as StockLevel[]).map((level) => (
+                <TouchableOpacity
+                  key={level}
+                  style={[
+                    styles.stockLevelButton,
+                    reportStockLevel === level && styles.stockLevelButtonSelected,
+                  ]}
+                  onPress={() => setReportStockLevel(level)}
+                >
+                  <Text style={[
+                    styles.stockLevelButtonText,
+                    reportStockLevel === level && styles.stockLevelButtonTextSelected,
+                  ]}>
+                    {level === 'plenty' ? 'Plenty' :
+                     level === 'some' ? 'Some' :
+                     level === 'few' ? 'Low' :
+                     'Out'}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonCancel]}
+                onPress={() => {
+                  setShowReportModal(false);
+                  setReportStoreName('');
+                  setReportStockLevel('plenty');
+                }}
+              >
+                <Text style={styles.modalButtonCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonSubmit]}
+                onPress={handleReportSighting}
+                disabled={reporting}
+              >
+                {reporting ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.modalButtonSubmitText}>Submit Report</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -186,10 +501,71 @@ const styles = StyleSheet.create({
     color: '#666',
     lineHeight: 20,
   },
+  participantSelector: {
+    backgroundColor: '#fff',
+    marginHorizontal: 20,
+    marginBottom: 20,
+    padding: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  selectorTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+  },
+  participantOption: {
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#E0E0E0',
+    marginBottom: 8,
+  },
+  participantOptionSelected: {
+    borderColor: '#2E7D32',
+    backgroundColor: '#E8F5E9',
+  },
+  participantInfo: {
+    marginBottom: 4,
+  },
+  participantOptionName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#333',
+  },
+  participantOptionType: {
+    fontSize: 13,
+    color: '#666',
+    textTransform: 'capitalize',
+  },
+  participantAvailable: {
+    fontSize: 13,
+    color: '#2E7D32',
+    fontWeight: '500',
+  },
   buttonContainer: {
     marginHorizontal: 20,
     marginBottom: 20,
     gap: 12,
+  },
+  addToCartButton: {
+    backgroundColor: '#FFA000',
+    padding: 18,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  addToCartButtonDisabled: {
+    backgroundColor: '#FFD54F',
+  },
+  addToCartButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
   },
   primaryButton: {
     backgroundColor: '#2E7D32',
@@ -240,5 +616,203 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#856404',
     lineHeight: 20,
+  },
+  sightingsCard: {
+    backgroundColor: '#fff',
+    marginHorizontal: 20,
+    marginBottom: 20,
+    padding: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  sightingsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  sightingsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  reportButton: {
+    backgroundColor: '#1976D2',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  reportButtonText: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  sightingsList: {
+    gap: 12,
+  },
+  sightingItem: {
+    padding: 12,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#1976D2',
+  },
+  sightingHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  sightingStore: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#333',
+    flex: 1,
+  },
+  stockBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  stockPlenty: {
+    backgroundColor: '#4CAF50',
+  },
+  stockSome: {
+    backgroundColor: '#FFA000',
+  },
+  stockFew: {
+    backgroundColor: '#FF6F00',
+  },
+  stockOut: {
+    backgroundColor: '#9E9E9E',
+  },
+  stockBadgeText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  sightingMeta: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  sightingAge: {
+    fontSize: 13,
+    color: '#666',
+  },
+  sightingDistance: {
+    fontSize: 13,
+    color: '#666',
+  },
+  sightingConfidence: {
+    fontSize: 13,
+    color: '#2E7D32',
+    fontWeight: '500',
+  },
+  sightingsMore: {
+    fontSize: 13,
+    color: '#1976D2',
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  noSightings: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    paddingVertical: 12,
+    fontStyle: 'italic',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 24,
+    width: '100%',
+    maxWidth: 400,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    marginBottom: 16,
+  },
+  stockLevelButtons: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 20,
+  },
+  stockLevelButton: {
+    flex: 1,
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#E0E0E0',
+    alignItems: 'center',
+  },
+  stockLevelButtonSelected: {
+    borderColor: '#1976D2',
+    backgroundColor: '#E3F2FD',
+  },
+  stockLevelButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+  },
+  stockLevelButtonTextSelected: {
+    color: '#1976D2',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  modalButton: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  modalButtonCancel: {
+    backgroundColor: '#F5F5F5',
+  },
+  modalButtonSubmit: {
+    backgroundColor: '#1976D2',
+  },
+  modalButtonCancelText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+  },
+  modalButtonSubmitText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
   },
 });

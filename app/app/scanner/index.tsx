@@ -1,22 +1,18 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Camera, useCameraDevice, useCodeScanner } from 'react-native-vision-camera';
-import { checkCameraPermission, requestCameraPermission } from '@/lib/utils/permissions';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { checkEligibility, EligibilityResult } from '@/lib/services/api';
+
+type ScanMode = 'check' | 'shopping';
 
 export default function Scanner() {
   const router = useRouter();
-  const [hasPermission, setHasPermission] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
   const [isActive, setIsActive] = useState(true);
   const [scanning, setScanning] = useState(false);
   const [lastScannedCode, setLastScannedCode] = useState<string | null>(null);
-
-  const device = useCameraDevice('back');
-
-  useEffect(() => {
-    checkPermissions();
-  }, []);
+  const [scanMode, setScanMode] = useState<ScanMode>('check');
 
   useEffect(() => {
     // Reset scanning state when component mounts
@@ -24,32 +20,19 @@ export default function Scanner() {
     setLastScannedCode(null);
   }, []);
 
-  const checkPermissions = async () => {
-    const granted = await checkCameraPermission();
-    if (granted) {
-      setHasPermission(true);
-    } else {
-      const requested = await requestCameraPermission();
-      setHasPermission(requested);
-    }
-  };
-
-  const handleBarCodeScanned = async (codes: any[]) => {
-    if (!isActive || scanning || codes.length === 0) return;
-
-    const code = codes[0];
-    const scannedValue = code.value;
+  const handleBarCodeScanned = async ({ data }: { type: string; data: string }) => {
+    if (!isActive || scanning) return;
 
     // Prevent duplicate scans
-    if (scannedValue === lastScannedCode) return;
+    if (data === lastScannedCode) return;
 
-    setLastScannedCode(scannedValue);
+    setLastScannedCode(data);
     setScanning(true);
     setIsActive(false);
 
     try {
-      console.log('Scanned UPC:', scannedValue);
-      const result = await checkEligibility(scannedValue);
+      console.log('Scanned UPC:', data);
+      const result = await checkEligibility(data);
 
       // Navigate to result screen with data
       router.push({
@@ -58,9 +41,11 @@ export default function Scanner() {
           upc: result.product.upc,
           name: result.product.name,
           brand: result.product.brand || '',
+          size: result.product.size || '',
           eligible: result.eligible ? 'true' : 'false',
           category: result.category || '',
           reason: result.reason || '',
+          scanMode: scanMode,
         },
       });
     } catch (error) {
@@ -68,45 +53,63 @@ export default function Scanner() {
       Alert.alert(
         'Error',
         'Failed to check product eligibility. Please try again.',
-        [{ text: 'OK', onPress: () => setIsActive(true) }]
+        [{ text: 'OK', onPress: () => { setIsActive(true); setScanning(false); } }]
       );
     } finally {
       setScanning(false);
     }
   };
 
-  const codeScanner = useCodeScanner({
-    codeTypes: ['ean-13', 'upc-a', 'upc-e'],
-    onCodeScanned: handleBarCodeScanned,
-  });
-
-  if (!hasPermission) {
+  if (!permission) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>Camera permission is required</Text>
-        <TouchableOpacity style={styles.button} onPress={checkPermissions}>
-          <Text style={styles.buttonText}>Grant Permission</Text>
-        </TouchableOpacity>
+        <ActivityIndicator size="large" color="#2E7D32" />
+        <Text style={styles.message}>Requesting camera permission...</Text>
       </View>
     );
   }
 
-  if (!device) {
+  if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>Camera not available</Text>
+        <Text style={styles.message}>Camera permission is required</Text>
+        <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
+          <Text style={styles.permissionButtonText}>Grant Permission</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Camera
-        style={StyleSheet.absoluteFill}
-        device={device}
-        isActive={isActive && !scanning}
-        codeScanner={codeScanner}
+      <CameraView
+        style={StyleSheet.absoluteFillObject}
+        facing="back"
+        barcodeScannerSettings={{
+          barcodeTypes: ['ean13', 'upc_a', 'upc_e'],
+        }}
+        onBarcodeScanned={isActive && !scanning ? handleBarCodeScanned : undefined}
       />
+
+      {/* Mode toggle */}
+      <View style={styles.modeToggle}>
+        <TouchableOpacity
+          style={[styles.modeButton, scanMode === 'check' && styles.modeButtonActive]}
+          onPress={() => setScanMode('check')}
+        >
+          <Text style={[styles.modeButtonText, scanMode === 'check' && styles.modeButtonTextActive]}>
+            Check Eligibility
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.modeButton, scanMode === 'shopping' && styles.modeButtonActive]}
+          onPress={() => setScanMode('shopping')}
+        >
+          <Text style={[styles.modeButtonText, scanMode === 'shopping' && styles.modeButtonTextActive]}>
+            Shopping Mode
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Scanning overlay */}
       <View style={styles.overlay}>
@@ -114,10 +117,10 @@ export default function Scanner() {
         <View style={styles.middleRow}>
           <View style={styles.sideOverlay} />
           <View style={styles.scanArea}>
-            <View style={styles.corner} style={[styles.corner, styles.topLeft]} />
-            <View style={styles.corner} style={[styles.corner, styles.topRight]} />
-            <View style={styles.corner} style={[styles.corner, styles.bottomLeft]} />
-            <View style={styles.corner} style={[styles.corner, styles.bottomRight]} />
+            <View style={[styles.corner, styles.topLeft]} />
+            <View style={[styles.corner, styles.topRight]} />
+            <View style={[styles.corner, styles.bottomLeft]} />
+            <View style={[styles.corner, styles.bottomRight]} />
           </View>
           <View style={styles.sideOverlay} />
         </View>
@@ -144,27 +147,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   message: {
     color: '#fff',
     fontSize: 18,
     textAlign: 'center',
     marginBottom: 20,
+    paddingHorizontal: 40,
   },
-  button: {
+  permissionButton: {
     backgroundColor: '#2E7D32',
     padding: 16,
     borderRadius: 8,
     marginHorizontal: 40,
   },
-  buttonText: {
+  permissionButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
   },
   overlay: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'space-between',
   },
   topOverlay: {
     flex: 1,
@@ -240,5 +247,34 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  modeToggle: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    right: 100,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 8,
+    padding: 4,
+    gap: 4,
+  },
+  modeButton: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  modeButtonActive: {
+    backgroundColor: '#2E7D32',
+  },
+  modeButtonText: {
+    color: '#999',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  modeButtonTextActive: {
+    color: '#fff',
   },
 });

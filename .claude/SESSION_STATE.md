@@ -1,53 +1,96 @@
 # Session State (Ralph Loop Checkpoint)
 
-> **Last Updated**: 2026-01-20 10:00
-> **Session**: COMPLETE - Ralph Loop implementation
+> **Last Updated**: 2026-01-20 ~11:30
+> **Session**: IN PROGRESS - Formula Finder Refinement Implementation
 
 ---
 
 ## Current Task
 
-**COMPLETE**: Implemented Ralph Loop pattern for orchestrator + interactive session checkpointing
+**IN PROGRESS**: Implementing Formula Finder Refinement (from implementation plan)
 
 ## Progress
 
-- [x] Read and analyzed orchestrator.sh
-- [x] Added `build_retry_context()` function for fresh session awareness
-- [x] Created checkpoint system (write/read/clear checkpoint functions)
-- [x] Updated resume logic to use checkpoints instead of log parsing
-- [x] Updated CLAUDE.md with handoff commands (checkpoint, save and close, resume)
-- [x] Restructured SESSION_STATE.md for checkpoint-friendly format
-- [x] Committed all changes to GitHub
+- [x] Phase 1: Create database migrations (008-011)
+  - 008_wic_formula_database.sql - WIC formulas table
+  - 009_stores_database.sql - Stores table with location
+  - 010_formula_retailer_mapping.sql - Formula-to-retailer likelihood mapping
+  - 011_participant_formula_assignment.sql - Participant formula assignment columns
+- [x] Phase 2: Create backend API routes
+  - formula-products.ts - WIC formulas CRUD
+  - stores.ts - Store lookup with distance
+  - formula-finder.ts - Main search combining likelihood + crowdsourced
+  - Updated formula.ts with report-simple endpoint
+  - Updated benefits.ts with participant formula endpoints
+  - Updated index.ts to register routes
+- [x] Phase 3: Create data seeding scripts
+  - seed-wic-formulas.ts - 35+ WIC-approved formulas (Similac, Enfamil, Gerber, store brands)
+  - seed-michigan-stores.ts - 40+ Michigan stores (Detroit, Ann Arbor, Grand Rapids, Lansing, Flint)
+- [x] Phase 4: Implement frontend screens and components
+  - Components: FormulaCard, StoreResultCard, QuantitySelector
+  - Screens: formula/select.tsx, formula/report.tsx
+  - Refactored: formula/index.tsx with GPS, assigned formula, enhanced results
+  - Updated: api.ts with new functions, types/index.ts with new types
+- [x] Phase 5: Integration and navigation updates
+  - Added expo-location dependency to package.json
+  - Added location permissions to app.json (iOS and Android)
+- [ ] Verification: Test end-to-end functionality (IN PROGRESS)
+
+## Files Created This Session
+
+| File | Purpose |
+|------|---------|
+| `backend/migrations/008_wic_formula_database.sql` | WIC formulas table |
+| `backend/migrations/009_stores_database.sql` | Stores table |
+| `backend/migrations/010_formula_retailer_mapping.sql` | Formula-retailer likelihood |
+| `backend/migrations/011_participant_formula_assignment.sql` | Participant formula columns |
+| `backend/src/routes/formula-products.ts` | Formula products API |
+| `backend/src/routes/stores.ts` | Stores API |
+| `backend/src/routes/formula-finder.ts` | Main search API |
+| `backend/src/scripts/run-migrations-008-011.ts` | Migration runner |
+| `backend/src/scripts/seed-wic-formulas.ts` | Formula seed data |
+| `backend/src/scripts/seed-michigan-stores.ts` | Michigan store seed data |
+| `app/components/FormulaCard.tsx` | Formula selection card |
+| `app/components/StoreResultCard.tsx` | Store result with availability |
+| `app/components/QuantitySelector.tsx` | Quantity reporting buttons |
+| `app/app/formula/select.tsx` | Formula selection screen |
+| `app/app/formula/report.tsx` | Simplified reporting screen |
 
 ## Files Modified This Session
 
 | File | Change |
 |------|--------|
-| `orchestrator.sh` | Added Ralph Loop pattern: retry context, checkpoint system, fresh session logging |
-| `CLAUDE.md` | Added "Session Checkpointing" section with handoff commands table |
-| `.claude/SESSION_STATE.md` | Restructured for checkpoint-friendly resumability |
+| `backend/src/index.ts` | Register new routes |
+| `backend/src/routes/formula.ts` | Add report-simple endpoint |
+| `backend/src/routes/benefits.ts` | Add participant formula endpoints |
+| `app/app/formula/index.tsx` | Refactored with GPS, assigned formula UI |
+| `app/lib/services/api.ts` | Add new API functions |
+| `app/lib/types/index.ts` | Add Formula Finder types |
+| `app/package.json` | Add expo-location |
+| `app/app.json` | Add location permissions |
 
 ## Decisions Made
 
 | Decision | Rationale |
 |----------|-----------|
-| Checkpoint files in `.orchestrator-logs/checkpoints/` | Keeps checkpoint state with other orchestrator logs |
-| Retry context includes git diff info | Fresh session can see what previous attempt modified |
-| Backwards-compatible log parsing fallback | Existing in-progress tasks without checkpoints still work |
-| Three handoff commands (checkpoint/save and close/resume) | Simple, memorable commands for session management |
+| Static likelihood data in DB | Retailer APIs blocked; use known patterns for formula types |
+| Manual formula selection | No WIC auth integration yet; let users select their assigned formula |
+| Combine likelihood + crowdsourced | Score-based sorting: crowdsourced > likelihood > distance |
+| Four quantity options (none/few/some/plenty) | Simple for users, maps to stock status |
 
 ## Blockers / Questions
 
-None.
+None currently. Ready for testing.
 
 ## Next Action (for fresh session)
 
-The Ralph Loop implementation is **complete**. Options for next session:
-
-1. **Test the orchestrator**: Run `./orchestrator.sh --daemon --phase 2` to see the new checkpoint system in action
-2. **Continue Phase 2 work**: Resume I1.2 (Walmart inventory integration)
-3. **Phase 1 polish**: Import full Michigan APL, implement benefits tracking
-4. **Something else**: Ask user what they want to work on
+1. **Run migrations**: `cd backend && npx ts-node src/scripts/run-migrations-008-011.ts`
+2. **Seed data**:
+   - `npx ts-node src/scripts/seed-wic-formulas.ts`
+   - `npx ts-node src/scripts/seed-michigan-stores.ts`
+3. **Install deps**: `cd app && npm install`
+4. **Rebuild app**: Need new native build for expo-location
+5. **Test the feature**: Formula Finder flow end-to-end
 
 ---
 
@@ -64,24 +107,25 @@ The Ralph Loop implementation is **complete**. Options for next session:
 
 ## Phase 2 Status: IN PROGRESS
 
-- 7/23 tasks complete (30%)
-- Current task: I1.2 (Walmart inventory integration) - in progress
-- Orchestrator available for background work (now with Ralph Loop pattern)
+- Formula Finder Refinement nearly complete (pending verification)
+- Orchestrator available for background work (has Ralph Loop pattern)
 
 ## Quick Commands
 
 ```bash
-# Check orchestrator status (now shows Ralph Loop checkpoints)
-./orchestrator.sh --status
+# Run new migrations
+cd backend && npx ts-node src/scripts/run-migrations-008-011.ts
 
-# Start orchestrator daemon
-./orchestrator.sh --daemon --phase 2 --interval 10 --duration 6
+# Seed formula data
+npx ts-node src/scripts/seed-wic-formulas.ts
+npx ts-node src/scripts/seed-michigan-stores.ts
 
 # Start backend
 cd backend && npm run dev
 
-# Recent orchestrator logs
-tail -20 .orchestrator-logs/orchestrator.log
+# Install app deps and rebuild
+cd app && npm install
+eas build --profile development --platform android
 ```
 
 ## Key Files Reference

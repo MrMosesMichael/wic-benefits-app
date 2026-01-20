@@ -8,7 +8,11 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "migrate": "ts-node src/scripts/migrate.ts",
+    "migrate:007": "ts-node src/scripts/run-migration-007.ts",
     "import-apl": "ts-node src/scripts/import-michigan-apl.ts",
+    "detect-shortages": "ts-node src/scripts/detect-shortages.ts",
+    "seed-shortage-test": "ts-node src/scripts/seed-shortage-test-data.ts",
+    "sync-inventory": "ts-node src/scripts/sync-walmart-inventory.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

@@ -11,6 +11,14 @@ export default function Home() {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
+          style={styles.formulaButton}
+          onPress={() => router.push('/formula')}
+        >
+          <Text style={styles.buttonText}>🍼 Find Formula</Text>
+          <Text style={styles.buttonSubtext}>Find infant formula nearby</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => router.push('/scanner')}
         >
@@ -22,6 +30,13 @@ export default function Home() {
           onPress={() => router.push('/benefits')}
         >
           <Text style={styles.buttonText}>View Benefits</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.cartButton}
+          onPress={() => router.push('/cart')}
+        >
+          <Text style={styles.buttonText}>Shopping Cart</Text>
         </TouchableOpacity>
       </View>
 
@@ -66,10 +81,29 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
+  cartButton: {
+    backgroundColor: '#FFA000',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  formulaButton: {
+    backgroundColor: '#E91E63',
+    padding: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#AD1457',
+  },
   buttonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: '600',
+  },
+  buttonSubtext: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 13,
+    marginTop: 4,
   },
   footer: {
     marginTop: 40,

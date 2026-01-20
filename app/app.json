@@ -11,17 +11,24 @@
     "newArchEnabled": true,
     "plugins": [
       [
-        "react-native-vision-camera",
-        {
-          "enableCodeScanner": true
-        }
-      ],
-      [
         "expo-build-properties",
         {
           "android": {
             "usesCleartextTraffic": true
           }
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "We need camera access to scan product barcodes"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "We need location access to find nearby stores with formula.",
+          "locationWhenInUsePermission": "We need location access to find nearby stores with formula."
         }
       ]
     ],
@@ -35,6 +42,7 @@
       "bundleIdentifier": "com.wicbenefits.app",
       "infoPlist": {
         "NSCameraUsageDescription": "We need camera access to scan product barcodes",
+        "NSLocationWhenInUseUsageDescription": "We need location access to find nearby stores with formula.",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
@@ -45,7 +53,9 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "CAMERA"
+        "CAMERA",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
       ],
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false

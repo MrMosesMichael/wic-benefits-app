@@ -1,0 +1,5 @@
+TASK_ID="H5"
+TASK_DESC="Build manual store selection (search, favorites)"
+PHASE="committer"
+LINE_NUM=""
+TIMESTAMP="2026-01-10 19:36:13"
