@@ -1,7 +1,19 @@
 #!/bin/bash
 
+# =============================================================================
 # WIC Benefits App - Development Orchestrator
-# Launches Claude Code agents in sequence to work on roadmap items
+# =============================================================================
+# Implements the "Ralph Loop" pattern (https://ghuntley.com/loop/)
+#
+# Key principles:
+#   1. FRESH SESSIONS: Each loop iteration spawns a new Claude session
+#   2. SINGLE TASK PER LOOP: One task processed through phases per iteration
+#   3. CHECKPOINT-BASED RESUME: Explicit checkpoints instead of log parsing
+#   4. RETRY CONTEXT: Failed retries get context about previous attempt
+#
+# The Ralph Loop treats software development as "programming a new computer"
+# that can autonomously refine and improve code through iterative cycles.
+# =============================================================================
 #
 # Usage: ./orchestrator.sh [OPTIONS]
 #   --phase PHASE    : Specify phase number (default: auto-detect next)
@@ -98,6 +110,109 @@ clear_state() {
     if [ -f "$STATE_FILE" ]; then
         mv "$STATE_FILE" "$STATE_FILE.completed.$(date +%Y%m%d_%H%M%S)"
         log "INFO" "State cleared after successful completion"
+    fi
+}
+
+# =============================================================================
+# CHECKPOINT SYSTEM (Ralph Loop Pattern)
+# =============================================================================
+# Explicit checkpoints replace fragile log parsing for phase tracking.
+# Each phase completion writes a checkpoint file, making the state machine
+# deterministic and resumable.
+# =============================================================================
+
+CHECKPOINT_DIR="$LOG_DIR/checkpoints"
+
+# Initialize checkpoint directory
+init_checkpoints() {
+    mkdir -p "$CHECKPOINT_DIR"
+}
+
+# Write a checkpoint after phase completion
+# Usage: write_checkpoint <task_id> <phase> <status>
+write_checkpoint() {
+    local task_id="$1"
+    local phase="$2"
+    local status="$3"
+    local checkpoint_file="$CHECKPOINT_DIR/${task_id}.checkpoint"
+
+    init_checkpoints
+
+    # Append phase completion to checkpoint file
+    cat >> "$checkpoint_file" << EOF
+PHASE="$phase"
+STATUS="$status"
+TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
+GIT_HEAD="$(git rev-parse HEAD 2>/dev/null || echo 'unknown')"
+---
+EOF
+
+    log "INFO" "Checkpoint written: task=$task_id, phase=$phase, status=$status"
+}
+
+# Read the last completed phase for a task
+# Returns: phase name or empty if no checkpoint
+read_last_checkpoint() {
+    local task_id="$1"
+    local checkpoint_file="$CHECKPOINT_DIR/${task_id}.checkpoint"
+
+    if [ -f "$checkpoint_file" ]; then
+        # Get the last PHASE entry
+        grep "^PHASE=" "$checkpoint_file" | tail -1 | cut -d'"' -f2
+    fi
+}
+
+# Check if a specific phase is complete for a task
+# Usage: is_phase_complete <task_id> <phase>
+is_phase_complete() {
+    local task_id="$1"
+    local phase="$2"
+    local checkpoint_file="$CHECKPOINT_DIR/${task_id}.checkpoint"
+
+    if [ -f "$checkpoint_file" ]; then
+        grep -q "PHASE=\"$phase\"" "$checkpoint_file"
+        return $?
+    fi
+    return 1
+}
+
+# Get the next phase to run based on checkpoints
+# Returns: next phase name or "done" if all complete
+get_next_phase() {
+    local task_id="$1"
+    local phases=("implementer" "reviewer" "committer")
+
+    for phase in "${phases[@]}"; do
+        if ! is_phase_complete "$task_id" "$phase"; then
+            echo "$phase"
+            return
+        fi
+    done
+
+    echo "done"
+}
+
+# Clear checkpoints for a task (after full completion)
+clear_checkpoints() {
+    local task_id="$1"
+    local checkpoint_file="$CHECKPOINT_DIR/${task_id}.checkpoint"
+
+    if [ -f "$checkpoint_file" ]; then
+        mv "$checkpoint_file" "$checkpoint_file.completed.$(date +%Y%m%d_%H%M%S)"
+        log "INFO" "Checkpoints cleared for task $task_id"
+    fi
+}
+
+# Show checkpoint status for a task
+show_checkpoint_status() {
+    local task_id="$1"
+    local checkpoint_file="$CHECKPOINT_DIR/${task_id}.checkpoint"
+
+    if [ -f "$checkpoint_file" ]; then
+        echo -e "${CYAN}Checkpoints for $task_id:${NC}"
+        cat "$checkpoint_file"
+    else
+        echo "No checkpoints found for $task_id"
     fi
 }
 
@@ -248,15 +363,56 @@ check_rate_limit() {
     return 1  # Not rate limited
 }
 
+# Build retry context for fresh session awareness (Ralph Loop pattern)
+# Each retry gets a NEW session but with awareness of previous attempt
+build_retry_context() {
+    local log_file="$1"
+    local retry_count="$2"
+
+    if [ $retry_count -eq 0 ]; then
+        echo ""
+        return
+    fi
+
+    # Gather context from previous attempt for the fresh session
+    local files_changed=$(git diff --name-only HEAD 2>/dev/null | head -10 | tr '\n' ', ' | sed 's/,$//')
+    local staged_files=$(git diff --cached --name-only 2>/dev/null | head -10 | tr '\n' ', ' | sed 's/,$//')
+    local error_hints=$(tail -50 "$log_file" 2>/dev/null | grep -i "error\|failed\|exception" | head -5 | sed 's/^/  - /')
+    local last_actions=$(tail -30 "$log_file" 2>/dev/null | grep -E "^(Reading|Writing|Editing|Created|Modified)" | tail -5 | sed 's/^/  - /')
+
+    cat << EOF
+
+---
+RALPH LOOP: FRESH SESSION RETRY (attempt $((retry_count + 1)))
+This is a NEW session. Previous attempt did not complete successfully.
+
+Previous session context:
+- Files modified (unstaged): ${files_changed:-none}
+- Files staged: ${staged_files:-none}
+
+Previous errors detected:
+${error_hints:-  - No specific errors captured}
+
+Recent actions from previous attempt:
+${last_actions:-  - No actions captured}
+
+INSTRUCTIONS: Start fresh but be aware of any existing changes above.
+If files were partially modified, review them before continuing.
+Do NOT repeat work that was already completed successfully.
+---
+EOF
+}
+
 # Run Claude Code agent with retry on rate limit
+# Implements Ralph Loop pattern: each retry is a FRESH SESSION with context
 run_claude_agent() {
     local agent_name="$1"
-    local prompt="$2"
+    local base_prompt="$2"
     local task_id="$3"
     local task_desc="$4"
     local model="$5"  # Model to use (sonnet or haiku)
-    local log_file="$LOG_DIR/${agent_name}_$(date +%Y%m%d_%H%M%S).log"
     local retry_count=0
+    local prev_log_file=""
 
     log "INFO" "${BLUE}Starting $agent_name agent (model: $model)...${NC}"
 
@@ -264,11 +420,18 @@ run_claude_agent() {
     save_state "$task_id" "$task_desc" "$agent_name" ""
 
     while [ $retry_count -lt $MAX_RETRIES ]; do
-        log "INFO" "Attempt $((retry_count + 1))/$MAX_RETRIES for $agent_name"
+        # Fresh log file for each attempt (Ralph Loop: new session each iteration)
+        local log_file="$LOG_DIR/${agent_name}_$(date +%Y%m%d_%H%M%S).log"
+
+        log "INFO" "Attempt $((retry_count + 1))/$MAX_RETRIES for $agent_name [FRESH SESSION]"
+
+        # Build prompt with retry context if this is a retry
+        local retry_context=$(build_retry_context "$prev_log_file" "$retry_count")
+        local prompt="${base_prompt}${retry_context}"
 
         set +e  # Don't exit on error
 
-        # Run Claude Code (no timeout on macOS - relies on rate limit handling)
+        # Run Claude Code - each invocation is a completely fresh session
         claude --dangerously-skip-permissions \
                --model "$model" \
                --print \
@@ -277,10 +440,14 @@ run_claude_agent() {
         exit_code=${PIPESTATUS[0]}
         set -e
 
+        # Store log file for potential next retry's context
+        prev_log_file="$log_file"
+
         # Check if rate limited
         if check_rate_limit "$log_file"; then
             retry_count=$((retry_count + 1))
             log "WARN" "${YELLOW}Rate limited. Waiting $RATE_LIMIT_WAIT seconds before retry ($retry_count/$MAX_RETRIES)...${NC}"
+            log "INFO" "Next attempt will be a FRESH SESSION with retry context"
             sleep $RATE_LIMIT_WAIT
             continue
         fi
@@ -290,10 +457,13 @@ run_claude_agent() {
             # Verify the agent completed its work
             if grep -q "IMPLEMENTATION COMPLETE\|REVIEW COMPLETE\|COMMIT COMPLETE" "$log_file"; then
                 log "INFO" "${GREEN}$agent_name completed successfully${NC}"
+                # Write checkpoint for phase completion
+                write_checkpoint "$task_id" "$agent_name" "complete"
                 return 0
             else
                 log "WARN" "${YELLOW}$agent_name finished but completion message not found${NC}"
                 # Still consider it successful if exit code is 0
+                write_checkpoint "$task_id" "$agent_name" "complete_no_message"
                 return 0
             fi
         else
@@ -301,7 +471,7 @@ run_claude_agent() {
             retry_count=$((retry_count + 1))
 
             if [ $retry_count -lt $MAX_RETRIES ]; then
-                log "INFO" "Waiting before retry..."
+                log "INFO" "Waiting before retry... Next attempt will be a FRESH SESSION"
                 sleep 60
             fi
         fi
@@ -456,6 +626,7 @@ process_task() {
 
     # All phases completed successfully
     clear_state
+    clear_checkpoints "$task_id"  # Ralph Loop: clean up checkpoint files
     update_status_file "$task_id" "complete" "Done"
     log "INFO" "${GREEN}Task $task_id completed successfully through all phases!${NC}"
     return 0
@@ -465,7 +636,7 @@ process_task() {
 show_status() {
     echo ""
     echo -e "${CYAN}=========================================="
-    echo -e "Orchestrator Status"
+    echo -e "Orchestrator Status (Ralph Loop Pattern)"
     echo -e "==========================================${NC}"
     echo ""
 
@@ -481,6 +652,22 @@ show_status() {
     # Check for in-progress tasks in roadmap
     echo -e "${BLUE}Tasks marked as in-progress in roadmap:${NC}"
     grep "^\- \[~\] 🔄" "$ROADMAP_FILE" 2>/dev/null || echo "  None"
+    echo ""
+
+    # Show checkpoint status for in-progress tasks
+    echo -e "${BLUE}Checkpoint status (Ralph Loop):${NC}"
+    if [ -d "$CHECKPOINT_DIR" ] && [ "$(ls -A "$CHECKPOINT_DIR" 2>/dev/null)" ]; then
+        for checkpoint_file in "$CHECKPOINT_DIR"/*.checkpoint; do
+            if [ -f "$checkpoint_file" ]; then
+                local task_id=$(basename "$checkpoint_file" .checkpoint)
+                local last_phase=$(read_last_checkpoint "$task_id")
+                local next_phase=$(get_next_phase "$task_id")
+                echo "  $task_id: last completed=$last_phase, next=$next_phase"
+            fi
+        done
+    else
+        echo "  No active checkpoints"
+    fi
     echo ""
 
     # Count remaining tasks by phase
@@ -601,29 +788,38 @@ run_single_task() {
 
         log "INFO" "${YELLOW}Found in-progress task: $task_id${NC}"
 
-        # Determine which phase to resume from
-        # Check logs that mention this specific task
-        local resume_phase="implementer"
+        # =================================================================
+        # RALPH LOOP: Use checkpoint system for deterministic phase resume
+        # =================================================================
+        # Instead of fragile log parsing, we use explicit checkpoints.
+        # Each phase writes a checkpoint on completion, so we know exactly
+        # where to resume from.
+        # =================================================================
 
-        # Look for implementer log with this task that completed
-        for log_file in $(ls -t "$LOG_DIR"/implementer_*.log 2>/dev/null); do
-            if grep -q "TASK: $task_id" "$log_file" && grep -q "IMPLEMENTATION COMPLETE" "$log_file"; then
-                resume_phase="reviewer"
-                break
-            fi
-        done
+        local resume_phase=$(get_next_phase "$task_id")
 
-        # If implementer done, check for reviewer
-        if [ "$resume_phase" = "reviewer" ]; then
-            for log_file in $(ls -t "$LOG_DIR"/reviewer_*.log 2>/dev/null); do
-                if grep -q "TASK IMPLEMENTED: $task_id" "$log_file" && grep -q "REVIEW COMPLETE" "$log_file"; then
-                    resume_phase="committer"
+        if [ "$resume_phase" = "done" ]; then
+            log "INFO" "All phases complete for $task_id, marking as done"
+            mark_complete "$task_id"
+            clear_checkpoints "$task_id"
+            clear_state
+            return 0
+        fi
+
+        # Fallback: if no checkpoints exist, check logs (backwards compatibility)
+        if [ -z "$resume_phase" ] || [ "$resume_phase" = "implementer" ]; then
+            # Check if implementer completed but checkpoint wasn't written (legacy)
+            for log_file in $(ls -t "$LOG_DIR"/implementer_*.log 2>/dev/null | head -3); do
+                if grep -q "TASK: $task_id" "$log_file" && grep -q "IMPLEMENTATION COMPLETE" "$log_file"; then
+                    log "INFO" "Found legacy implementer completion, writing checkpoint"
+                    write_checkpoint "$task_id" "implementer" "complete_legacy"
+                    resume_phase="reviewer"
                     break
                 fi
             done
         fi
 
-        log "INFO" "Resuming from phase: $resume_phase"
+        log "INFO" "Resuming from phase: $resume_phase (checkpoint-based)"
         process_task "$task_id" "$task_desc" "$line_num" "$resume_phase"
         return $?
     fi
