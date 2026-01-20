@@ -1,5 +1,8 @@
 /**
  * API Service for WIC Benefits Backend
+ *
+ * OFFLINE MODE: This branch uses local JSON data for eligibility checks.
+ * No backend server required for basic UPC scanning.
  */
 import axios from 'axios';
 import type {
@@ -13,6 +16,10 @@ import type {
   QuantitySeen,
   ParticipantFormula
 } from '../types';
+import { checkEligibilityOffline, getTotalProductCount } from './offlineEligibility';
+
+// Set to true to use offline data (no server needed)
+export const OFFLINE_MODE = true;
 
 // Configure based on environment
 const API_BASE_URL = __DEV__
@@ -91,8 +98,26 @@ export interface Cart {
 
 /**
  * Check if a product is WIC-eligible
+ * Uses offline data when OFFLINE_MODE is true
  */
 export async function checkEligibility(upc: string): Promise<EligibilityResult> {
+  // Use offline mode - no server needed
+  if (OFFLINE_MODE) {
+    const result = checkEligibilityOffline(upc);
+    return {
+      eligible: result.eligible,
+      product: {
+        upc: result.product.upc,
+        name: result.product.name,
+        brand: result.product.brand,
+        size: result.product.size,
+      },
+      category: result.category,
+      reason: result.reason,
+    };
+  }
+
+  // Online mode - requires backend server
   try {
     const response = await api.get(`/eligibility/${upc}`);
     if (response.data.success) {
