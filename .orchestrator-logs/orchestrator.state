@@ -1,5 +1,5 @@
-TASK_ID="A3.5"
-TASK_DESC="Create store search API"
+TASK_ID="A4.1"
+TASK_DESC="Implement formula availability tracking"
 PHASE="reviewer"
 LINE_NUM=""
-TIMESTAMP="2026-01-21 16:38:40"
+TIMESTAMP="2026-01-21 16:46:49"

@@ -1,10 +1,10 @@
 # Orchestrator Status
 
-> Auto-updated: 2026-01-21 16:35
+> Auto-updated: 2026-01-21 16:39
 
 ## Current Task
 
-**Task**: A3.5 - Create store search API
+**Task**: A4.1 - Implement formula availability tracking
 **Phase**: implementer
 **Status**: Starting
 
