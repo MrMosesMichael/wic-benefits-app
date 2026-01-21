@@ -8,6 +8,7 @@ export { OpenFoodFactsClient, openFoodFactsClient } from './OpenFoodFactsClient'
 export { UPCDatabaseClient } from './UPCDatabaseClient';
 export { ProductService, productService } from './ProductService';
 export { ProductServiceWithDB } from './ProductServiceWithDB';
+export { ProductApiClient, getProductApiClient, setProductApiClient } from './ProductApiClient';
 export { productConfig, getProductServiceConfig } from './config';
 
 // Re-export types for convenience

@@ -13,6 +13,7 @@ import storesRoutes from './routes/stores';
 import formulaFinderRoutes from './routes/formula-finder';
 import manualBenefitsRoutes from './routes/manual-benefits';
 import ocrBenefitsRoutes from './routes/ocr-benefits';
+import productsRoutes from './routes/products';
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ app.use('/api/v1/stores', storesRoutes);
 app.use('/api/v1/formula-finder', formulaFinderRoutes);
 app.use('/api/v1/manual-benefits', manualBenefitsRoutes);
 app.use('/api/v1/benefits/ocr', ocrBenefitsRoutes);
+app.use('/api/v1/products', productsRoutes);
 
 // Start server
 app.listen(port, () => {
