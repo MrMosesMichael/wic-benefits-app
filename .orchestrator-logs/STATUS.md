@@ -1,10 +1,10 @@
 # Orchestrator Status
 
-> Auto-updated: 2026-01-21 09:47
+> Auto-updated: 2026-01-21 09:50
 
 ## Current Task
 
-**Task**: A3.2 - Design store data schema (location, hours, features) [haiku]
+**Task**: A3.3 - Build store data ingestion pipeline
 **Phase**: implementer
 **Status**: Starting
 
