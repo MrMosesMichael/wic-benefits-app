@@ -47,7 +47,7 @@
 - [x] ✅ A3.1 Source WIC-authorized retailer data by state
 - [x] ✅ A3.2 Design store data schema (location, hours, features) [haiku]
 - [x] ✅ A3.3 Build store data ingestion pipeline
-- [ ] A3.4 Integrate with Google Places for enrichment
+- [x] ✅ A3.4 Integrate with Google Places for enrichment
 - [ ] A3.5 Create store search API
 
 #### Track A4: Formula Critical Features [SURVIVAL]

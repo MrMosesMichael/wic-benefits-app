@@ -25,8 +25,18 @@ import {
   deduplicateRetailers,
   validateNormalizedData,
 } from './utils/normalization.utils';
+import { GeocodingService } from '../google-places/GeocodingService';
+import { PlacesEnrichmentService } from '../google-places/PlacesEnrichmentService';
 
 export class RetailerDataService implements IRetailerDataService {
+  private geocodingService: GeocodingService;
+  private enrichmentService: PlacesEnrichmentService;
+
+  constructor() {
+    this.geocodingService = new GeocodingService();
+    this.enrichmentService = new PlacesEnrichmentService();
+  }
+
   /**
    * Scrape retailer data for a specific state
    */
@@ -123,71 +133,48 @@ export class RetailerDataService implements IRetailerDataService {
   }
 
   /**
-   * Geocode addresses missing coordinates
-   *
-   * Note: This is a placeholder. Real implementation would use Google Geocoding API
+   * Geocode addresses missing coordinates using Google Geocoding API
    */
   async geocodeAddresses(data: WICRetailerRawData[]): Promise<GeocodingResult[]> {
     console.log(`[RetailerDataService] Geocoding ${data.length} addresses`);
 
-    const results: GeocodingResult[] = [];
-
-    for (const retailer of data) {
-      // Skip if already has coordinates
-      if (retailer.latitude && retailer.longitude) {
-        results.push({
-          success: true,
-          latitude: retailer.latitude,
-          longitude: retailer.longitude,
-          source: 'cache',
-        });
-        continue;
-      }
-
-      // TODO: Implement actual geocoding via Google Geocoding API
-      // For now, return placeholder result
-      results.push({
-        success: false,
-        error: 'Geocoding not yet implemented',
-        source: 'google',
-      });
-    }
-
-    const successCount = results.filter((r) => r.success).length;
-    console.log(
-      `[RetailerDataService] Geocoding complete: ${successCount}/${data.length} successful`
-    );
-
-    return results;
+    return this.geocodingService.geocodeRetailers(data, {
+      skipExisting: true,
+      maxConcurrent: 5,
+      onProgress: (current, total) => {
+        if (current % 10 === 0 || current === total) {
+          console.log(`[RetailerDataService] Geocoding progress: ${current}/${total}`);
+        }
+      },
+    });
   }
 
   /**
-   * Enrich data with Google Places API
-   *
-   * Note: This is a placeholder. Real implementation would use Google Places API
+   * Enrich data with Google Places API (hours, phone, website, ratings)
    */
   async enrichData(data: NormalizedRetailerData[]): Promise<EnrichmentResult[]> {
     console.log(`[RetailerDataService] Enriching ${data.length} records with Places API`);
 
-    const results: EnrichmentResult[] = [];
+    return this.enrichmentService.enrichRetailers(data, {
+      maxConcurrent: 5,
+      skipIfHasHours: false, // Always try to get fresh hours
+      skipIfHasPhone: false, // Always try to get fresh phone
+      onProgress: (current, total) => {
+        if (current % 10 === 0 || current === total) {
+          console.log(`[RetailerDataService] Enrichment progress: ${current}/${total}`);
+        }
+      },
+    });
+  }
 
-    for (const retailer of data) {
-      // TODO: Implement actual enrichment via Google Places API
-      // Search for place by name + address
-      // Retrieve additional details (hours, phone, website, ratings)
-
-      results.push({
-        success: false,
-        error: 'Enrichment not yet implemented',
-      });
-    }
-
-    const successCount = results.filter((r) => r.success).length;
-    console.log(
-      `[RetailerDataService] Enrichment complete: ${successCount}/${data.length} successful`
-    );
-
-    return results;
+  /**
+   * Apply enrichment results to normalized data
+   */
+  applyEnrichment(
+    data: NormalizedRetailerData[],
+    enrichmentResults: EnrichmentResult[]
+  ): NormalizedRetailerData[] {
+    return this.enrichmentService.applyEnrichment(data, enrichmentResults);
   }
 
   /**

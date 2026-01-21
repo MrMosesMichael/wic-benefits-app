@@ -38,6 +38,8 @@ export interface StateIngestionResult {
 export interface IngestionOptions {
   states?: StateCode[];
   skipGeovalidation?: boolean;
+  skipGeocoding?: boolean;
+  skipEnrichment?: boolean;
   batchSize?: number;
   dryRun?: boolean;
 }
@@ -128,10 +130,38 @@ export class StoreIngestionPipeline {
     }
 
     try {
-      // Step 2a: Normalize raw data
+      // Step 2a: Geocode addresses if needed
+      if (!options.skipGeocoding) {
+        console.log(`[StoreIngestionPipeline] Geocoding addresses for ${state}...`);
+        const geocodingResults = await this.retailerService.geocodeAddresses(rawData);
+
+        // Apply geocoding results back to raw data
+        for (let i = 0; i < rawData.length; i++) {
+          const result = geocodingResults[i];
+          if (result.success && result.latitude && result.longitude) {
+            rawData[i].latitude = result.latitude;
+            rawData[i].longitude = result.longitude;
+          }
+        }
+
+        const geocodedCount = geocodingResults.filter(r => r.success).length;
+        console.log(`[StoreIngestionPipeline] Geocoded ${geocodedCount}/${rawData.length} addresses`);
+      }
+
+      // Step 2b: Normalize raw data
       console.log(`[StoreIngestionPipeline] Normalizing ${rawData.length} records for ${state}...`);
-      const normalizedData = await this.retailerService.normalizeData(rawData);
+      let normalizedData = await this.retailerService.normalizeData(rawData);
       normalized = normalizedData.length;
+
+      // Step 2c: Enrich with Google Places data (hours, phone, etc.)
+      if (!options.skipEnrichment) {
+        console.log(`[StoreIngestionPipeline] Enriching ${normalized} records for ${state}...`);
+        const enrichmentResults = await this.retailerService.enrichData(normalizedData);
+        normalizedData = this.retailerService.applyEnrichment(normalizedData, enrichmentResults);
+
+        const enrichedCount = enrichmentResults.filter(r => r.success).length;
+        console.log(`[StoreIngestionPipeline] Enriched ${enrichedCount}/${normalized} records`);
+      }
 
       if (options.dryRun) {
         console.log(`[StoreIngestionPipeline] DRY RUN: Would insert ${normalized} stores for ${state}`);
@@ -146,10 +176,10 @@ export class StoreIngestionPipeline {
         };
       }
 
-      // Step 2b: Convert to Store entities and save
+      // Step 2d: Convert to Store entities and save
       const stores = this.convertToStores(normalizedData);
 
-      // Step 2c: Batch insert/update stores
+      // Step 2e: Batch insert/update stores
       const batchSize = options.batchSize || 50;
       for (let i = 0; i < stores.length; i += batchSize) {
         const batch = stores.slice(i, i + batchSize);

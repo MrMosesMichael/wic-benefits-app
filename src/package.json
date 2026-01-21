@@ -9,7 +9,10 @@
     "ios": "react-native run-ios",
     "test": "jest",
     "lint": "eslint .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "google-places": "ts-node cli/google-places-cli.ts",
+    "google-places:examples": "ts-node examples/google-places-example.ts",
+    "store-ingest": "ts-node cli/ingest-stores.ts"
   },
   "dependencies": {
     "react": "^18.2.0",
