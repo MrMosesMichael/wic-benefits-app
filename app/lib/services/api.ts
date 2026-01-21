@@ -723,4 +723,41 @@ export async function reportFormulaSimple(
   }
 }
 
+// ==================== OCR API ====================
+
+export interface OCRBenefit {
+  category: string;
+  amount: number;
+  unit: string;
+  confidence: number;
+}
+
+export interface OCRResult {
+  benefits: OCRBenefit[];
+  rawText: string;
+  periodStart?: string;
+  periodEnd?: string;
+}
+
+/**
+ * Upload benefit statement image for OCR processing
+ */
+export async function uploadBenefitStatement(base64Image: string): Promise<OCRResult> {
+  try {
+    const response = await api.post('/benefits/ocr', {
+      image: base64Image,
+    });
+    if (response.data.success) {
+      return response.data.data;
+    }
+    throw new Error(response.data.error || 'Failed to process image');
+  } catch (error: any) {
+    console.error('Failed to process benefit statement:', error);
+    if (error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
+    throw error;
+  }
+}
+
 export default api;

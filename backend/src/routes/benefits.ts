@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import pool from '../config/database';
+import { extractBenefitsFromImage } from '../services/ocr-parser';
 
 const router = Router();
 
@@ -259,6 +260,37 @@ router.delete('/participants/:id/formula', async (req: Request, res: Response) =
     res.status(500).json({
       success: false,
       error: 'Failed to remove formula assignment'
+    });
+  }
+});
+
+/**
+ * Process benefit statement image with OCR
+ * POST /api/v1/benefits/ocr
+ */
+router.post('/ocr', async (req: Request, res: Response) => {
+  try {
+    const { image } = req.body;
+
+    if (!image) {
+      return res.status(400).json({
+        success: false,
+        error: 'Image data is required',
+      });
+    }
+
+    // Extract benefits from image using OCR service
+    const result = await extractBenefitsFromImage(image);
+
+    return res.json({
+      success: true,
+      data: result,
+    });
+  } catch (error: any) {
+    console.error('OCR processing error:', error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to process image',
     });
   }
 });

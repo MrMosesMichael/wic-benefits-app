@@ -1,12 +1,12 @@
 # Orchestrator Status
 
-> Auto-updated: 2026-01-20 21:58
+> Auto-updated: 2026-01-20 22:00
 
 ## Current Task
 
-**Task**: R2.2
-**Phase**: complete
-**Status**: Done
+**Task**: R3.1 - Add OCR benefit statement scanning. File: app/app/benefits/scan-statement.tsx. Use expo-camera to capture benefit statement photo, send to OCR service to extract benefit amounts.
+**Phase**: implementer
+**Status**: Starting
 
 ## Phase 2 Progress
 
