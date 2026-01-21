@@ -1,0 +1,5 @@
+TASK_ID="R2.1"
+TASK_DESC="Build purchase logging UI. File: app/app/benefits/log-purchase.tsx. Create screen to log purchases that decrement benefits - product selector, quantity, participant selector."
+PHASE="reviewer"
+LINE_NUM=""
+TIMESTAMP="2026-01-20 21:54:23"

@@ -345,7 +345,7 @@
 
 - [x] ✅ R2.1 Build purchase logging UI. File: app/app/benefits/log-purchase.tsx. Create screen to log purchases that decrement benefits - product selector, quantity, participant selector.
 
-- [ ] R2.2 Implement purchase logging backend. File: backend/src/routes/manual-benefits.ts. Add POST /api/v1/manual-benefits/log-purchase endpoint to record purchase and decrement available balance.
+- [x] ✅ R2.2 Implement purchase logging backend. File: backend/src/routes/manual-benefits.ts. Add POST /api/v1/manual-benefits/log-purchase endpoint to record purchase and decrement available balance.
 
 - [ ] R3.1 Add OCR benefit statement scanning. File: app/app/benefits/scan-statement.tsx. Use expo-camera to capture benefit statement photo, send to OCR service to extract benefit amounts.
 

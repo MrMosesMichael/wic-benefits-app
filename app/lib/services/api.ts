@@ -638,6 +638,58 @@ export async function removeParticipantFormula(participantId: string): Promise<v
   }
 }
 
+// ==================== Purchase Logging API ====================
+
+export interface LogPurchaseRequest {
+  participantId: string;
+  category: string;
+  quantity: number;
+  unit: string;
+  productName?: string;
+}
+
+export interface LogPurchaseResponse {
+  purchase: {
+    productName: string;
+    category: string;
+    categoryLabel: string;
+    quantity: string;
+    unit: string;
+    participantId: number;
+    participantName: string;
+    timestamp: string;
+  };
+  benefit: BenefitAmount & {
+    id: number;
+    participantId: number;
+  };
+  participant: {
+    id: number;
+    householdId: number;
+    type: string;
+    name: string;
+  };
+}
+
+/**
+ * Log a purchase and decrement benefits
+ */
+export async function logPurchase(request: LogPurchaseRequest): Promise<LogPurchaseResponse> {
+  try {
+    const response = await api.post('/manual-benefits/log-purchase', request);
+    if (response.data.success) {
+      return response.data.data;
+    }
+    throw new Error(response.data.error || 'Failed to log purchase');
+  } catch (error: any) {
+    console.error('Failed to log purchase:', error);
+    if (error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
+    throw error;
+  }
+}
+
 // ==================== Simplified Reporting API ====================
 
 /**

@@ -11,6 +11,10 @@ export { default as WiFiService } from './WiFiService';
 export type { StoreDetectionConfig } from './StoreDetectionService';
 export type { WiFiScanResult, WiFiServiceConfig } from './WiFiService';
 
+// Purchase Logging Service
+export { default as PurchaseLoggingService, purchaseLoggingService } from './PurchaseLoggingService';
+export type { LogPurchaseRequest, LogPurchaseResponse, BenefitAmount } from './PurchaseLoggingService';
+
 // Inventory Services
 export {
   InventoryManager,

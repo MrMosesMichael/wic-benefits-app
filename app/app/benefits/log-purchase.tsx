@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BenefitCategory, BenefitUnit } from '@/lib/types';
-import { getBenefits, type Household, type Participant } from '@/lib/services/api';
+import { getBenefits, logPurchase, type Household, type Participant } from '@/lib/services/api';
 
 // Category options for dropdown - based on specs/wic-benefits-app/specs/benefits/spec.md
 const CATEGORY_OPTIONS: { value: BenefitCategory; label: string }[] = [
@@ -134,32 +134,59 @@ export default function LogPurchase() {
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Confirm',
-          onPress: () => {
-            // TODO: Call API to log purchase and decrement benefits
-            // For now, show success message
-            Alert.alert(
-              'Purchase Logged',
-              `${entry.productName} has been logged and benefits have been decremented.`,
-              [
-                {
-                  text: 'Log Another',
-                  onPress: () => {
-                    setEntry({
-                      productName: '',
-                      category: null,
-                      quantity: '',
-                      unit: 'gal',
-                      participantId: entry.participantId, // Keep same participant
-                    });
-                    setValidationErrors({});
+          onPress: async () => {
+            try {
+              setLoading(true);
+
+              // Call API to log purchase and decrement benefits
+              const response = await logPurchase({
+                participantId: entry.participantId!,
+                category: entry.category!,
+                quantity: parseFloat(entry.quantity),
+                unit: entry.unit,
+                productName: entry.productName,
+              });
+
+              // Reload household data to get updated balances
+              await loadHousehold();
+
+              // Show success message
+              Alert.alert(
+                'Purchase Logged',
+                `${entry.productName} has been logged.\n\n` +
+                `${response.participant.name}'s ${response.benefit.categoryLabel} balance:\n` +
+                `Available: ${response.benefit.available} ${response.benefit.unit}\n` +
+                `Consumed: ${response.benefit.consumed} ${response.benefit.unit}`,
+                [
+                  {
+                    text: 'Log Another',
+                    onPress: () => {
+                      setEntry({
+                        productName: '',
+                        category: null,
+                        quantity: '',
+                        unit: 'gal',
+                        participantId: entry.participantId, // Keep same participant
+                      });
+                      setValidationErrors({});
+                    },
                   },
-                },
-                {
-                  text: 'Done',
-                  onPress: () => router.back(),
-                },
-              ]
-            );
+                  {
+                    text: 'Done',
+                    onPress: () => router.back(),
+                  },
+                ]
+              );
+            } catch (err: any) {
+              console.error('Failed to log purchase:', err);
+              Alert.alert(
+                'Error',
+                err.message || 'Failed to log purchase. Please try again.',
+                [{ text: 'OK' }]
+              );
+            } finally {
+              setLoading(false);
+            }
           },
         },
       ]

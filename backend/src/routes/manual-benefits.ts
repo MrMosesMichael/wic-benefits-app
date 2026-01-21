@@ -263,4 +263,252 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * POST /api/v1/manual-benefits/log-purchase
+ * Record a purchase and decrement available benefits
+ *
+ * Request body:
+ * {
+ *   participantId: number,
+ *   category: string,
+ *   quantity: number,
+ *   unit: string,
+ *   productName: string (optional - for transaction history)
+ * }
+ */
+router.post('/log-purchase', async (req: Request, res: Response) => {
+  const { participantId, category, quantity, unit, productName } = req.body;
+
+  // Validate required fields
+  if (!participantId) {
+    return res.status(400).json({
+      success: false,
+      error: 'participantId is required',
+    });
+  }
+
+  if (!category) {
+    return res.status(400).json({
+      success: false,
+      error: 'category is required',
+    });
+  }
+
+  if (quantity === undefined || quantity === null) {
+    return res.status(400).json({
+      success: false,
+      error: 'quantity is required',
+    });
+  }
+
+  if (!unit) {
+    return res.status(400).json({
+      success: false,
+      error: 'unit is required',
+    });
+  }
+
+  // Validate quantity is a positive number
+  const quantityNum = parseFloat(quantity);
+  if (isNaN(quantityNum) || quantityNum <= 0) {
+    return res.status(400).json({
+      success: false,
+      error: 'quantity must be a positive number',
+    });
+  }
+
+  try {
+    // Start a transaction to ensure data consistency
+    const client = await pool.connect();
+
+    try {
+      await client.query('BEGIN');
+
+      // Verify participant exists
+      const participantResult = await client.query(
+        'SELECT id, household_id, type, name FROM participants WHERE id = $1',
+        [participantId]
+      );
+
+      if (participantResult.rows.length === 0) {
+        await client.query('ROLLBACK');
+        return res.status(404).json({
+          success: false,
+          error: 'Participant not found',
+        });
+      }
+
+      const participant = participantResult.rows[0];
+
+      // Find the current active benefit for this participant and category
+      // Use CURRENT_DATE to find benefit period that includes today
+      const benefitResult = await client.query(
+        `SELECT id, category, category_label, total_amount, available_amount,
+                in_cart_amount, consumed_amount, unit, period_start, period_end
+         FROM benefits
+         WHERE participant_id = $1
+           AND category = $2
+           AND period_start <= CURRENT_DATE
+           AND period_end >= CURRENT_DATE
+         ORDER BY period_start DESC
+         LIMIT 1`,
+        [participantId, category]
+      );
+
+      if (benefitResult.rows.length === 0) {
+        await client.query('ROLLBACK');
+        return res.status(404).json({
+          success: false,
+          error: `No active benefit found for participant ${participant.name} in category ${category}`,
+        });
+      }
+
+      const benefit = benefitResult.rows[0];
+
+      // Verify unit matches
+      if (benefit.unit !== unit) {
+        await client.query('ROLLBACK');
+        return res.status(400).json({
+          success: false,
+          error: `Unit mismatch: expected ${benefit.unit} but got ${unit}`,
+        });
+      }
+
+      // Check if there's enough available balance
+      const availableAmount = parseFloat(benefit.available_amount);
+      if (availableAmount < quantityNum) {
+        await client.query('ROLLBACK');
+        return res.status(400).json({
+          success: false,
+          error: `Insufficient balance: only ${availableAmount} ${unit} available, but ${quantityNum} ${unit} requested`,
+          data: {
+            available: availableAmount.toString(),
+            requested: quantityNum.toString(),
+            unit,
+          },
+        });
+      }
+
+      // Calculate new amounts
+      const newAvailableAmount = availableAmount - quantityNum;
+      const newConsumedAmount = parseFloat(benefit.consumed_amount) + quantityNum;
+
+      // Update the benefit record
+      // Decrement available_amount and increment consumed_amount
+      const updateResult = await client.query(
+        `UPDATE benefits
+         SET available_amount = $1,
+             consumed_amount = $2,
+             updated_at = CURRENT_TIMESTAMP
+         WHERE id = $3
+         RETURNING id, category, category_label, total_amount,
+                   available_amount, in_cart_amount, consumed_amount,
+                   unit, period_start, period_end, updated_at`,
+        [newAvailableAmount, newConsumedAmount, benefit.id]
+      );
+
+      const updatedBenefit = updateResult.rows[0];
+
+      // Create transaction record
+      const transactionResult = await client.query(
+        `INSERT INTO transactions (household_id, completed_at)
+         VALUES ($1, CURRENT_TIMESTAMP)
+         RETURNING id, completed_at`,
+        [participant.household_id]
+      );
+
+      const transaction = transactionResult.rows[0];
+
+      // Create benefit consumption record
+      const consumptionResult = await client.query(
+        `INSERT INTO benefit_consumptions (
+           transaction_id, participant_id, benefit_id, upc, product_name,
+           category, amount_consumed, unit, consumed_at
+         )
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP)
+         RETURNING id, amount_consumed, consumed_at`,
+        [
+          transaction.id,
+          participant.id,
+          benefit.id,
+          '', // No UPC for manual purchase logging
+          productName || 'Manual purchase entry',
+          benefit.category,
+          quantityNum,
+          benefit.unit,
+        ]
+      );
+
+      const consumption = consumptionResult.rows[0];
+
+      await client.query('COMMIT');
+
+      res.status(200).json({
+        success: true,
+        message: 'Purchase logged successfully',
+        data: {
+          transaction: {
+            id: transaction.id,
+            completedAt: transaction.completed_at,
+          },
+          consumption: {
+            id: consumption.id,
+            amountConsumed: consumption.amount_consumed.toString(),
+            consumedAt: consumption.consumed_at,
+          },
+          purchase: {
+            productName: productName || 'Manual purchase entry',
+            category: benefit.category,
+            categoryLabel: benefit.category_label,
+            quantity: quantityNum.toString(),
+            unit: benefit.unit,
+            participantId: participant.id,
+            participantName: participant.name,
+          },
+          benefit: {
+            id: updatedBenefit.id,
+            participantId: participant.id,
+            category: updatedBenefit.category,
+            categoryLabel: updatedBenefit.category_label,
+            total: updatedBenefit.total_amount.toString(),
+            available: updatedBenefit.available_amount.toString(),
+            inCart: updatedBenefit.in_cart_amount.toString(),
+            consumed: updatedBenefit.consumed_amount.toString(),
+            unit: updatedBenefit.unit,
+            periodStart: updatedBenefit.period_start,
+            periodEnd: updatedBenefit.period_end,
+            updatedAt: updatedBenefit.updated_at,
+          },
+          participant: {
+            id: participant.id,
+            householdId: participant.household_id,
+            type: participant.type,
+            name: participant.name,
+          },
+        },
+      });
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    console.error('Error logging purchase:', error);
+
+    // Check if it's a constraint violation error (benefits_amount_balance)
+    if ((error as any).code === '23514') {
+      return res.status(500).json({
+        success: false,
+        error: 'Database constraint violation: benefit amounts do not balance correctly',
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      error: 'Failed to log purchase',
+    });
+  }
+});
+
 export default router;

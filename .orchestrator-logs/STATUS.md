@@ -1,10 +1,10 @@
 # Orchestrator Status
 
-> Auto-updated: 2026-01-20 21:52
+> Auto-updated: 2026-01-20 21:54
 
 ## Current Task
 
-**Task**: R2.1 - Build purchase logging UI. File: app/app/benefits/log-purchase.tsx. Create screen to log purchases that decrement benefits - product selector, quantity, participant selector.
+**Task**: R2.2 - Implement purchase logging backend. File: backend/src/routes/manual-benefits.ts. Add POST /api/v1/manual-benefits/log-purchase endpoint to record purchase and decrement available balance.
 **Phase**: implementer
 **Status**: Starting
 
