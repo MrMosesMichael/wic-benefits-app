@@ -44,8 +44,8 @@
 - [x] ✅ A2.6 Target 95%+ coverage of WIC-eligible UPCs
 
 #### Track A3: Store Database
-- [ ] A3.1 Source WIC-authorized retailer data by state
-- [ ] A3.2 Design store data schema (location, hours, features)
+- [x] ✅ A3.1 Source WIC-authorized retailer data by state
+- [ ] A3.2 Design store data schema (location, hours, features) [haiku]
 - [ ] A3.3 Build store data ingestion pipeline
 - [ ] A3.4 Integrate with Google Places for enrichment
 - [ ] A3.5 Create store search API
@@ -65,13 +65,13 @@
 
 #### Track B1: Project Setup
 - [ ] B1.1 Initialize React Native project with Expo
-- [ ] B1.2 Configure TypeScript and linting
-- [ ] B1.3 Set up project structure (features, components, services)
+- [ ] B1.2 Configure TypeScript and linting [haiku]
+- [ ] B1.3 Set up project structure (features, components, services) [haiku]
 - [ ] B1.4 Configure CI/CD pipeline
 - [ ] B1.5 Set up development, staging, production environments
 
 #### Track B2: Backend Infrastructure
-- [ ] B2.1 Design database schema (PostgreSQL)
+- [ ] B2.1 Design database schema (PostgreSQL) [haiku]
 - [ ] B2.2 Set up API framework (Node.js/Express)
 - [ ] B2.3 Implement authentication service
 - [ ] B2.4 Configure cloud hosting (AWS)
@@ -93,7 +93,7 @@
 ### Group C: Benefits System [EMPOWERMENT]
 
 #### Track C1: Household & Benefits Data Model
-- [ ] C1.1 Design household schema (household → participants → benefits)
+- [ ] C1.1 Design household schema (household → participants → benefits) [haiku]
 - [ ] C1.2 Implement household CRUD operations
 - [ ] C1.3 Build participant management (add, edit, remove)
 - [ ] C1.4 Implement participant types (pregnant, postpartum, breastfeeding, infant, child)
@@ -181,20 +181,20 @@
 *Prevents harm BEFORE it happens*
 
 #### Track F1: FAQ System
-- [ ] F1.1 Design FAQ data model (categories, questions, keywords)
+- [ ] F1.1 Design FAQ data model (categories, questions, keywords) [haiku]
 - [ ] F1.2 Build FAQ browsing UI with categories
 - [ ] F1.3 Implement FAQ search functionality
 - [ ] F1.4 Build contextual FAQ (relevant FAQs per screen)
 
 #### Track F2: WIC Rules FAQ Content [CRITICAL FOR HARM PREVENTION]
-- [ ] F2.1 Write formula rules FAQ (contract brands, exact sizes)
-- [ ] F2.2 Write size requirements FAQ ("12.4oz ≠ 12.5oz")
-- [ ] F2.3 Write checkout process FAQ (reduces anxiety)
-- [ ] F2.4 Write brand restrictions FAQ
-- [ ] F2.5 Write "Why was this rejected?" FAQ
-- [ ] F2.6 Write participant categories FAQ
-- [ ] F2.7 Write benefits period FAQ (expiration, no rollover)
-- [ ] F2.8 Write state-specific content for MI, NC, FL, OR
+- [ ] F2.1 Write formula rules FAQ (contract brands, exact sizes) [haiku]
+- [ ] F2.2 Write size requirements FAQ ("12.4oz ≠ 12.5oz") [haiku]
+- [ ] F2.3 Write checkout process FAQ (reduces anxiety) [haiku]
+- [ ] F2.4 Write brand restrictions FAQ [haiku]
+- [ ] F2.5 Write "Why was this rejected?" FAQ [haiku]
+- [ ] F2.6 Write participant categories FAQ [haiku]
+- [ ] F2.7 Write benefits period FAQ (expiration, no rollover) [haiku]
+- [ ] F2.8 Write state-specific content for MI, NC, FL, OR [haiku]
 
 #### Track F3: Contextual Help
 - [ ] F3.1 Implement info icons with tooltips throughout app
@@ -209,10 +209,10 @@
 *40% of WIC participants are Latinx - language barriers = exclusion*
 
 - [ ] G1 Set up i18n framework (react-i18next)
-- [ ] G2 Extract all UI strings to translation files
-- [ ] G3 Translate all UI strings to Spanish
-- [ ] G4 Translate FAQ content to Spanish
-- [ ] G5 Translate error messages to Spanish
+- [ ] G2 Extract all UI strings to translation files [haiku]
+- [ ] G3 Translate all UI strings to Spanish [haiku]
+- [ ] G4 Translate FAQ content to Spanish [haiku]
+- [ ] G5 Translate error messages to Spanish [haiku]
 - [ ] G6 Implement language detection and switching
 - [ ] G7 Test all screens in Spanish
 - [ ] G8 Native speaker review of all translations
@@ -261,7 +261,7 @@
 
 *WIC benefits alone are insufficient for many families*
 
-- [ ] J1 Source food bank data (Feeding America, 211)
+- [ ] J1 Source food bank data (Feeding America, 211) [haiku]
 - [ ] J2 Build food bank search API
 - [ ] J3 Create food bank listing UI
 - [ ] J4 Add food bank detail view
@@ -269,7 +269,7 @@
 - [ ] J6 Design de-stigmatizing UI and messaging
 
 ### Group K: Crowdsourced Inventory
-- [ ] K1 Design crowdsourced availability data model
+- [ ] K1 Design crowdsourced availability data model [haiku]
 - [ ] K2 Implement "I found this" reporting
 - [ ] K3 Build availability confidence scoring
 - [ ] K4 Create "recently seen" indicators
@@ -279,7 +279,7 @@
 ## Phase 3: Discovery & Navigation
 
 ### Group L: Product Catalog
-- [ ] L1 Define category hierarchy data model
+- [ ] L1 Define category hierarchy data model [haiku]
 - [ ] L2 Build category navigation UI
 - [ ] L3 Implement subcategory views
 - [ ] L4 Build product list views with images
@@ -296,7 +296,7 @@
 - [ ] M7 Create "Everything You Need" badge
 
 ### Group N: In-Store Navigation (DEFER IF NEEDED)
-- [ ] N1 Source retailer aisle mapping data
+- [ ] N1 Source retailer aisle mapping data [haiku]
 - [ ] N2 Build aisle lookup API
 - [ ] N3 Implement crowdsourced location reporting
 - [ ] N4 Create department-level fallback display
@@ -307,7 +307,7 @@
 
 ### Group O: Tips & Community
 - [ ] O1 Create tips content management system
-- [ ] O2 Write initial tips content (50+ tips)
+- [ ] O2 Write initial tips content (50+ tips) [haiku]
 - [ ] O3 Build tips browsing UI
 - [ ] O4 Implement personalized tip recommendations
 - [ ] O5 Build tip submission flow
@@ -319,12 +319,12 @@
 *Move users from passive recipients to active participants*
 
 - [ ] P1 Build "Report System Failure" feature (APL errors, store issues)
-- [ ] P2 Create "Know Your Rights" content
+- [ ] P2 Create "Know Your Rights" content [haiku]
 - [ ] P3 Add links to local WIC advocacy groups
 - [ ] P4 Build policy change notifications ("Comment period open")
 
 ### Group Q: Recipes (DEFER IF NEEDED)
-- [ ] Q1 Source WIC-friendly recipes
+- [ ] Q1 Source WIC-friendly recipes [haiku]
 - [ ] Q2 Build recipe browsing UI
 - [ ] Q3 Implement recipe-to-shopping-list conversion
 - [ ] Q4 Add recipe filtering by available benefits
@@ -363,19 +363,19 @@
 
 ### Group S: eWIC APIs (Priority States: MI, NC, FL, OR)
 
-- [ ] S1.1 Research Michigan eWIC API documentation. File: docs/ewic/michigan-api-research.md. Document FIS processor API endpoints, authentication method, data formats, rate limits, and registration requirements.
+- [ ] S1.1 Research Michigan eWIC API documentation. File: docs/ewic/michigan-api-research.md. Document FIS processor API endpoints, authentication method, data formats, rate limits, and registration requirements. [haiku]
 
-- [ ] S2.1 Research North Carolina eWIC API documentation. File: docs/ewic/north-carolina-api-research.md. Document Conduent processor API endpoints, authentication, data formats for NC WIC program.
+- [ ] S2.1 Research North Carolina eWIC API documentation. File: docs/ewic/north-carolina-api-research.md. Document Conduent processor API endpoints, authentication, data formats for NC WIC program. [haiku]
 
-- [ ] S3.1 Research Florida eWIC API documentation. File: docs/ewic/florida-api-research.md. Document FIS processor API for Florida, note any differences from Michigan FIS implementation.
+- [ ] S3.1 Research Florida eWIC API documentation. File: docs/ewic/florida-api-research.md. Document FIS processor API for Florida, note any differences from Michigan FIS implementation. [haiku]
 
-- [ ] S4.1 Research Oregon eWIC API documentation. File: docs/ewic/oregon-api-research.md. Document Oregon's state-specific eWIC system, API access requirements.
+- [ ] S4.1 Research Oregon eWIC API documentation. File: docs/ewic/oregon-api-research.md. Document Oregon's state-specific eWIC system, API access requirements. [haiku]
 
 - [ ] S5.1 Create eWIC card linking UI. File: app/app/settings/link-ewic.tsx. Build screen for users to enter eWIC card number, PIN (if required), and state selection to link their card.
 
 - [ ] S5.2 Create eWIC linking backend. File: backend/src/routes/ewic.ts. Add POST /api/v1/ewic/link endpoint to validate card credentials with state API and store encrypted card reference.
 
-- [ ] S5.3 Create migration for eWIC card storage. File: backend/migrations/013_ewic_cards.sql. Create table with columns: id, household_id, state, card_number_encrypted, card_hash, linked_at, last_sync, status.
+- [ ] S5.3 Create migration for eWIC card storage. File: backend/migrations/013_ewic_cards.sql. Create table with columns: id, household_id, state, card_number_encrypted, card_hash, linked_at, last_sync, status. [haiku]
 
 - [ ] S6.1 Implement balance retrieval service. File: backend/src/services/ewic/balanceService.ts. Create service to fetch current benefits balance from linked eWIC card via state API.
 
@@ -405,16 +405,16 @@
 - [ ] T5 Add keyboard navigation support
 
 ### Group U: Additional Languages
-- [ ] U1 Identify next priority languages (Chinese, Vietnamese, Korean)
+- [ ] U1 Identify next priority languages (Chinese, Vietnamese, Korean) [haiku]
 - [ ] U2 Add language support based on regional demographics
 
 ### Group V: Launch
 - [ ] V1 Conduct beta testing with WIC participants
-- [ ] V2 Prepare App Store and Play Store listings
+- [ ] V2 Prepare App Store and Play Store listings [haiku]
 - [ ] V3 Create screenshots and preview videos
 - [ ] V4 Submit for app review
 - [ ] V5 Set up user support channels
-- [ ] V6 Plan launch communications
+- [ ] V6 Plan launch communications [haiku]
 
 ---
 
@@ -425,7 +425,7 @@
 - [ ] GOV1 Decide: Non-Profit with User Board OR User Cooperative
 - [ ] GOV2 Establish 501(c)(3) or cooperative structure
 - [ ] GOV3 Form user advisory council
-- [ ] GOV4 Finalize open-source license (AGPL recommended)
+- [ ] GOV4 Finalize open-source license (AGPL recommended) [haiku]
 - [ ] GOV5 Create bylaws preventing sale to for-profit entity
 
 ---

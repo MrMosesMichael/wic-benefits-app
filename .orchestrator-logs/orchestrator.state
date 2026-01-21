@@ -1,5 +1,5 @@
-TASK_ID="A2.6"
-TASK_DESC="Target 95%+ coverage of WIC-eligible UPCs"
+TASK_ID="A3.1"
+TASK_DESC="Source WIC-authorized retailer data by state"
 PHASE="reviewer"
 LINE_NUM=""
-TIMESTAMP="2026-01-21 01:04:02"
+TIMESTAMP="2026-01-21 07:16:39"

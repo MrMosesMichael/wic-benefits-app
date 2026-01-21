@@ -36,8 +36,22 @@ STATE_FILE="$LOG_DIR/orchestrator.state"
 LOCK_FILE="$LOG_DIR/orchestrator.lock"
 MODEL_HEAVY="sonnet"   # For implementation tasks
 MODEL_LIGHT="haiku"   # For review and commit tasks (token efficient)
-RATE_LIMIT_WAIT=600   # 10 minutes wait on rate limit
+
+# Rate limit configuration - exponential backoff
+RATE_LIMIT_WAIT_INITIAL=600    # 10 minutes initial wait
+RATE_LIMIT_WAIT_MAX=14400      # 4 hours maximum wait
+RATE_LIMIT_MULTIPLIER=2        # Double each retry
+CONSECUTIVE_FAILURES=0         # Track consecutive rate-limited tasks
+EXTENDED_PAUSE_THRESHOLD=3     # After 3 consecutive failures
+EXTENDED_PAUSE=7200            # 2 hour extended pause
+
 MAX_RETRIES=10
+
+# Check if task has [haiku] tag
+task_uses_haiku() {
+    local task_desc="$1"
+    echo "$task_desc" | grep -qi '\[haiku\]'
+}
 
 # Colors for output
 RED='\033[0;31m'
@@ -365,6 +379,19 @@ check_rate_limit() {
     return 1  # Not rate limited
 }
 
+# Calculate exponential backoff wait time
+calculate_backoff() {
+    local retry_count=$1
+    local wait_time=$((RATE_LIMIT_WAIT_INITIAL * (RATE_LIMIT_MULTIPLIER ** retry_count)))
+
+    # Cap at maximum
+    if [ $wait_time -gt $RATE_LIMIT_WAIT_MAX ]; then
+        wait_time=$RATE_LIMIT_WAIT_MAX
+    fi
+
+    echo $wait_time
+}
+
 # Build retry context for fresh session awareness (Ralph Loop pattern)
 # Each retry gets a NEW session but with awareness of previous attempt
 build_retry_context() {
@@ -448,11 +475,24 @@ run_claude_agent() {
         # Check if rate limited
         if check_rate_limit "$log_file"; then
             retry_count=$((retry_count + 1))
-            log "WARN" "${YELLOW}Rate limited. Waiting $RATE_LIMIT_WAIT seconds before retry ($retry_count/$MAX_RETRIES)...${NC}"
-            log "INFO" "Next attempt will be a FRESH SESSION with retry context"
-            sleep $RATE_LIMIT_WAIT
+            CONSECUTIVE_FAILURES=$((CONSECUTIVE_FAILURES + 1))
+
+            # Check if we need extended pause
+            if [ $CONSECUTIVE_FAILURES -ge $EXTENDED_PAUSE_THRESHOLD ]; then
+                log "WARN" "${RED}$CONSECUTIVE_FAILURES consecutive rate limits. Entering extended pause (${EXTENDED_PAUSE}s / $((EXTENDED_PAUSE / 60)) min)...${NC}"
+                sleep $EXTENDED_PAUSE
+                CONSECUTIVE_FAILURES=0  # Reset after extended pause
+            else
+                local backoff_wait=$(calculate_backoff $retry_count)
+                log "WARN" "${YELLOW}Rate limited. Waiting ${backoff_wait}s ($((backoff_wait / 60)) min) before retry ($retry_count/$MAX_RETRIES)...${NC}"
+                log "INFO" "Next attempt will be a FRESH SESSION with retry context"
+                sleep $backoff_wait
+            fi
             continue
         fi
+
+        # Reset consecutive failures on success
+        CONSECUTIVE_FAILURES=0
 
         # Check if successful (look for completion message)
         if [ $exit_code -eq 0 ]; then
@@ -488,6 +528,13 @@ run_implementer() {
     local task_id="$1"
     local task_desc="$2"
 
+    # Determine model based on task tag
+    local model="$MODEL_HEAVY"
+    if task_uses_haiku "$task_desc"; then
+        model="$MODEL_LIGHT"
+        log "INFO" "${CYAN}Using Haiku model for [haiku] tagged task${NC}"
+    fi
+
     # Derive spec folder from task ID (H=store-detection, I=inventory, etc.)
     local spec_hint=""
     case "${task_id:0:1}" in
@@ -511,7 +558,7 @@ Implement this feature. Create files in src/.
 Do NOT: write tests, commit, or update tasks.md.
 Output 'IMPLEMENTATION COMPLETE' when done."
 
-    run_claude_agent "implementer" "$prompt" "$task_id" "$task_desc" "$MODEL_HEAVY"
+    run_claude_agent "implementer" "$prompt" "$task_id" "$task_desc" "$model"
 }
 
 # Agent 2: Review and test
