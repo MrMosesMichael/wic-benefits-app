@@ -1,7 +1,45 @@
 /**
  * WIC Benefits Assistant - Main Module Exports
- * Store Detection and Inventory Management
+ * Store Detection, Inventory Management, and Product Database
  */
+
+// ============================================================================
+// Database Layer
+// ============================================================================
+
+export {
+  ProductRepository,
+  getDatabaseConfig,
+  validateDatabaseConfig,
+} from './database';
+export type { DatabaseConfig } from './database';
+
+// ============================================================================
+// Product Services
+// ============================================================================
+
+export {
+  OpenFoodFactsClient,
+  openFoodFactsClient,
+  UPCDatabaseClient,
+  ProductService,
+  productService,
+  ProductServiceWithDB,
+  productConfig,
+  getProductServiceConfig,
+} from './services/product';
+
+// Product Types
+export type {
+  Product,
+  ProductDataSource,
+  ProductLookupResult,
+  ProductQueryParams,
+  ProductCoverageStats,
+  ProductSubmission,
+  UnknownProductReport,
+  NutritionInfo,
+} from './types/product.types';
 
 // ============================================================================
 // Store Detection Services

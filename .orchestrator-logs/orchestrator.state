@@ -1,5 +1,5 @@
-TASK_ID="A2.1"
-TASK_DESC="Source UPC-to-product database (Open Food Facts, UPC Database API)"
+TASK_ID="A2.2"
+TASK_DESC="Design product data schema"
 PHASE="reviewer"
 LINE_NUM=""
-TIMESTAMP="2026-01-21 00:11:49"
+TIMESTAMP="2026-01-21 00:19:32"
