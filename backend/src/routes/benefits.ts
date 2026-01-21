@@ -295,4 +295,207 @@ router.post('/ocr', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * Update benefit period dates for all participants in a household
+ * PUT /api/v1/benefits/period
+ */
+router.put('/period', async (req: Request, res: Response) => {
+  const { householdId, periodStart, periodEnd } = req.body;
+
+  if (!householdId || !periodStart || !periodEnd) {
+    return res.status(400).json({
+      success: false,
+      error: 'householdId, periodStart, and periodEnd are required',
+    });
+  }
+
+  // Validate dates
+  const startDate = new Date(periodStart);
+  const endDate = new Date(periodEnd);
+
+  if (endDate <= startDate) {
+    return res.status(400).json({
+      success: false,
+      error: 'End date must be after start date',
+    });
+  }
+
+  try {
+    // Update all benefits for the household
+    await pool.query(
+      `UPDATE benefits
+       SET period_start = $1, period_end = $2
+       WHERE participant_id IN (
+         SELECT id FROM participants WHERE household_id = $3
+       )`,
+      [periodStart, periodEnd, householdId]
+    );
+
+    res.json({
+      success: true,
+      message: 'Benefit period updated successfully',
+      period: {
+        start: periodStart,
+        end: periodEnd,
+      },
+    });
+  } catch (error) {
+    console.error('Error updating benefit period:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to update benefit period',
+    });
+  }
+});
+
+/**
+ * Rollover to new benefit period
+ * Archives current period and resets benefit amounts
+ * POST /api/v1/benefits/rollover
+ */
+router.post('/rollover', async (req: Request, res: Response) => {
+  const { householdId, newPeriodStart, newPeriodEnd } = req.body;
+
+  if (!householdId || !newPeriodStart || !newPeriodEnd) {
+    return res.status(400).json({
+      success: false,
+      error: 'householdId, newPeriodStart, and newPeriodEnd are required',
+    });
+  }
+
+  // Validate dates
+  const startDate = new Date(newPeriodStart);
+  const endDate = new Date(newPeriodEnd);
+
+  if (endDate <= startDate) {
+    return res.status(400).json({
+      success: false,
+      error: 'End date must be after start date',
+    });
+  }
+
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    // Get all participants in household
+    const participants = await client.query(
+      'SELECT id FROM participants WHERE household_id = $1',
+      [householdId]
+    );
+
+    // Archive current benefits (mark as expired)
+    await client.query(
+      `UPDATE benefits
+       SET period_end = CURRENT_DATE - INTERVAL '1 day'
+       WHERE participant_id IN (
+         SELECT id FROM participants WHERE household_id = $1
+       )
+       AND period_end >= CURRENT_DATE`,
+      [householdId]
+    );
+
+    // Reset benefit amounts for new period
+    // Set total_amount to 0, available to 0, consumed to 0, in_cart to 0
+    await client.query(
+      `UPDATE benefits
+       SET
+         period_start = $1,
+         period_end = $2,
+         total_amount = 0,
+         available_amount = 0,
+         consumed_amount = 0,
+         in_cart_amount = 0
+       WHERE participant_id IN (
+         SELECT id FROM participants WHERE household_id = $3
+       )
+       AND period_end >= CURRENT_DATE`,
+      [newPeriodStart, newPeriodEnd, householdId]
+    );
+
+    await client.query('COMMIT');
+
+    res.json({
+      success: true,
+      message: 'Benefit period rolled over successfully',
+      period: {
+        start: newPeriodStart,
+        end: newPeriodEnd,
+      },
+    });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error rolling over benefit period:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to rollover benefit period',
+    });
+  } finally {
+    client.release();
+  }
+});
+
+/**
+ * Get benefit period info for a household
+ * GET /api/v1/benefits/period?household_id=1
+ */
+router.get('/period', async (req: Request, res: Response) => {
+  const householdId = req.query.household_id || '1';
+
+  try {
+    const result = await pool.query(
+      `SELECT
+        period_start,
+        period_end,
+        COUNT(*) as benefit_count
+       FROM benefits
+       WHERE participant_id IN (
+         SELECT id FROM participants WHERE household_id = $1
+       )
+       AND period_end >= CURRENT_DATE
+       GROUP BY period_start, period_end
+       LIMIT 1`,
+      [householdId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'No active benefit period found',
+      });
+    }
+
+    const row = result.rows[0];
+    const now = new Date();
+    const startDate = new Date(row.period_start);
+    const endDate = new Date(row.period_end);
+
+    // Calculate days remaining
+    const daysRemaining = Math.max(0, Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+    const daysInPeriod = Math.max(0, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+    const daysElapsed = Math.max(0, Math.ceil((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+
+    res.json({
+      success: true,
+      period: {
+        start: row.period_start,
+        end: row.period_end,
+        daysRemaining,
+        daysInPeriod,
+        daysElapsed,
+        isActive: now >= startDate && now <= endDate,
+        isExpired: now > endDate,
+        isUpcoming: now < startDate,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching benefit period:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch benefit period',
+    });
+  }
+});
+
 export default router;

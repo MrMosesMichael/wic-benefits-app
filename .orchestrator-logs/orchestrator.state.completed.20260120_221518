@@ -1,0 +1,5 @@
+TASK_ID="R3.2"
+TASK_DESC="Create OCR parsing service. File: backend/src/services/ocr-parser.ts. Parse OCR text output to extract benefit categories and amounts from common WIC statement formats."
+PHASE="reviewer"
+LINE_NUM=""
+TIMESTAMP="2026-01-20 22:14:14"

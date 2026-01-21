@@ -760,4 +760,87 @@ export async function uploadBenefitStatement(base64Image: string): Promise<OCRRe
   }
 }
 
+// ==================== Benefit Period API ====================
+
+export interface BenefitPeriod {
+  start: string;
+  end: string;
+  daysRemaining: number;
+  daysInPeriod: number;
+  daysElapsed: number;
+  isActive: boolean;
+  isExpired: boolean;
+  isUpcoming: boolean;
+}
+
+/**
+ * Get benefit period information
+ */
+export async function getBenefitPeriod(householdId: string = '1'): Promise<BenefitPeriod> {
+  try {
+    const response = await api.get(`/benefits/period?household_id=${householdId}`);
+    if (response.data.success) {
+      return response.data.period;
+    }
+    throw new Error('Invalid API response');
+  } catch (error) {
+    console.error('Failed to fetch benefit period:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update benefit period dates
+ */
+export async function updateBenefitPeriod(
+  householdId: string,
+  periodStart: Date,
+  periodEnd: Date
+): Promise<{ start: string; end: string }> {
+  try {
+    const response = await api.put('/benefits/period', {
+      householdId,
+      periodStart: periodStart.toISOString(),
+      periodEnd: periodEnd.toISOString(),
+    });
+    if (response.data.success) {
+      return response.data.period;
+    }
+    throw new Error(response.data.error || 'Failed to update period');
+  } catch (error: any) {
+    console.error('Failed to update benefit period:', error);
+    if (error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
+    throw error;
+  }
+}
+
+/**
+ * Rollover to new benefit period
+ */
+export async function rolloverBenefitPeriod(
+  householdId: string,
+  newPeriodStart: Date,
+  newPeriodEnd: Date
+): Promise<{ start: string; end: string }> {
+  try {
+    const response = await api.post('/benefits/rollover', {
+      householdId,
+      newPeriodStart: newPeriodStart.toISOString(),
+      newPeriodEnd: newPeriodEnd.toISOString(),
+    });
+    if (response.data.success) {
+      return response.data.period;
+    }
+    throw new Error(response.data.error || 'Failed to rollover period');
+  } catch (error: any) {
+    console.error('Failed to rollover benefit period:', error);
+    if (error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
+    throw error;
+  }
+}
+
 export default api;

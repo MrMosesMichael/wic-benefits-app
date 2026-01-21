@@ -351,7 +351,7 @@
 
 - [x] ✅ R3.2 Create OCR parsing service. File: backend/src/services/ocr-parser.ts. Parse OCR text output to extract benefit categories and amounts from common WIC statement formats.
 
-- [ ] R4.1 Build benefit period management UI. File: app/app/benefits/period-settings.tsx. Allow users to set benefit period start/end dates, show days remaining, handle period rollover.
+- [x] ✅ R4.1 Build benefit period management UI. File: app/app/benefits/period-settings.tsx. Allow users to set benefit period start/end dates, show days remaining, handle period rollover.
 
 - [ ] R5.1 Implement balance discrepancy warnings. File: app/lib/services/benefitValidation.ts. Compare manual balance vs calculated usage, warn if discrepancy exceeds threshold.
 

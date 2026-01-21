@@ -155,6 +155,13 @@ export default function Benefits() {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
+          style={styles.periodButton}
+          onPress={() => router.push('/benefits/period-settings')}
+        >
+          <Text style={styles.periodButtonText}>Manage Benefit Period</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           style={styles.addBenefitButton}
           onPress={() => router.push('/benefits/manual-entry')}
         >
@@ -367,6 +374,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 20,
     gap: 12,
+  },
+  periodButton: {
+    backgroundColor: '#7B1FA2',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  periodButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   addBenefitButton: {
     backgroundColor: '#1565C0',
