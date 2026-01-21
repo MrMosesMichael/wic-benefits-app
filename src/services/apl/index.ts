@@ -90,6 +90,36 @@ export {
   OREGON_POLICIES,
 } from './config/oregon.config';
 
+// Monitoring and Sync Jobs
+export {
+  createAPLSyncSystem,
+  startAPLSyncSystem,
+  stopAPLSyncSystem,
+  createAPLMonitor,
+  createSyncOrchestrator,
+  createScheduledSyncJob,
+  createEmergencySyncTrigger,
+  createSyncHealthMonitor,
+  type APLSyncSystem,
+  type MonitorCheckResult,
+  type DataFreshnessStatus,
+  type StateMonitorConfig,
+  type MonitorAlert,
+  type SyncJobResult,
+  type SyncJobStatus,
+  type OrchestratorConfig,
+  type ScheduleConfig,
+  type JobHistoryEntry,
+  type EmergencyReason,
+  type EmergencySyncRequest,
+  type EmergencySyncResult,
+  type HealthStatus,
+  type HealthMetric,
+  type StateHealthReport,
+  type SystemHealthReport,
+  type HealthCheckConfig,
+} from './monitoring';
+
 // Re-export types
 export type { APLEntry, APLSyncStatus, APLChangeLog } from '../../types/apl.types';
 
