@@ -31,6 +31,30 @@ export {
   validateMichiganConfig,
 } from './config/michigan.config';
 
+// North Carolina Ingestion
+export {
+  NorthCarolinaAPLIngestionService,
+  ingestNorthCarolinaAPL,
+  type NorthCarolinaAPLConfig,
+} from './north-carolina-ingestion.service';
+
+export {
+  NorthCarolinaSyncWorker,
+  runStandaloneWorker as runNorthCarolinaSyncWorker,
+  type SyncWorkerStatus as NorthCarolinaSyncWorkerStatus,
+} from './workers/north-carolina-sync-worker';
+
+export {
+  NORTH_CAROLINA_APL_URLS,
+  NORTH_CAROLINA_SYNC_CONFIG,
+  NORTH_CAROLINA_VALIDATION_CONFIG,
+  NORTH_CAROLINA_METADATA,
+  CONDUENT_FIELD_MAPPING,
+  NORTH_CAROLINA_FEATURE_FLAGS,
+  getNorthCarolinaAPLConfig,
+  validateNorthCarolinaConfig,
+} from './config/north-carolina.config';
+
 // Re-export types
 export type { APLEntry, APLSyncStatus, APLChangeLog } from '../../types/apl.types';
 
@@ -46,7 +70,7 @@ export const SUPPORTED_STATES = {
   NC: {
     name: 'North Carolina',
     processor: 'Conduent',
-    implemented: false,
+    implemented: true,
   },
   FL: {
     name: 'Florida',

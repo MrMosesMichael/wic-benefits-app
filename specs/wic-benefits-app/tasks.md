@@ -29,7 +29,7 @@
 - [x] ✅ A1.1 Research APL data sources for Michigan, North Carolina, Florida, Oregon
 - [x] ✅ A1.2 Design APL data schema (UPC, eligibility, restrictions, participant types)
 - [x] ✅ A1.3 Build Michigan APL ingestion (FIS processor)
-- [ ] A1.4 Build North Carolina APL ingestion (Conduent processor)
+- [x] ✅ A1.4 Build North Carolina APL ingestion (Conduent processor)
 - [ ] A1.5 Build Florida APL ingestion (FIS processor)
 - [ ] A1.6 Build Oregon APL ingestion (state-specific)
 - [ ] A1.7 Design state eligibility rules engine

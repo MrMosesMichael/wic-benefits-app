@@ -1,10 +1,10 @@
 # Orchestrator Status
 
-> Auto-updated: 2026-01-20 23:10
+> Auto-updated: 2026-01-20 23:18
 
 ## Current Task
 
-**Task**: A1.3 - Build Michigan APL ingestion (FIS processor)
+**Task**: A1.4 - Build North Carolina APL ingestion (Conduent processor)
 **Phase**: implementer
 **Status**: Starting
 
