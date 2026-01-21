@@ -1,0 +1,5 @@
+TASK_ID="R1.3"
+TASK_DESC="Create migration for manual benefits table. File: backend/migrations/012_manual_benefits.sql. Create table with columns: id, household_id, participant_id, category, amount, unit, benefit_period_start, benefit_period_end, created_at, updated_at."
+PHASE="reviewer"
+LINE_NUM=""
+TIMESTAMP="2026-01-20 21:51:22"

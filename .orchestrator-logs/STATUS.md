@@ -1,10 +1,10 @@
 # Orchestrator Status
 
-> Auto-updated: 2026-01-20 21:50
+> Auto-updated: 2026-01-20 21:52
 
 ## Current Task
 
-**Task**: R1.3 - Create migration for manual benefits table. File: backend/migrations/012_manual_benefits.sql. Create table with columns: id, household_id, participant_id, category, amount, unit, benefit_period_start, benefit_period_end, created_at, updated_at.
+**Task**: R2.1 - Build purchase logging UI. File: app/app/benefits/log-purchase.tsx. Create screen to log purchases that decrement benefits - product selector, quantity, participant selector.
 **Phase**: implementer
 **Status**: Starting
 
