@@ -1,10 +1,10 @@
 # Orchestrator Status
 
-> Auto-updated: 2026-01-20 23:02
+> Auto-updated: 2026-01-20 23:10
 
 ## Current Task
 
-**Task**: A1.2 - Design APL data schema (UPC, eligibility, restrictions, participant types)
+**Task**: A1.3 - Build Michigan APL ingestion (FIS processor)
 **Phase**: implementer
 **Status**: Starting
 

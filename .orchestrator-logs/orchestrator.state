@@ -1,5 +1,5 @@
-TASK_ID="A1.2"
-TASK_DESC="Design APL data schema (UPC, eligibility, restrictions, participant types)"
+TASK_ID="A1.3"
+TASK_DESC="Build Michigan APL ingestion (FIS processor)"
 PHASE="reviewer"
 LINE_NUM=""
-TIMESTAMP="2026-01-20 23:09:35"
+TIMESTAMP="2026-01-20 23:18:04"

@@ -1,0 +1,99 @@
+[
+  {
+    "UPC": "011110416605",
+    "Product Description": "Cheerios Original Cereal",
+    "Category": "Cereal",
+    "Subcategory": "WIC Approved Cereal",
+    "Package Size": "12 oz",
+    "Participant Types": "All",
+    "Effective Date": "2024-01-01",
+    "Brand": "General Mills",
+    "Notes": "Whole grain cereal"
+  },
+  {
+    "UPC": "070038320036",
+    "Product Description": "Kroger 1% Lowfat Milk",
+    "Category": "Milk",
+    "Subcategory": "Lowfat Milk",
+    "Package Size": "1 gal",
+    "Participant Types": "All",
+    "Effective Date": "2024-01-01",
+    "Notes": "Store brand approved"
+  },
+  {
+    "UPC": "300450213129",
+    "Product Description": "Similac Advance Infant Formula",
+    "Category": "Infant Formula",
+    "Subcategory": "Contract Brand",
+    "Package Size": "12.4 oz",
+    "Participant Types": "Infant",
+    "Effective Date": "2024-02-01",
+    "Expiration Date": "2027-01-31",
+    "Brand": "Abbott",
+    "Notes": "Contract formula effective 2/1/2024"
+  },
+  {
+    "UPC": "041190049189",
+    "Product Description": "Quaker Oats Old Fashioned",
+    "Category": "Cereal",
+    "Subcategory": "Hot Cereal",
+    "Package Size": "18 oz",
+    "Participant Types": "All",
+    "Effective Date": "2024-01-01"
+  },
+  {
+    "UPC": "00888849000524",
+    "Product Description": "Large Eggs Grade A",
+    "Category": "Eggs",
+    "Package Size": "1 doz",
+    "Participant Types": "All",
+    "Effective Date": "2024-01-01"
+  },
+  {
+    "UPC": "041331013635",
+    "Product Description": "Kellogg's Frosted Mini-Wheats",
+    "Category": "Cereal",
+    "Subcategory": "WIC Approved Cereal",
+    "Package Size": "8.9-36 oz",
+    "Participant Types": "All",
+    "Effective Date": "2024-01-01",
+    "Notes": "Size range allowed"
+  },
+  {
+    "UPC": "051000138347",
+    "Product Description": "Kraft Sharp Cheddar Cheese",
+    "Category": "Cheese",
+    "Package Size": "8 oz",
+    "Participant Types": "Pregnant,Postpartum,Breastfeeding",
+    "Effective Date": "2024-01-01"
+  },
+  {
+    "UPC": "041130006098",
+    "Product Description": "Gerber 1st Foods Carrots",
+    "Category": "Baby Food",
+    "Subcategory": "Fruits and Vegetables",
+    "Package Size": "4 oz",
+    "Participant Types": "Infant,Child",
+    "Effective Date": "2024-01-01"
+  },
+  {
+    "UPC": "851660000120",
+    "Product Description": "Simple Truth Organic Whole Milk",
+    "Category": "Milk",
+    "Subcategory": "Whole Milk",
+    "Package Size": "0.5 gal",
+    "Participant Types": "All",
+    "Effective Date": "2024-01-01",
+    "Notes": "Organic option"
+  },
+  {
+    "UPC": "052100031064",
+    "Product Description": "Post Honey Bunches of Oats",
+    "Category": "Cereal",
+    "Subcategory": "WIC Approved Cereal",
+    "Package Size": "18 oz",
+    "Participant Types": "All",
+    "Effective Date": "2024-01-01",
+    "Notes": "Whole grain cereal"
+  }
+]
