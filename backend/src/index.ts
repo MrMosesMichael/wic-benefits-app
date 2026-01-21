@@ -14,6 +14,7 @@ import formulaFinderRoutes from './routes/formula-finder';
 import manualBenefitsRoutes from './routes/manual-benefits';
 import ocrBenefitsRoutes from './routes/ocr-benefits';
 import productsRoutes from './routes/products';
+import productImagesRoutes from './routes/product-images';
 
 dotenv.config();
 
@@ -25,6 +26,11 @@ app.use(cors({
   origin: process.env.CORS_ORIGIN?.split(',') || '*',
 }));
 app.use(express.json());
+
+// Static file serving for local images (development)
+if (process.env.NODE_ENV === 'development') {
+  app.use('/images', express.static(process.env.LOCAL_IMAGE_PATH || './storage/images'));
+}
 
 // Health check endpoint
 app.get('/health', async (req: Request, res: Response) => {
@@ -49,6 +55,7 @@ app.use('/api/v1/formula-finder', formulaFinderRoutes);
 app.use('/api/v1/manual-benefits', manualBenefitsRoutes);
 app.use('/api/v1/benefits/ocr', ocrBenefitsRoutes);
 app.use('/api/v1/products', productsRoutes);
+app.use('/api/v1/product-images', productImagesRoutes);
 
 // Start server
 app.listen(port, () => {
