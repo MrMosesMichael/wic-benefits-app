@@ -100,10 +100,7 @@ export default function ScanResult() {
           },
           {
             text: 'Continue Shopping',
-            onPress: () => {
-              router.back();
-              setTimeout(() => router.back(), 100);
-            },
+            onPress: () => router.replace('/'),
           },
         ]
       );

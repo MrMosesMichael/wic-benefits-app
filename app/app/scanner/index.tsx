@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useEffect, useState, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, BackHandler } from 'react-native';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { checkEligibility, EligibilityResult } from '@/lib/services/api';
 
@@ -19,6 +19,20 @@ export default function Scanner() {
     setIsActive(true);
     setLastScannedCode(null);
   }, []);
+
+  // Handle Android hardware back button
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        router.back();
+        return true; // Prevent default behavior, we handled it
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [router])
+  );
 
   const handleBarCodeScanned = async ({ data }: { type: string; data: string }) => {
     if (!isActive || scanning) return;
