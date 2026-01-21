@@ -1,10 +1,10 @@
 # Orchestrator Status
 
-> Auto-updated: 2026-01-20 23:52
+> Auto-updated: 2026-01-21 00:03
 
 ## Current Task
 
-**Task**: A1.8 - Create APL update monitoring and sync jobs
+**Task**: A2.1 - Source UPC-to-product database (Open Food Facts, UPC Database API)
 **Phase**: implementer
 **Status**: Starting
 

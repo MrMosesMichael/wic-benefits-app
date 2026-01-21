@@ -50,3 +50,25 @@ export type {
   RetailerConfig,
   CacheConfig,
 } from './inventory';
+
+// Product Database Services
+export {
+  OpenFoodFactsClient,
+  openFoodFactsClient,
+  UPCDatabaseClient,
+  ProductService,
+  productService,
+  productConfig,
+  getProductServiceConfig,
+} from './product';
+
+export type {
+  Product,
+  ProductDataSource,
+  ProductLookupResult,
+  ProductQueryParams,
+  ProductCoverageStats,
+  ProductSubmission,
+  UnknownProductReport,
+  NutritionInfo,
+} from './product';
