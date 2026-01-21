@@ -11,6 +11,7 @@ import inventoryRoutes from './routes/inventory';
 import formulaProductsRoutes from './routes/formula-products';
 import storesRoutes from './routes/stores';
 import formulaFinderRoutes from './routes/formula-finder';
+import manualBenefitsRoutes from './routes/manual-benefits';
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use('/api/v1/inventory', inventoryRoutes);
 app.use('/api/v1/formula-products', formulaProductsRoutes);
 app.use('/api/v1/stores', storesRoutes);
 app.use('/api/v1/formula-finder', formulaFinderRoutes);
+app.use('/api/v1/manual-benefits', manualBenefitsRoutes);
 
 // Start server
 app.listen(port, () => {

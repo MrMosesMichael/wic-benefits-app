@@ -339,7 +339,7 @@
 
 - [x] ✅ R1.1 Create manual benefits entry screen. File: app/app/benefits/manual-entry.tsx. Build form with category dropdowns (milk, cheese, eggs, etc.), amount input, unit selector, and benefit period date picker.
 
-- [ ] R1.2 Create benefits data model for manual entry. File: backend/src/routes/manual-benefits.ts. Add POST /api/v1/manual-benefits endpoint to save user-entered benefit amounts by category and participant.
+- [x] ✅ R1.2 Create benefits data model for manual entry. File: backend/src/routes/manual-benefits.ts. Add POST /api/v1/manual-benefits endpoint to save user-entered benefit amounts by category and participant.
 
 - [ ] R1.3 Create migration for manual benefits table. File: backend/migrations/012_manual_benefits.sql. Create table with columns: id, household_id, participant_id, category, amount, unit, benefit_period_start, benefit_period_end, created_at, updated_at.
 

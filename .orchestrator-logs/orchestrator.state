@@ -1,5 +1,5 @@
-TASK_ID="R1.1"
-TASK_DESC="Create manual benefits entry screen. File: app/app/benefits/manual-entry.tsx. Build form with category dropdowns (milk, cheese, eggs, etc.), amount input, unit selector, and benefit period date picker."
+TASK_ID="R1.2"
+TASK_DESC="Create benefits data model for manual entry. File: backend/src/routes/manual-benefits.ts. Add POST /api/v1/manual-benefits endpoint to save user-entered benefit amounts by category and participant."
 PHASE="reviewer"
 LINE_NUM=""
-TIMESTAMP="2026-01-20 21:47:48"
+TIMESTAMP="2026-01-20 21:49:52"

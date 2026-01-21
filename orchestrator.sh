@@ -302,15 +302,15 @@ find_next_task() {
     local phase_filter="${1:-}"
 
     if [ -n "$phase_filter" ]; then
-        # Find the line number where the phase starts
-        local phase_start=$(grep -n "^## Phase $phase_filter" "$ROADMAP_FILE" | cut -d: -f1)
+        # Find the line number where the phase starts (use colon to avoid matching "Phase 1 Complete")
+        local phase_start=$(grep -n "^## Phase $phase_filter:" "$ROADMAP_FILE" | head -1 | cut -d: -f1)
         if [ -z "$phase_start" ]; then
             log "WARN" "Phase $phase_filter not found in roadmap"
             return
         fi
 
-        # Find where the next phase starts (or end of file)
-        local phase_end=$(grep -n "^## Phase" "$ROADMAP_FILE" | awk -F: -v start="$phase_start" '$1 > start {print $1; exit}')
+        # Find where the next phase starts (or end of file) - match any phase with colon
+        local phase_end=$(grep -n "^## Phase [0-9]:" "$ROADMAP_FILE" | awk -F: -v start="$phase_start" '$1 > start {print $1; exit}')
 
         if [ -z "$phase_end" ]; then
             phase_end=$(wc -l < "$ROADMAP_FILE")
@@ -675,9 +675,15 @@ show_status() {
     # Count remaining tasks by phase
     echo -e "${BLUE}Remaining unclaimed tasks by phase:${NC}"
     for phase in 1 2 3 4 5 6 7; do
-        local count=$(find_next_task "$phase" | wc -l | tr -d ' ')
-        if [ "$count" -gt 0 ] || grep -q "^## Phase $phase" "$ROADMAP_FILE" 2>/dev/null; then
-            local phase_tasks=$(grep -c "^\- \[ \]" <(sed -n "/^## Phase $phase/,/^## Phase/p" "$ROADMAP_FILE") 2>/dev/null || echo "0")
+        # Use more specific pattern with colon to avoid matching "Phase 1 Complete Milestone"
+        local phase_start=$(grep -n "^## Phase $phase:" "$ROADMAP_FILE" 2>/dev/null | head -1 | cut -d: -f1)
+        if [ -n "$phase_start" ]; then
+            # Find next phase header (any phase number with colon)
+            local phase_end=$(grep -n "^## Phase [0-9]:" "$ROADMAP_FILE" 2>/dev/null | awk -F: -v start="$phase_start" '$1 > start {print $1; exit}')
+            if [ -z "$phase_end" ]; then
+                phase_end=$(wc -l < "$ROADMAP_FILE" | tr -d ' ')
+            fi
+            local phase_tasks=$(sed -n "${phase_start},${phase_end}p" "$ROADMAP_FILE" 2>/dev/null | grep -c "^\- \[ \]" || echo "0")
             echo "  Phase $phase: $phase_tasks unclaimed tasks"
         fi
     done
@@ -879,11 +885,12 @@ find_all_tasks() {
     local phase_filter="${1:-}"
 
     if [ -n "$phase_filter" ]; then
-        local phase_start=$(grep -n "^## Phase $phase_filter" "$ROADMAP_FILE" | cut -d: -f1)
+        # Use colon to avoid matching "Phase 1 Complete Milestone"
+        local phase_start=$(grep -n "^## Phase $phase_filter:" "$ROADMAP_FILE" | head -1 | cut -d: -f1)
         if [ -z "$phase_start" ]; then
             return
         fi
-        local phase_end=$(grep -n "^## Phase" "$ROADMAP_FILE" | awk -F: -v start="$phase_start" '$1 > start {print $1; exit}')
+        local phase_end=$(grep -n "^## Phase [0-9]:" "$ROADMAP_FILE" | awk -F: -v start="$phase_start" '$1 > start {print $1; exit}')
         if [ -z "$phase_end" ]; then
             phase_end=$(wc -l < "$ROADMAP_FILE")
         fi
