@@ -19,18 +19,32 @@ export interface EligibilityResult {
   category?: BenefitCategory;
 }
 
-// Benefits Types
+// Benefits Types - expanded to match full WIC food package categories
 export type BenefitCategory =
   | 'milk'
+  | 'cheese'
   | 'eggs'
-  | 'cereal'
-  | 'peanut_butter'
   | 'fruits_vegetables'
   | 'whole_grains'
   | 'juice'
-  | 'cheese'
+  | 'peanut_butter'
   | 'infant_formula'
-  | 'infant_food';
+  | 'cereal'
+  | 'infant_food'
+  | 'baby_food_meat'
+  | 'yogurt'
+  | 'fish';
+
+// Benefit units - based on design.md BenefitUnit type
+export type BenefitUnit =
+  | 'gal'
+  | 'oz'
+  | 'lb'
+  | 'doz'
+  | 'can'
+  | 'box'
+  | 'count'
+  | 'dollars';
 
 export interface BenefitAmount {
   category: BenefitCategory;
@@ -39,7 +53,7 @@ export interface BenefitAmount {
   inCart: string;
   consumed: string;
   total: string;
-  unit: 'gal' | 'oz' | 'lb' | 'doz' | 'count' | 'dollar';
+  unit: BenefitUnit;
   periodStart?: string;
   periodEnd?: string;
 }

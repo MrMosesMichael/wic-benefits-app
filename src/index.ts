@@ -1,25 +1,28 @@
 /**
- * WIC Benefits Assistant - Store Detection Module
- * Main exports for GPS-based store detection functionality
+ * WIC Benefits Assistant - Main Module Exports
+ * Store Detection and Inventory Management
  */
 
-// Services
+// ============================================================================
+// Store Detection Services
+// ============================================================================
+
 export { default as LocationService } from './services/LocationService';
 export { default as StoreDetectionService } from './services/StoreDetectionService';
 export { default as StoreApiService } from './services/StoreApiService';
 
-// Hooks
+// Store Detection Hooks
 export { useStoreDetection } from './hooks/useStoreDetection';
 export type { UseStoreDetectionResult } from './hooks/useStoreDetection';
 
-// Components
+// Store Detection Components
 export { StoreDetectionBanner } from './components/StoreDetectionBanner';
 export { StoreSelectionModal } from './components/StoreSelectionModal';
 
-// Contexts
+// Store Contexts
 export { StoreProvider, useStore } from './contexts/StoreContext';
 
-// Types
+// Store Types
 export type {
   Store,
   StoreDetectionResult,
@@ -32,10 +35,10 @@ export type {
   DataSource,
 } from './types/store.types';
 
-// Config
+// Store Config
 export { STORE_DETECTION_CONFIG } from './config/storeDetection.config';
 
-// Utils
+// Store Utils
 export {
   showPermissionSettingsAlert,
   openAppSettings,
@@ -43,3 +46,74 @@ export {
   shouldShowPermissionRationale,
   showPermissionRationale,
 } from './utils/permissions';
+
+// ============================================================================
+// Inventory Services (Walmart API Integration)
+// ============================================================================
+
+export {
+  InventoryManager,
+  getInventoryManager,
+  resetInventoryManager,
+  InventoryConfigManager,
+  getInventoryConfig,
+  WalmartApiClient,
+  WalmartInventoryService,
+  RateLimiter,
+  RateLimiterFactory,
+  RetryHandler,
+  retry,
+  withRetry,
+} from './services/inventory';
+
+// Legacy Inventory Exports
+export {
+  InventoryService,
+  inventoryService,
+  createWalmartClient,
+} from './services/inventory';
+
+// Inventory Types
+export type {
+  Inventory,
+  StockStatus,
+  QuantityRange,
+  IInventoryService,
+  RetailerApiType,
+  InventoryCacheEntry,
+  InventorySyncConfig,
+  RateLimitConfig,
+  WalmartConfig,
+  KrogerConfig,
+  RetailerConfig,
+  CacheConfig,
+  InventoryServiceConfig,
+  WalmartInventoryServiceConfig,
+  RetryConfig,
+  WalmartAPI,
+  KrogerAPI,
+} from './services/inventory';
+
+// Inventory Errors
+export {
+  InventoryAPIError,
+  RateLimitError,
+  AuthenticationError,
+  ProductNotFoundError,
+} from './services/inventory';
+
+// Inventory Hooks
+export {
+  useInventory,
+  useInventoryBatch,
+  useCrossStoreInventory,
+  useFormulaAlert,
+  useInventoryHealth,
+} from './hooks/useInventory';
+
+// Inventory Components
+export {
+  StockIndicator,
+  InventoryCard,
+  FormulaAvailabilityAlert,
+} from './components/inventory';

@@ -246,7 +246,7 @@
 
 #### Track I1: Inventory Integrations
 - [x] ✅ I1.1 Research retailer API availability
-- [~] 🔄 I1.2 Implement Walmart inventory API integration
+- [ ] I1.2 Implement Walmart inventory API integration (paused - blocked on API partnership)
 - [ ] I1.3 Implement Kroger inventory API integration
 - [ ] I1.4 Build web scraping fallback for non-API retailers
 - [ ] I1.5 Create inventory data normalization layer
@@ -337,7 +337,7 @@
 
 ### Group R: Manual Entry Fallback
 
-- [ ] R1.1 Create manual benefits entry screen. File: app/app/benefits/manual-entry.tsx. Build form with category dropdowns (milk, cheese, eggs, etc.), amount input, unit selector, and benefit period date picker.
+- [x] ✅ R1.1 Create manual benefits entry screen. File: app/app/benefits/manual-entry.tsx. Build form with category dropdowns (milk, cheese, eggs, etc.), amount input, unit selector, and benefit period date picker.
 
 - [ ] R1.2 Create benefits data model for manual entry. File: backend/src/routes/manual-benefits.ts. Add POST /api/v1/manual-benefits endpoint to save user-entered benefit amounts by category and participant.
 

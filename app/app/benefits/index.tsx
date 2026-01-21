@@ -155,6 +155,13 @@ export default function Benefits() {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
+          style={styles.addBenefitButton}
+          onPress={() => router.push('/benefits/manual-entry')}
+        >
+          <Text style={styles.addBenefitButtonText}>Add Benefits Manually</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           style={styles.scanButton}
           onPress={() => router.push('/scanner')}
         >
@@ -360,6 +367,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 20,
     gap: 12,
+  },
+  addBenefitButton: {
+    backgroundColor: '#1565C0',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  addBenefitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   scanButton: {
     backgroundColor: '#2E7D32',
