@@ -349,7 +349,7 @@
 
 - [x] ✅ R3.1 Add OCR benefit statement scanning. File: app/app/benefits/scan-statement.tsx. Use expo-camera to capture benefit statement photo, send to OCR service to extract benefit amounts.
 
-- [ ] R3.2 Create OCR parsing service. File: backend/src/services/ocr-parser.ts. Parse OCR text output to extract benefit categories and amounts from common WIC statement formats.
+- [x] ✅ R3.2 Create OCR parsing service. File: backend/src/services/ocr-parser.ts. Parse OCR text output to extract benefit categories and amounts from common WIC statement formats.
 
 - [ ] R4.1 Build benefit period management UI. File: app/app/benefits/period-settings.tsx. Allow users to set benefit period start/end dates, show days remaining, handle period rollover.
 

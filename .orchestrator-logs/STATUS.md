@@ -1,10 +1,10 @@
 # Orchestrator Status
 
-> Auto-updated: 2026-01-20 22:00
+> Auto-updated: 2026-01-20 22:09
 
 ## Current Task
 
-**Task**: R3.1 - Add OCR benefit statement scanning. File: app/app/benefits/scan-statement.tsx. Use expo-camera to capture benefit statement photo, send to OCR service to extract benefit amounts.
+**Task**: R3.2 - Create OCR parsing service. File: backend/src/services/ocr-parser.ts. Parse OCR text output to extract benefit categories and amounts from common WIC statement formats.
 **Phase**: implementer
 **Status**: Starting
 
