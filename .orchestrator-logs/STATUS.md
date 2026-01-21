@@ -1,10 +1,10 @@
 # Orchestrator Status
 
-> Auto-updated: 2026-01-20 21:48
+> Auto-updated: 2026-01-20 21:50
 
 ## Current Task
 
-**Task**: R1.2 - Create benefits data model for manual entry. File: backend/src/routes/manual-benefits.ts. Add POST /api/v1/manual-benefits endpoint to save user-entered benefit amounts by category and participant.
+**Task**: R1.3 - Create migration for manual benefits table. File: backend/migrations/012_manual_benefits.sql. Create table with columns: id, household_id, participant_id, category, amount, unit, benefit_period_start, benefit_period_end, created_at, updated_at.
 **Phase**: implementer
 **Status**: Starting
 
