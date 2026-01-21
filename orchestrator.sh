@@ -535,25 +535,63 @@ run_implementer() {
         log "INFO" "${CYAN}Using Haiku model for [haiku] tagged task${NC}"
     fi
 
-    # Derive spec folder from task ID (H=store-detection, I=inventory, etc.)
+    # Get task group (e.g., A3 from A3.4, H from H1.2)
+    local task_group="${task_id%%.*}"
+    # Also get single letter prefix for fallback
+    local task_prefix="${task_id:0:1}"
+
+    # Map task groups to focused briefs (preferred) or specs (fallback)
+    local brief_file=""
     local spec_hint=""
-    case "${task_id:0:1}" in
-        H) spec_hint="store-detection" ;;
-        I) spec_hint="inventory" ;;
-        J) spec_hint="store-finder" ;;
-        K) spec_hint="inventory" ;;
-        D) spec_hint="upc-scanner" ;;
-        C) spec_hint="benefits" ;;
-        E) spec_hint="shopping-cart" ;;
-        F) spec_hint="help-faq" ;;
-        G) spec_hint="internationalization" ;;
+    case "$task_group" in
+        # Phase 1: Foundation
+        A1|A2) brief_file="A1A2-product-data.md" ;;
+        A3|A4) brief_file="A3-store-data.md" ;;
+        B1|B2|B3) brief_file="B-app-shell.md"; spec_hint="data-sovereignty" ;;
+        C1|C2) spec_hint="benefits" ;;
+        D1|D2|D3|D4) spec_hint="upc-scanner" ;;
+        E1|E2|E3) spec_hint="shopping-cart" ;;
+        F1|F2|F3) spec_hint="help-faq" ;;
+        G*) spec_hint="internationalization" ;;
+        # Phase 2: Store Intelligence
+        H*) spec_hint="store-detection" ;;
+        I*) spec_hint="inventory" ;;
+        J*) spec_hint="store-finder" ;;
+        K*) spec_hint="inventory" ;;
+        # Phase 3+
+        L*) spec_hint="product-catalog" ;;
+        M*) spec_hint="store-finder" ;;
+        N*) spec_hint="in-store-navigation" ;;
+        O*) spec_hint="tips-community" ;;
+        P*) spec_hint="tips-community" ;;
+        Q*) spec_hint="tips-community" ;;
+        S*) spec_hint="backend" ;;
+        T*) spec_hint="data-sovereignty" ;;
+        *) spec_hint="" ;;
     esac
 
-    local prompt="TASK: $task_id - $task_desc
-PROJECT: WIC Benefits Assistant (React Native/TypeScript)
-CONTEXT: Read .claude/MEMORY.md for architecture decisions
-SPEC: specs/wic-benefits-app/specs/${spec_hint:-*}/
+    # Build context line - prefer brief over spec
+    local context_line=""
+    if [[ -n "$brief_file" ]] && [[ -f "specs/wic-benefits-app/briefs/$brief_file" ]]; then
+        context_line="BRIEF: specs/wic-benefits-app/briefs/$brief_file (READ THIS FIRST - contains all you need)"
+        log "INFO" "Using focused brief: $brief_file"
+    elif [[ -n "$spec_hint" ]]; then
+        context_line="SPEC: specs/wic-benefits-app/specs/$spec_hint/spec.md"
+    else
+        context_line="SPEC: Check specs/wic-benefits-app/design.md for relevant section only"
+    fi
 
+    local prompt="TASK: $task_id - $task_desc
+
+$context_line
+
+CONSTRAINTS (TOKEN EFFICIENCY):
+- DO NOT read tasks.md, design.md, or other specs unless brief tells you to
+- DO NOT explore the entire codebase - only files relevant to this task
+- Read MEMORY.md only if you need architecture context
+- Focus on implementing THIS task only
+
+PROJECT: WIC Benefits Assistant (React Native/TypeScript)
 Implement this feature. Create files in src/.
 Do NOT: write tests, commit, or update tasks.md.
 Output 'IMPLEMENTATION COMPLETE' when done."

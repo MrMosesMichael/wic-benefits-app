@@ -48,7 +48,7 @@
 - [x] ✅ A3.2 Design store data schema (location, hours, features) [haiku]
 - [x] ✅ A3.3 Build store data ingestion pipeline
 - [x] ✅ A3.4 Integrate with Google Places for enrichment
-- [ ] A3.5 Create store search API
+- [x] ✅ A3.5 Create store search API
 
 #### Track A4: Formula Critical Features [SURVIVAL]
 - [ ] A4.1 Implement formula availability tracking
@@ -246,7 +246,7 @@
 
 #### Track I1: Inventory Integrations
 - [x] ✅ I1.1 Research retailer API availability
-- [ ] I1.2 Implement Walmart inventory API integration (paused - blocked on API partnership)
+- [B] ⏸️ I1.2 Implement Walmart inventory API integration (BLOCKED - awaiting API partnership)
 - [ ] I1.3 Implement Kroger inventory API integration
 - [ ] I1.4 Build web scraping fallback for non-API retailers
 - [ ] I1.5 Create inventory data normalization layer
