@@ -227,10 +227,11 @@ update_status_file() {
     local timestamp=$(date '+%Y-%m-%d %H:%M')
 
     # Count completed tasks in Phase 2
-    local h_done=$(grep -c "^\- \[x\].*H[0-9]" "$ROADMAP_FILE" 2>/dev/null || echo "0")
-    local i_done=$(grep -c "^\- \[x\].*I[0-9]" "$ROADMAP_FILE" 2>/dev/null || echo "0")
-    local j_done=$(grep -c "^\- \[x\].*J[0-9]" "$ROADMAP_FILE" 2>/dev/null || echo "0")
-    local k_done=$(grep -c "^\- \[x\].*K[0-9]" "$ROADMAP_FILE" 2>/dev/null || echo "0")
+    local h_done=$(grep -c "^\- \[x\].*H[0-9]" "$ROADMAP_FILE" 2>/dev/null | tr -d '\n' || printf "0")
+    local i_done=$(grep -c "^\- \[x\].*I[0-9]" "$ROADMAP_FILE" 2>/dev/null | tr -d '\n' || printf "0")
+    local j_done=$(grep -c "^\- \[x\].*J[0-9]" "$ROADMAP_FILE" 2>/dev/null | tr -d '\n' || printf "0")
+    local k_done=$(grep -c "^\- \[x\].*K[0-9]" "$ROADMAP_FILE" 2>/dev/null | tr -d '\n' || printf "0")
+    h_done=${h_done:-0}; i_done=${i_done:-0}; j_done=${j_done:-0}; k_done=${k_done:-0}
     local total_done=$((h_done + i_done + j_done + k_done))
 
     cat > "$status_file" << EOF
