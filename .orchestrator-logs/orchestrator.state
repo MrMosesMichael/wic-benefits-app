@@ -1,5 +1,5 @@
-TASK_ID="A1.6"
-TASK_DESC="Build Oregon APL ingestion (state-specific)"
+TASK_ID="A1.7"
+TASK_DESC="Design state eligibility rules engine"
 PHASE="reviewer"
 LINE_NUM=""
-TIMESTAMP="2026-01-20 23:42:19"
+TIMESTAMP="2026-01-20 23:51:28"
