@@ -336,11 +336,24 @@
 *For states without eWIC API integration*
 
 ### Group R: Manual Entry Fallback
-- [ ] R1 Build manual benefits entry UI
-- [ ] R2 Implement purchase logging to decrement balances
-- [ ] R3 Create OCR benefit statement scanning
-- [ ] R4 Add benefit period management
-- [ ] R5 Build balance discrepancy warnings
+
+- [ ] R1.1 Create manual benefits entry screen. File: app/app/benefits/manual-entry.tsx. Build form with category dropdowns (milk, cheese, eggs, etc.), amount input, unit selector, and benefit period date picker.
+
+- [ ] R1.2 Create benefits data model for manual entry. File: backend/src/routes/manual-benefits.ts. Add POST /api/v1/manual-benefits endpoint to save user-entered benefit amounts by category and participant.
+
+- [ ] R1.3 Create migration for manual benefits table. File: backend/migrations/012_manual_benefits.sql. Create table with columns: id, household_id, participant_id, category, amount, unit, benefit_period_start, benefit_period_end, created_at, updated_at.
+
+- [ ] R2.1 Build purchase logging UI. File: app/app/benefits/log-purchase.tsx. Create screen to log purchases that decrement benefits - product selector, quantity, participant selector.
+
+- [ ] R2.2 Implement purchase logging backend. File: backend/src/routes/manual-benefits.ts. Add POST /api/v1/manual-benefits/log-purchase endpoint to record purchase and decrement available balance.
+
+- [ ] R3.1 Add OCR benefit statement scanning. File: app/app/benefits/scan-statement.tsx. Use expo-camera to capture benefit statement photo, send to OCR service to extract benefit amounts.
+
+- [ ] R3.2 Create OCR parsing service. File: backend/src/services/ocr-parser.ts. Parse OCR text output to extract benefit categories and amounts from common WIC statement formats.
+
+- [ ] R4.1 Build benefit period management UI. File: app/app/benefits/period-settings.tsx. Allow users to set benefit period start/end dates, show days remaining, handle period rollover.
+
+- [ ] R5.1 Implement balance discrepancy warnings. File: app/lib/services/benefitValidation.ts. Compare manual balance vs calculated usage, warn if discrepancy exceeds threshold.
 
 ---
 
@@ -349,14 +362,36 @@
 *Live balance from eWIC card*
 
 ### Group S: eWIC APIs (Priority States: MI, NC, FL, OR)
-- [ ] S1 Research Michigan eWIC API (FIS processor)
-- [ ] S2 Research North Carolina eWIC API (Conduent processor)
-- [ ] S3 Research Florida eWIC API (FIS processor)
-- [ ] S4 Research Oregon eWIC API (state-specific)
-- [ ] S5 Implement eWIC card linking flow
-- [ ] S6 Build real-time balance retrieval
-- [ ] S7 Handle authentication and token refresh
-- [ ] S8 Implement transaction history sync
+
+- [ ] S1.1 Research Michigan eWIC API documentation. File: docs/ewic/michigan-api-research.md. Document FIS processor API endpoints, authentication method, data formats, rate limits, and registration requirements.
+
+- [ ] S2.1 Research North Carolina eWIC API documentation. File: docs/ewic/north-carolina-api-research.md. Document Conduent processor API endpoints, authentication, data formats for NC WIC program.
+
+- [ ] S3.1 Research Florida eWIC API documentation. File: docs/ewic/florida-api-research.md. Document FIS processor API for Florida, note any differences from Michigan FIS implementation.
+
+- [ ] S4.1 Research Oregon eWIC API documentation. File: docs/ewic/oregon-api-research.md. Document Oregon's state-specific eWIC system, API access requirements.
+
+- [ ] S5.1 Create eWIC card linking UI. File: app/app/settings/link-ewic.tsx. Build screen for users to enter eWIC card number, PIN (if required), and state selection to link their card.
+
+- [ ] S5.2 Create eWIC linking backend. File: backend/src/routes/ewic.ts. Add POST /api/v1/ewic/link endpoint to validate card credentials with state API and store encrypted card reference.
+
+- [ ] S5.3 Create migration for eWIC card storage. File: backend/migrations/013_ewic_cards.sql. Create table with columns: id, household_id, state, card_number_encrypted, card_hash, linked_at, last_sync, status.
+
+- [ ] S6.1 Implement balance retrieval service. File: backend/src/services/ewic/balanceService.ts. Create service to fetch current benefits balance from linked eWIC card via state API.
+
+- [ ] S6.2 Create eWIC balance endpoint. File: backend/src/routes/ewic.ts. Add GET /api/v1/ewic/balance endpoint to return current benefits from linked card, with caching to reduce API calls.
+
+- [ ] S6.3 Update benefits screen to show live eWIC data. File: app/app/benefits/index.tsx. When eWIC card is linked, fetch and display live balance instead of manual/mock data.
+
+- [ ] S7.1 Implement eWIC authentication handler. File: backend/src/services/ewic/authService.ts. Handle OAuth or API key auth for each state processor, manage token refresh and expiration.
+
+- [ ] S7.2 Create state-specific API adapters. File: backend/src/services/ewic/adapters/index.ts. Create adapter interface and implementations for FIS (MI, FL), Conduent (NC), and Oregon processors.
+
+- [ ] S8.1 Implement transaction history sync. File: backend/src/services/ewic/transactionService.ts. Fetch recent transactions from eWIC API to show purchase history.
+
+- [ ] S8.2 Create transaction history endpoint. File: backend/src/routes/ewic.ts. Add GET /api/v1/ewic/transactions endpoint to return synced transaction history.
+
+- [ ] S8.3 Build transaction history UI. File: app/app/benefits/transactions.tsx. Display synced eWIC transaction history with date, store, items, amounts.
 
 ---
 
