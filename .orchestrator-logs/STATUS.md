@@ -1,10 +1,10 @@
 # Orchestrator Status
 
-> Auto-updated: 2026-01-20 22:58
+> Auto-updated: 2026-01-20 23:02
 
 ## Current Task
 
-**Task**: A1.1 - Research APL data sources for Michigan, North Carolina, Florida, Oregon
+**Task**: A1.2 - Design APL data schema (UPC, eligibility, restrictions, participant types)
 **Phase**: implementer
 **Status**: Starting
 
