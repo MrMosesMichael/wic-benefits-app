@@ -1,5 +1,5 @@
-TASK_ID="A4.1"
-TASK_DESC="Implement formula availability tracking"
+TASK_ID="A4.2"
+TASK_DESC="Build formula shortage detection algorithm"
 PHASE="reviewer"
 LINE_NUM=""
-TIMESTAMP="2026-01-21 16:46:49"
+TIMESTAMP="2026-01-21 16:54:14"
