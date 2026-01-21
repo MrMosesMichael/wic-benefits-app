@@ -7,6 +7,18 @@
 
 ---
 
+## Phase 0: URGENT Field Testing Bug Fixes (Jan 2026)
+
+*Branch: `pre-prod-local-testing` - Fix before next field test*
+
+- [x] BUG-001: Fix "Scan Another Product" button - navigates to home instead of scanner. File: app/app/scanner/result.tsx. Changed to router.replace('/scanner').
+
+- [x] BUG-002: Fix cart confirmation truncated name - shows "1%" instead of "1% Milk". File: app/app/scanner/result.tsx. Now shows full product name with brand.
+
+- [x] BUG-003: Fix UPC lookup normalization - Juicy Juice UPC 889497008245 not found despite being in JSON. File: app/lib/services/offlineEligibility.ts. Moved normalizeUpc() before map init and normalize on storage.
+
+---
+
 ## Phase 1: Foundation (MVP Core)
 
 *Goal: A user can scan products, understand WIC rules, track benefits, find formula, and use the app in Spanish*

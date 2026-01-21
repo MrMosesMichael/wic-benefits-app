@@ -89,9 +89,10 @@ export default function ScanResult() {
         size
       );
 
+      const fullProductName = brand ? `${brand} ${name}` : name;
       Alert.alert(
         'Added to Cart!',
-        `${name} has been added to your cart.`,
+        `${fullProductName} has been added to your cart.`,
         [
           {
             text: 'View Cart',
@@ -292,10 +293,7 @@ export default function ScanResult() {
 
         <TouchableOpacity
           style={styles.primaryButton}
-          onPress={() => {
-            router.back();
-            setTimeout(() => router.back(), 100);
-          }}
+          onPress={() => router.replace('/scanner')}
         >
           <Text style={styles.primaryButtonText}>Scan Another Product</Text>
         </TouchableOpacity>

@@ -24,6 +24,7 @@
 #   --duration HOURS : How long to run in daemon mode (default: 6)
 #   --dry-run        : Show what would be done without executing
 #   --status         : Show current state and exit
+#   --parallel       : Run unrelated tasks in parallel (tasks touching different files)
 
 set -e
 
@@ -851,6 +852,221 @@ run_single_task() {
     return $?
 }
 
+# =============================================================================
+# PARALLEL EXECUTION SUPPORT
+# =============================================================================
+# Run unrelated tasks (touching different files) in parallel to speed up
+# development. Tasks are grouped by their target file path.
+# =============================================================================
+
+# Extract file path from task description
+# Looks for patterns like "File: path/to/file.tsx" or "file.ts"
+extract_file_from_task() {
+    local task_desc="$1"
+    # Look for "File: " pattern first
+    local file_match=$(echo "$task_desc" | grep -oE 'File: [^ .]+\.[a-z]+' | sed 's/File: //' | head -1)
+    if [ -n "$file_match" ]; then
+        echo "$file_match"
+        return
+    fi
+    # Look for any .ts/.tsx/.js file reference
+    echo "$task_desc" | grep -oE '[a-zA-Z0-9_/.-]+\.(ts|tsx|js|jsx)' | head -1
+}
+
+# Find all unclaimed tasks in a phase
+find_all_tasks() {
+    local phase_filter="${1:-}"
+
+    if [ -n "$phase_filter" ]; then
+        local phase_start=$(grep -n "^## Phase $phase_filter" "$ROADMAP_FILE" | cut -d: -f1)
+        if [ -z "$phase_start" ]; then
+            return
+        fi
+        local phase_end=$(grep -n "^## Phase" "$ROADMAP_FILE" | awk -F: -v start="$phase_start" '$1 > start {print $1; exit}')
+        if [ -z "$phase_end" ]; then
+            phase_end=$(wc -l < "$ROADMAP_FILE")
+        fi
+        sed -n "${phase_start},${phase_end}p" "$ROADMAP_FILE" | grep -n "^\- \[ \]" | while read line; do
+            local rel_line=$(echo "$line" | cut -d: -f1)
+            local abs_line=$((phase_start + rel_line - 1))
+            local content=$(echo "$line" | cut -d: -f2-)
+            echo "${abs_line}:${content}"
+        done
+    else
+        grep -n "^\- \[ \]" "$ROADMAP_FILE"
+    fi
+}
+
+# Group tasks by their target file
+# Returns: groups of tasks that can run in parallel
+group_tasks_by_file() {
+    local phase_filter="$1"
+    local -A file_groups
+    local -a no_file_tasks
+
+    while IFS= read -r task_line; do
+        [ -z "$task_line" ] && continue
+        local line_num=$(echo "$task_line" | cut -d: -f1)
+        local task_content=$(echo "$task_line" | cut -d: -f2-)
+        local task_id=$(echo "$task_content" | grep -oE '[A-Z]+-[0-9]+|[A-Z][0-9]+(\.[0-9]+)?' | head -1)
+        local task_desc=$(echo "$task_content" | sed -E 's/^- \[ \] ([A-Z]+-[0-9]+|[A-Z][0-9]+(\.[0-9]+)?):? //')
+        local target_file=$(extract_file_from_task "$task_desc")
+
+        if [ -n "$target_file" ]; then
+            # Normalize file path to base name for grouping
+            local base_file=$(basename "$target_file")
+            echo "FILE:$base_file|LINE:$line_num|ID:$task_id|DESC:$task_desc"
+        else
+            echo "FILE:__unknown__|LINE:$line_num|ID:$task_id|DESC:$task_desc"
+        fi
+    done < <(find_all_tasks "$phase_filter")
+}
+
+# Run a single task in background
+run_task_background() {
+    local task_id="$1"
+    local task_desc="$2"
+    local line_num="$3"
+    local output_file="$4"
+
+    (
+        # Mark task as in progress
+        mark_in_progress "$task_id" "$line_num"
+
+        # Process the task (all phases)
+        if process_task "$task_id" "$task_desc" "$line_num" "implementer"; then
+            echo "SUCCESS:$task_id" >> "$output_file"
+        else
+            echo "FAILED:$task_id" >> "$output_file"
+        fi
+    ) &
+
+    echo $!  # Return PID
+}
+
+# Run tasks in parallel, grouping by file
+run_parallel_tasks() {
+    local phase_filter="$1"
+    local max_parallel="${2:-3}"  # Default max 3 parallel tasks
+
+    log "INFO" "${CYAN}=========================================="
+    log "INFO" "PARALLEL EXECUTION MODE"
+    log "INFO" "==========================================${NC}"
+
+    # Get all tasks and group by file
+    local -A file_to_tasks
+    local -a task_files
+    local -a task_ids
+    local -a task_descs
+    local -a task_lines
+
+    local task_count=0
+    while IFS= read -r task_info; do
+        [ -z "$task_info" ] && continue
+        local file=$(echo "$task_info" | grep -oP 'FILE:\K[^|]+')
+        local line=$(echo "$task_info" | grep -oP 'LINE:\K[^|]+')
+        local id=$(echo "$task_info" | grep -oP 'ID:\K[^|]+')
+        local desc=$(echo "$task_info" | grep -oP 'DESC:\K.*')
+
+        task_files[$task_count]="$file"
+        task_ids[$task_count]="$id"
+        task_descs[$task_count]="$desc"
+        task_lines[$task_count]="$line"
+        task_count=$((task_count + 1))
+    done < <(group_tasks_by_file "$phase_filter")
+
+    if [ $task_count -eq 0 ]; then
+        log "INFO" "${GREEN}No unclaimed tasks found${NC}"
+        return 0
+    fi
+
+    log "INFO" "Found $task_count tasks to process"
+
+    # Identify which tasks can run in parallel (different files)
+    local -A file_assigned
+    local -a parallel_batch
+    local -a sequential_queue
+
+    for ((i=0; i<task_count; i++)); do
+        local file="${task_files[$i]}"
+        local id="${task_ids[$i]}"
+
+        if [ -z "${file_assigned[$file]}" ]; then
+            # First task for this file - can run in parallel
+            parallel_batch+=("$i")
+            file_assigned[$file]=1
+            log "INFO" "  Parallel: ${BLUE}$id${NC} (file: $file)"
+        else
+            # Another task for same file - must run sequentially after
+            sequential_queue+=("$i")
+            log "INFO" "  Sequential: ${YELLOW}$id${NC} (same file: $file)"
+        fi
+
+        # Limit parallel batch size
+        if [ ${#parallel_batch[@]} -ge $max_parallel ]; then
+            break
+        fi
+    done
+
+    # Run parallel batch
+    if [ ${#parallel_batch[@]} -gt 0 ]; then
+        log "INFO" ""
+        log "INFO" "${GREEN}Starting ${#parallel_batch[@]} parallel tasks...${NC}"
+
+        local result_file="$LOG_DIR/parallel_results_$(date +%Y%m%d_%H%M%S).txt"
+        local -a pids
+
+        for idx in "${parallel_batch[@]}"; do
+            local id="${task_ids[$idx]}"
+            local desc="${task_descs[$idx]}"
+            local line="${task_lines[$idx]}"
+
+            log "INFO" "Launching: $id"
+            local pid=$(run_task_background "$id" "$desc" "$line" "$result_file")
+            pids+=("$pid:$id")
+        done
+
+        # Wait for all parallel tasks
+        log "INFO" "Waiting for parallel tasks to complete..."
+        local failed=0
+        for pid_info in "${pids[@]}"; do
+            local pid=$(echo "$pid_info" | cut -d: -f1)
+            local id=$(echo "$pid_info" | cut -d: -f2)
+            if wait "$pid"; then
+                log "INFO" "${GREEN}✓ $id completed${NC}"
+            else
+                log "ERROR" "${RED}✗ $id failed${NC}"
+                failed=$((failed + 1))
+            fi
+        done
+
+        # Report results
+        log "INFO" ""
+        log "INFO" "Parallel batch complete: $((${#parallel_batch[@]} - failed)) succeeded, $failed failed"
+
+        # Show results file
+        if [ -f "$result_file" ]; then
+            log "INFO" "Results:"
+            cat "$result_file" | while read line; do
+                if [[ "$line" == SUCCESS:* ]]; then
+                    echo -e "  ${GREEN}$line${NC}"
+                else
+                    echo -e "  ${RED}$line${NC}"
+                fi
+            done
+        fi
+    fi
+
+    # Note about sequential tasks
+    if [ ${#sequential_queue[@]} -gt 0 ]; then
+        log "INFO" ""
+        log "INFO" "${YELLOW}${#sequential_queue[@]} tasks queued for next run (same-file dependencies)${NC}"
+        log "INFO" "Run orchestrator again to process them"
+    fi
+
+    return 0
+}
+
 # Main orchestration flow
 main() {
     local phase=""
@@ -858,6 +1074,8 @@ main() {
     local dry_run=false
     local resume=false
     local daemon=false
+    local parallel=false
+    local max_parallel=3
     local interval=10
     local duration=6
     local show_status_only=false
@@ -885,6 +1103,14 @@ main() {
                 daemon=true
                 shift
                 ;;
+            --parallel)
+                parallel=true
+                shift
+                ;;
+            --max-parallel)
+                max_parallel="$2"
+                shift 2
+                ;;
             --interval)
                 interval="$2"
                 shift 2
@@ -899,7 +1125,7 @@ main() {
                 ;;
             *)
                 log "ERROR" "Unknown argument: $1"
-                echo "Usage: $0 [--phase PHASE] [--item ITEM] [--resume] [--daemon] [--interval MIN] [--duration HOURS] [--status] [--dry-run]"
+                echo "Usage: $0 [--phase PHASE] [--item ITEM] [--resume] [--daemon] [--parallel] [--max-parallel N] [--interval MIN] [--duration HOURS] [--status] [--dry-run]"
                 exit 1
                 ;;
         esac
@@ -933,6 +1159,12 @@ main() {
         else
             log "INFO" "${GREEN}Dry run - no unclaimed tasks found${NC}"
         fi
+        exit 0
+    fi
+
+    # Parallel mode - run unrelated tasks concurrently
+    if [ "$parallel" = true ]; then
+        run_parallel_tasks "$phase" "$max_parallel"
         exit 0
     fi
 

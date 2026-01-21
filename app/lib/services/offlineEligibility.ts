@@ -28,13 +28,6 @@ export interface OfflineEligibilityResult {
   reason?: string;
 }
 
-// Build a lookup map for fast UPC searches
-const productMap = new Map<string, OfflineProduct>();
-(michiganApl as OfflineProduct[]).forEach(product => {
-  // Store with normalized UPC (no leading zeros)
-  productMap.set(product.upc, product);
-});
-
 /**
  * Normalize a scanned UPC for lookup
  * Removes leading zeros and non-digit characters
@@ -42,6 +35,13 @@ const productMap = new Map<string, OfflineProduct>();
 function normalizeUpc(upc: string): string {
   return upc.replace(/\D/g, '').replace(/^0+/, '') || '0';
 }
+
+// Build a lookup map for fast UPC searches
+const productMap = new Map<string, OfflineProduct>();
+(michiganApl as OfflineProduct[]).forEach(product => {
+  // Store with normalized UPC (no leading zeros) - must match how lookups normalize
+  productMap.set(normalizeUpc(product.upc), product);
+});
 
 /**
  * Check if a product is WIC-eligible using offline data
