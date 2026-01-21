@@ -55,6 +55,41 @@ export {
   validateNorthCarolinaConfig,
 } from './config/north-carolina.config';
 
+// Florida Ingestion
+export {
+  FloridaAPLIngestionService,
+  ingestFloridaAPL,
+  type FloridaAPLConfig,
+} from './florida-ingestion.service';
+
+export {
+  createFloridaAPLConfig,
+  validateFloridaAPLConfig,
+  FLORIDA_APL_DOWNLOAD_URL,
+  FLORIDA_POLICIES,
+} from './config/florida.config';
+
+// Oregon Ingestion
+export {
+  OregonAPLIngestionService,
+  ingestOregonAPL,
+  type OregonAPLConfig,
+} from './oregon-ingestion.service';
+
+export {
+  OregonAPLSyncWorker,
+  startOregonSyncWorker,
+  type OregonSyncWorkerConfig,
+} from './workers/oregon-sync-worker';
+
+export {
+  createOregonAPLConfig,
+  validateOregonAPLConfig,
+  OREGON_APL_DOWNLOAD_URL,
+  OREGON_APL_SYNC_SCHEDULE,
+  OREGON_POLICIES,
+} from './config/oregon.config';
+
 // Re-export types
 export type { APLEntry, APLSyncStatus, APLChangeLog } from '../../types/apl.types';
 
@@ -75,12 +110,12 @@ export const SUPPORTED_STATES = {
   FL: {
     name: 'Florida',
     processor: 'FIS',
-    implemented: false,
+    implemented: true,
   },
   OR: {
     name: 'Oregon',
     processor: 'State-specific',
-    implemented: false,
+    implemented: true,
   },
 } as const;
 

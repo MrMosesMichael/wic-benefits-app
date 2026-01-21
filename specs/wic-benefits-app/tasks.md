@@ -31,7 +31,7 @@
 - [x] ✅ A1.3 Build Michigan APL ingestion (FIS processor)
 - [x] ✅ A1.4 Build North Carolina APL ingestion (Conduent processor)
 - [x] ✅ A1.5 Build Florida APL ingestion (FIS processor)
-- [ ] A1.6 Build Oregon APL ingestion (state-specific)
+- [x] ✅ A1.6 Build Oregon APL ingestion (state-specific)
 - [ ] A1.7 Design state eligibility rules engine
 - [ ] A1.8 Create APL update monitoring and sync jobs
 

@@ -1,5 +1,5 @@
-TASK_ID="A1.5"
-TASK_DESC="Build Florida APL ingestion (FIS processor)"
+TASK_ID="A1.6"
+TASK_DESC="Build Oregon APL ingestion (state-specific)"
 PHASE="reviewer"
 LINE_NUM=""
-TIMESTAMP="2026-01-20 23:36:02"
+TIMESTAMP="2026-01-20 23:42:19"
