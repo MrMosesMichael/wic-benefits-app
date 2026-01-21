@@ -282,13 +282,14 @@ export class ProductSyncService extends EventEmitter {
    * Get UPCs from APL database
    */
   private async getAPLUPCs(): Promise<string[]> {
-    // TODO: Query APL database for all UPCs
-    // For now, return placeholder
-    // In production, this should query the apl_entries table
     console.log('ℹ️  Getting UPCs from APL database...');
 
-    // Placeholder implementation
-    // In real implementation, query: SELECT DISTINCT upc FROM apl_entries
+    // This requires a database connection to query apl_entries
+    // For now, return empty array - caller should provide targetUPCs
+    // or use APLCoverageService which has proper database access
+    console.warn('⚠️  Direct APL query not available in ProductSyncService');
+    console.warn('   Use APLCoverageService.autoSyncToTarget() instead');
+
     return [];
   }
 

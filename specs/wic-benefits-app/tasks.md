@@ -41,7 +41,7 @@
 - [x] ✅ A2.3 Build product lookup API endpoint
 - [x] ✅ A2.4 Implement product image storage/CDN
 - [x] ✅ A2.5 Create product database sync pipeline
-- [ ] A2.6 Target 95%+ coverage of WIC-eligible UPCs
+- [x] ✅ A2.6 Target 95%+ coverage of WIC-eligible UPCs
 
 #### Track A3: Store Database
 - [ ] A3.1 Source WIC-authorized retailer data by state

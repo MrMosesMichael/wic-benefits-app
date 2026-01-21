@@ -18,6 +18,10 @@ export { ProductSyncService, createProductSyncService } from './ProductSyncServi
 export { ProductSyncScheduler, createProductSyncScheduler } from './ProductSyncScheduler';
 export { ProductSyncMonitor, createProductSyncMonitor } from './ProductSyncMonitor';
 
+// APL Coverage (A2.6)
+export { APLCoverageService, createAPLCoverageService } from './APLCoverageService';
+export { APLCoverageMonitor, createCoverageMonitor } from './APLCoverageMonitor';
+
 // Re-export image storage types
 export type {
   ImageVariant,
@@ -50,6 +54,20 @@ export type {
   HealthAlert,
   MonitorConfig,
 } from './ProductSyncMonitor';
+
+export type {
+  CoverageAnalysis,
+  StatesCoverage,
+  CategoryCoverage,
+  SyncRecommendation,
+  APLCoverageConfig,
+} from './APLCoverageService';
+
+export type {
+  CoverageMonitorConfig,
+  CoverageAlert,
+  MonitorStatus,
+} from './APLCoverageMonitor';
 
 // Re-export types for convenience
 export type {
