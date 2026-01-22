@@ -1,76 +1,209 @@
 # Session State (Ralph Loop Checkpoint)
 
-> **Last Updated**: 2026-01-21 ~07:45
-> **Session**: Haiku Tagging Implementation Complete
+> **Last Updated**: 2026-01-22 (current session)
+> **Session**: A4.3 Database Persistence & Expiration Implementation
 
 ---
 
 ## Current Task
 
-**ORCHESTRATOR ACTIVE**: Running Phase 1, testing new Haiku tagging system
+**A4.3 Database Persistence Complete** ✅
+
+Working with user to implement:
+1. Database persistence for notification system
+2. 30-day alert expiration with user prompts
+
+## Session Progress
+
+### Completed Today (2026-01-22)
+
+#### Part 1: Database Persistence & 30-Day Expiration
+
+1. ✅ Created database migration `015_notification_system.sql`
+   - Push tokens table
+   - Notification settings table
+   - Subscriptions with 30-day expiration
+   - Notification history for audit trail
+   - Notification batches table (30-minute windows)
+   - Expiration prompt tracking
+
+2. ✅ Created `NotificationRepository.ts`
+   - Complete data access layer
+   - Subscription CRUD operations
+   - Expiration handling methods
+   - Push token management
+   - Notification history tracking
+   - **Batching operations** (new)
+
+3. ✅ Updated `FormulaRestockNotificationService`
+   - Migrated from in-memory Maps to database
+   - Added `checkExpiringSubscriptions()` method
+   - All subscription operations now persist
+
+4. ✅ Updated `PushNotificationService`
+   - Migrated tokens and settings to database
+   - Multi-device support
+   - Rate limiting via database
+
+5. ✅ Updated API endpoints
+   - Fixed async method calls
+   - Added `getExpiringSubscriptions()` endpoint
+   - Added `respondToExpirationPrompt()` endpoint
+
+6. ✅ Created implementation documentation
+   - `DATABASE_PERSISTENCE_UPDATE.md` with complete details
+
+#### Part 2: 30-Minute Notification Batching
+
+7. ✅ Implemented 30-minute batching (replaced 6-hour deduplication)
+   - **Spec compliant**: Per formula-tracking/spec.md requirement
+   - Added batching methods to `NotificationRepository`
+   - Refactored `FormulaRestockNotificationService`:
+     - `addRestockToBatch()` - Add to 30-minute window
+     - `processBatches()` - Send batched notifications
+     - `buildBatchedRestockNotification()` - Multi-store notifications
+   - Updated `monitorRestocks()` to process batches automatically
+   - Added `processBatches()` API endpoint
+
+8. ✅ Created comprehensive test suite
+   - `test-batching.ts` - Automated test script
+   - Tests database persistence, batching, expiration
+   - Cleans up test data automatically
+
+9. ✅ Created implementation documentation
+   - `BATCHING_IMPLEMENTATION.md` - Complete batching guide
+   - `TESTING_GUIDE.md` - How to run tests
+   - `A4.3_COMPLETION_SUMMARY.md` - Full feature summary
+
+#### Part 3: User Testing & Deployment Documentation
+
+10. ✅ Created comprehensive testing plan for users
+    - `TESTING_PLAN_v2.md` - Complete test scenarios
+    - Covers scanner regression, manual benefits, integration
+    - Bug reporting template included
+    - 5 test sessions with expected results
+
+11. ✅ Created Android deployment guide (REWRITTEN for local builds)
+    - `ANDROID_DEPLOYMENT_GUIDE_LOCAL.md` - Local build focus
+    - Prioritizes local builds (preserves 8 remaining cloud builds)
+    - Expo dev server instructions (fast iteration)
+    - APK generation with Gradle
+    - Troubleshooting for local builds
+    - When to use cloud builds (final releases only)
+
+12. ✅ Updated quick start guide for local builds
+    - `TESTING_AND_DEPLOYMENT_QUICKSTART.md` - Updated for local
+    - Emphasizes free local builds
+    - References local deployment guide
+    - Cloud build warnings (quota limited)
 
 ## Orchestrator Status
 
-- **PID**: 96932
-- **Mode**: Daemon (8 hours, 10 min intervals)
-- **Current Task**: A3.1 - Source WIC-authorized retailer data (reviewer phase)
-- **Next Task**: A3.2 - Design store data schema **[haiku tagged]**
-- **End Time**: ~06:58 (started at 22:58)
+- **Status**: Not running (stopped after rate limits last night)
+- **Last Task**: A4.3 - Create formula restock push notifications
+- **Issue**: Hit 3+ consecutive rate limits, kept failing
 
-## Progress This Session
+## All Completed Tasks
 
-### Implemented Haiku Task Tagging System
+### Phase 2 Complete
+- ✅ A3.3 - Build store data ingestion pipeline
+- ✅ A3.4 - Integrate with Google Places for enrichment
+- ✅ A3.5 - Create store search API
 
-- [x] Added `task_uses_haiku()` function to orchestrator.sh
-- [x] Updated rate limit config with exponential backoff (10→20→40→80→160→240 min, capped at 4h)
-- [x] Added `calculate_backoff()` function
-- [x] Modified `run_implementer()` to detect `[haiku]` tag and switch models
-- [x] Updated retry loop with consecutive failure tracking + 2h extended pause
-- [x] Tagged 34 tasks in tasks.md with `[haiku]`
+### Phase 1 Formula Features (A4.x) Complete
+- ✅ A4.1 - Implement formula availability tracking
+- ✅ A4.2 - Build formula shortage detection algorithm
+- ✅ A4.3 - Create formula restock push notifications **[COMPLETED TODAY]**
+  - Database persistence implemented
+  - 30-day expiration with user prompts
+  - Multi-device push token support
 
-### Haiku-Tagged Tasks (34 total)
+### Phase 2 Progress Summary
 
-**By Category:**
-- Schema/Data Model: A3.2, B2.1, C1.1, F1.1, K1, L1
-- Config/Setup: B1.2, B1.3
-- Documentation: F2.1-F2.8, O2, P2, V2, V6
-- Translation: G2, G3, G4, G5
-- Research: J1, N1, Q1, S1.1-S4.1, U1, GOV4
-- Migration: S5.3
+| Group | Complete | Total | Status |
+|-------|----------|-------|--------|
+| H - Store Detection | 6 | 6 | **DONE** |
+| I - Inventory | 1 | 9 | 1 blocked (Walmart API) |
+| J - Food Bank | 0 | 6 | Not started |
+| K - Crowdsourced | 0 | 4 | Not started |
+| **Total** | **7** | **25** | 28% complete |
 
-### Exponential Backoff Schedule
+## Roadblocks Identified
 
-| Retry | Wait Time |
-|-------|-----------|
-| 0 | 10 min |
-| 1 | 20 min |
-| 2 | 40 min |
-| 3 | 80 min |
-| 4 | 160 min |
-| 5+ | 240 min (4h cap) |
+### 1. Rate Limiting (Active)
+- Hit 3 consecutive rate limits on A4.3
+- Extended 2-hour pause until ~20:03
+- Will auto-resume
 
-After 3 consecutive rate limits → 2 hour extended pause
+### 2. Walmart API (I1.2) - BLOCKED
+- Marked as `[B] ⏸️` in tasks.md
+- Awaiting API partnership
+- **Alternatives**: Use Kroger API (I1.3) or web scraping fallback (I1.4)
 
-## Files Modified
+## New Files Created (by orchestrator)
 
-- `orchestrator.sh` - Haiku detection, exponential backoff, model selection
-- `specs/wic-benefits-app/tasks.md` - Added 34 `[haiku]` tags
+- `src/api/notifications/` - Push notification API
+- `src/services/notifications/` - Notification service
+- `src/types/notification.ts` - Notification types
 
-## What to Watch For
+## Next Actions
 
-The orchestrator should:
-1. Complete A3.1 (currently in reviewer phase)
-2. Pick up A3.2 (haiku-tagged) and log "Using Haiku model for [haiku] tagged task"
-3. Use exponential backoff if rate limited
+### Test the Implementation:
 
----
+1. **Run Database Migration**:
+   ```bash
+   psql $DATABASE_URL < backend/migrations/015_notification_system.sql
+   ```
 
-## Next Session Actions
+2. **Run Automated Test Suite**:
+   ```bash
+   cd /Users/moses/projects/wic_project
+   npx ts-node src/services/notifications/test-batching.ts
+   ```
 
-1. Check orchestrator progress: `./orchestrator.sh --status`
-2. Verify Haiku model usage: `grep -i "haiku" .orchestrator-logs/orchestrator.log | tail -20`
-3. Check for rate limit handling: `grep -i "backoff\|rate limit" .orchestrator-logs/orchestrator.log`
-4. Review completed haiku tasks
+   This tests:
+   - ✅ Database persistence (subscriptions, tokens, settings)
+   - ✅ 30-day expiration
+   - ✅ 30-minute batching
+   - ✅ Batch processing
+   - ✅ Notification history
+
+3. **Verify Database**:
+   ```sql
+   -- Check tables were created
+   \dt notification*
+   \dt push_tokens
+   \dt subscription*
+
+   -- Should show:
+   -- notification_batches
+   -- notification_history
+   -- notification_settings
+   -- notification_subscriptions
+   -- push_tokens
+   -- subscription_expiration_prompts
+   -- subscription_stores
+   ```
+
+### Optional Improvements:
+
+- Add product name lookup (currently shows UPC)
+- Add store name lookup with distance
+- Implement daily cron job to check expiring subscriptions
+- Add batch cleanup job (delete old sent batches)
+
+### Continue Phase 1 Formula Features:
+
+- [ ] A4.4 - Build cross-store formula search
+- [ ] A4.5 - Implement alternative formula suggestions
+- [ ] A4.6 - Create crowdsourced formula sighting reports
+- [ ] A4.7 - Build formula alert subscription system
+
+### Note on Orchestrator:
+
+The orchestrator kept hitting rate limits on A4.3. Since we completed the database persistence manually, consider:
+- Mark A4.3 as complete in tasks.md
+- Let orchestrator continue with A4.4 when ready
 
 ## Monitor Commands
 
@@ -82,16 +215,10 @@ ps aux | grep orchestrator | grep -v grep
 tail -f .orchestrator-logs/orchestrator.log
 
 # Quick status
-./orchestrator.sh --status
+cat .orchestrator-logs/STATUS.md
 
-# See haiku model usage
-grep -i "haiku" .orchestrator-logs/orchestrator.log
-
-# Count completed haiku tasks
-grep '\[x\].*\[haiku\]' specs/wic-benefits-app/tasks.md | wc -l
-
-# Stop if needed
-pkill -f orchestrator.sh
+# Check rate limit events
+grep -i "rate limit\|pause" .orchestrator-logs/orchestrator.log | tail -20
 ```
 
 ---
@@ -102,6 +229,6 @@ pkill -f orchestrator.sh
 
 - **Current Branch**: `pre-prod-local-testing`
 - **Phase 0 Bug Fixes**: COMPLETE
-- **Phase 1 MVP**: In progress (A3.x store database tasks)
-- **Phase 5 Manual Entry**: COMPLETE (R1-R5 done)
-- **New Feature**: Haiku tagging for cost-efficient task execution
+- **Phase 1 MVP**: In progress (A4.x formula critical features)
+- **Phase 2 Store Intelligence**: 28% complete
+- **Phase 5 Manual Entry**: COMPLETE

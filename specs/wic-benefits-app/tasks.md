@@ -53,7 +53,7 @@
 #### Track A4: Formula Critical Features [SURVIVAL]
 - [x] ✅ A4.1 Implement formula availability tracking
 - [x] ✅ A4.2 Build formula shortage detection algorithm
-- [ ] A4.3 Create formula restock push notifications
+- [~] 🔄 A4.3 Create formula restock push notifications
 - [ ] A4.4 Build cross-store formula search
 - [ ] A4.5 Implement alternative formula suggestions
 - [ ] A4.6 Create crowdsourced formula sighting reports
