@@ -11,10 +11,10 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/migrations:/docker-entrypoint-initdb.d:ro
-    ports:
-      - "127.0.0.1:5432:5432"  # Only expose to localhost
+    # ports:
+    #   - "127.0.0.1:5432:5432"  # Commented out - not needed, backend connects via docker network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-wic_admin}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-wic_admin} -d ${POSTGRES_DB:-wic_benefits}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -31,7 +31,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: postgresql://${POSTGRES_USER:-wic_admin}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-wic_benefits}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-wic_admin}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-wic_benefits}?sslmode=disable
       CORS_ORIGIN: https://mdmichael.com,https://www.mdmichael.com
     depends_on:
       postgres:
