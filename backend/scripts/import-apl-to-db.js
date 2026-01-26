@@ -100,10 +100,10 @@ async function importAPL() {
           `, [
             'MI',
             product.upc,
-            product.name,
+            product.name || `Product ${product.upc}`, // Fallback if name is missing
             product.brand || null,
             product.size || null,
-            product.category || null,
+            product.category || 'unknown', // Fallback if category is missing
             product.subcategory || null,
             product.restrictions || null
           ]);
