@@ -11,8 +11,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/migrations:/docker-entrypoint-initdb.d:ro
-    # ports:
-    #   - "127.0.0.1:5432:5432"  # Commented out - not needed, backend connects via docker network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-wic_admin} -d ${POSTGRES_DB:-wic_benefits}"]
       interval: 10s
@@ -36,8 +34,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    ports:
-      - "127.0.0.1:3000:3000"  # Only expose to localhost (nginx will proxy)
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
       interval: 30s
@@ -46,10 +42,43 @@ services:
       start_period: 40s
     networks:
       - wic-network
+      - nginx-proxy
+    labels:
+      # Enable Traefik
+      - "traefik.enable=true"
+
+      # HTTP router for /wic/health
+      - "traefik.http.routers.wic-health.rule=Host(`mdmichael.com`) && PathPrefix(`/wic/health`)"
+      - "traefik.http.routers.wic-health.entrypoints=websecure"
+      - "traefik.http.routers.wic-health.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.wic-health.middlewares=wic-health-strip"
+
+      # HTTP router for /wic/api/
+      - "traefik.http.routers.wic-api.rule=Host(`mdmichael.com`) && PathPrefix(`/wic/api`)"
+      - "traefik.http.routers.wic-api.entrypoints=websecure"
+      - "traefik.http.routers.wic-api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.wic-api.middlewares=wic-api-strip"
+
+      # Middleware to strip /wic prefix from health endpoint
+      - "traefik.http.middlewares.wic-health-strip.stripprefix.prefixes=/wic"
+
+      # Middleware to strip /wic prefix from API endpoints
+      - "traefik.http.middlewares.wic-api-strip.stripprefix.prefixes=/wic"
+
+      # Service configuration (backend listens on port 3000)
+      - "traefik.http.services.wic-backend.loadbalancer.server.port=3000"
+
+      # Optional: Add www subdomain support
+      - "traefik.http.routers.wic-api-www.rule=Host(`www.mdmichael.com`) && PathPrefix(`/wic/api`)"
+      - "traefik.http.routers.wic-api-www.entrypoints=websecure"
+      - "traefik.http.routers.wic-api-www.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.wic-api-www.middlewares=wic-api-strip"
 
 networks:
   wic-network:
     driver: bridge
+  nginx-proxy:
+    external: true
 
 volumes:
   postgres_data:
