@@ -46,3 +46,11 @@ web-build/
 # OpenSpec cloned repo (we only need our specs)
 OpenSpec/
 openspec/
+
+# Orchestrator operational files
+.orchestrator-logs/checkpoints/
+.orchestrator-logs/orchestrator.state.*
+
+# Build artifacts
+*.apk
+*.aab
