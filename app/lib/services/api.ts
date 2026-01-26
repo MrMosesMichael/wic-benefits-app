@@ -20,7 +20,8 @@ import { checkEligibilityOffline, getTotalProductCount } from './offlineEligibil
 import { loadHousehold } from './householdStorage';
 
 // Set to true to use offline data (no server needed)
-export const OFFLINE_MODE = true;
+// For production with backend: set to false
+export const OFFLINE_MODE = false;
 
 // Configure based on environment
 const API_BASE_URL = __DEV__

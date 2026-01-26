@@ -98,6 +98,12 @@
             transform: translateY(-2px);
         }
 
+        .btn-disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -253,9 +259,16 @@
                 Find formula during shortages. Track benefits with dignity.
             </p>
             <div class="cta-buttons">
-                <a href="#download" class="btn btn-primary">Download the App</a>
-                <a href="#status" class="btn btn-secondary">Check API Status</a>
+                <a href="/wic/downloads/wic-benefits.apk" class="btn btn-primary" download>
+                    📱 Download for Android
+                </a>
+                <a href="#" class="btn btn-secondary btn-disabled" title="Coming soon!">
+                    🍎 iOS (Coming Soon)
+                </a>
             </div>
+            <p style="margin-top: 16px; color: #718096; font-size: 0.9em;">
+                Android 6.0+ required • 95MB download
+            </p>
         </div>
 
         <div class="features">
