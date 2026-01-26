@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { getBenefits, Household } from '@/lib/services/api';
+import { useCallback } from 'react';
 
 export default function Benefits() {
   const router = useRouter();
@@ -10,9 +11,12 @@ export default function Benefits() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadBenefits();
-  }, []);
+  // Reload benefits when screen comes into focus (e.g., returning from household setup)
+  useFocusEffect(
+    useCallback(() => {
+      loadBenefits();
+    }, [])
+  );
 
   const loadBenefits = async () => {
     try {
@@ -56,7 +60,16 @@ export default function Benefits() {
   if (!household || household.participants.length === 0) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.emptyText}>No benefits data available</Text>
+        <Text style={styles.emptyTitle}>No Benefits Configured</Text>
+        <Text style={styles.emptyText}>
+          Set up your household and benefits to get started
+        </Text>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => router.push('/benefits/household-setup')}
+        >
+          <Text style={styles.primaryButtonText}>Set Up Household</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => router.back()}>
           <Text style={styles.buttonText}>Back to Home</Text>
         </TouchableOpacity>
@@ -72,8 +85,18 @@ export default function Benefits() {
       }
     >
       <View style={styles.header}>
-        <Text style={styles.title}>My Benefits</Text>
-        <Text style={styles.subtitle}>Michigan WIC</Text>
+        <View style={styles.headerTop}>
+          <View>
+            <Text style={styles.title}>My Benefits</Text>
+            <Text style={styles.subtitle}>Michigan WIC</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.setupButton}
+            onPress={() => router.push('/benefits/household-setup')}
+          >
+            <Text style={styles.setupButtonText}>Setup</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {household.participants.map((participant) => (
@@ -200,9 +223,25 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#fff',
     padding: 20,
-    alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+  },
+  setupButton: {
+    backgroundColor: '#2E7D32',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+  setupButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
   },
   title: {
     fontSize: 24,
@@ -225,11 +264,30 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
   emptyText: {
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
+  },
+  primaryButton: {
+    backgroundColor: '#2E7D32',
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  primaryButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   participantSection: {
     marginTop: 16,

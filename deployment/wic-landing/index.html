@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WIC Benefits Assistant - Never Wonder if it's WIC Again</title>
+    <meta name="description" content="Private product scanning, formula finder, and benefits tracking for WIC participants. Check eligibility before checkout.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .hero {
+            background: white;
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #2d3748;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .tagline {
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .description {
+            font-size: 1.1em;
+            color: #4a5568;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f7fafc;
+            transform: translateY(-2px);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-size: 1.4em;
+        }
+
+        .feature-card p {
+            color: #4a5568;
+            line-height: 1.7;
+        }
+
+        .status {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .status h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #48bb78;
+            color: white;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .status-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .status-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+            font-size: 1.05em;
+        }
+
+        .status-list li:last-child {
+            border-bottom: none;
+        }
+
+        .status-list li::before {
+            content: "✓ ";
+            color: #48bb78;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .api-status {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .api-health {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            background: #f7fafc;
+            border-radius: 8px;
+            font-size: 1.1em;
+        }
+
+        .health-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #a0aec0;
+        }
+
+        .health-indicator.healthy {
+            background: #48bb78;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .hero {
+                padding: 40px 24px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>WIC Benefits Assistant</h1>
+            <div class="tagline">Never Wonder if it's WIC Again</div>
+            <p class="description">
+                Scan products privately to check WIC eligibility before checkout.
+                Find formula during shortages. Track benefits with dignity.
+            </p>
+            <div class="cta-buttons">
+                <a href="#download" class="btn btn-primary">Download the App</a>
+                <a href="#status" class="btn btn-secondary">Check API Status</a>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Private Product Scanning</h3>
+                <p>Scan UPCs in-store to check WIC eligibility. No more asking clerks or guessing at checkout.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🍼</div>
+                <h3>Formula Finder</h3>
+                <p>Find WIC-approved formula across stores during shortages. Get restock notifications.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Benefits Tracking</h3>
+                <p>Track your benefits with visual progress bars. See what's available, in cart, or consumed.</p>
+            </div>
+        </div>
+
+        <div class="status" id="status">
+            <h2>Current Status</h2>
+            <div class="status-badge">MVP - Field Testing</div>
+            <ul class="status-list">
+                <li>Offline UPC scanner with 9,940 Michigan WIC products</li>
+                <li>Manual benefits entry and tracking</li>
+                <li>Shopping cart with three-state tracking</li>
+                <li>Standalone Android APK (no internet required)</li>
+                <li>Backend API deployed and operational</li>
+            </ul>
+        </div>
+
+        <div class="api-status">
+            <h3 style="margin-bottom: 20px; color: #2d3748;">API Health Status</h3>
+            <div class="api-health">
+                <span class="health-indicator" id="healthIndicator"></span>
+                <span id="healthStatus">Checking...</span>
+            </div>
+            <p style="margin-top: 16px; color: #718096; font-size: 0.9em;">
+                Backend API Endpoint: <code>https://mdmichael.com/wic/api/v1</code>
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>Built with care for WIC participants.</p>
+            <p style="margin-top: 8px;">
+                <a href="https://github.com/MrMosesMichael/wic-benefits-app">View on GitHub</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Check API health status
+        async function checkHealth() {
+            const indicator = document.getElementById('healthIndicator');
+            const status = document.getElementById('healthStatus');
+
+            try {
+                const response = await fetch('https://mdmichael.com/wic/health');
+                const data = await response.json();
+
+                if (data.status === 'healthy') {
+                    indicator.classList.add('healthy');
+                    status.textContent = 'API Healthy';
+                    status.style.color = '#48bb78';
+                } else {
+                    status.textContent = 'API Degraded';
+                    status.style.color = '#f6ad55';
+                }
+            } catch (error) {
+                status.textContent = 'API Offline';
+                status.style.color = '#fc8181';
+            }
+        }
+
+        // Check on page load
+        checkHealth();
+
+        // Recheck every 30 seconds
+        setInterval(checkHealth, 30000);
+    </script>
+</body>
+</html>

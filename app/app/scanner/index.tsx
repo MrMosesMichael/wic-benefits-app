@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, BackHandler } from 'react-native';
-import { useRouter, useFocusEffect } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { checkEligibility, EligibilityResult } from '@/lib/services/api';
+import { checkEligibility } from '@/lib/services/api';
 
 type ScanMode = 'check' | 'shopping';
 
@@ -20,20 +20,6 @@ export default function Scanner() {
     setLastScannedCode(null);
   }, []);
 
-  // Handle Android hardware back button
-  useFocusEffect(
-    useCallback(() => {
-      const onBackPress = () => {
-        router.back();
-        return true; // Prevent default behavior, we handled it
-      };
-
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
-      return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-    }, [router])
-  );
-
   const handleBarCodeScanned = async ({ data }: { type: string; data: string }) => {
     if (!isActive || scanning) return;
 
@@ -48,8 +34,8 @@ export default function Scanner() {
       console.log('Scanned UPC:', data);
       const result = await checkEligibility(data);
 
-      // Navigate to result screen with data
-      router.push({
+      // Navigate to result screen with data (replace instead of push to avoid stacking)
+      router.replace({
         pathname: '/scanner/result',
         params: {
           upc: result.product.upc,

@@ -96,7 +96,7 @@ export default function ScanResult() {
         [
           {
             text: 'View Cart',
-            onPress: () => router.push('/cart'),
+            onPress: () => router.replace('/cart'),
           },
           {
             text: 'Continue Shopping',
@@ -297,14 +297,14 @@ export default function ScanResult() {
 
         <TouchableOpacity
           style={styles.secondaryButton}
-          onPress={() => router.push('/benefits')}
+          onPress={() => router.replace('/benefits')}
         >
           <Text style={styles.secondaryButtonText}>View My Benefits</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.textButton}
-          onPress={() => router.push('/')}
+          onPress={() => router.replace('/')}
         >
           <Text style={styles.textButtonText}>Back to Home</Text>
         </TouchableOpacity>

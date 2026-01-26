@@ -13,8 +13,9 @@ import storesRoutes from './routes/stores';
 import formulaFinderRoutes from './routes/formula-finder';
 import manualBenefitsRoutes from './routes/manual-benefits';
 import ocrBenefitsRoutes from './routes/ocr-benefits';
-import productsRoutes from './routes/products';
-import productImagesRoutes from './routes/product-images';
+// Temporarily disabled due to path resolution issues
+// import productsRoutes from './routes/products';
+// import productImagesRoutes from './routes/product-images';
 
 dotenv.config();
 
@@ -54,8 +55,9 @@ app.use('/api/v1/stores', storesRoutes);
 app.use('/api/v1/formula-finder', formulaFinderRoutes);
 app.use('/api/v1/manual-benefits', manualBenefitsRoutes);
 app.use('/api/v1/benefits/ocr', ocrBenefitsRoutes);
-app.use('/api/v1/products', productsRoutes);
-app.use('/api/v1/product-images', productImagesRoutes);
+// Temporarily disabled due to path resolution issues
+// app.use('/api/v1/products', productsRoutes);
+// app.use('/api/v1/product-images', productImagesRoutes);
 
 // Start server
 app.listen(port, () => {

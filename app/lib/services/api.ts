@@ -17,6 +17,7 @@ import type {
   ParticipantFormula
 } from '../types';
 import { checkEligibilityOffline, getTotalProductCount } from './offlineEligibility';
+import { loadHousehold } from './householdStorage';
 
 // Set to true to use offline data (no server needed)
 export const OFFLINE_MODE = true;
@@ -24,7 +25,7 @@ export const OFFLINE_MODE = true;
 // Configure based on environment
 const API_BASE_URL = __DEV__
   ? 'http://192.168.12.94:3000/api/v1'
-  : 'https://api.wicbenefits.app/api/v1'; // TODO: Replace with production URL
+  : 'https://mdmichael.com/wic/api/v1';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -132,8 +133,160 @@ export async function checkEligibility(upc: string): Promise<EligibilityResult> 
 
 /**
  * Get household benefits
+ * Priority: 1) Local AsyncStorage, 2) Empty household, 3) Backend API
  */
 export async function getBenefits(householdId: string = '1'): Promise<Household> {
+  // Use offline mode
+  if (OFFLINE_MODE) {
+    // Load from local storage (manually entered data)
+    const localData = await loadHousehold();
+    if (localData) {
+      return localData;
+    }
+
+    // Return empty household if no manual data - user should set up household
+    return {
+      id: '1',
+      state: 'MI',
+      participants: [],
+    };
+
+    /* REMOVED MOCK DATA - User should use household setup instead
+    // Fall back to mock household with sample benefits for offline testing
+    return {
+      id: '1',
+      state: 'MI',
+      participants: [
+        {
+          id: '1',
+          name: 'Sarah Thompson',
+          type: 'pregnant',
+          benefits: [
+            {
+              category: 'milk',
+              categoryLabel: 'Milk',
+              total: '24.00',
+              consumed: '8.00',
+              inCart: '4.00',
+              available: '12.00',
+              unit: 'qt',
+              periodStart: '2026-01-01',
+              periodEnd: '2026-01-31',
+            },
+            {
+              category: 'cheese',
+              categoryLabel: 'Cheese',
+              total: '16.00',
+              consumed: '4.00',
+              inCart: '0.00',
+              available: '12.00',
+              unit: 'oz',
+              periodStart: '2026-01-01',
+              periodEnd: '2026-01-31',
+            },
+            {
+              category: 'eggs',
+              categoryLabel: 'Eggs',
+              total: '24.00',
+              consumed: '12.00',
+              inCart: '0.00',
+              available: '12.00',
+              unit: 'count',
+              periodStart: '2026-01-01',
+              periodEnd: '2026-01-31',
+            },
+            {
+              category: 'cereal',
+              categoryLabel: 'Cereal',
+              total: '36.00',
+              consumed: '12.00',
+              inCart: '0.00',
+              available: '24.00',
+              unit: 'oz',
+              periodStart: '2026-01-01',
+              periodEnd: '2026-01-31',
+            },
+            {
+              category: 'juice',
+              categoryLabel: '100% Juice',
+              total: '144.00',
+              consumed: '48.00',
+              inCart: '0.00',
+              available: '96.00',
+              unit: 'oz',
+              periodStart: '2026-01-01',
+              periodEnd: '2026-01-31',
+            },
+            {
+              category: 'peanut_butter',
+              categoryLabel: 'Peanut Butter',
+              total: '18.00',
+              consumed: '0.00',
+              inCart: '0.00',
+              available: '18.00',
+              unit: 'oz',
+              periodStart: '2026-01-01',
+              periodEnd: '2026-01-31',
+            },
+            {
+              category: 'beans',
+              categoryLabel: 'Dried Beans/Peas',
+              total: '16.00',
+              consumed: '0.00',
+              inCart: '0.00',
+              available: '16.00',
+              unit: 'oz',
+              periodStart: '2026-01-01',
+              periodEnd: '2026-01-31',
+            },
+          ],
+        },
+        {
+          id: '2',
+          name: 'Emma Thompson',
+          type: 'infant',
+          benefits: [
+            {
+              category: 'formula',
+              categoryLabel: 'Infant Formula',
+              total: '806.00',
+              consumed: '268.00',
+              inCart: '104.00',
+              available: '434.00',
+              unit: 'oz',
+              periodStart: '2026-01-01',
+              periodEnd: '2026-01-31',
+            },
+            {
+              category: 'baby_food_fruits_vegetables',
+              categoryLabel: 'Baby Food (Fruits & Vegetables)',
+              total: '128.00',
+              consumed: '32.00',
+              inCart: '0.00',
+              available: '96.00',
+              unit: 'oz',
+              periodStart: '2026-01-01',
+              periodEnd: '2026-01-31',
+            },
+            {
+              category: 'baby_food_meat',
+              categoryLabel: 'Baby Food (Meat)',
+              total: '77.50',
+              consumed: '15.50',
+              inCart: '0.00',
+              available: '62.00',
+              unit: 'oz',
+              periodStart: '2026-01-01',
+              periodEnd: '2026-01-31',
+            },
+          ],
+        },
+      ],
+    };
+    */
+  }
+
+  // Online mode - requires backend server
   try {
     const response = await api.get(`/benefits?household_id=${householdId}`);
     if (response.data.success) {
@@ -148,8 +301,20 @@ export async function getBenefits(householdId: string = '1'): Promise<Household>
 
 /**
  * Get shopping cart
+ * Uses offline mock data when OFFLINE_MODE is true
  */
 export async function getCart(householdId: string = '1'): Promise<Cart> {
+  // Use offline mode - return mock empty cart
+  if (OFFLINE_MODE) {
+    return {
+      household_id: householdId,
+      items: [],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+  }
+
+  // Online mode - requires backend server
   try {
     const response = await api.get(`/cart?household_id=${householdId}`);
     if (response.data.success) {
@@ -164,6 +329,7 @@ export async function getCart(householdId: string = '1'): Promise<Cart> {
 
 /**
  * Add item to cart
+ * In offline mode, this is a no-op (returns success without persisting)
  */
 export async function addToCart(
   participantId: string,
@@ -176,6 +342,13 @@ export async function addToCart(
   size?: string,
   householdId: string = '1'
 ): Promise<void> {
+  // Offline mode - simulate success (cart feature not fully functional offline)
+  if (OFFLINE_MODE) {
+    console.log('OFFLINE MODE: Add to cart simulated', { productName, category, quantity, unit });
+    return Promise.resolve();
+  }
+
+  // Online mode - call backend API
   try {
     const response = await api.post('/cart/items', {
       householdId,
@@ -252,6 +425,7 @@ export async function checkout(householdId: string = '1'): Promise<{ transaction
 
 /**
  * Get recent sightings for a product
+ * Returns empty array in offline mode
  */
 export async function getSightings(
   upc: string,
@@ -260,6 +434,12 @@ export async function getSightings(
   radiusMiles?: number,
   maxAgeHours?: number
 ): Promise<ProductSighting[]> {
+  // Offline mode - return empty sightings
+  if (OFFLINE_MODE) {
+    return Promise.resolve([]);
+  }
+
+  // Online mode - call backend API
   try {
     const params = new URLSearchParams();
     if (latitude !== undefined) params.append('latitude', latitude.toString());
@@ -280,8 +460,19 @@ export async function getSightings(
 
 /**
  * Report a product sighting
+ * In offline mode, simulates success without persisting
  */
 export async function reportSighting(request: ReportSightingRequest): Promise<{ id: string; reportedAt: string }> {
+  // Offline mode - simulate success
+  if (OFFLINE_MODE) {
+    console.log('OFFLINE MODE: Sighting report simulated', request);
+    return Promise.resolve({
+      id: Date.now().toString(),
+      reportedAt: new Date().toISOString(),
+    });
+  }
+
+  // Online mode - call backend API
   try {
     const response = await api.post('/sightings/report', request);
     if (response.data.success) {
