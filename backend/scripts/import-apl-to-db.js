@@ -100,7 +100,7 @@ async function importAPL() {
           `, [
             'MI',
             product.upc,
-            product.name || `Product ${product.upc}`, // Fallback if name is missing
+            product.description || product.name || `Product ${product.upc}`, // Use description field from JSON
             product.brand || null,
             product.size || null,
             product.category || 'unknown', // Fallback if category is missing
