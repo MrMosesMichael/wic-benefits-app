@@ -85,18 +85,16 @@ async function importAPL() {
               size,
               category,
               subcategory,
-              participant_types,
               restrictions,
               created_at,
               updated_at
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
-            ON CONFLICT (state, upc) DO UPDATE SET
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
+            ON CONFLICT (upc) DO UPDATE SET
               product_name = EXCLUDED.product_name,
               brand = EXCLUDED.brand,
               size = EXCLUDED.size,
               category = EXCLUDED.category,
               subcategory = EXCLUDED.subcategory,
-              participant_types = EXCLUDED.participant_types,
               restrictions = EXCLUDED.restrictions,
               updated_at = NOW()
           `, [
@@ -107,7 +105,6 @@ async function importAPL() {
             product.size || null,
             product.category || null,
             product.subcategory || null,
-            product.participantTypes ? JSON.stringify(product.participantTypes) : null,
             product.restrictions || null
           ]);
 
