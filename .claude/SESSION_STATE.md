@@ -1,126 +1,148 @@
 # Session State
 
-> **Last Updated:** 2026-01-30  
-> **Session:** Documentation Consolidation
+> **Last Updated:** 2025-01-31  
+> **Session:** F2 - Help & FAQ Navigation Wiring
 
 ---
 
 ## Current Status
 
-**✅ DOCUMENTATION CONSOLIDATED**
+**✅ F2 HELP & FAQ NAVIGATION COMPLETE**
 
-Cleaned up 72 scattered markdown files into organized structure:
-- Root now has only 5 essential files
-- Old implementation docs archived to `docs/archive/`
-- Single source of truth: `ROADMAP.md`
-
----
-
-## What Just Happened
-
-1. ✅ Created `ROADMAP.md` — consolidated status, priorities, what to build next
-2. ✅ Created `CHANGELOG.md` — session-by-session progress log
-3. ✅ Updated `README.md` — clean project overview
-4. ✅ Updated `CLAUDE.md` — simplified AI instructions
-5. ✅ Archived 72 old docs to `docs/archive/`
-6. ✅ Kept useful guides in `docs/` (deployment, testing, troubleshooting)
+Wired up Help & FAQ navigation throughout the app:
+- Added Help to main navigation stack
+- Added Help button on home screen
+- Added contextual "Need Help?" links on key screens
+- Implemented deep linking to specific FAQ items
+- Added English and Spanish translations
 
 ---
 
-## Production State (Unchanged)
+## What Was Built
 
-- **Backend:** https://mdmichael.com/wic/ (Docker + Traefik)
-- **Database:** 9,940 Michigan products
-- **APK:** Production build ready at `app/android/app/build/outputs/apk/release/app-release.apk`
+### Navigation Updates
 
----
-
-## Next Actions
-
-### Priority 1: Finish Formula Features (A4.4-A4.7)
-
-Per `ROADMAP.md`, the next coding work is:
-
-1. **A4.4 — Cross-Store Formula Search**
-   - Allow searching for formula across multiple stores
-   - Show distance, stock status, last reported time
-
-2. **A4.5 — Alternative Formula Suggestions**
-   - When a formula is out of stock, suggest equivalents
-   - Requires formula_equivalents data
-
-3. **A4.6 — Crowdsourced Formula Sightings**
-   - "I found this formula here" reports
-   - Similar to existing crowdsourced inventory
-
-4. **A4.7 — Formula Alert Subscriptions**
-   - Users subscribe to specific formulas
-   - Get notified when formula becomes available nearby
-
-### Priority 2: Help & FAQ System
-
-- Build FAQ data model
-- Create FAQ browsing UI
-- Write critical content:
-  - Size requirements FAQ
-  - Formula rules FAQ
-  - Checkout process FAQ
-
-### Priority 3: MDHHS Partnership Letter
-
-- Draft inquiry email
-- Include production URL
-- Request exploratory meeting
-
----
-
-## File Structure (After Cleanup)
-
+**1. `app/_layout.tsx`** - Added Help screen to navigation stack
+```tsx
+<Stack.Screen name="help/index" options={{ title: t('nav.help') }} />
 ```
-wic_project/
-├── README.md           # Project overview
-├── ROADMAP.md          # ⭐ Status + priorities
-├── CHANGELOG.md        # Progress log
-├── ARCHITECTURE.md     # Technical design
-├── CLAUDE.md           # AI instructions
-├── app/                # Mobile app
-├── backend/            # API server
-├── docs/               # Active guides (12 files)
-│   └── archive/        # Old docs (72 files)
-└── .claude/
-    └── SESSION_STATE.md  # This file
-```
+
+**2. `app/index.tsx`** - Added Help & FAQ button to home screen
+- New button below Shopping Cart
+- Styled as outlined button to differentiate from primary actions
+
+### New Component
+
+**`app/components/NeedHelpLink.tsx`** - Reusable help link component
+- Three variants: `default`, `card`, `inline`
+- Supports deep linking via `faqId` prop
+- Optional `contextHint` for additional context
+- Translations via i18n
+
+### Contextual Help Links Added
+
+**1. Scanner Result Screen** (`app/app/scanner/result.tsx`)
+- Added card-style help link at bottom of screen
+- Deep links to `checkout-rejected` FAQ when product not eligible
+- Deep links to `scan-products` FAQ when product is eligible
+- Context hint explains the link purpose
+
+**2. Benefits Screen** (`app/app/benefits/index.tsx`)
+- Added card-style help link after the notice section
+- Deep links to `benefit-states` FAQ
+- Explains the Available/In Cart/Consumed states
+
+**3. Cart Screen** (`app/app/cart/index.tsx`)
+- Added card-style help link after clear cart button
+- Deep links to `checkout-rejected` FAQ
+- Helps users avoid checkout surprises
+
+### Deep Linking Support
+
+**`app/app/help/index.tsx`** - Updated to support `?faqId=xxx` parameter
+- Reads `faqId` from URL search params
+- Auto-selects the FAQ's category
+- Auto-expands the specified FAQ item
+
+**`app/components/FAQList.tsx`** - Updated to accept `initialExpandedId`
+- Expands specified FAQ on mount
+- Supports deep linking from Help screen
+
+### Translations
+
+**English (`app/lib/i18n/translations/en.json`)**
+- Added `nav.help`: "Help & FAQ"
+- Added `home.helpFaq`: "Help & FAQ"
+- Added `help` section with contextual hints
+
+**Spanish (`app/lib/i18n/translations/es.json`)**
+- Added `nav.help`: "Ayuda y Preguntas"
+- Added `home.helpFaq`: "Ayuda y Preguntas"
+- Added `help` section with contextual hints
+
+---
+
+## Files Modified/Created
+
+### Created:
+- `app/components/NeedHelpLink.tsx` - Reusable help link component
+
+### Modified:
+- `app/app/_layout.tsx` - Added help screen to navigation
+- `app/app/index.tsx` - Added Help button to home screen
+- `app/app/help/index.tsx` - Added deep linking support
+- `app/app/scanner/result.tsx` - Added contextual help link
+- `app/app/benefits/index.tsx` - Added contextual help link
+- `app/app/cart/index.tsx` - Added contextual help link
+- `app/components/FAQList.tsx` - Added initialExpandedId support
+- `app/lib/i18n/translations/en.json` - Added help translations
+- `app/lib/i18n/translations/es.json` - Added help translations
+
+---
+
+## How Deep Linking Works
+
+1. User taps "Need Help?" link on any screen
+2. Link navigates to `/help?faqId=checkout-rejected` (or other FAQ ID)
+3. Help screen reads the `faqId` from URL params
+4. Automatically switches to the FAQ's category
+5. FAQList receives `initialExpandedId` and expands that item
+6. User sees the relevant FAQ already expanded
+
+**Example Deep Links:**
+- `/help?faqId=checkout-rejected` - Why items get rejected
+- `/help?faqId=benefit-states` - Understanding benefit states
+- `/help?faqId=scan-products` - How to scan products
+- `/help?faqId=formula-stock` - Finding formula in stock
+
+---
+
+## Previous Session Work (F1)
+
+F1 created the core Help & FAQ components:
+- `app/lib/types/faq.ts` - FAQ data model
+- `app/lib/services/faqService.ts` - FAQ service with search
+- `app/components/FAQList.tsx` - FAQ list component
+- `app/app/help/index.tsx` - Help screen
 
 ---
 
 ## Git Status
 
-Uncommitted changes:
-- New: ROADMAP.md, CHANGELOG.md
-- Modified: README.md, CLAUDE.md
-- Moved: 72 files to docs/archive/
+Uncommitted changes from F2:
+- New: `app/components/NeedHelpLink.tsx`
+- Modified: `app/app/_layout.tsx`
+- Modified: `app/app/index.tsx`
+- Modified: `app/app/help/index.tsx`
+- Modified: `app/app/scanner/result.tsx`
+- Modified: `app/app/benefits/index.tsx`
+- Modified: `app/app/cart/index.tsx`
+- Modified: `app/components/FAQList.tsx`
+- Modified: `app/lib/i18n/translations/en.json`
+- Modified: `app/lib/i18n/translations/es.json`
 
-**Suggested commit:**
-```
-docs: Consolidate documentation into single source of truth
-
-- Created ROADMAP.md with current status and priorities
-- Created CHANGELOG.md with session-by-session progress
-- Updated README.md with clean project overview
-- Archived 72 old implementation docs to docs/archive/
-- Root now has only 5 essential markdown files
-```
+**Ready for commit when approved.**
 
 ---
 
-## Technical Debt (From ROADMAP.md)
-
-| Item | Impact | Priority |
-|------|--------|----------|
-| Backend product routes disabled | Low | Low |
-| Store data not imported | Medium | Medium |
-| No authentication system | High | Pre-launch |
-
----
-
-*Ready for next session to start coding Formula Features (A4.4-A4.7)*
+*F2 Complete. Help & FAQ is now accessible from home screen and contextually linked from scanner results, benefits, and cart screens.*

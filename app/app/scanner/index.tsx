@@ -3,11 +3,13 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } fr
 import { useRouter } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { checkEligibility } from '@/lib/services/api';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 type ScanMode = 'check' | 'shopping';
 
 export default function Scanner() {
   const router = useRouter();
+  const t = useTranslation();
   const [permission, requestPermission] = useCameraPermissions();
   const [isActive, setIsActive] = useState(true);
   const [scanning, setScanning] = useState(false);
@@ -51,9 +53,9 @@ export default function Scanner() {
     } catch (error) {
       console.error('Error checking eligibility:', error);
       Alert.alert(
-        'Error',
-        'Failed to check product eligibility. Please try again.',
-        [{ text: 'OK', onPress: () => { setIsActive(true); setScanning(false); } }]
+        t('scanner.errorTitle'),
+        t('scanner.errorMessage'),
+        [{ text: t('common.ok'), onPress: () => { setIsActive(true); setScanning(false); } }]
       );
     } finally {
       setScanning(false);
@@ -64,7 +66,7 @@ export default function Scanner() {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#2E7D32" />
-        <Text style={styles.message}>Requesting camera permission...</Text>
+        <Text style={styles.message}>{t('scanner.requestingPermission')}</Text>
       </View>
     );
   }
@@ -72,9 +74,9 @@ export default function Scanner() {
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>Camera permission is required</Text>
+        <Text style={styles.message}>{t('scanner.permissionRequired')}</Text>
         <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-          <Text style={styles.permissionButtonText}>Grant Permission</Text>
+          <Text style={styles.permissionButtonText}>{t('scanner.grantPermission')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -98,7 +100,7 @@ export default function Scanner() {
           onPress={() => setScanMode('check')}
         >
           <Text style={[styles.modeButtonText, scanMode === 'check' && styles.modeButtonTextActive]}>
-            Check Eligibility
+            {t('scanner.checkEligibility')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -106,7 +108,7 @@ export default function Scanner() {
           onPress={() => setScanMode('shopping')}
         >
           <Text style={[styles.modeButtonText, scanMode === 'shopping' && styles.modeButtonTextActive]}>
-            Shopping Mode
+            {t('scanner.shoppingMode')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -126,7 +128,7 @@ export default function Scanner() {
         </View>
         <View style={styles.bottomOverlay}>
           <Text style={styles.instructions}>
-            {scanning ? 'Checking product...' : 'Position barcode in the frame'}
+            {scanning ? t('scanner.checkingProduct') : t('scanner.positionBarcode')}
           </Text>
           {scanning && <ActivityIndicator color="#fff" size="large" />}
         </View>
@@ -137,7 +139,7 @@ export default function Scanner() {
         style={styles.cancelButton}
         onPress={() => router.back()}
       >
-        <Text style={styles.cancelText}>Cancel</Text>
+        <Text style={styles.cancelText}>{t('scanner.cancel')}</Text>
       </TouchableOpacity>
     </View>
   );

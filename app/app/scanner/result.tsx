@@ -3,10 +3,13 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIn
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { getBenefits, addToCart, Participant, getSightings, reportSighting } from '@/lib/services/api';
 import type { ProductSighting, StockLevel } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n/I18nContext';
+import NeedHelpLink from '@/components/NeedHelpLink';
 
 export default function ScanResult() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const t = useTranslation();
 
   const isEligible = params.eligible === 'true';
   const upc = params.upc as string;
@@ -63,7 +66,7 @@ export default function ScanResult() {
 
   const handleAddToCart = async () => {
     if (!selectedParticipantId) {
-      Alert.alert('Select Participant', 'Please select a participant to add this item to cart.');
+      Alert.alert(t('result.selectParticipant'), t('result.selectParticipantMessage'));
       return;
     }
 
@@ -91,22 +94,22 @@ export default function ScanResult() {
 
       const fullProductName = brand ? `${brand} ${name}` : name;
       Alert.alert(
-        'Added to Cart!',
-        `${fullProductName} has been added to your cart.`,
+        t('result.addedToCart'),
+        t('result.addedToCartMessage', { product: fullProductName }),
         [
           {
-            text: 'View Cart',
+            text: t('result.viewCart'),
             onPress: () => router.replace('/cart'),
           },
           {
-            text: 'Continue Shopping',
+            text: t('result.continueShopping'),
             onPress: () => router.replace('/'),
           },
         ]
       );
     } catch (err: any) {
       console.error('Failed to add to cart:', err);
-      Alert.alert('Error', err.message || 'Failed to add item to cart');
+      Alert.alert(t('common.error'), err.message || 'Failed to add item to cart');
     } finally {
       setAdding(false);
     }
@@ -126,7 +129,7 @@ export default function ScanResult() {
 
   const handleReportSighting = async () => {
     if (!reportStoreName.trim()) {
-      Alert.alert('Store Required', 'Please enter the store name.');
+      Alert.alert(t('result.storeRequired'), t('result.enterStoreName'));
       return;
     }
 
@@ -138,7 +141,7 @@ export default function ScanResult() {
         stockLevel: reportStockLevel,
       });
 
-      Alert.alert('Thank You!', 'Your sighting has been reported and will help other WIC participants.');
+      Alert.alert(t('result.thankYou'), t('result.reportSuccess'));
       setShowReportModal(false);
       setReportStoreName('');
       setReportStockLevel('plenty');
@@ -147,7 +150,7 @@ export default function ScanResult() {
       loadSightings();
     } catch (err: any) {
       console.error('Failed to report sighting:', err);
-      Alert.alert('Error', err.message || 'Failed to report sighting');
+      Alert.alert(t('common.error'), err.message || 'Failed to report sighting');
     } finally {
       setReporting(false);
     }
@@ -161,16 +164,16 @@ export default function ScanResult() {
           <Text style={styles.statusIcon}>{isEligible ? '✓' : '✗'}</Text>
         </View>
         <Text style={styles.statusText}>
-          {isEligible ? 'WIC Approved' : 'Not WIC Approved'}
+          {isEligible ? t('result.wicApproved') : t('result.notApproved')}
         </Text>
-        <Text style={styles.statusSubtext}>Michigan</Text>
+        <Text style={styles.statusSubtext}>{t('result.michigan')}</Text>
       </View>
 
       {/* Product Details */}
       <View style={styles.detailsCard}>
         <Text style={styles.productName}>{name}</Text>
         {brand && <Text style={styles.productBrand}>{brand}</Text>}
-        <Text style={styles.upcLabel}>UPC: {upc}</Text>
+        <Text style={styles.upcLabel}>{t('result.upc')}: {upc}</Text>
 
         {category && (
           <View style={styles.categoryBadge}>
@@ -188,12 +191,12 @@ export default function ScanResult() {
       {/* Recent Sightings */}
       <View style={styles.sightingsCard}>
         <View style={styles.sightingsHeader}>
-          <Text style={styles.sightingsTitle}>Community Reports</Text>
+          <Text style={styles.sightingsTitle}>{t('result.communityReports')}</Text>
           <TouchableOpacity
             style={styles.reportButton}
             onPress={() => setShowReportModal(true)}
           >
-            <Text style={styles.reportButtonText}>+ Report Sighting</Text>
+            <Text style={styles.reportButtonText}>{t('result.reportSighting')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -213,31 +216,31 @@ export default function ScanResult() {
                     sighting.stockLevel === 'out' && styles.stockOut,
                   ]}>
                     <Text style={styles.stockBadgeText}>
-                      {sighting.stockLevel === 'plenty' ? 'In Stock' :
-                       sighting.stockLevel === 'some' ? 'Some Left' :
-                       sighting.stockLevel === 'few' ? 'Low Stock' :
-                       'Out of Stock'}
+                      {sighting.stockLevel === 'plenty' ? t('result.inStock') :
+                       sighting.stockLevel === 'some' ? t('result.someLeft') :
+                       sighting.stockLevel === 'few' ? t('result.lowStock') :
+                       t('result.outOfStock')}
                     </Text>
                   </View>
                 </View>
                 <View style={styles.sightingMeta}>
-                  <Text style={styles.sightingAge}>{sighting.ageHours < 1 ? 'Just now' : `${Math.round(sighting.ageHours)}h ago`}</Text>
+                  <Text style={styles.sightingAge}>{sighting.ageHours < 1 ? t('result.justNow') : t('result.hoursAgo', { hours: Math.round(sighting.ageHours) })}</Text>
                   {sighting.distance && (
-                    <Text style={styles.sightingDistance}>{sighting.distance} mi</Text>
+                    <Text style={styles.sightingDistance}>{sighting.distance} {t('result.miles')}</Text>
                   )}
                   <Text style={styles.sightingConfidence}>
-                    {sighting.confidence}% confidence
+                    {t('result.confidence', { percent: sighting.confidence })}
                   </Text>
                 </View>
               </View>
             ))}
             {sightings.length > 3 && (
-              <Text style={styles.sightingsMore}>+{sightings.length - 3} more reports</Text>
+              <Text style={styles.sightingsMore}>{t('result.moreReports', { count: sightings.length - 3 })}</Text>
             )}
           </View>
         ) : (
           <Text style={styles.noSightings}>
-            No recent reports. Be the first to report where you found this product!
+            {t('result.noReports')}
           </Text>
         )}
       </View>
@@ -245,7 +248,7 @@ export default function ScanResult() {
       {/* Participant Selector (for eligible products with add to cart) */}
       {isEligible && category && eligibleParticipants.length > 0 && (
         <View style={styles.participantSelector}>
-          <Text style={styles.selectorTitle}>Select Participant:</Text>
+          <Text style={styles.selectorTitle}>{t('result.selectParticipant')}:</Text>
           {eligibleParticipants.map(participant => {
             const benefit = participant.benefits.find(b => b.category === category);
             return (
@@ -263,7 +266,7 @@ export default function ScanResult() {
                 </View>
                 {benefit && (
                   <Text style={styles.participantAvailable}>
-                    {benefit.available} {benefit.unit} available
+                    {benefit.available} {benefit.unit} {t('result.available')}
                   </Text>
                 )}
               </TouchableOpacity>
@@ -283,7 +286,7 @@ export default function ScanResult() {
             {adding ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={styles.addToCartButtonText}>Add to Cart</Text>
+              <Text style={styles.addToCartButtonText}>{t('result.addToCart')}</Text>
             )}
           </TouchableOpacity>
         )}
@@ -292,34 +295,42 @@ export default function ScanResult() {
           style={styles.primaryButton}
           onPress={() => router.replace('/scanner')}
         >
-          <Text style={styles.primaryButtonText}>Scan Another Product</Text>
+          <Text style={styles.primaryButtonText}>{t('result.scanAnother')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.secondaryButton}
           onPress={() => router.replace('/benefits')}
         >
-          <Text style={styles.secondaryButtonText}>View My Benefits</Text>
+          <Text style={styles.secondaryButtonText}>{t('result.viewMyBenefits')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.textButton}
           onPress={() => router.replace('/')}
         >
-          <Text style={styles.textButtonText}>Back to Home</Text>
+          <Text style={styles.textButtonText}>{t('result.backToHome')}</Text>
         </TouchableOpacity>
       </View>
 
       {/* Help Text */}
       {!isEligible && (
         <View style={styles.helpBox}>
-          <Text style={styles.helpTitle}>Why isn't this approved?</Text>
+          <Text style={styles.helpTitle}>{t('result.whyNotApproved')}</Text>
           <Text style={styles.helpText}>
-            This product may not be on Michigan's WIC Approved Product List (APL).
-            Check the product size, brand, or category - even small differences can affect eligibility.
+            {t('result.notApprovedExplanation')}
           </Text>
         </View>
       )}
+
+      {/* Need Help Link */}
+      <View style={styles.helpLinkContainer}>
+        <NeedHelpLink 
+          variant="card"
+          faqId={!isEligible ? 'checkout-rejected' : 'scan-products'}
+          contextHint={!isEligible ? t('help.learnWhyRejected') : t('help.scanningTips')}
+        />
+      </View>
 
       {/* Report Sighting Modal */}
       <Modal
@@ -330,19 +341,19 @@ export default function ScanResult() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Report Product Sighting</Text>
-            <Text style={styles.modalSubtitle}>Help others find {name}</Text>
+            <Text style={styles.modalTitle}>{t('result.reportProductSighting')}</Text>
+            <Text style={styles.modalSubtitle}>{t('result.helpOthersFind', { product: name })}</Text>
 
-            <Text style={styles.inputLabel}>Store Name</Text>
+            <Text style={styles.inputLabel}>{t('result.storeName')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="e.g., Walmart on Main St"
+              placeholder={t('result.storeNamePlaceholder')}
               value={reportStoreName}
               onChangeText={setReportStoreName}
               autoCapitalize="words"
             />
 
-            <Text style={styles.inputLabel}>Stock Level</Text>
+            <Text style={styles.inputLabel}>{t('result.stockLevel')}</Text>
             <View style={styles.stockLevelButtons}>
               {(['plenty', 'some', 'few', 'out'] as StockLevel[]).map((level) => (
                 <TouchableOpacity
@@ -357,10 +368,10 @@ export default function ScanResult() {
                     styles.stockLevelButtonText,
                     reportStockLevel === level && styles.stockLevelButtonTextSelected,
                   ]}>
-                    {level === 'plenty' ? 'Plenty' :
-                     level === 'some' ? 'Some' :
-                     level === 'few' ? 'Low' :
-                     'Out'}
+                    {level === 'plenty' ? t('result.plenty') :
+                     level === 'some' ? t('result.some') :
+                     level === 'few' ? t('result.low') :
+                     t('result.out')}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -375,7 +386,7 @@ export default function ScanResult() {
                   setReportStockLevel('plenty');
                 }}
               >
-                <Text style={styles.modalButtonCancelText}>Cancel</Text>
+                <Text style={styles.modalButtonCancelText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, styles.modalButtonSubmit]}
@@ -385,7 +396,7 @@ export default function ScanResult() {
                 {reporting ? (
                   <ActivityIndicator color="#fff" />
                 ) : (
-                  <Text style={styles.modalButtonSubmitText}>Submit Report</Text>
+                  <Text style={styles.modalButtonSubmitText}>{t('result.submitReport')}</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -611,6 +622,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#856404',
     lineHeight: 20,
+  },
+  helpLinkContainer: {
+    marginHorizontal: 20,
+    marginBottom: 20,
   },
   sightingsCard: {
     backgroundColor: '#fff',

@@ -232,3 +232,79 @@ export interface ParticipantFormula {
     imageUrl: string | null;
   } | null;
 }
+
+// ==================== Cross-Store Search Types ====================
+
+export interface CrossStoreSearchRequest {
+  lat: number;
+  lng: number;
+  radiusMiles?: number;
+  upc?: string;
+  upcs?: string[];
+  brand?: string;
+  formulaType?: FormulaType;
+  searchQuery?: string;
+  inStockOnly?: boolean;
+  maxAgeHours?: number;
+  wicAuthorizedOnly?: boolean;
+}
+
+export interface CrossStoreAvailability {
+  status: 'in_stock' | 'low_stock' | 'out_of_stock';
+  quantityRange: 'few' | 'some' | 'plenty' | null;
+  lastReportedAt: string;
+  lastReportedAgo: string;
+  confidence: number;
+  totalReports: number;
+  formulasInStock: string[];
+}
+
+export interface CrossStoreResult {
+  storeId: string;
+  chain: string;
+  name: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+  phone: string | null;
+  wicAuthorized: boolean;
+  distanceMiles: number;
+  availability: CrossStoreAvailability | null;
+  likelihood: {
+    level: LikelihoodLevel;
+    notes: string | null;
+  } | null;
+  score: number;
+}
+
+export interface CrossStoreSearchResponse {
+  success: boolean;
+  searchCriteria: CrossStoreSearchRequest;
+  matchedFormulas: {
+    upc: string;
+    brand: string;
+    productName: string;
+    formulaType: FormulaType;
+    form: FormulaForm;
+    size: string | null;
+    sizeOz: number | null;
+  }[];
+  stores: CrossStoreResult[];
+  count: number;
+  message?: string;
+}
+
+export interface FormulaBrand {
+  name: string;
+  formulaCount: number;
+}
+
+// Re-export FAQ types
+export * from './faq';

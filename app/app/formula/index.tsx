@@ -379,6 +379,23 @@ export default function FormulaFinder() {
         </View>
       )}
 
+      {/* Advanced Search Link */}
+      <TouchableOpacity
+        style={styles.advancedSearchCard}
+        onPress={() => router.push('/formula/cross-store-search')}
+      >
+        <View style={styles.advancedSearchContent}>
+          <Text style={styles.advancedSearchIcon}>🔍</Text>
+          <View style={styles.advancedSearchText}>
+            <Text style={styles.advancedSearchTitle}>Advanced Cross-Store Search</Text>
+            <Text style={styles.advancedSearchSubtitle}>
+              Search by brand, type, or name across all stores
+            </Text>
+          </View>
+        </View>
+        <Text style={styles.advancedSearchArrow}>→</Text>
+      </TouchableOpacity>
+
       {/* Info Section */}
       <View style={styles.infoCard}>
         <Text style={styles.infoTitle}>About Formula Finder</Text>
@@ -706,5 +723,45 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '700',
+  },
+  advancedSearchCard: {
+    backgroundColor: '#fff',
+    margin: 16,
+    marginTop: 8,
+    padding: 16,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 2,
+    borderColor: '#E3F2FD',
+    borderStyle: 'dashed',
+  },
+  advancedSearchContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  advancedSearchIcon: {
+    fontSize: 28,
+    marginRight: 12,
+  },
+  advancedSearchText: {
+    flex: 1,
+  },
+  advancedSearchTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1976D2',
+  },
+  advancedSearchSubtitle: {
+    fontSize: 13,
+    color: '#666',
+    marginTop: 2,
+  },
+  advancedSearchArrow: {
+    fontSize: 20,
+    color: '#1976D2',
+    fontWeight: 'bold',
   },
 });

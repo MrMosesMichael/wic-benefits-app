@@ -14,7 +14,11 @@ import type {
   Store,
   StoreResult,
   QuantitySeen,
-  ParticipantFormula
+  ParticipantFormula,
+  CrossStoreSearchRequest,
+  CrossStoreSearchResponse,
+  CrossStoreResult,
+  FormulaBrand
 } from '../types';
 import { checkEligibilityOffline, getTotalProductCount } from './offlineEligibility';
 import { loadHousehold } from './householdStorage';
@@ -1031,6 +1035,91 @@ export async function rolloverBenefitPeriod(
     if (error.response?.data?.error) {
       throw new Error(error.response.data.error);
     }
+    throw error;
+  }
+}
+
+// ==================== Cross-Store Search API ====================
+
+/**
+ * Search for formula availability across multiple stores
+ * Supports searching by UPC, brand, formula type, or free text
+ */
+export async function crossStoreSearch(
+  request: CrossStoreSearchRequest
+): Promise<CrossStoreSearchResponse> {
+  try {
+    const response = await api.post('/cross-store-search', request);
+    if (response.data.success) {
+      return response.data;
+    }
+    throw new Error(response.data.error || 'Search failed');
+  } catch (error: any) {
+    console.error('Cross-store search failed:', error);
+    if (error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
+    throw error;
+  }
+}
+
+/**
+ * Quick search for a specific UPC across stores
+ */
+export async function quickCrossStoreSearch(
+  upc: string,
+  lat: number,
+  lng: number,
+  radiusMiles: number = 25
+): Promise<{
+  formula: WicFormula | null;
+  stores: Array<{
+    storeName: string;
+    storeAddress: string;
+    location: { latitude: number; longitude: number } | null;
+    distanceMiles: number | null;
+    status: string;
+    quantityRange: string | null;
+    lastReportedAt: string;
+    lastReportedAgo: string;
+    confidence: number;
+    reportCount: number;
+  }>;
+  count: number;
+}> {
+  try {
+    const response = await api.get(
+      `/cross-store-search/quick/${upc}?lat=${lat}&lng=${lng}&radius=${radiusMiles}`
+    );
+    if (response.data.success) {
+      return {
+        formula: response.data.formula,
+        stores: response.data.stores,
+        count: response.data.count
+      };
+    }
+    throw new Error(response.data.error || 'Search failed');
+  } catch (error: any) {
+    console.error('Quick cross-store search failed:', error);
+    if (error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
+    throw error;
+  }
+}
+
+/**
+ * Get available formula brands for search autocomplete
+ */
+export async function getFormulaBrands(): Promise<FormulaBrand[]> {
+  try {
+    const response = await api.get('/cross-store-search/brands');
+    if (response.data.success) {
+      return response.data.brands;
+    }
+    throw new Error('Failed to fetch brands');
+  } catch (error) {
+    console.error('Failed to fetch formula brands:', error);
     throw error;
   }
 }

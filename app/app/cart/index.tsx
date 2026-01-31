@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { getCart, removeFromCart, clearCart, checkout, Cart } from '@/lib/services/api';
+import { useTranslation } from '@/lib/i18n/I18nContext';
+import NeedHelpLink from '@/components/NeedHelpLink';
 
 export default function CartScreen() {
   const router = useRouter();
+  const t = useTranslation();
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,12 +31,12 @@ export default function CartScreen() {
 
   const handleRemoveItem = (itemId: string, productName: string) => {
     Alert.alert(
-      'Remove Item',
-      `Remove ${productName} from cart?`,
+      t('cart.removeItem'),
+      t('cart.removeItemConfirm', { product: productName }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Remove',
+          text: t('cart.remove'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -41,7 +44,7 @@ export default function CartScreen() {
               await loadCart();
             } catch (err) {
               console.error('Failed to remove item:', err);
-              Alert.alert('Error', 'Failed to remove item from cart');
+              Alert.alert(t('common.error'), 'Failed to remove item from cart');
             }
           },
         },
@@ -55,12 +58,12 @@ export default function CartScreen() {
     }
 
     Alert.alert(
-      'Clear Cart',
-      `Remove all ${cart.items.length} item(s) from cart?`,
+      t('cart.clearCart'),
+      t('cart.clearCartConfirm', { count: cart.items.length }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Clear All',
+          text: t('cart.clearAll'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -68,7 +71,7 @@ export default function CartScreen() {
               await loadCart();
             } catch (err) {
               console.error('Failed to clear cart:', err);
-              Alert.alert('Error', 'Failed to clear cart');
+              Alert.alert(t('common.error'), 'Failed to clear cart');
             }
           },
         },
@@ -78,30 +81,30 @@ export default function CartScreen() {
 
   const handleCheckout = () => {
     if (!cart || cart.items.length === 0) {
-      Alert.alert('Empty Cart', 'Your cart is empty. Add items to checkout.');
+      Alert.alert(t('cart.emptyCartTitle'), t('cart.emptyCartMessage'));
       return;
     }
 
     Alert.alert(
-      'Confirm Checkout',
-      `Complete purchase of ${cart.items.length} item(s)?`,
+      t('cart.confirmCheckout'),
+      t('cart.confirmCheckoutMessage', { count: cart.items.length }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Checkout',
+          text: t('cart.checkout'),
           onPress: async () => {
             try {
               const result = await checkout();
               Alert.alert(
-                'Checkout Complete!',
-                `${result.itemsProcessed} items purchased successfully.`,
+                t('cart.checkoutComplete'),
+                t('cart.checkoutSuccess', { count: result.itemsProcessed }),
                 [
                   {
-                    text: 'View Benefits',
+                    text: t('home.viewBenefits'),
                     onPress: () => router.push('/benefits'),
                   },
                   {
-                    text: 'Continue Shopping',
+                    text: t('result.continueShopping'),
                     onPress: () => router.push('/scanner'),
                   },
                 ]
@@ -109,7 +112,7 @@ export default function CartScreen() {
               await loadCart();
             } catch (err: any) {
               console.error('Checkout failed:', err);
-              Alert.alert('Checkout Failed', err.message || 'Failed to complete checkout');
+              Alert.alert(t('cart.checkoutFailed'), err.message || 'Failed to complete checkout');
             }
           },
         },
@@ -121,7 +124,7 @@ export default function CartScreen() {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color="#2E7D32" />
-        <Text style={styles.loadingText}>Loading cart...</Text>
+        <Text style={styles.loadingText}>{t('cart.loading')}</Text>
       </View>
     );
   }
@@ -129,9 +132,9 @@ export default function CartScreen() {
   if (error) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>{error}</Text>
+        <Text style={styles.errorText}>{t('cart.failedToLoad')}</Text>
         <TouchableOpacity style={styles.retryButton} onPress={loadCart}>
-          <Text style={styles.retryButtonText}>Retry</Text>
+          <Text style={styles.retryButtonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -141,13 +144,13 @@ export default function CartScreen() {
     return (
       <View style={styles.centerContainer}>
         <Text style={styles.emptyIcon}>🛒</Text>
-        <Text style={styles.emptyTitle}>Your cart is empty</Text>
-        <Text style={styles.emptySubtitle}>Scan products to add them to your cart</Text>
+        <Text style={styles.emptyTitle}>{t('cart.emptyCart')}</Text>
+        <Text style={styles.emptySubtitle}>{t('cart.emptyCartSubtitle')}</Text>
         <TouchableOpacity
           style={styles.startScanningButton}
           onPress={() => router.push('/scanner')}
         >
-          <Text style={styles.startScanningButtonText}>Start Scanning</Text>
+          <Text style={styles.startScanningButtonText}>{t('cart.startScanning')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -165,8 +168,8 @@ export default function CartScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Shopping Cart</Text>
-        <Text style={styles.itemCount}>{cart.items.length} item(s)</Text>
+        <Text style={styles.title}>{t('cart.title')}</Text>
+        <Text style={styles.itemCount}>{t('cart.itemCount', { count: cart.items.length })}</Text>
       </View>
 
       <ScrollView style={styles.scrollView}>
@@ -198,7 +201,7 @@ export default function CartScreen() {
                     style={styles.removeButton}
                     onPress={() => handleRemoveItem(item.id, item.product_name)}
                   >
-                    <Text style={styles.removeButtonText}>Remove</Text>
+                    <Text style={styles.removeButtonText}>{t('cart.remove')}</Text>
                   </TouchableOpacity>
                 </View>
               ))}
@@ -211,8 +214,16 @@ export default function CartScreen() {
             style={styles.clearButton}
             onPress={handleClearCart}
           >
-            <Text style={styles.clearButtonText}>Clear All Items</Text>
+            <Text style={styles.clearButtonText}>{t('cart.clearAllItems')}</Text>
           </TouchableOpacity>
+        </View>
+
+        <View style={styles.helpLinkContainer}>
+          <NeedHelpLink 
+            variant="card"
+            faqId="checkout-rejected"
+            contextHint={t('help.checkoutTips')}
+          />
         </View>
       </ScrollView>
 
@@ -221,7 +232,7 @@ export default function CartScreen() {
           style={styles.checkoutButton}
           onPress={handleCheckout}
         >
-          <Text style={styles.checkoutButtonText}>Checkout ({cart.items.length})</Text>
+          <Text style={styles.checkoutButtonText}>{t('cart.checkout')} ({cart.items.length})</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -399,6 +410,10 @@ const styles = StyleSheet.create({
   },
   actionsContainer: {
     padding: 16,
+  },
+  helpLinkContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   clearButton: {
     backgroundColor: '#fff',

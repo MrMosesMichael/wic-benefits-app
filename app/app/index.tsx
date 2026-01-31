@@ -1,46 +1,55 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 export default function Home() {
   const router = useRouter();
+  const t = useTranslation();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>WIC Benefits Assistant</Text>
-      <Text style={styles.subtitle}>Michigan Edition</Text>
+      <Text style={styles.title}>{t('app.title')}</Text>
+      <Text style={styles.subtitle}>{t('app.subtitle')}</Text>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.formulaButton}
           onPress={() => router.push('/formula')}
         >
-          <Text style={styles.buttonText}>🍼 Find Formula</Text>
-          <Text style={styles.buttonSubtext}>Find infant formula nearby</Text>
+          <Text style={styles.buttonText}>🍼 {t('home.findFormula')}</Text>
+          <Text style={styles.buttonSubtext}>{t('home.findFormulaSubtext')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => router.push('/scanner')}
         >
-          <Text style={styles.buttonText}>Scan Product</Text>
+          <Text style={styles.buttonText}>{t('home.scanProduct')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.secondaryButton}
           onPress={() => router.push('/benefits')}
         >
-          <Text style={styles.buttonText}>View Benefits</Text>
+          <Text style={styles.buttonText}>{t('home.viewBenefits')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.cartButton}
           onPress={() => router.push('/cart')}
         >
-          <Text style={styles.buttonText}>Shopping Cart</Text>
+          <Text style={styles.buttonText}>{t('home.shoppingCart')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.helpButton}
+          onPress={() => router.push('/help')}
+        >
+          <Text style={styles.helpButtonText}>❓ {t('home.helpFaq')}</Text>
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.footer}>Vertical Slice MVP v0.1</Text>
+      <Text style={styles.footer}>{t('app.version')}</Text>
     </View>
   );
 }
@@ -104,6 +113,19 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.9)',
     fontSize: 13,
     marginTop: 4,
+  },
+  helpButton: {
+    backgroundColor: '#fff',
+    padding: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#1976D2',
+  },
+  helpButtonText: {
+    color: '#1976D2',
+    fontSize: 16,
+    fontWeight: '600',
   },
   footer: {
     marginTop: 40,

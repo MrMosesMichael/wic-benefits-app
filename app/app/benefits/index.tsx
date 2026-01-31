@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { getBenefits, Household } from '@/lib/services/api';
-import { useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n/I18nContext';
+import NeedHelpLink from '@/components/NeedHelpLink';
 
 export default function Benefits() {
   const router = useRouter();
+  const t = useTranslation();
   const [household, setHousehold] = useState<Household | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -41,7 +43,7 @@ export default function Benefits() {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color="#2E7D32" />
-        <Text style={styles.loadingText}>Loading benefits...</Text>
+        <Text style={styles.loadingText}>{t('benefits.loading')}</Text>
       </View>
     );
   }
@@ -49,9 +51,9 @@ export default function Benefits() {
   if (error) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>{error}</Text>
+        <Text style={styles.errorText}>{t('benefits.failedToLoad')}</Text>
         <TouchableOpacity style={styles.retryButton} onPress={loadBenefits}>
-          <Text style={styles.retryButtonText}>Retry</Text>
+          <Text style={styles.retryButtonText}>{t('benefits.retry')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -60,18 +62,18 @@ export default function Benefits() {
   if (!household || household.participants.length === 0) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.emptyTitle}>No Benefits Configured</Text>
+        <Text style={styles.emptyTitle}>{t('benefits.noBenefitsTitle')}</Text>
         <Text style={styles.emptyText}>
-          Set up your household and benefits to get started
+          {t('benefits.noBenefitsMessage')}
         </Text>
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => router.push('/benefits/household-setup')}
         >
-          <Text style={styles.primaryButtonText}>Set Up Household</Text>
+          <Text style={styles.primaryButtonText}>{t('benefits.setupHousehold')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-          <Text style={styles.buttonText}>Back to Home</Text>
+          <Text style={styles.buttonText}>{t('result.backToHome')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -87,14 +89,14 @@ export default function Benefits() {
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <View>
-            <Text style={styles.title}>My Benefits</Text>
-            <Text style={styles.subtitle}>Michigan WIC</Text>
+            <Text style={styles.title}>{t('benefits.title')}</Text>
+            <Text style={styles.subtitle}>{t('benefits.michiganWic')}</Text>
           </View>
           <TouchableOpacity
             style={styles.setupButton}
             onPress={() => router.push('/benefits/household-setup')}
           >
-            <Text style={styles.setupButtonText}>Setup</Text>
+            <Text style={styles.setupButtonText}>{t('benefits.setup')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -110,7 +112,7 @@ export default function Benefits() {
 
           <View style={styles.benefitsList}>
             {participant.benefits.length === 0 ? (
-              <Text style={styles.noBenefitsText}>No active benefits</Text>
+              <Text style={styles.noBenefitsText}>{t('benefits.noActiveBenefits')}</Text>
             ) : (
               participant.benefits.map((benefit, index) => {
                 const consumed = parseFloat(benefit.consumed);
@@ -141,25 +143,25 @@ export default function Benefits() {
                     <View style={styles.stateLabels}>
                       <View style={styles.stateLabel}>
                         <View style={[styles.stateDot, styles.consumedDot]} />
-                        <Text style={styles.stateLabelText}>Used: {benefit.consumed} {benefit.unit}</Text>
+                        <Text style={styles.stateLabelText}>{t('benefits.used')}: {benefit.consumed} {benefit.unit}</Text>
                       </View>
                       <View style={styles.stateLabel}>
                         <View style={[styles.stateDot, styles.inCartDot]} />
-                        <Text style={styles.stateLabelText}>In Cart: {benefit.inCart} {benefit.unit}</Text>
+                        <Text style={styles.stateLabelText}>{t('benefits.inCart')}: {benefit.inCart} {benefit.unit}</Text>
                       </View>
                       <View style={styles.stateLabel}>
                         <View style={[styles.stateDot, styles.availableDot]} />
-                        <Text style={styles.stateLabelText}>Available: {benefit.available} {benefit.unit}</Text>
+                        <Text style={styles.stateLabelText}>{t('benefits.available')}: {benefit.available} {benefit.unit}</Text>
                       </View>
                     </View>
 
                     <Text style={styles.total}>
-                      Total: {benefit.total} {benefit.unit}
+                      {t('benefits.total')}: {benefit.total} {benefit.unit}
                     </Text>
 
                     {benefit.periodEnd && (
                       <Text style={styles.expiration}>
-                        Expires: {new Date(benefit.periodEnd).toLocaleDateString()}
+                        {t('benefits.expires')}: {new Date(benefit.periodEnd).toLocaleDateString()}
                       </Text>
                     )}
                   </View>
@@ -172,8 +174,16 @@ export default function Benefits() {
 
       <View style={styles.notice}>
         <Text style={styles.noticeText}>
-          💡 Benefits shown are for the current period. Unused benefits do not roll over to the next month.
+          💡 {t('benefits.notice')}
         </Text>
+      </View>
+
+      <View style={styles.helpLinkContainer}>
+        <NeedHelpLink 
+          variant="card"
+          faqId="benefit-states"
+          contextHint={t('help.understandBenefits')}
+        />
       </View>
 
       <View style={styles.buttonContainer}>
@@ -181,28 +191,28 @@ export default function Benefits() {
           style={styles.periodButton}
           onPress={() => router.push('/benefits/period-settings')}
         >
-          <Text style={styles.periodButtonText}>Manage Benefit Period</Text>
+          <Text style={styles.periodButtonText}>{t('benefits.managePeriod')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.addBenefitButton}
           onPress={() => router.push('/benefits/manual-entry')}
         >
-          <Text style={styles.addBenefitButtonText}>Add Benefits Manually</Text>
+          <Text style={styles.addBenefitButtonText}>{t('benefits.addManually')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.scanButton}
           onPress={() => router.push('/scanner')}
         >
-          <Text style={styles.scanButtonText}>Scan Products</Text>
+          <Text style={styles.scanButtonText}>{t('benefits.scanProducts')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.homeButton}
           onPress={() => router.back()}
         >
-          <Text style={styles.homeButtonText}>Back to Home</Text>
+          <Text style={styles.homeButtonText}>{t('result.backToHome')}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -427,6 +437,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#856404',
     lineHeight: 18,
+  },
+  helpLinkContainer: {
+    marginHorizontal: 16,
+    marginBottom: 8,
   },
   buttonContainer: {
     paddingHorizontal: 16,
