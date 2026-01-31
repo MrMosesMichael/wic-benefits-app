@@ -97,9 +97,10 @@ export interface CartItem {
 }
 
 export interface Cart {
-  cartId: string;
+  household_id?: string;
   items: CartItem[];
-  itemCount: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 /**
