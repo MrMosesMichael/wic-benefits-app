@@ -1,120 +1,132 @@
-# CLAUDE.md - WIC Benefits App
+# CLAUDE.md — WIC Benefits App
 
-> Instructions for Claude Code. Read this on every session start.
+> Instructions for Claude Code. Read on every session start.
 
 ## Quick Start
 
-**Project**: WIC Benefits Assistant - Mobile app for WIC participants
-**Stack**: React Native + Expo, TypeScript, Node.js/PostgreSQL
-**Repo**: https://github.com/MrMosesMichael/wic-benefits-app
+**Project:** WIC Benefits Assistant — Mobile app for WIC participants  
+**Stack:** React Native + Expo, TypeScript, Node.js/PostgreSQL  
+**Production:** https://mdmichael.com/wic/
 
-### On "resume" or session start:
-1. Read `.claude/SESSION_STATE.md` for current work state
-2. Read `.orchestrator-logs/STATUS.md` for orchestrator status
-3. For deeper context: `.claude/MEMORY.md`
+### On Session Start
+1. Read `ROADMAP.md` — what's done, what's next
+2. Read `.claude/SESSION_STATE.md` — current work state
+3. For history: `CHANGELOG.md`
 
-### On "save state" or session end:
+### On Session End
 1. Update `.claude/SESSION_STATE.md`
-2. Commit uncommitted work to GitHub
-3. Report what to do next session
+2. Commit uncommitted work
+3. Note what to do next session
 
-## Session Checkpointing (Ralph Loop Pattern)
-
-> Based on https://ghuntley.com/loop/ - enables seamless session handoffs
-
-### Handoff Commands
-
-| Command | Action |
-|---------|--------|
-| **"checkpoint"** | Write current progress to SESSION_STATE.md immediately |
-| **"save and close"** | Full state dump + commit + what to do next session |
-| **"resume"** | Read SESSION_STATE.md and continue from where we left off |
-
-### Checkpoint Protocol
-
-When working on multi-step tasks:
-
-1. **After each logical step**: Update the `## Progress` section in SESSION_STATE.md
-2. **On any significant decision**: Add to `## Decisions Made` section
-3. **Before risky operations**: Checkpoint first so we can recover
-4. **When user says "checkpoint"**: Immediately write full state
-
-### What to Checkpoint
-
-```markdown
-## Current Task
-[Specific task being worked on]
-
-## Progress
-- [x] Completed step (with brief outcome)
-- [ ] Next step (IN PROGRESS) ← mark current step
-- [ ] Upcoming step
-
-## Files Modified
-- `path/to/file.ts` - what changed and why
-
-## Decisions Made
-- Decision: rationale (so fresh session understands why)
-
-## Blockers / Questions
-- Any unresolved issues
-
-## Next Action (for fresh session)
-[Exactly what to do next - be specific enough that a fresh session can continue]
-```
-
-### Why This Matters
-
-- **Token limits**: When you hit limits, say "checkpoint" before closing
-- **Rate limits**: Checkpoint progress, then resume in new session
-- **Fresh sessions are better**: Less accumulated context = more efficient
-- **No lost work**: External state survives session boundaries
+---
 
 ## Project Structure
 
 ```
 wic_project/
-├── orchestrator.sh              # Automated task runner
-├── specs/wic-benefits-app/
-│   ├── tasks.md                 # Master task list [x]=done [~]=progress [ ]=pending
-│   ├── design.md                # Architecture & data models
-│   └── specs/                   # Feature specifications
-├── src/                         # Implementation code
-├── .claude/                     # Memory system
-│   ├── MEMORY.md               # Persistent context (decisions, milestones)
-│   └── SESSION_STATE.md        # Current session state
-└── .orchestrator-logs/
-    ├── STATUS.md               # Quick orchestrator status
-    └── *.log                   # Detailed logs
+├── app/                    # React Native + Expo mobile app
+├── backend/                # Node.js/Express API
+├── deployment/             # Docker, landing page
+├── docs/                   # Feature guides (active)
+│   └── archive/            # Old implementation summaries (72 files)
+├── ROADMAP.md              # ⭐ Single source of truth for status/priorities
+├── CHANGELOG.md            # Session-by-session progress
+├── ARCHITECTURE.md         # Technical design
+├── CLAUDE.md               # This file
+└── .claude/
+    ├── SESSION_STATE.md    # Current work state
+    └── MEMORY.md           # Long-term decisions
 ```
+
+---
 
 ## Core Concepts
 
-1. **Three-state benefits**: Available (green) → In Cart (amber) → Consumed (gray)
-2. **Hybrid household view**: Unified view with participant filter chips
-3. **Scan modes**: "Check Eligibility" (default) vs "Shopping Mode"
-4. **Priority States**: Michigan, North Carolina, Florida, Oregon
+1. **Three-state benefits:** Available (green) → In Cart (amber) → Consumed (gray)
+2. **Hybrid household view:** Unified view with participant filter chips
+3. **Scan modes:** "Check Eligibility" (default) vs "Shopping Mode"
+4. **Priority States:** Michigan (working), NC, FL, OR (planned)
+
+---
 
 ## Key Commands
 
+### Backend
 ```bash
-./orchestrator.sh --status              # Orchestrator status
-./orchestrator.sh --daemon --phase 2    # Start daemon
-ps aux | grep orchestrator              # Check if running
-tail -20 .orchestrator-logs/orchestrator.log  # Recent logs
+cd backend
+npm run dev                          # Start dev server
+npm run detect-shortages             # Run shortage detection
 ```
 
-## Token Efficiency Rules
+### Mobile App
+```bash
+cd app
+npx expo start                       # Start Expo dev server
+```
 
-1. Read memory files first, not full specs
-2. Be concise in responses
-3. Batch tool calls in parallel
-4. Start fresh sessions daily
-5. Orchestrator uses haiku for simple tasks
+### Android Build
+```bash
+export JAVA_HOME=/usr/local/opt/openjdk@17
+cd app
+./android/gradlew -p android assembleRelease
+# APK: android/app/build/outputs/apk/release/app-release.apk
+```
+
+### Production (VPS)
+```bash
+cd deployment
+docker compose up -d                 # Start backend
+docker compose logs -f backend       # View logs
+docker compose down                  # Stop
+```
+
+---
+
+## Current Priorities
+
+See `ROADMAP.md` for full details. Quick summary:
+
+1. **Finish Formula Features (A4.4-A4.7)** — Cross-store search, alternatives, alerts
+2. **Help & FAQ System** — Harm prevention, prevents wasted trips
+3. **Spanish Support** — 40% of WIC users
+4. **Food Bank Finder** — Supplemental aid
+5. **Multi-state APL** — NC, FL, OR
+
+---
+
+## Session Checkpointing
+
+When working on multi-step tasks, checkpoint to `.claude/SESSION_STATE.md`:
+
+```markdown
+## Current Task
+[What you're working on]
+
+## Progress
+- [x] Completed step
+- [ ] Next step (IN PROGRESS)
+- [ ] Upcoming
+
+## Files Modified
+- `path/to/file` - what changed
+
+## Next Action
+[Exactly what to do next]
+```
+
+---
+
+## Token Efficiency
+
+1. Read ROADMAP.md first, not old specs
+2. Be concise
+3. Batch tool calls
+4. Don't read archived docs unless needed
+
+---
 
 ## User Preferences
 
 - Token efficiency over speed
-- Orchestrator runs overnight independently
-- Fresh sessions daily (close when limit hit)
-- Orchestrator waits on rate limits
+- Fresh sessions daily
+- Orchestrator can run overnight independently
