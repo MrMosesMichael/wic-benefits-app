@@ -16,6 +16,7 @@ import * as Location from 'expo-location';
 import { crossStoreSearch, getFormulaBrands, getWicFormulas } from '@/lib/services/api';
 import CrossStoreSearchResults from '@/components/CrossStoreSearchResults';
 import type { CrossStoreResult, CrossStoreSearchRequest, WicFormula, FormulaBrand, FormulaType } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 type SearchMode = 'text' | 'brand' | 'type';
 
@@ -31,8 +32,9 @@ const FORMULA_TYPES: { value: FormulaType; label: string; icon: string }[] = [
 
 export default function CrossStoreSearchScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ 
-    upc?: string; 
+  const t = useTranslation();
+  const params = useLocalSearchParams<{
+    upc?: string;
     brand?: string;
     formulaType?: string;
     autoSearch?: string;
@@ -87,7 +89,7 @@ export default function CrossStoreSearchScreen() {
       setLoadingLocation(true);
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setLocationError('Location permission required to search nearby stores.');
+        setLocationError(t('crossStoreSearch.locationError'));
         return;
       }
 
@@ -101,7 +103,7 @@ export default function CrossStoreSearchScreen() {
       setLocationError(null);
     } catch (error) {
       console.error('Failed to get location:', error);
-      setLocationError('Could not get your location. Please try again.');
+      setLocationError(t('crossStoreSearch.locationErrorRetry'));
     } finally {
       setLoadingLocation(false);
     }
@@ -121,7 +123,7 @@ export default function CrossStoreSearchScreen() {
 
   const handleSearch = async () => {
     if (!location) {
-      Alert.alert('Location Required', 'Please enable location services to search for stores.');
+      Alert.alert(t('crossStoreSearch.locationRequired'), t('crossStoreSearch.locationRequiredMessage'));
       return;
     }
 
@@ -143,7 +145,7 @@ export default function CrossStoreSearchScreen() {
     } else if (searchMode === 'type' && selectedType) {
       request.formulaType = selectedType;
     } else if (!params.upc) {
-      Alert.alert('Search Required', 'Please enter a search term, select a brand, or choose a formula type.');
+      Alert.alert(t('crossStoreSearch.searchRequired'), t('crossStoreSearch.searchRequiredMessage'));
       return;
     }
 
@@ -156,7 +158,7 @@ export default function CrossStoreSearchScreen() {
       setMatchedFormulas(response.matchedFormulas);
     } catch (error) {
       console.error('Search failed:', error);
-      Alert.alert('Search Failed', 'Unable to search for formula. Please try again.');
+      Alert.alert(t('crossStoreSearch.searchFailed'), t('crossStoreSearch.searchFailedMessage'));
     } finally {
       setLoading(false);
     }
@@ -174,7 +176,7 @@ export default function CrossStoreSearchScreen() {
         onPress={() => setSearchMode('text')}
       >
         <Text style={[styles.modeButtonText, searchMode === 'text' && styles.modeButtonTextActive]}>
-          🔍 Search
+          🔍 {t('crossStoreSearch.searchMode')}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -182,7 +184,7 @@ export default function CrossStoreSearchScreen() {
         onPress={() => setSearchMode('brand')}
       >
         <Text style={[styles.modeButtonText, searchMode === 'brand' && styles.modeButtonTextActive]}>
-          🏷️ By Brand
+          🏷️ {t('crossStoreSearch.byBrand')}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -190,7 +192,7 @@ export default function CrossStoreSearchScreen() {
         onPress={() => setSearchMode('type')}
       >
         <Text style={[styles.modeButtonText, searchMode === 'type' && styles.modeButtonTextActive]}>
-          📋 By Type
+          📋 {t('crossStoreSearch.byType')}
         </Text>
       </TouchableOpacity>
     </View>
@@ -202,7 +204,7 @@ export default function CrossStoreSearchScreen() {
         <View style={styles.searchInputContainer}>
           <TextInput
             style={styles.searchInput}
-            placeholder="Search by name, brand, or UPC..."
+            placeholder={t('crossStoreSearch.searchByName')}
             value={searchQuery}
             onChangeText={setSearchQuery}
             onSubmitEditing={handleSearch}
@@ -288,10 +290,10 @@ export default function CrossStoreSearchScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={styles.backButtonText}>← {t('common.back')}</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Find Formula</Text>
-        <Text style={styles.subtitle}>Search across multiple stores</Text>
+        <Text style={styles.title}>{t('crossStoreSearch.title')}</Text>
+        <Text style={styles.subtitle}>{t('crossStoreSearch.subtitle')}</Text>
       </View>
 
       {/* Location Status */}
@@ -299,7 +301,7 @@ export default function CrossStoreSearchScreen() {
         <View style={styles.locationError}>
           <Text style={styles.locationErrorText}>{locationError}</Text>
           <TouchableOpacity onPress={requestLocation}>
-            <Text style={styles.retryLink}>Retry</Text>
+            <Text style={styles.retryLink}>{t('crossStoreSearch.retry')}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -312,7 +314,7 @@ export default function CrossStoreSearchScreen() {
         {/* If UPC provided, show formula info */}
         {params.upc && matchedFormulas.length > 0 && (
           <View style={styles.formulaInfoCard}>
-            <Text style={styles.formulaInfoLabel}>Searching for:</Text>
+            <Text style={styles.formulaInfoLabel}>{t('crossStoreSearch.searchingFor')}</Text>
             <Text style={styles.formulaInfoName}>
               {matchedFormulas[0].brand} {matchedFormulas[0].productName}
             </Text>
@@ -354,7 +356,7 @@ export default function CrossStoreSearchScreen() {
               styles.filterToggleText,
               inStockOnly && styles.filterToggleTextActive
             ]}>
-              In Stock Only
+              {t('crossStoreSearch.inStockOnly')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -372,7 +374,7 @@ export default function CrossStoreSearchScreen() {
             <ActivityIndicator color="#fff" />
           ) : (
             <Text style={styles.searchButtonText}>
-              {loadingLocation ? 'Getting Location...' : 'Search Stores'}
+              {loadingLocation ? t('crossStoreSearch.gettingLocation') : t('crossStoreSearch.searchButton')}
             </Text>
           )}
         </TouchableOpacity>
@@ -383,7 +385,7 @@ export default function CrossStoreSearchScreen() {
         {loading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#1976D2" />
-            <Text style={styles.loadingText}>Searching nearby stores...</Text>
+            <Text style={styles.loadingText}>{t('crossStoreSearch.searchingStores')}</Text>
           </View>
         ) : searchPerformed ? (
           <CrossStoreSearchResults
@@ -391,16 +393,16 @@ export default function CrossStoreSearchScreen() {
             onStorePress={handleStorePress}
             emptyMessage={
               inStockOnly
-                ? 'No stores with recent in-stock reports found. Try expanding your search.'
-                : 'No stores found. Try a wider search radius or different search terms.'
+                ? t('crossStoreSearch.noStoresInStock')
+                : t('crossStoreSearch.noStoresFound')
             }
           />
         ) : (
           <View style={styles.initialState}>
             <Text style={styles.initialIcon}>🍼</Text>
-            <Text style={styles.initialTitle}>Find Formula Near You</Text>
+            <Text style={styles.initialTitle}>{t('crossStoreSearch.initialTitle')}</Text>
             <Text style={styles.initialText}>
-              Search by brand, type, or name to find stores that have your formula in stock.
+              {t('crossStoreSearch.initialText')}
             </Text>
           </View>
         )}
@@ -410,7 +412,7 @@ export default function CrossStoreSearchScreen() {
       {matchedFormulas.length > 1 && (
         <View style={styles.matchedInfo}>
           <Text style={styles.matchedInfoText}>
-            Searching {matchedFormulas.length} matching formulas
+            {t('crossStoreSearch.matchedFormulas', { count: matchedFormulas.length })}
           </Text>
         </View>
       )}

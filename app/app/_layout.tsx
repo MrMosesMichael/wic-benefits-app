@@ -36,6 +36,9 @@ function Navigation() {
       <Stack.Screen name="benefits/period-settings" options={{ title: t('benefits.managePeriod') }} />
       <Stack.Screen name="cart/index" options={{ title: t('nav.cart') }} />
       <Stack.Screen name="formula/index" options={{ title: t('nav.formula') }} />
+      <Stack.Screen name="formula/cross-store-search" options={{ title: t('nav.crossStoreSearch') }} />
+      <Stack.Screen name="formula/select" options={{ title: t('nav.selectFormula') }} />
+      <Stack.Screen name="formula/report" options={{ title: t('nav.reportFormula') }} />
       <Stack.Screen name="help/index" options={{ title: t('nav.help') }} />
     </Stack>
   );

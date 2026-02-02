@@ -1,7 +1,7 @@
 # WIC Benefits App — Roadmap
 
-> **Last Updated:** January 30, 2026  
-> **Current Phase:** Phase 1 Completion + Phase 2 In Progress  
+> **Last Updated:** February 2, 2026
+> **Current Phase:** Phase 1 Completion + Phase 2 In Progress
 > **Production:** https://mdmichael.com/wic/
 
 ---
@@ -10,7 +10,7 @@
 
 | Phase | Status | Completion |
 |-------|--------|------------|
-| **Phase 1: Foundation** | 🔄 In Progress | 75% |
+| **Phase 1: Foundation** | 🔄 In Progress | 79% |
 | **Phase 2: Store Intelligence** | 🔄 In Progress | 60% |
 | **Phase 3: Discovery** | ⏳ Not Started | 0% |
 | **Phase 4: Community** | ⏳ Not Started | 0% |
@@ -22,13 +22,14 @@
 
 ## What's Working Today
 
-✅ **Core MVP** — Barcode scanner, eligibility checking, benefits tracking, shopping cart  
-✅ **Michigan APL** — 9,940 products in database  
-✅ **Store Detection** — GPS + WiFi + manual selection  
-✅ **Crowdsourced Inventory** — "I found this" reporting with confidence decay  
-✅ **Manual Benefits Entry** — AsyncStorage-based household setup  
-✅ **Formula Shortage Detection** — Severity levels + trend tracking  
-✅ **Production Backend** — Deployed at https://mdmichael.com/wic/  
+✅ **Core MVP** — Barcode scanner, eligibility checking, benefits tracking, shopping cart
+✅ **Michigan APL** — 9,940 products in database
+✅ **Store Detection** — GPS + WiFi + manual selection
+✅ **Crowdsourced Inventory** — "I found this" reporting with confidence decay
+✅ **Manual Benefits Entry** — AsyncStorage-based household setup
+✅ **Formula Shortage Detection** — Severity levels + trend tracking
+✅ **Help & FAQ System** — Size/formula/checkout guides with harm prevention focus
+✅ **Production Backend** — Deployed at https://mdmichael.com/wic/
 ✅ **Android APK** — Production build ready for sideloading  
 
 ---
@@ -46,7 +47,7 @@
 
 ## Roadmap Detail
 
-### Phase 1: Foundation (75% Complete)
+### Phase 1: Foundation (79% Complete)
 
 Core functionality for scanning, benefits, and formula support.
 
@@ -69,8 +70,8 @@ Core functionality for scanning, benefits, and formula support.
 | **C** | Benefits System | ✅ Done | Three-state tracking |
 | **D** | UPC Scanner | ✅ Done | All formats |
 | **E** | Shopping Cart | ✅ Done | Multi-participant |
-| **F** | Help & FAQ | ❌ Not Started | **High priority** |
-| **G** | Spanish Support | ❌ Not Started | **40% of users** |
+| **F** | Help & FAQ | ✅ Done | Size/formula/checkout guides |
+| **G** | Spanish Support | ⚠️ Partial | i18n framework started |
 
 ### Phase 2: Store Intelligence (60% Complete)
 
@@ -150,26 +151,21 @@ Based on impact, effort, and what's unblocked:
    - Alert subscriptions
    - *Effort: 1-2 weeks* | *Impact: High (SURVIVAL feature)*
 
-2. **Help & FAQ System (Group F)**
-   - Size requirements FAQ (prevents wasted trips)
-   - Formula rules FAQ
-   - Checkout process FAQ
-   - *Effort: 1 week* | *Impact: High (HARM PREVENTION)*
-
 ### 📅 Short Term (Next 2-4 Weeks)
 
-3. **Spanish Language Support (Group G)**
-   - i18n framework setup
-   - Translate all UI strings
-   - *Effort: 1-2 weeks* | *Impact: High (40% of WIC users)*
+2. **Complete Spanish Language Support (Group G)**
+   - Finish translating remaining UI strings
+   - Add locale selector
+   - *Effort: 1 week* | *Impact: High (40% of WIC users)*
+   - *Status: i18n framework in place, partial translations done*
 
-4. **Food Bank Finder (Group J)**
+3. **Food Bank Finder (Group J)**
    - Feeding America / 211 data integration
    - Search & listing UI
    - "Open now" filters
    - *Effort: 1 week* | *Impact: Medium*
 
-5. **Multi-State APL Expansion**
+4. **Multi-State APL Expansion**
    - North Carolina APL ingestion
    - Florida APL ingestion
    - Oregon APL ingestion
@@ -177,13 +173,13 @@ Based on impact, effort, and what's unblocked:
 
 ### 📋 Pre-Launch Requirements
 
-6. **Data Sovereignty (Track B3)**
+5. **Data Sovereignty (Track B3)**
    - Data export API
    - Account deletion
    - Privacy policy
    - *Effort: 3-5 days* | *Impact: Required for launch*
 
-7. **Accessibility (Track T)**
+6. **Accessibility (Track T)**
    - VoiceOver support
    - TalkBack support
    - WCAG compliance
@@ -279,4 +275,4 @@ This app should be owned by users, not exploited by corporations.
 
 ---
 
-*Last human review: January 30, 2026*
+*Last human review: February 2, 2026*
