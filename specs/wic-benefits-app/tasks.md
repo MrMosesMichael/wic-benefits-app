@@ -4,6 +4,8 @@
 > - [SURVIVAL] = Life-threatening need - highest priority
 > - [DIGNITY] = Prevents shame/humiliation
 > - [EMPOWERMENT] = Restores agency and control
+>
+> **Last Synced:** February 2, 2026
 
 ---
 
@@ -11,11 +13,11 @@
 
 *Branch: `pre-prod-local-testing` - Fix before next field test*
 
-- [x] BUG-001: Fix "Scan Another Product" button - navigates to home instead of scanner. File: app/app/scanner/result.tsx. Changed to router.replace('/scanner').
+- [x] ✅ BUG-001: Fix "Scan Another Product" button - navigates to home instead of scanner. File: app/app/scanner/result.tsx. Changed to router.replace('/scanner').
 
-- [x] BUG-002: Fix cart confirmation truncated name - shows "1%" instead of "1% Milk". File: app/app/scanner/result.tsx. Now shows full product name with brand.
+- [x] ✅ BUG-002: Fix cart confirmation truncated name - shows "1%" instead of "1% Milk". File: app/app/scanner/result.tsx. Now shows full product name with brand.
 
-- [x] BUG-003: Fix UPC lookup normalization - Juicy Juice UPC 889497008245 not found despite being in JSON. File: app/lib/services/offlineEligibility.ts. Moved normalizeUpc() before map init and normalize on storage.
+- [x] ✅ BUG-003: Fix UPC lookup normalization - Juicy Juice UPC 889497008245 not found despite being in JSON. File: app/lib/services/offlineEligibility.ts. Moved normalizeUpc() before map init and normalize on storage.
 
 ---
 
@@ -53,8 +55,8 @@
 #### Track A4: Formula Critical Features [SURVIVAL]
 - [x] ✅ A4.1 Implement formula availability tracking
 - [x] ✅ A4.2 Build formula shortage detection algorithm
-- [~] 🔄 A4.3 Create formula restock push notifications
-- [ ] A4.4 Build cross-store formula search
+- [x] ✅ A4.3 Create formula restock push notifications
+- [x] ✅ A4.4 Build cross-store formula search (navigation + i18n wired Feb 2)
 - [ ] A4.5 Implement alternative formula suggestions
 - [ ] A4.6 Create crowdsourced formula sighting reports
 - [ ] A4.7 Build formula alert subscription system
@@ -64,20 +66,20 @@
 ### Group B: App Shell + Data Sovereignty
 
 #### Track B1: Project Setup
-- [ ] B1.1 Initialize React Native project with Expo
-- [ ] B1.2 Configure TypeScript and linting [haiku]
-- [ ] B1.3 Set up project structure (features, components, services) [haiku]
-- [ ] B1.4 Configure CI/CD pipeline
-- [ ] B1.5 Set up development, staging, production environments
+- [x] ✅ B1.1 Initialize React Native project with Expo (SDK 52)
+- [x] ✅ B1.2 Configure TypeScript and linting [haiku]
+- [x] ✅ B1.3 Set up project structure (features, components, services) [haiku]
+- [x] ✅ B1.4 Configure CI/CD pipeline (GitHub Actions)
+- [x] ✅ B1.5 Set up development, staging, production environments
 
 #### Track B2: Backend Infrastructure
-- [ ] B2.1 Design database schema (PostgreSQL) [haiku]
-- [ ] B2.2 Set up API framework (Node.js/Express)
+- [x] ✅ B2.1 Design database schema (PostgreSQL) [haiku]
+- [x] ✅ B2.2 Set up API framework (Node.js/Express)
 - [ ] B2.3 Implement authentication service
-- [ ] B2.4 Configure cloud hosting (AWS)
+- [x] ✅ B2.4 Configure cloud hosting (VPS at mdmichael.com)
 - [ ] B2.5 Set up Redis caching
 - [ ] B2.6 Set up message queue (SQS/RabbitMQ)
-- [ ] B2.7 Configure logging, monitoring, alerting
+- [x] ✅ B2.7 Configure logging, monitoring, alerting
 
 #### Track B3: User Data Sovereignty [FOUNDATIONAL RIGHT]
 - [ ] B3.1 Implement data export (JSON, CSV, PDF formats)
@@ -93,22 +95,22 @@
 ### Group C: Benefits System [EMPOWERMENT]
 
 #### Track C1: Household & Benefits Data Model
-- [ ] C1.1 Design household schema (household → participants → benefits) [haiku]
-- [ ] C1.2 Implement household CRUD operations
-- [ ] C1.3 Build participant management (add, edit, remove)
-- [ ] C1.4 Implement participant types (pregnant, postpartum, breastfeeding, infant, child)
-- [ ] C1.5 Add infant/child age tracking and stage transitions
-- [ ] C1.6 Implement three-state benefit tracking (Available → In Cart → Consumed)
-- [ ] C1.7 Build benefits calculation engine
+- [x] ✅ C1.1 Design household schema (household → participants → benefits) [haiku]
+- [x] ✅ C1.2 Implement household CRUD operations
+- [x] ✅ C1.3 Build participant management (add, edit, remove)
+- [x] ✅ C1.4 Implement participant types (pregnant, postpartum, breastfeeding, infant, child)
+- [x] ✅ C1.5 Add infant/child age tracking and stage transitions
+- [x] ✅ C1.6 Implement three-state benefit tracking (Available → In Cart → Consumed)
+- [x] ✅ C1.7 Build benefits calculation engine
 
 #### Track C2: Benefits UI
-- [ ] C2.1 Design unified household benefits overview screen
-- [ ] C2.2 Build participant section cards with individual benefits
-- [ ] C2.3 Implement participant filter chips for quick filtering
-- [ ] C2.4 Build three-state progress bars (gray/amber/green)
-- [ ] C2.5 Create "In Cart" summary banner
-- [ ] C2.6 Implement expiration alerts and notifications
-- [ ] C2.7 Build benefit category icons (warm, friendly design)
+- [x] ✅ C2.1 Design unified household benefits overview screen
+- [x] ✅ C2.2 Build participant section cards with individual benefits
+- [x] ✅ C2.3 Implement participant filter chips for quick filtering
+- [x] ✅ C2.4 Build three-state progress bars (gray/amber/green)
+- [x] ✅ C2.5 Create "In Cart" summary banner
+- [x] ✅ C2.6 Implement expiration alerts and notifications
+- [x] ✅ C2.7 Build benefit category icons (warm, friendly design)
 
 ---
 
@@ -117,62 +119,62 @@
 *Private eligibility checking - no more asking clerks*
 
 #### Track D1: Barcode Scanning
-- [ ] D1.1 Integrate vision-camera library
-- [ ] D1.2 Implement UPC-A barcode detection
-- [ ] D1.3 Implement UPC-E barcode detection and expansion
-- [ ] D1.4 Implement EAN-13 barcode detection
-- [ ] D1.5 Build manual UPC entry fallback UI
-- [ ] D1.6 Add haptic and audio feedback on successful scan
+- [x] ✅ D1.1 Integrate vision-camera library
+- [x] ✅ D1.2 Implement UPC-A barcode detection
+- [x] ✅ D1.3 Implement UPC-E barcode detection and expansion
+- [x] ✅ D1.4 Implement EAN-13 barcode detection
+- [x] ✅ D1.5 Build manual UPC entry fallback UI
+- [x] ✅ D1.6 Add haptic and audio feedback on successful scan
 
 #### Track D2: Eligibility Lookup
-- [ ] D2.1 Build state eligibility rules engine
-- [ ] D2.2 Implement eligibility lookup API
-- [ ] D2.3 Design scan result UI (eligible/not eligible/unknown)
-- [ ] D2.4 Build "suggest alternative" feature
-- [ ] D2.5 Implement friendly "Not Eligible" messages
+- [x] ✅ D2.1 Build state eligibility rules engine
+- [x] ✅ D2.2 Implement eligibility lookup API
+- [x] ✅ D2.3 Design scan result UI (eligible/not eligible/unknown)
+- [x] ✅ D2.4 Build "suggest alternative" feature
+- [x] ✅ D2.5 Implement friendly "Not Eligible" messages
 
 #### Track D3: Scan Modes
-- [ ] D3.1 Implement "Check Eligibility" mode (default)
-- [ ] D3.2 Implement "Shopping Mode" with cart integration
-- [ ] D3.3 Build add-to-cart confirmation dialog
-- [ ] D3.4 Add mode toggle and persistence
+- [x] ✅ D3.1 Implement "Check Eligibility" mode (default)
+- [x] ✅ D3.2 Implement "Shopping Mode" with cart integration
+- [x] ✅ D3.3 Build add-to-cart confirmation dialog
+- [x] ✅ D3.4 Add mode toggle and persistence
 
 #### Track D4: Offline Scanning
-- [ ] D4.1 Implement local APL data caching (SQLite)
-- [ ] D4.2 Build offline eligibility lookup
-- [ ] D4.3 Create sync queue for offline operations
-- [ ] D4.4 Add data freshness indicators
-- [ ] D4.5 Implement background APL sync
+- [x] ✅ D4.1 Implement local APL data caching (AsyncStorage/JSON bundle)
+- [x] ✅ D4.2 Build offline eligibility lookup
+- [x] ✅ D4.3 Create sync queue for offline operations
+- [x] ✅ D4.4 Add data freshness indicators
+- [x] ✅ D4.5 Implement background APL sync
 
 ---
 
 ### Group E: Shopping Cart [EMPOWERMENT]
 
 #### Track E1: Cart Core
-- [ ] E1.1 Design shopping cart data model
-- [ ] E1.2 Build cart overview UI grouped by participant
-- [ ] E1.3 Implement add-to-cart from scan results
-- [ ] E1.4 Build multi-participant selection modal
-- [ ] E1.5 Implement quantity selector with benefit limit enforcement
-- [ ] E1.6 Build cart item management (remove, edit, change participant)
-- [ ] E1.7 Implement "In Cart" status indicators
+- [x] ✅ E1.1 Design shopping cart data model
+- [x] ✅ E1.2 Build cart overview UI grouped by participant
+- [x] ✅ E1.3 Implement add-to-cart from scan results
+- [x] ✅ E1.4 Build multi-participant selection modal
+- [x] ✅ E1.5 Implement quantity selector with benefit limit enforcement
+- [x] ✅ E1.6 Build cart item management (remove, edit, change participant)
+- [x] ✅ E1.7 Implement "In Cart" status indicators
 
 #### Track E2: Checkout Flow
-- [ ] E2.1 Build checkout summary screen
-- [ ] E2.2 Implement checkout confirmation with benefit warning
-- [ ] E2.3 Build post-checkout benefit update logic (In Cart → Consumed)
-- [ ] E2.4 Create transaction logging
-- [ ] E2.5 Implement partial checkout (select items purchased)
-- [ ] E2.6 Build success screen with updated balances
-- [ ] E2.7 Implement undo recent transaction (within 30 min)
-- [ ] E2.8 Create checkout celebration message
+- [x] ✅ E2.1 Build checkout summary screen
+- [x] ✅ E2.2 Implement checkout confirmation with benefit warning
+- [x] ✅ E2.3 Build post-checkout benefit update logic (In Cart → Consumed)
+- [x] ✅ E2.4 Create transaction logging
+- [x] ✅ E2.5 Implement partial checkout (select items purchased)
+- [x] ✅ E2.6 Build success screen with updated balances
+- [x] ✅ E2.7 Implement undo recent transaction (within 30 min)
+- [x] ✅ E2.8 Create checkout celebration message
 
 #### Track E3: Cart Session Management
-- [ ] E3.1 Implement cart persistence across app sessions
-- [ ] E3.2 Build cart timeout warning (4+ hours stale)
-- [ ] E3.3 Handle store change with active cart
-- [ ] E3.4 Handle new benefit period with active cart
-- [ ] E3.5 Implement transaction history view
+- [x] ✅ E3.1 Implement cart persistence across app sessions
+- [x] ✅ E3.2 Build cart timeout warning (4+ hours stale)
+- [x] ✅ E3.3 Handle store change with active cart
+- [x] ✅ E3.4 Handle new benefit period with active cart
+- [x] ✅ E3.5 Implement transaction history view
 
 ---
 
@@ -181,26 +183,26 @@
 *Prevents harm BEFORE it happens*
 
 #### Track F1: FAQ System
-- [ ] F1.1 Design FAQ data model (categories, questions, keywords) [haiku]
-- [ ] F1.2 Build FAQ browsing UI with categories
-- [ ] F1.3 Implement FAQ search functionality
-- [ ] F1.4 Build contextual FAQ (relevant FAQs per screen)
+- [x] ✅ F1.1 Design FAQ data model (categories, questions, keywords) [haiku]
+- [x] ✅ F1.2 Build FAQ browsing UI with categories
+- [x] ✅ F1.3 Implement FAQ search functionality
+- [x] ✅ F1.4 Build contextual FAQ (relevant FAQs per screen)
 
 #### Track F2: WIC Rules FAQ Content [CRITICAL FOR HARM PREVENTION]
-- [ ] F2.1 Write formula rules FAQ (contract brands, exact sizes) [haiku]
-- [ ] F2.2 Write size requirements FAQ ("12.4oz ≠ 12.5oz") [haiku]
-- [ ] F2.3 Write checkout process FAQ (reduces anxiety) [haiku]
-- [ ] F2.4 Write brand restrictions FAQ [haiku]
-- [ ] F2.5 Write "Why was this rejected?" FAQ [haiku]
-- [ ] F2.6 Write participant categories FAQ [haiku]
-- [ ] F2.7 Write benefits period FAQ (expiration, no rollover) [haiku]
-- [ ] F2.8 Write state-specific content for MI, NC, FL, OR [haiku]
+- [x] ✅ F2.1 Write formula rules FAQ (contract brands, exact sizes) [haiku]
+- [x] ✅ F2.2 Write size requirements FAQ ("12.4oz ≠ 12.5oz") [haiku]
+- [x] ✅ F2.3 Write checkout process FAQ (reduces anxiety) [haiku]
+- [x] ✅ F2.4 Write brand restrictions FAQ [haiku]
+- [x] ✅ F2.5 Write "Why was this rejected?" FAQ [haiku]
+- [x] ✅ F2.6 Write participant categories FAQ [haiku]
+- [x] ✅ F2.7 Write benefits period FAQ (expiration, no rollover) [haiku]
+- [x] ✅ F2.8 Write state-specific content for MI, NC, FL, OR [haiku]
 
 #### Track F3: Contextual Help
-- [ ] F3.1 Implement info icons with tooltips throughout app
-- [ ] F3.2 Build first-time feature tooltips
-- [ ] F3.3 Add "Why was this rejected?" inline help on scan results
-- [ ] F3.4 Create onboarding help flow for new users
+- [x] ✅ F3.1 Implement info icons with tooltips throughout app
+- [x] ✅ F3.2 Build first-time feature tooltips
+- [x] ✅ F3.3 Add "Why was this rejected?" inline help on scan results
+- [x] ✅ F3.4 Create onboarding help flow for new users (NeedHelpLink component with deep linking)
 
 ---
 
@@ -208,12 +210,12 @@
 
 *40% of WIC participants are Latinx - language barriers = exclusion*
 
-- [ ] G1 Set up i18n framework (react-i18next)
-- [ ] G2 Extract all UI strings to translation files [haiku]
-- [ ] G3 Translate all UI strings to Spanish [haiku]
-- [ ] G4 Translate FAQ content to Spanish [haiku]
-- [ ] G5 Translate error messages to Spanish [haiku]
-- [ ] G6 Implement language detection and switching
+- [x] ✅ G1 Set up i18n framework (react-i18next)
+- [x] ✅ G2 Extract all UI strings to translation files [haiku]
+- [~] 🔄 G3 Translate all UI strings to Spanish (partial - core screens done)
+- [~] 🔄 G4 Translate FAQ content to Spanish (partial)
+- [~] 🔄 G5 Translate error messages to Spanish (partial)
+- [x] ✅ G6 Implement language detection and switching
 - [ ] G7 Test all screens in Spanish
 - [ ] G8 Native speaker review of all translations
 
@@ -225,8 +227,8 @@
 ✅ User can scan products and see eligibility privately (DIGNITY)
 ✅ User can track benefits with three-state system (EMPOWERMENT)
 ✅ User understands WIC rules before checkout (HARM PREVENTION)
-✅ User can export/delete their data (SOVEREIGNTY)
-✅ Spanish-speaking users fully supported (INCLUSION)
+⏳ User can export/delete their data (SOVEREIGNTY) - B3 not started
+✅ Spanish-speaking users partially supported (INCLUSION) - G partial
 
 ---
 
@@ -252,10 +254,10 @@
 - [ ] I1.5 Create inventory data normalization layer
 
 #### Track I2: Inventory Display
-- [ ] I2.1 Build stock status indicators (in stock, low, out)
-- [ ] I2.2 Implement data freshness display
+- [x] ✅ I2.1 Build stock status indicators (in stock, low, out) - via crowdsourced data
+- [x] ✅ I2.2 Implement data freshness display
 - [ ] I2.3 Create alternative product suggestions
-- [ ] I2.4 Add "check nearby stores" functionality
+- [x] ✅ I2.4 Add "check nearby stores" functionality (cross-store search)
 
 ### Group J: Food Bank Finder
 
@@ -269,10 +271,10 @@
 - [ ] J6 Design de-stigmatizing UI and messaging
 
 ### Group K: Crowdsourced Inventory
-- [ ] K1 Design crowdsourced availability data model [haiku]
-- [ ] K2 Implement "I found this" reporting
-- [ ] K3 Build availability confidence scoring
-- [ ] K4 Create "recently seen" indicators
+- [x] ✅ K1 Design crowdsourced availability data model [haiku]
+- [x] ✅ K2 Implement "I found this" reporting
+- [x] ✅ K3 Build availability confidence scoring (decay over time)
+- [x] ✅ K4 Create "recently seen" indicators
 
 ---
 
@@ -432,14 +434,27 @@
 
 ## Task Count Summary
 
-| Phase | Groups | Tasks |
-|-------|--------|-------|
-| Phase 1: Foundation | A, B, C, D, E, F, G | ~120 |
-| Phase 2: Store Intelligence | H, I, J, K | ~25 |
-| Phase 3: Discovery & Navigation | L, M, N | ~20 |
-| Phase 4: Community & Advocacy | O, P, Q | ~20 |
-| Phase 5: Manual Entry | R | ~5 |
-| Phase 6: eWIC Integration | S | ~10 |
-| Phase 7: Polish & Launch | T, U, V | ~15 |
-| Governance | GOV | ~5 |
-| **Total** | | **~220** |
+| Phase | Groups | Total | Done | Remaining |
+|-------|--------|-------|------|-----------|
+| Phase 0: Bug Fixes | BUG | 3 | 3 | 0 |
+| Phase 1: Foundation | A, B, C, D, E, F, G | 95 | 82 | 13 |
+| Phase 2: Store Intelligence | H, I, J, K | 21 | 13 | 8 |
+| Phase 3: Discovery & Navigation | L, M, N | 17 | 0 | 17 |
+| Phase 4: Community & Advocacy | O, P, Q | 15 | 0 | 15 |
+| Phase 5: Manual Entry | R | 9 | 9 | 0 |
+| Phase 6: eWIC Integration | S | 15 | 0 | 15 |
+| Phase 7: Polish & Launch | T, U, V | 13 | 0 | 13 |
+| Governance | GOV | 5 | 0 | 5 |
+| **Total** | | **193** | **107** | **86** |
+
+---
+
+## Next Up (Priority Order)
+
+1. **A4.5** - Implement alternative formula suggestions
+2. **A4.6** - Create crowdsourced formula sighting reports
+3. **A4.7** - Build formula alert subscription system
+4. **G3-G5** - Complete Spanish translations
+5. **G7-G8** - Test and review Spanish
+6. **B3** - Data sovereignty (pre-launch requirement)
+7. **J1-J6** - Food bank finder
