@@ -148,7 +148,8 @@
     "close": "Cerrar",
     "yes": "Sí",
     "no": "No",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "ago": "hace"
   },
   "settings": {
     "language": "Idioma",
@@ -204,5 +205,30 @@
     "call": "Llamar",
     "directions": "Direcciones",
     "wicAuthorized": "WIC"
+  },
+  "alternatives": {
+    "loading": "Buscando alternativas...",
+    "noAlternatives": "No se encontraron fórmulas alternativas para este producto.",
+    "disclaimerTitle": "Importante: Consulte a Su Pediatra",
+    "disclaimerText": "Siempre consulte al pediatra de su bebé antes de cambiar de fórmula. Estas son sugerencias basadas en el tipo y disponibilidad, no consejo médico.",
+    "suggestedAlternatives": "Fórmulas Alternativas",
+    "foundCount": "Se encontraron {{count}} fórmula(s) compatible(s)",
+    "inStockNearby": "En Stock Cerca",
+    "wicContractBrand": "Marca Contrato WIC",
+    "sizeNotSpecified": "Tamaño varía",
+    "whySuggested": "Por qué se sugiere",
+    "availableAt": "Disponible en:",
+    "moreLocations": "+{{count}} ubicación(es) más",
+    "tapForDetails": "Toque para detalles",
+    "footerNote": "Las alternativas están ordenadas por compatibilidad y disponibilidad. Las marcas de contrato WIC siempre están cubiertas por sus beneficios.",
+    "viewAlternatives": "Ver Alternativas",
+    "hideAlternatives": "Ocultar Alternativas",
+    "alternativesFor": "Alternativas para {{product}}",
+    "loadingAlternatives": "Cargando alternativas...",
+    "failedToLoad": "No se pudieron cargar las alternativas",
+    "tryAgain": "Intentar de Nuevo",
+    "noAlternativesTitle": "Sin Alternativas Disponibles",
+    "noAlternativesMessage": "No pudimos encontrar fórmulas alternativas para este producto en este momento.",
+    "searchingAlternatives": "Buscando alternativas..."
   }
 }

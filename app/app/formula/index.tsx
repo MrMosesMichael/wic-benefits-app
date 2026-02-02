@@ -235,6 +235,22 @@ export default function FormulaFinder() {
                 {assignedFormula.details.form} • {assignedFormula.details.size}
               </Text>
             )}
+            {/* View Alternatives Button */}
+            <TouchableOpacity
+              style={styles.alternativesButton}
+              onPress={() => router.push({
+                pathname: '/formula/alternatives',
+                params: {
+                  upc: assignedFormula.upc,
+                  name: assignedFormula.name,
+                  brand: assignedFormula.details?.brand || assignedFormula.name.split(' ')[0]
+                }
+              })}
+            >
+              <Text style={styles.alternativesButtonText}>
+                🔄 View Alternative Formulas
+              </Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <TouchableOpacity
@@ -261,28 +277,53 @@ export default function FormulaFinder() {
       {/* Shortage Alerts */}
       {!loadingShortages && shortages.length > 0 && (
         <View style={styles.shortageAlertsContainer}>
-          {shortages.slice(0, 2).map((shortage) => (
-            <View
-              key={shortage.id}
-              style={[
-                styles.shortageAlert,
-                { borderLeftColor: getSeverityColor(shortage.severity) }
-              ]}
-            >
-              <View style={[
-                styles.severityBadge,
-                { backgroundColor: getSeverityColor(shortage.severity) }
-              ]}>
-                <Text style={styles.severityBadgeText}>
-                  {shortage.severity.charAt(0).toUpperCase() + shortage.severity.slice(1)} Shortage
+          {shortages.slice(0, 2).map((shortage) => {
+            // Check if this is the user's assigned formula
+            const isAssignedFormula = assignedFormula &&
+              shortage.productName.toLowerCase().includes(assignedFormula.name.toLowerCase());
+
+            return (
+              <View
+                key={shortage.id}
+                style={[
+                  styles.shortageAlert,
+                  { borderLeftColor: getSeverityColor(shortage.severity) }
+                ]}
+              >
+                <View style={[
+                  styles.severityBadge,
+                  { backgroundColor: getSeverityColor(shortage.severity) }
+                ]}>
+                  <Text style={styles.severityBadgeText}>
+                    {shortage.severity.charAt(0).toUpperCase() + shortage.severity.slice(1)} Shortage
+                  </Text>
+                </View>
+                <Text style={styles.shortageProductName}>{shortage.productName}</Text>
+                <Text style={styles.shortageStatText}>
+                  {shortage.outOfStockPercentage}% of stores out of stock
                 </Text>
+
+                {/* Show alternatives button if this is user's formula */}
+                {isAssignedFormula && assignedFormula && (
+                  <TouchableOpacity
+                    style={styles.shortageAlternativesButton}
+                    onPress={() => router.push({
+                      pathname: '/formula/alternatives',
+                      params: {
+                        upc: assignedFormula.upc,
+                        name: assignedFormula.name,
+                        brand: assignedFormula.details?.brand || assignedFormula.name.split(' ')[0]
+                      }
+                    })}
+                  >
+                    <Text style={styles.shortageAlternativesButtonText}>
+                      View Alternative Formulas →
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
-              <Text style={styles.shortageProductName}>{shortage.productName}</Text>
-              <Text style={styles.shortageStatText}>
-                {shortage.outOfStockPercentage}% of stores out of stock
-              </Text>
-            </View>
-          ))}
+            );
+          })}
         </View>
       )}
 
@@ -490,6 +531,20 @@ const styles = StyleSheet.create({
     color: '#888',
     marginTop: 4,
   },
+  alternativesButton: {
+    marginTop: 12,
+    backgroundColor: '#FFF3E0',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#FF9800',
+  },
+  alternativesButtonText: {
+    color: '#E65100',
+    fontSize: 14,
+    fontWeight: '600',
+  },
   selectFormulaButton: {
     backgroundColor: '#E3F2FD',
     padding: 16,
@@ -556,6 +611,19 @@ const styles = StyleSheet.create({
   shortageStatText: {
     fontSize: 12,
     color: '#666',
+  },
+  shortageAlternativesButton: {
+    marginTop: 10,
+    backgroundColor: '#1976D2',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+  },
+  shortageAlternativesButtonText: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '600',
   },
   searchCard: {
     backgroundColor: '#fff',

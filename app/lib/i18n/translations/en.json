@@ -148,7 +148,8 @@
     "close": "Close",
     "yes": "Yes",
     "no": "No",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "ago": "ago"
   },
   "settings": {
     "language": "Language",
@@ -204,5 +205,30 @@
     "call": "Call",
     "directions": "Directions",
     "wicAuthorized": "WIC"
+  },
+  "alternatives": {
+    "loading": "Finding alternatives...",
+    "noAlternatives": "No alternative formulas found for this product.",
+    "disclaimerTitle": "Important: Consult Your Pediatrician",
+    "disclaimerText": "Always consult your baby's pediatrician before switching formulas. These are suggestions based on type and availability, not medical advice.",
+    "suggestedAlternatives": "Alternative Formulas",
+    "foundCount": "Found {{count}} compatible formula(s)",
+    "inStockNearby": "In Stock Nearby",
+    "wicContractBrand": "WIC Contract Brand",
+    "sizeNotSpecified": "Size varies",
+    "whySuggested": "Why suggested",
+    "availableAt": "Available At:",
+    "moreLocations": "+{{count}} more location(s)",
+    "tapForDetails": "Tap for details",
+    "footerNote": "Alternatives are sorted by compatibility and availability. WIC contract brands are always covered by your benefits.",
+    "viewAlternatives": "View Alternatives",
+    "hideAlternatives": "Hide Alternatives",
+    "alternativesFor": "Alternatives for {{product}}",
+    "loadingAlternatives": "Loading alternatives...",
+    "failedToLoad": "Failed to load alternatives",
+    "tryAgain": "Try Again",
+    "noAlternativesTitle": "No Alternatives Available",
+    "noAlternativesMessage": "We couldn't find alternative formulas for this product at this time.",
+    "searchingAlternatives": "Searching for alternatives..."
   }
 }

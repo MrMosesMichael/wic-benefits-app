@@ -259,24 +259,51 @@ router.post('/search', async (req: Request, res: Response) => {
 /**
  * GET /api/v1/formula/alternatives/:upc
  * Get alternative formulas for a given UPC
+ * Returns smart suggestions based on formula type, availability, and WIC coverage
  */
 router.get('/alternatives/:upc', async (req: Request, res: Response) => {
   const { upc } = req.params;
   const state = (req.query.state as string) || 'MI';
+  const lat = req.query.lat ? parseFloat(req.query.lat as string) : null;
+  const lng = req.query.lng ? parseFloat(req.query.lng as string) : null;
+  const radiusMiles = parseInt(req.query.radius as string) || 25;
 
   try {
-    const result = await pool.query(
+    // Step 1: Get the primary formula details
+    const primaryFormula = await pool.query(
+      `SELECT upc, brand, product_name, formula_type, form, size, size_oz, state_contract_brand
+       FROM wic_formulas
+       WHERE upc = $1 AND active = TRUE`,
+      [upc]
+    );
+
+    if (primaryFormula.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Formula not found'
+      });
+    }
+
+    const primary = primaryFormula.rows[0];
+
+    // Step 2: Find alternatives from explicit equivalents table
+    const explicitAlternatives = await pool.query(
       `SELECT
          fe.equivalent_upc,
          fe.relationship,
          fe.notes,
-         NULL as product_name,
-         NULL as brand,
-         NULL as size,
-         NULL as category
+         wf.brand,
+         wf.product_name,
+         wf.formula_type,
+         wf.form,
+         wf.size,
+         wf.size_oz,
+         wf.state_contract_brand
        FROM formula_equivalents fe
+       JOIN wic_formulas wf ON wf.upc = fe.equivalent_upc
        WHERE fe.primary_upc = $1
          AND (fe.state IS NULL OR fe.state = $2)
+         AND wf.active = TRUE
        ORDER BY
          CASE fe.relationship
            WHEN 'same_product_different_size' THEN 1
@@ -287,18 +314,162 @@ router.get('/alternatives/:upc', async (req: Request, res: Response) => {
       [upc, state]
     );
 
+    // Step 3: Find implicit alternatives (same type, same form)
+    const implicitAlternatives = await pool.query(
+      `SELECT
+         upc,
+         brand,
+         product_name,
+         formula_type,
+         form,
+         size,
+         size_oz,
+         state_contract_brand
+       FROM wic_formulas
+       WHERE formula_type = $1
+         AND form = $2
+         AND upc != $3
+         AND active = TRUE
+         AND ($4 = ANY(states_approved) OR states_approved IS NULL)
+       ORDER BY
+         state_contract_brand DESC,
+         brand,
+         product_name
+       LIMIT 10`,
+      [primary.formula_type, primary.form, upc, state]
+    );
+
+    // Combine and deduplicate alternatives
+    const alternativesMap = new Map();
+
+    // Add explicit alternatives with their relationship info
+    explicitAlternatives.rows.forEach(row => {
+      alternativesMap.set(row.equivalent_upc, {
+        upc: row.equivalent_upc,
+        brand: row.brand,
+        productName: row.product_name,
+        formulaType: row.formula_type,
+        form: row.form,
+        size: row.size,
+        sizeOz: row.size_oz ? parseFloat(row.size_oz) : null,
+        stateContractBrand: row.state_contract_brand,
+        relationship: row.relationship,
+        reason: getAlternativeReason(row.relationship, row.state_contract_brand),
+        notes: row.notes,
+        priority: getRelationshipPriority(row.relationship, row.state_contract_brand)
+      });
+    });
+
+    // Add implicit alternatives (if not already present)
+    implicitAlternatives.rows.forEach(row => {
+      if (!alternativesMap.has(row.upc)) {
+        const isSameBrand = row.brand.toLowerCase() === primary.brand.toLowerCase();
+        alternativesMap.set(row.upc, {
+          upc: row.upc,
+          brand: row.brand,
+          productName: row.product_name,
+          formulaType: row.formula_type,
+          form: row.form,
+          size: row.size,
+          sizeOz: row.size_oz ? parseFloat(row.size_oz) : null,
+          stateContractBrand: row.state_contract_brand,
+          relationship: isSameBrand ? 'same_brand_different_type' : 'same_type_different_brand',
+          reason: getImplicitAlternativeReason(isSameBrand, row.state_contract_brand, primary.formula_type),
+          notes: null,
+          priority: getImplicitPriority(isSameBrand, row.state_contract_brand)
+        });
+      }
+    });
+
+    // Convert to array and sort by priority
+    let alternatives = Array.from(alternativesMap.values());
+    alternatives.sort((a, b) => a.priority - b.priority);
+
+    // Step 4: Add availability data if location provided
+    if (lat && lng && alternatives.length > 0) {
+      const alternativeUpcs = alternatives.map(a => a.upc);
+
+      const availabilityResult = await pool.query(
+        `SELECT
+           fa.upc,
+           fa.store_name,
+           fa.status,
+           fa.last_updated,
+           fa.confidence,
+           CASE
+             WHEN fa.latitude IS NOT NULL AND fa.longitude IS NOT NULL THEN
+               3959 * acos(
+                 cos(radians($1)) * cos(radians(fa.latitude)) *
+                 cos(radians(fa.longitude) - radians($2)) +
+                 sin(radians($1)) * sin(radians(fa.latitude))
+               )
+             ELSE NULL
+           END as distance_miles
+         FROM formula_availability fa
+         WHERE fa.upc = ANY($3)
+           AND fa.last_updated >= NOW() - INTERVAL '48 hours'
+           AND fa.status IN ('in_stock', 'low_stock')
+           AND (
+             fa.latitude IS NULL OR fa.longitude IS NULL OR
+             3959 * acos(
+               cos(radians($1)) * cos(radians(fa.latitude)) *
+               cos(radians(fa.longitude) - radians($2)) +
+               sin(radians($1)) * sin(radians(fa.latitude))
+             ) <= $4
+           )
+         ORDER BY
+           CASE WHEN fa.status = 'in_stock' THEN 1 ELSE 2 END,
+           distance_miles NULLS LAST`,
+        [lat, lng, alternativeUpcs, radiusMiles]
+      );
+
+      // Group availability by UPC
+      const availabilityByUpc: Record<string, any[]> = {};
+      availabilityResult.rows.forEach(row => {
+        if (!availabilityByUpc[row.upc]) {
+          availabilityByUpc[row.upc] = [];
+        }
+        availabilityByUpc[row.upc].push({
+          storeName: row.store_name,
+          status: row.status,
+          lastUpdated: row.last_updated,
+          confidence: row.confidence,
+          distanceMiles: row.distance_miles ? Math.round(parseFloat(row.distance_miles) * 10) / 10 : null
+        });
+      });
+
+      // Attach availability to alternatives and boost priority for in-stock items
+      alternatives = alternatives.map(alt => {
+        const availability = availabilityByUpc[alt.upc] || [];
+        const hasInStock = availability.some(a => a.status === 'in_stock');
+        return {
+          ...alt,
+          availability: availability.slice(0, 3), // Top 3 locations
+          availableNearby: availability.length > 0,
+          inStockNearby: hasInStock,
+          // Adjust priority: boost if in stock nearby
+          priority: hasInStock ? alt.priority - 100 : alt.priority
+        };
+      });
+
+      // Re-sort by adjusted priority
+      alternatives.sort((a, b) => a.priority - b.priority);
+    }
+
     res.json({
       success: true,
-      alternatives: result.rows.map(row => ({
-        upc: row.equivalent_upc,
-        productName: row.product_name,
-        brand: row.brand,
-        size: row.size,
-        category: row.category,
-        relationship: row.relationship,
-        notes: row.notes
-      })),
-      count: result.rows.length
+      primary: {
+        upc: primary.upc,
+        brand: primary.brand,
+        productName: primary.product_name,
+        formulaType: primary.formula_type,
+        form: primary.form,
+        size: primary.size,
+        sizeOz: primary.size_oz ? parseFloat(primary.size_oz) : null,
+        stateContractBrand: primary.state_contract_brand
+      },
+      alternatives: alternatives.slice(0, 15), // Limit to top 15
+      count: alternatives.length
     });
   } catch (error) {
     console.error('Error fetching alternatives:', error);
@@ -308,6 +479,63 @@ router.get('/alternatives/:upc', async (req: Request, res: Response) => {
     });
   }
 });
+
+// Helper function to get human-readable reason for alternative
+function getAlternativeReason(relationship: string, isContractBrand: boolean): string {
+  const contractSuffix = isContractBrand ? ' • WIC Contract Brand' : '';
+  switch (relationship) {
+    case 'same_product_different_size':
+      return 'Same formula, different size' + contractSuffix;
+    case 'same_brand_different_type':
+      return 'Same brand, different type' + contractSuffix;
+    case 'generic_equivalent':
+      return 'Generic equivalent' + contractSuffix;
+    case 'medical_alternative':
+      return 'Medical alternative' + contractSuffix;
+    default:
+      return 'Alternative formula' + contractSuffix;
+  }
+}
+
+function getImplicitAlternativeReason(sameBrand: boolean, isContractBrand: boolean, formulaType: string): string {
+  const typeLabel = formulaType.replace('_', ' ');
+  if (sameBrand) {
+    return isContractBrand
+      ? `Same brand - ${typeLabel} • WIC Contract Brand`
+      : `Same brand - ${typeLabel}`;
+  } else {
+    return isContractBrand
+      ? `Same type (${typeLabel}) • WIC Contract Brand`
+      : `Same type (${typeLabel})`;
+  }
+}
+
+function getRelationshipPriority(relationship: string, isContractBrand: boolean): number {
+  let basePriority = 0;
+  switch (relationship) {
+    case 'same_product_different_size':
+      basePriority = 10;
+      break;
+    case 'same_brand_different_type':
+      basePriority = 20;
+      break;
+    case 'generic_equivalent':
+      basePriority = 30;
+      break;
+    case 'medical_alternative':
+      basePriority = 40;
+      break;
+    default:
+      basePriority = 50;
+  }
+  // Contract brands get priority boost
+  return isContractBrand ? basePriority - 5 : basePriority;
+}
+
+function getImplicitPriority(sameBrand: boolean, isContractBrand: boolean): number {
+  let basePriority = sameBrand ? 25 : 35;
+  return isContractBrand ? basePriority - 5 : basePriority;
+}
 
 /**
  * GET /api/v1/formula/shortages

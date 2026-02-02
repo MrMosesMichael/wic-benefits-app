@@ -18,7 +18,8 @@ import type {
   CrossStoreSearchRequest,
   CrossStoreSearchResponse,
   CrossStoreResult,
-  FormulaBrand
+  FormulaBrand,
+  FormulaAlternativesResponse
 } from '../types';
 import { checkEligibilityOffline, getTotalProductCount } from './offlineEligibility';
 import { loadHousehold } from './householdStorage';
@@ -690,6 +691,36 @@ export async function getFormulaTypes(): Promise<FormulaTypeOption[]> {
     throw new Error('Invalid API response');
   } catch (error) {
     console.error('Failed to fetch formula types:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get alternative formulas for a given UPC
+ * Optionally include availability data if location is provided
+ */
+export async function getFormulaAlternatives(
+  upc: string,
+  state?: string,
+  location?: { lat: number; lng: number },
+  radiusMiles?: number
+): Promise<FormulaAlternativesResponse> {
+  try {
+    const params = new URLSearchParams();
+    if (state) params.append('state', state);
+    if (location) {
+      params.append('lat', location.lat.toString());
+      params.append('lng', location.lng.toString());
+    }
+    if (radiusMiles) params.append('radius', radiusMiles.toString());
+
+    const response = await api.get(`/formula/alternatives/${upc}?${params.toString()}`);
+    if (response.data.success) {
+      return response.data;
+    }
+    throw new Error('Invalid API response');
+  } catch (error) {
+    console.error('Failed to fetch formula alternatives:', error);
     throw error;
   }
 }

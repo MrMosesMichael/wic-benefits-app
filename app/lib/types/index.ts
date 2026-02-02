@@ -220,6 +220,46 @@ export type LikelihoodLevel = 'always' | 'usually' | 'sometimes' | 'rarely';
 
 export type QuantitySeen = 'none' | 'few' | 'some' | 'plenty';
 
+export interface FormulaAlternative {
+  upc: string;
+  brand: string;
+  productName: string;
+  formulaType: FormulaType;
+  form: FormulaForm;
+  size: string | null;
+  sizeOz: number | null;
+  stateContractBrand: boolean;
+  relationship: 'same_product_different_size' | 'same_brand_different_type' | 'generic_equivalent' | 'medical_alternative' | 'same_type_different_brand';
+  reason: string;
+  notes: string | null;
+  priority: number;
+  availability?: Array<{
+    storeName: string;
+    status: 'in_stock' | 'low_stock' | 'out_of_stock';
+    lastUpdated: string;
+    confidence: number;
+    distanceMiles: number | null;
+  }>;
+  availableNearby?: boolean;
+  inStockNearby?: boolean;
+}
+
+export interface FormulaAlternativesResponse {
+  success: boolean;
+  primary: {
+    upc: string;
+    brand: string;
+    productName: string;
+    formulaType: FormulaType;
+    form: FormulaForm;
+    size: string | null;
+    sizeOz: number | null;
+    stateContractBrand: boolean;
+  };
+  alternatives: FormulaAlternative[];
+  count: number;
+}
+
 export interface ParticipantFormula {
   upc: string;
   name: string | null;
