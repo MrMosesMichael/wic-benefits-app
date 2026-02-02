@@ -81,6 +81,12 @@
 - [ ] B2.6 Set up message queue (SQS/RabbitMQ)
 - [x] ✅ B2.7 Configure logging, monitoring, alerting
 
+#### Track B4: Deployment Scripts [OPERATIONAL]
+- [ ] B4.1 Create backend deployment script (push to VPS at mdmichael.com)
+- [ ] B4.2 Create Android APK build script (assembleRelease + output to known location)
+- [ ] B4.3 Create iOS IPA build script (for TestFlight distribution)
+- [ ] B4.4 Document deployment procedures in README or docs/
+
 #### Track B3: User Data Sovereignty [FOUNDATIONAL RIGHT]
 - [ ] B3.1 Implement data export (JSON, CSV, PDF formats)
 - [ ] B3.2 Implement account + data deletion with 72-hour timeline
@@ -437,7 +443,7 @@
 | Phase | Groups | Total | Done | Remaining |
 |-------|--------|-------|------|-----------|
 | Phase 0: Bug Fixes | BUG | 3 | 3 | 0 |
-| Phase 1: Foundation | A, B, C, D, E, F, G | 95 | 88 | 7 |
+| Phase 1: Foundation | A, B, C, D, E, F, G | 99 | 88 | 11 |
 | Phase 2: Store Intelligence | H, I, J, K | 21 | 13 | 8 |
 | Phase 3: Discovery & Navigation | L, M, N | 17 | 0 | 17 |
 | Phase 4: Community & Advocacy | O, P, Q | 15 | 0 | 15 |
@@ -445,14 +451,14 @@
 | Phase 6: eWIC Integration | S | 15 | 0 | 15 |
 | Phase 7: Polish & Launch | T, U, V | 13 | 0 | 13 |
 | Governance | GOV | 5 | 0 | 5 |
-| **Total** | | **193** | **113** | **80** |
+| **Total** | | **197** | **113** | **84** |
 
 ---
 
 ## Next Up (Priority Order)
 
-1. **G7** - Test all screens in Spanish
-2. **G8** - Native speaker review of translations
-3. **B3** - Data sovereignty (pre-launch requirement)
-4. **J1-J6** - Food bank finder
-5. **I2.3** - Alternative product suggestions (inventory)
+1. **B4.1-B4.4** - Deployment scripts (backend + mobile builds)
+2. **G7** - Test all screens in Spanish (manual)
+3. **G8** - Native speaker review of translations (manual)
+4. **B3** - Data sovereignty (pre-launch requirement)
+5. **J1-J6** - Food bank finder
