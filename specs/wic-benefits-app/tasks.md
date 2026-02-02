@@ -59,7 +59,7 @@
 - [x] ✅ A4.4 Build cross-store formula search (navigation + i18n wired Feb 2)
 - [x] ✅ A4.5 Implement alternative formula suggestions (smart matching, WIC priority, medical disclaimer)
 - [x] ✅ A4.6 Create crowdsourced formula sighting reports (quick 2-tap flow, location verification)
-- [ ] A4.7 Build formula alert subscription system
+- [x] ✅ A4.7 Build formula alert subscription system (push notifications, 30-day expiry, batching)
 
 ---
 
@@ -437,7 +437,7 @@
 | Phase | Groups | Total | Done | Remaining |
 |-------|--------|-------|------|-----------|
 | Phase 0: Bug Fixes | BUG | 3 | 3 | 0 |
-| Phase 1: Foundation | A, B, C, D, E, F, G | 95 | 84 | 11 |
+| Phase 1: Foundation | A, B, C, D, E, F, G | 95 | 85 | 10 |
 | Phase 2: Store Intelligence | H, I, J, K | 21 | 13 | 8 |
 | Phase 3: Discovery & Navigation | L, M, N | 17 | 0 | 17 |
 | Phase 4: Community & Advocacy | O, P, Q | 15 | 0 | 15 |
@@ -445,14 +445,14 @@
 | Phase 6: eWIC Integration | S | 15 | 0 | 15 |
 | Phase 7: Polish & Launch | T, U, V | 13 | 0 | 13 |
 | Governance | GOV | 5 | 0 | 5 |
-| **Total** | | **193** | **109** | **84** |
+| **Total** | | **193** | **110** | **83** |
 
 ---
 
 ## Next Up (Priority Order)
 
-1. **A4.7** - Build formula alert subscription system
-2. **G3-G5** - Complete Spanish translations
-3. **G7-G8** - Test and review Spanish
-4. **B3** - Data sovereignty (pre-launch requirement)
-5. **J1-J6** - Food bank finder
+1. **G3-G5** - Complete Spanish translations
+2. **G7-G8** - Test and review Spanish
+3. **B3** - Data sovereignty (pre-launch requirement)
+4. **J1-J6** - Food bank finder
+5. **I2.3** - Alternative product suggestions (inventory)
