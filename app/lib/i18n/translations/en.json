@@ -248,5 +248,25 @@
     "quickReportButton": "Quick Report - I Found This!",
     "selectFormulaFirst": "Select Formula to Report",
     "foundThisFormula": "Found This Formula? Report It!"
+  },
+  "formulaAlerts": {
+    "setAlert": "Set Alert",
+    "alertActive": "Alert Active",
+    "loading": "Loading...",
+    "permissionRequired": "Notification Permission Required",
+    "permissionMessage": "To receive formula alerts when your formula becomes available, this app needs permission to send you notifications.",
+    "alertSet": "Formula Alert Set!",
+    "alertSetMessage": "You'll be notified when {{formula}} becomes available at nearby stores.",
+    "subscriptionFailed": "Failed to set up alert. Please try again.",
+    "cancelAlert": "Cancel Alert?",
+    "cancelAlertMessage": "Stop receiving notifications for {{formula}}?",
+    "cancelAlertConfirm": "Yes, Cancel Alert",
+    "unsubscribeFailed": "Failed to cancel alert. Please try again.",
+    "notificationTitle": "Formula Available!",
+    "notificationBody": "{{formula}} found at {{store}}",
+    "expirationTitle": "Formula Alert Expiring Soon",
+    "expirationBody": "Your alert for {{formula}} expires in 3 days. Tap to renew.",
+    "testNotificationTitle": "WIC Formula Alerts Active",
+    "testNotificationBody": "You'll receive notifications when your formula becomes available nearby."
   }
 }

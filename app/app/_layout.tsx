@@ -1,9 +1,47 @@
-import { Stack } from 'expo-router';
+import { useEffect } from 'react';
+import { Stack, useRouter } from 'expo-router';
 import { I18nProvider, useI18n } from '@/lib/i18n/I18nContext';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import notificationService from '@/lib/services/notificationService';
+import * as Notifications from 'expo-notifications';
 
 function Navigation() {
   const { t } = useI18n();
+  const router = useRouter();
+
+  // Set up notification listeners on mount
+  useEffect(() => {
+    // Handle notification tapped - navigate to formula finder
+    const handleNotificationTapped = (response: Notifications.NotificationResponse) => {
+      const data = response.notification.request.content.data;
+
+      if (data.type === 'formula_restock') {
+        // Navigate to formula finder
+        router.push('/formula');
+      } else if (data.type === 'subscription_expiration') {
+        // Navigate to formula finder to manage alerts
+        router.push('/formula');
+      }
+    };
+
+    // Set up listeners
+    notificationService.setupNotificationListeners(
+      undefined, // onReceived - let default handler show notification
+      handleNotificationTapped
+    );
+
+    // Check if app was opened from a notification
+    notificationService.getLastNotificationResponse().then((response) => {
+      if (response) {
+        handleNotificationTapped(response);
+      }
+    });
+
+    // Cleanup on unmount
+    return () => {
+      notificationService.removeNotificationListeners();
+    };
+  }, []);
 
   return (
     <Stack

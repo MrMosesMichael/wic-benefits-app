@@ -248,5 +248,25 @@
     "quickReportButton": "Reporte Rápido - ¡Lo Encontré!",
     "selectFormulaFirst": "Seleccione Fórmula para Reportar",
     "foundThisFormula": "¿Encontró Esta Fórmula? ¡Repórtelo!"
+  },
+  "formulaAlerts": {
+    "setAlert": "Activar Alerta",
+    "alertActive": "Alerta Activa",
+    "loading": "Cargando...",
+    "permissionRequired": "Permiso de Notificaciones Requerido",
+    "permissionMessage": "Para recibir alertas cuando su fórmula esté disponible, esta aplicación necesita permiso para enviarle notificaciones.",
+    "alertSet": "¡Alerta de Fórmula Activada!",
+    "alertSetMessage": "Le notificaremos cuando {{formula}} esté disponible en tiendas cercanas.",
+    "subscriptionFailed": "No se pudo configurar la alerta. Por favor intente de nuevo.",
+    "cancelAlert": "¿Cancelar Alerta?",
+    "cancelAlertMessage": "¿Dejar de recibir notificaciones para {{formula}}?",
+    "cancelAlertConfirm": "Sí, Cancelar Alerta",
+    "unsubscribeFailed": "No se pudo cancelar la alerta. Por favor intente de nuevo.",
+    "notificationTitle": "¡Fórmula Disponible!",
+    "notificationBody": "{{formula}} encontrada en {{store}}",
+    "expirationTitle": "Alerta de Fórmula Expirando Pronto",
+    "expirationBody": "Su alerta para {{formula}} expira en 3 días. Toque para renovar.",
+    "testNotificationTitle": "Alertas de Fórmula WIC Activas",
+    "testNotificationBody": "Recibirá notificaciones cuando su fórmula esté disponible cerca."
   }
 }

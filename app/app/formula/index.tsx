@@ -5,7 +5,9 @@ import * as Location from 'expo-location';
 import { searchFormulaStores, getFormulaShortages, getParticipantFormula, getFormulaByUpc } from '@/lib/services/api';
 import StoreResultCard from '@/components/StoreResultCard';
 import FormulaSightingModal from '@/components/FormulaSightingModal';
+import FormulaAlertButton from '@/components/FormulaAlertButton';
 import type { StoreResult, WicFormula, ParticipantFormula } from '@/lib/types';
+import Constants from 'expo-constants';
 
 interface FormulaShortage {
   id: string;
@@ -45,6 +47,9 @@ export default function FormulaFinder() {
 
   // Demo participant ID (replace with actual user's infant participant)
   const DEMO_INFANT_PARTICIPANT_ID = '3';
+
+  // User ID for notifications (using device ID as user identifier)
+  const USER_ID = Constants.deviceId || Constants.sessionId || 'demo-user';
 
   // Initialize on mount
   useEffect(() => {
@@ -253,6 +258,14 @@ export default function FormulaFinder() {
                 🔄 View Alternative Formulas
               </Text>
             </TouchableOpacity>
+
+            {/* Formula Alert Button */}
+            <FormulaAlertButton
+              userId={USER_ID}
+              upc={assignedFormula.upc}
+              formulaName={assignedFormula.details?.productName || assignedFormula.name}
+              radius={searchRadius}
+            />
           </View>
         ) : (
           <TouchableOpacity
