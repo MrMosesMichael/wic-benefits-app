@@ -212,9 +212,9 @@
 
 - [x] ✅ G1 Set up i18n framework (react-i18next)
 - [x] ✅ G2 Extract all UI strings to translation files [haiku]
-- [~] 🔄 G3 Translate all UI strings to Spanish (partial - core screens done)
-- [~] 🔄 G4 Translate FAQ content to Spanish (partial)
-- [~] 🔄 G5 Translate error messages to Spanish (partial)
+- [x] ✅ G3 Translate all UI strings to Spanish (255 keys complete)
+- [x] ✅ G4 Translate FAQ content to Spanish
+- [x] ✅ G5 Translate error messages to Spanish
 - [x] ✅ G6 Implement language detection and switching
 - [ ] G7 Test all screens in Spanish
 - [ ] G8 Native speaker review of all translations
@@ -437,7 +437,7 @@
 | Phase | Groups | Total | Done | Remaining |
 |-------|--------|-------|------|-----------|
 | Phase 0: Bug Fixes | BUG | 3 | 3 | 0 |
-| Phase 1: Foundation | A, B, C, D, E, F, G | 95 | 85 | 10 |
+| Phase 1: Foundation | A, B, C, D, E, F, G | 95 | 88 | 7 |
 | Phase 2: Store Intelligence | H, I, J, K | 21 | 13 | 8 |
 | Phase 3: Discovery & Navigation | L, M, N | 17 | 0 | 17 |
 | Phase 4: Community & Advocacy | O, P, Q | 15 | 0 | 15 |
@@ -445,14 +445,14 @@
 | Phase 6: eWIC Integration | S | 15 | 0 | 15 |
 | Phase 7: Polish & Launch | T, U, V | 13 | 0 | 13 |
 | Governance | GOV | 5 | 0 | 5 |
-| **Total** | | **193** | **110** | **83** |
+| **Total** | | **193** | **113** | **80** |
 
 ---
 
 ## Next Up (Priority Order)
 
-1. **G3-G5** - Complete Spanish translations
-2. **G7-G8** - Test and review Spanish
+1. **G7** - Test all screens in Spanish
+2. **G8** - Native speaker review of translations
 3. **B3** - Data sovereignty (pre-launch requirement)
 4. **J1-J6** - Food bank finder
 5. **I2.3** - Alternative product suggestions (inventory)
