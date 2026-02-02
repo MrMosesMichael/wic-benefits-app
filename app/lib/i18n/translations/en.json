@@ -230,5 +230,23 @@
     "noAlternativesTitle": "No Alternatives Available",
     "noAlternativesMessage": "We couldn't find alternative formulas for this product at this time.",
     "searchingAlternatives": "Searching for alternatives..."
+  },
+  "formulaSighting": {
+    "modalTitle": "Report Formula Sighting",
+    "modalSubtitle": "Help other families find formula",
+    "quantityQuestion": "How much {{formula}} did you see?",
+    "storeQuestion": "Where did you see it?",
+    "findingStores": "Finding nearby stores...",
+    "noStoresFound": "No stores found nearby. Please enable location services.",
+    "submitting": "Submitting your report...",
+    "thankYou": "Thank You!",
+    "impactMessage": "Your report helps other families find formula",
+    "back": "Back",
+    "submitReport": "Submit Report",
+    "cancel": "Cancel",
+    "close": "Close",
+    "quickReportButton": "Quick Report - I Found This!",
+    "selectFormulaFirst": "Select Formula to Report",
+    "foundThisFormula": "Found This Formula? Report It!"
   }
 }

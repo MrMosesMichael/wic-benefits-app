@@ -15,6 +15,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Location from 'expo-location';
 import { crossStoreSearch, getFormulaBrands, getWicFormulas } from '@/lib/services/api';
 import CrossStoreSearchResults from '@/components/CrossStoreSearchResults';
+import FormulaSightingModal from '@/components/FormulaSightingModal';
 import type { CrossStoreResult, CrossStoreSearchRequest, WicFormula, FormulaBrand, FormulaType } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 
@@ -64,6 +65,9 @@ export default function CrossStoreSearchScreen() {
   // Brands for autocomplete
   const [brands, setBrands] = useState<FormulaBrand[]>([]);
   const [loadingBrands, setLoadingBrands] = useState(true);
+
+  // Sighting modal
+  const [sightingModalVisible, setSightingModalVisible] = useState(false);
 
   // Initialize
   useEffect(() => {
@@ -416,6 +420,28 @@ export default function CrossStoreSearchScreen() {
           </Text>
         </View>
       )}
+
+      {/* Quick Report Button (if single formula matched) */}
+      {searchPerformed && matchedFormulas.length === 1 && (
+        <TouchableOpacity
+          style={styles.quickReportButton}
+          onPress={() => setSightingModalVisible(true)}
+        >
+          <Text style={styles.quickReportButtonText}>
+            Found This Formula? Report It!
+          </Text>
+        </TouchableOpacity>
+      )}
+
+      {/* Formula Sighting Modal */}
+      {matchedFormulas.length === 1 && (
+        <FormulaSightingModal
+          visible={sightingModalVisible}
+          onClose={() => setSightingModalVisible(false)}
+          formulaUpc={matchedFormulas[0].upc}
+          formulaName={`${matchedFormulas[0].brand} ${matchedFormulas[0].productName}`}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 }
@@ -669,5 +695,22 @@ const styles = StyleSheet.create({
   matchedInfoText: {
     fontSize: 13,
     color: '#1565C0',
+  },
+  quickReportButton: {
+    backgroundColor: '#4CAF50',
+    margin: 16,
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  quickReportButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
   },
 });

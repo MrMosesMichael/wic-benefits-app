@@ -4,6 +4,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Location from 'expo-location';
 import { searchFormulaStores, getFormulaShortages, getParticipantFormula, getFormulaByUpc } from '@/lib/services/api';
 import StoreResultCard from '@/components/StoreResultCard';
+import FormulaSightingModal from '@/components/FormulaSightingModal';
 import type { StoreResult, WicFormula, ParticipantFormula } from '@/lib/types';
 
 interface FormulaShortage {
@@ -28,6 +29,7 @@ export default function FormulaFinder() {
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [shortages, setShortages] = useState<FormulaShortage[]>([]);
   const [loadingShortages, setLoadingShortages] = useState(true);
+  const [sightingModalVisible, setSightingModalVisible] = useState(false);
 
   // Location state
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -453,12 +455,31 @@ export default function FormulaFinder() {
       {/* Quick Report Button */}
       <TouchableOpacity
         style={styles.floatingReportButton}
-        onPress={() => router.push('/formula/report')}
+        onPress={() => {
+          if (assignedFormula) {
+            setSightingModalVisible(true);
+          } else {
+            Alert.alert('Select Formula', 'Please select your assigned formula first.');
+          }
+        }}
+        disabled={!assignedFormula}
       >
-        <Text style={styles.floatingReportButtonText}>Report Availability</Text>
+        <Text style={styles.floatingReportButtonText}>
+          {assignedFormula ? 'Quick Report - I Found This!' : 'Select Formula to Report'}
+        </Text>
       </TouchableOpacity>
 
       <View style={{ height: 40 }} />
+
+      {/* Formula Sighting Modal */}
+      {assignedFormula && (
+        <FormulaSightingModal
+          visible={sightingModalVisible}
+          onClose={() => setSightingModalVisible(false)}
+          formulaUpc={assignedFormula.upc}
+          formulaName={assignedFormula.name}
+        />
+      )}
     </ScrollView>
   );
 }

@@ -929,7 +929,7 @@ export async function reportFormulaSimple(
   quantitySeen: QuantitySeen,
   latitude?: number,
   longitude?: number
-): Promise<{ id: string; storeName: string; status: string }> {
+): Promise<{ id: string; storeName: string; status: string; impactMessage?: string }> {
   try {
     const response = await api.post('/formula/report-simple', {
       upc,
@@ -939,7 +939,10 @@ export async function reportFormulaSimple(
       longitude
     });
     if (response.data.success) {
-      return response.data.report;
+      return {
+        ...response.data.report,
+        impactMessage: response.data.impactMessage
+      };
     }
     throw new Error(response.data.error || 'Failed to report formula');
   } catch (error: any) {
