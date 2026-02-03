@@ -79,6 +79,7 @@ function Navigation() {
       <Stack.Screen name="formula/report" options={{ title: t('nav.reportFormula') }} />
       <Stack.Screen name="formula/alerts" options={{ title: t('nav.formulaAlerts') }} />
       <Stack.Screen name="foodbanks/index" options={{ title: t('nav.foodBanks') }} />
+      <Stack.Screen name="settings/privacy" options={{ title: t('nav.privacy') }} />
       <Stack.Screen name="help/index" options={{ title: t('nav.help') }} />
     </Stack>
   );

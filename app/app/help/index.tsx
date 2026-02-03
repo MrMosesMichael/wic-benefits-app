@@ -177,6 +177,21 @@ export default function HelpScreen() {
             <Text style={styles.contactValue}>1-800-26-BIRTH (1-800-262-4784)</Text>
           </View>
         </View>
+
+        {/* Privacy & Data */}
+        <TouchableOpacity
+          style={styles.privacyLink}
+          onPress={() => router.push('/settings/privacy')}
+        >
+          <Text style={styles.privacyLinkIcon}>🔒</Text>
+          <View style={styles.privacyLinkContent}>
+            <Text style={styles.privacyLinkTitle}>Privacy & Data</Text>
+            <Text style={styles.privacyLinkText}>
+              Export or delete your data, view privacy policy
+            </Text>
+          </View>
+          <Text style={styles.privacyLinkArrow}>→</Text>
+        </TouchableOpacity>
       </ScrollView>
       
       {/* Back Button */}
@@ -338,5 +353,34 @@ const styles = StyleSheet.create({
     color: '#666',
     fontSize: 16,
     fontWeight: '600',
+  },
+  privacyLink: {
+    marginTop: 16,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  privacyLinkIcon: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  privacyLinkContent: {
+    flex: 1,
+  },
+  privacyLinkTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  privacyLinkText: {
+    fontSize: 13,
+    color: '#666',
+    marginTop: 2,
+  },
+  privacyLinkArrow: {
+    fontSize: 18,
+    color: '#999',
   },
 });

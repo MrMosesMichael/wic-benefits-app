@@ -16,6 +16,7 @@
     "reportFormula": "Reportar Disponibilidad",
     "formulaAlerts": "Alertas de Fórmula",
     "foodBanks": "Bancos de Alimentos",
+    "privacy": "Privacidad y Datos",
     "help": "Ayuda y Preguntas"
   },
   "home": {
@@ -367,5 +368,38 @@
     "tapToCollapse": "Toque para colapsar",
     "aboutTitle": "Sobre los Bancos de Alimentos",
     "aboutText": "Los bancos de alimentos proporcionan comestibles y comidas gratis a cualquier persona que lo necesite. La mayoría de los lugares sirven a todos los miembros de la comunidad, y muchos específicamente dan la bienvenida a los participantes de WIC. Si está luchando para llegar a fin de mes, estos recursos pueden ayudar a complementar sus beneficios de WIC."
+  },
+  "privacy": {
+    "title": "Privacidad y Datos",
+    "subtitle": "Usted controla sus datos",
+    "yourRights": "Sus Derechos",
+    "exportData": "Exportar Mis Datos",
+    "exportDataDesc": "Descargue todos los datos que tenemos sobre usted",
+    "deleteAccount": "Eliminar Mi Cuenta",
+    "deleteAccountDesc": "Eliminar permanentemente todos sus datos",
+    "dataCollected": "Datos que Recopilamos",
+    "dataNotCollected": "Datos que Nunca Recopilamos",
+    "dataSharing": "Compartir Datos",
+    "neverSold": "Sus datos nunca se venden",
+    "sharingSummary": "No vendemos ni compartimos sus datos personales con terceros. Las estadísticas anónimas y agregadas pueden usarse para mejorar la aplicación.",
+    "contact": "Contáctenos",
+    "contactMessage": "Para preguntas de privacidad o solicitudes de datos:",
+    "lastUpdated": "Última actualización",
+    "retention": "Retención",
+    "noDataTitle": "Sin Datos Encontrados",
+    "noDataMessage": "Aún no ha creado una cuenta, por lo que no hay datos para exportar o eliminar.",
+    "exportTitle": "Exportación de Datos de Beneficios WIC",
+    "exportSuccessTitle": "Datos Exportados",
+    "exportSuccessMessage": "Sus datos se han exportado exitosamente.",
+    "exportError": "No se pudieron exportar sus datos. Por favor intente de nuevo.",
+    "deleteTitle": "¿Eliminar Cuenta?",
+    "deleteWarning": "Esto eliminará permanentemente su cuenta y todos los datos asociados incluyendo:\n\n• Información del hogar y participantes\n• Saldos e historial de beneficios\n• Historial del carrito de compras\n• Alertas y notificaciones de fórmula\n\nLas contribuciones comunitarias (avistamientos de productos) serán anonimizadas.",
+    "deleteConfirm": "Continuar",
+    "finalDeleteTitle": "Confirmación Final",
+    "finalDeleteMessage": "Esta acción no se puede deshacer. Todos sus datos serán eliminados permanentemente.",
+    "permanentlyDelete": "Eliminar Permanentemente",
+    "deletedTitle": "Cuenta Eliminada",
+    "deletedMessage": "Su cuenta y todos los datos asociados han sido eliminados permanentemente.",
+    "deleteError": "No se pudo eliminar su cuenta. Por favor intente de nuevo."
   }
 }

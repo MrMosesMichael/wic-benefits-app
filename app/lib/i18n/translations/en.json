@@ -16,6 +16,7 @@
     "reportFormula": "Report Availability",
     "formulaAlerts": "Formula Alerts",
     "foodBanks": "Food Banks",
+    "privacy": "Privacy & Data",
     "help": "Help & FAQ"
   },
   "home": {
@@ -367,5 +368,38 @@
     "tapToCollapse": "Tap to collapse",
     "aboutTitle": "About Food Banks",
     "aboutText": "Food banks provide free groceries and meals to anyone in need. Most locations serve all community members, and many specifically welcome WIC participants. If you're struggling to make ends meet, these resources can help supplement your WIC benefits."
+  },
+  "privacy": {
+    "title": "Privacy & Data",
+    "subtitle": "You control your data",
+    "yourRights": "Your Rights",
+    "exportData": "Export My Data",
+    "exportDataDesc": "Download all data we have about you",
+    "deleteAccount": "Delete My Account",
+    "deleteAccountDesc": "Permanently delete all your data",
+    "dataCollected": "Data We Collect",
+    "dataNotCollected": "Data We Never Collect",
+    "dataSharing": "Data Sharing",
+    "neverSold": "Your data is never sold",
+    "sharingSummary": "We do not sell or share your personal data with third parties. Anonymous, aggregated statistics may be used to improve the app.",
+    "contact": "Contact Us",
+    "contactMessage": "For privacy questions or data requests:",
+    "lastUpdated": "Last updated",
+    "retention": "Retention",
+    "noDataTitle": "No Data Found",
+    "noDataMessage": "You haven't created an account yet, so there's no data to export or delete.",
+    "exportTitle": "WIC Benefits Data Export",
+    "exportSuccessTitle": "Data Exported",
+    "exportSuccessMessage": "Your data has been exported successfully.",
+    "exportError": "Failed to export your data. Please try again.",
+    "deleteTitle": "Delete Account?",
+    "deleteWarning": "This will permanently delete your account and all associated data including:\n\n• Household & participant information\n• Benefit balances and history\n• Shopping cart history\n• Formula alerts and notifications\n\nCommunity contributions (product sightings) will be anonymized.",
+    "deleteConfirm": "Continue",
+    "finalDeleteTitle": "Final Confirmation",
+    "finalDeleteMessage": "This action cannot be undone. All your data will be permanently deleted.",
+    "permanentlyDelete": "Permanently Delete",
+    "deletedTitle": "Account Deleted",
+    "deletedMessage": "Your account and all associated data have been permanently deleted.",
+    "deleteError": "Failed to delete your account. Please try again."
   }
 }
