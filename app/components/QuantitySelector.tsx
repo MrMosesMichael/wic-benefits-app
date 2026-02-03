@@ -1,56 +1,60 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import type { QuantitySeen } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 interface QuantitySelectorProps {
   value: QuantitySeen | null;
   onChange: (value: QuantitySeen) => void;
   disabled?: boolean;
+  hideTitle?: boolean;
 }
 
 interface QuantityOption {
   value: QuantitySeen;
-  label: string;
+  labelKey: string;
   icon: string;
-  description: string;
+  descriptionKey: string;
   color: string;
 }
 
 const options: QuantityOption[] = [
   {
     value: 'none',
-    label: 'None',
+    labelKey: 'quantitySelector.none',
     icon: '❌',
-    description: 'Out of stock',
+    descriptionKey: 'quantitySelector.noneDescription',
     color: '#F44336'
   },
   {
     value: 'few',
-    label: 'Few',
+    labelKey: 'quantitySelector.few',
     icon: '⚠️',
-    description: '1-3 items',
+    descriptionKey: 'quantitySelector.fewDescription',
     color: '#FF9800'
   },
   {
     value: 'some',
-    label: 'Some',
+    labelKey: 'quantitySelector.some',
     icon: '✓',
-    description: '4-10 items',
+    descriptionKey: 'quantitySelector.someDescription',
     color: '#4CAF50'
   },
   {
     value: 'plenty',
-    label: 'Plenty',
+    labelKey: 'quantitySelector.plenty',
     icon: '📦',
-    description: '10+ items',
+    descriptionKey: 'quantitySelector.plentyDescription',
     color: '#2196F3'
   }
 ];
 
-export default function QuantitySelector({ value, onChange, disabled }: QuantitySelectorProps) {
+export default function QuantitySelector({ value, onChange, disabled, hideTitle }: QuantitySelectorProps) {
+  const t = useTranslation();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>How much did you see?</Text>
+      {!hideTitle && <Text style={styles.title}>{t('quantitySelector.title')}</Text>}
       <View style={styles.grid}>
         {options.map((option) => {
           const isSelected = value === option.value;
@@ -70,9 +74,9 @@ export default function QuantitySelector({ value, onChange, disabled }: Quantity
                 styles.label,
                 isSelected && { color: option.color }
               ]}>
-                {option.label}
+                {t(option.labelKey)}
               </Text>
-              <Text style={styles.description}>{option.description}</Text>
+              <Text style={styles.description}>{t(option.descriptionKey)}</Text>
             </TouchableOpacity>
           );
         })}

@@ -6,11 +6,13 @@ import * as Location from 'expo-location';
 import { getFormulaByUpc, getNearbyStores, reportFormulaSimple } from '@/lib/services/api';
 import QuantitySelector from '@/components/QuantitySelector';
 import type { WicFormula, Store, QuantitySeen } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 type ReportStep = 'scan' | 'confirm' | 'quantity' | 'store' | 'success';
 
 export default function FormulaReport() {
   const router = useRouter();
+  const t = useTranslation();
   const params = useLocalSearchParams<{ upc?: string; storeId?: string }>();
 
   const [permission, requestPermission] = useCameraPermissions();
@@ -71,7 +73,7 @@ export default function FormulaReport() {
       setStep('confirm');
     } catch (error) {
       console.error('Failed to lookup formula:', error);
-      Alert.alert('Error', 'Failed to look up this product. Please try again.');
+      Alert.alert('Error', t('formulaReport.errorLookup'));
     } finally {
       setLoading(false);
     }
@@ -117,7 +119,7 @@ export default function FormulaReport() {
       setStep('success');
     } catch (error) {
       console.error('Failed to submit report:', error);
-      Alert.alert('Error', 'Failed to submit your report. Please try again.');
+      Alert.alert('Error', t('formulaReport.errorSubmit'));
     } finally {
       setSubmitting(false);
     }
@@ -132,10 +134,10 @@ export default function FormulaReport() {
     return (
       <View style={styles.permissionContainer}>
         <Text style={styles.permissionText}>
-          Camera permission is needed to scan formula barcodes
+          {t('formulaReport.cameraPermission')}
         </Text>
         <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-          <Text style={styles.permissionButtonText}>Grant Permission</Text>
+          <Text style={styles.permissionButtonText}>{t('formulaReport.grantPermission')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -145,8 +147,8 @@ export default function FormulaReport() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Report Formula</Text>
-        <Text style={styles.subtitle}>Help others find formula</Text>
+        <Text style={styles.title}>{t('formulaReport.title')}</Text>
+        <Text style={styles.subtitle}>{t('formulaReport.subtitle')}</Text>
       </View>
 
       {/* Step: Scan */}
@@ -162,7 +164,7 @@ export default function FormulaReport() {
             <View style={styles.scanOverlay}>
               <View style={styles.scanFrame} />
               <Text style={styles.scanInstructions}>
-                Point camera at formula barcode
+                {t('formulaReport.pointCamera')}
               </Text>
             </View>
           </CameraView>
@@ -175,11 +177,11 @@ export default function FormulaReport() {
           {loading ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#1976D2" />
-              <Text style={styles.loadingText}>Looking up product...</Text>
+              <Text style={styles.loadingText}>{t('formulaReport.lookingUp')}</Text>
             </View>
           ) : formula ? (
             <View style={styles.confirmCard}>
-              <Text style={styles.confirmTitle}>Is this your product?</Text>
+              <Text style={styles.confirmTitle}>{t('formulaReport.isThisYourProduct')}</Text>
               <View style={styles.productInfo}>
                 <Text style={styles.productBrand}>{formula.brand}</Text>
                 <Text style={styles.productName}>{formula.productName}</Text>
@@ -192,27 +194,27 @@ export default function FormulaReport() {
                   style={styles.confirmButtonNo}
                   onPress={handleNotMyProduct}
                 >
-                  <Text style={styles.confirmButtonNoText}>No, scan again</Text>
+                  <Text style={styles.confirmButtonNoText}>{t('formulaReport.noScanAgain')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.confirmButtonYes}
                   onPress={handleConfirmProduct}
                 >
-                  <Text style={styles.confirmButtonYesText}>Yes, this is it</Text>
+                  <Text style={styles.confirmButtonYesText}>{t('formulaReport.yesThisIsIt')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
           ) : (
             <View style={styles.unknownProduct}>
-              <Text style={styles.unknownTitle}>Unknown Product</Text>
+              <Text style={styles.unknownTitle}>{t('formulaReport.unknownProduct')}</Text>
               <Text style={styles.unknownText}>
-                This barcode wasn't recognized as a WIC formula.
+                {t('formulaReport.unknownProductMessage')}
               </Text>
               <TouchableOpacity
                 style={styles.tryAgainButton}
                 onPress={handleNotMyProduct}
               >
-                <Text style={styles.tryAgainButtonText}>Scan Again</Text>
+                <Text style={styles.tryAgainButtonText}>{t('formulaReport.scanAgain')}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -224,11 +226,12 @@ export default function FormulaReport() {
         <ScrollView style={styles.stepContainer}>
           <View style={styles.quantityCard}>
             <Text style={styles.stepTitle}>
-              How much {formula?.brand} {formula?.productName} did you see?
+              {t('formulaReport.howMuchSaw', { brand: formula?.brand, product: formula?.productName })}
             </Text>
             <QuantitySelector
               value={quantity}
               onChange={handleQuantitySelect}
+              hideTitle
             />
           </View>
         </ScrollView>
@@ -238,11 +241,11 @@ export default function FormulaReport() {
       {step === 'store' && (
         <ScrollView style={styles.stepContainer}>
           <View style={styles.storeCard}>
-            <Text style={styles.stepTitle}>Which store are you at?</Text>
+            <Text style={styles.stepTitle}>{t('formulaReport.whichStore')}</Text>
             {nearbyStores.length === 0 ? (
               <View style={styles.noStores}>
                 <Text style={styles.noStoresText}>
-                  No stores found nearby. Please enable location services.
+                  {t('formulaReport.noStoresNearby')}
                 </Text>
               </View>
             ) : (
@@ -278,7 +281,7 @@ export default function FormulaReport() {
                   {submitting ? (
                     <ActivityIndicator color="#fff" size="small" />
                   ) : (
-                    <Text style={styles.submitButtonText}>Submit Report</Text>
+                    <Text style={styles.submitButtonText}>{t('formulaReport.submitReport')}</Text>
                   )}
                 </TouchableOpacity>
               </>
@@ -291,15 +294,15 @@ export default function FormulaReport() {
       {step === 'success' && (
         <View style={styles.successContainer}>
           <Text style={styles.successIcon}>✓</Text>
-          <Text style={styles.successTitle}>Thank You!</Text>
+          <Text style={styles.successTitle}>{t('formulaReport.thankYou')}</Text>
           <Text style={styles.successText}>
-            Your report helps other families find formula.
+            {t('formulaReport.reportHelps')}
           </Text>
           <TouchableOpacity
             style={styles.successButton}
             onPress={() => router.push('/formula')}
           >
-            <Text style={styles.successButtonText}>Back to Formula Finder</Text>
+            <Text style={styles.successButtonText}>{t('formulaReport.backToFormulaFinder')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.reportAnotherButton}
@@ -310,7 +313,7 @@ export default function FormulaReport() {
               setStep('scan');
             }}
           >
-            <Text style={styles.reportAnotherButtonText}>Report Another</Text>
+            <Text style={styles.reportAnotherButtonText}>{t('formulaReport.reportAnother')}</Text>
           </TouchableOpacity>
         </View>
       )}

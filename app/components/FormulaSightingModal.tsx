@@ -13,6 +13,7 @@ import * as Location from 'expo-location';
 import { reportFormulaSimple, getNearbyStores } from '@/lib/services/api';
 import QuantitySelector from './QuantitySelector';
 import type { QuantitySeen, Store } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 interface FormulaSightingModalProps {
   visible: boolean;
@@ -29,6 +30,7 @@ export default function FormulaSightingModal({
   formulaName,
   preselectedStoreId,
 }: FormulaSightingModalProps) {
+  const t = useTranslation();
   const [step, setStep] = useState<'quantity' | 'store' | 'submitting' | 'success'>('quantity');
   const [quantity, setQuantity] = useState<QuantitySeen | null>(null);
   const [nearbyStores, setNearbyStores] = useState<Store[]>([]);
@@ -123,31 +125,31 @@ export default function FormulaSightingModal({
   const renderQuantityStep = () => (
     <View style={styles.stepContainer}>
       <Text style={styles.stepTitle}>
-        How much {formulaName} did you see?
+        {t('formulaSighting.quantityQuestion', { formula: formulaName })}
       </Text>
-      <QuantitySelector value={quantity} onChange={handleQuantitySelect} />
+      <QuantitySelector value={quantity} onChange={handleQuantitySelect} hideTitle />
       <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-        <Text style={styles.cancelButtonText}>Cancel</Text>
+        <Text style={styles.cancelButtonText}>{t('formulaSighting.cancel')}</Text>
       </TouchableOpacity>
     </View>
   );
 
   const renderStoreStep = () => (
     <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Where did you see it?</Text>
+      <Text style={styles.stepTitle}>{t('formulaSighting.storeQuestion')}</Text>
 
       {loadingStores ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#1976D2" />
-          <Text style={styles.loadingText}>Finding nearby stores...</Text>
+          <Text style={styles.loadingText}>{t('formulaSighting.findingStores')}</Text>
         </View>
       ) : nearbyStores.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>
-            No stores found nearby. Please enable location services.
+            {t('formulaSighting.noStoresFound')}
           </Text>
           <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-            <Text style={styles.cancelButtonText}>Close</Text>
+            <Text style={styles.cancelButtonText}>{t('formulaSighting.close')}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -176,7 +178,7 @@ export default function FormulaSightingModal({
               style={styles.backButton}
               onPress={() => setStep('quantity')}
             >
-              <Text style={styles.backButtonText}>← Back</Text>
+              <Text style={styles.backButtonText}>← {t('formulaSighting.back')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -186,7 +188,7 @@ export default function FormulaSightingModal({
               onPress={handleSubmit}
               disabled={!selectedStore}
             >
-              <Text style={styles.submitButtonText}>Submit Report</Text>
+              <Text style={styles.submitButtonText}>{t('formulaSighting.submitReport')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -197,15 +199,15 @@ export default function FormulaSightingModal({
   const renderSubmittingStep = () => (
     <View style={styles.statusContainer}>
       <ActivityIndicator size="large" color="#1976D2" />
-      <Text style={styles.statusText}>Submitting your report...</Text>
+      <Text style={styles.statusText}>{t('formulaSighting.submitting')}</Text>
     </View>
   );
 
   const renderSuccessStep = () => (
     <View style={styles.statusContainer}>
       <Text style={styles.successIcon}>✓</Text>
-      <Text style={styles.successTitle}>Thank You!</Text>
-      <Text style={styles.successMessage}>{impactMessage}</Text>
+      <Text style={styles.successTitle}>{t('formulaSighting.thankYou')}</Text>
+      <Text style={styles.successMessage}>{impactMessage || t('formulaSighting.impactMessage')}</Text>
     </View>
   );
 
@@ -219,8 +221,8 @@ export default function FormulaSightingModal({
       <View style={styles.overlay}>
         <View style={styles.modal}>
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Report Formula Sighting</Text>
-            <Text style={styles.headerSubtitle}>Help other families find formula</Text>
+            <Text style={styles.headerTitle}>{t('formulaSighting.modalTitle')}</Text>
+            <Text style={styles.headerSubtitle}>{t('formulaSighting.modalSubtitle')}</Text>
           </View>
 
           {step === 'quantity' && renderQuantityStep()}
