@@ -14,6 +14,7 @@
     "crossStoreSearch": "Búsqueda Entre Tiendas",
     "selectFormula": "Seleccionar Fórmula",
     "reportFormula": "Reportar Disponibilidad",
+    "formulaAlerts": "Alertas de Fórmula",
     "help": "Ayuda y Preguntas"
   },
   "home": {
@@ -303,5 +304,31 @@
     "expirationBody": "Su alerta para {{formula}} expira en 3 días. Toque para renovar.",
     "testNotificationTitle": "Alertas de Fórmula WIC Activas",
     "testNotificationBody": "Recibirá notificaciones cuando su fórmula esté disponible cerca."
+  },
+  "formulaAlertsList": {
+    "title": "Mis Alertas de Fórmula",
+    "subtitle": "Administre sus notificaciones de reabastecimiento",
+    "loading": "Cargando alertas...",
+    "loadError": "No se pudieron cargar sus alertas. Por favor intente de nuevo.",
+    "noAlerts": "Sin Alertas Activas",
+    "noAlertsMessage": "Aún no ha configurado alertas de fórmula. Configure una alerta para ser notificado cuando su fórmula esté disponible.",
+    "setupAlert": "Configurar Alerta",
+    "infoText": "Las alertas expiran automáticamente después de 30 días. Renueve antes del vencimiento para seguir recibiendo notificaciones.",
+    "radius": "Radio de búsqueda",
+    "anyDistance": "Cualquier distancia",
+    "stores": "Tiendas",
+    "specificStores": "{{count}} tienda(s) específica(s)",
+    "allStores": "Todas las tiendas cercanas",
+    "notifications": "Notificaciones enviadas",
+    "expires": "Expira",
+    "expired": "Expirado",
+    "expiresSoon": "Expira en {{days}}d",
+    "expiresIn": "{{days}} días restantes",
+    "active": "Activo",
+    "renew": "Renovar Alerta",
+    "delete": "Eliminar",
+    "renewed": "¡Alerta Renovada!",
+    "renewedMessage": "Su alerta ha sido extendida por otros 30 días.",
+    "renewError": "No se pudo renovar la alerta. Por favor intente de nuevo."
   }
 }

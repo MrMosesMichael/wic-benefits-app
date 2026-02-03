@@ -266,6 +266,16 @@ export default function FormulaFinder() {
               formulaName={assignedFormula.details?.productName || assignedFormula.name}
               radius={searchRadius}
             />
+
+            {/* Manage Alerts Link */}
+            <TouchableOpacity
+              style={styles.manageAlertsLink}
+              onPress={() => router.push('/formula/alerts')}
+            >
+              <Text style={styles.manageAlertsLinkText}>
+                Manage All Formula Alerts →
+              </Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <TouchableOpacity
@@ -592,6 +602,15 @@ const styles = StyleSheet.create({
     color: '#1976D2',
     fontSize: 15,
     fontWeight: '600',
+  },
+  manageAlertsLink: {
+    marginTop: 12,
+    alignItems: 'center',
+  },
+  manageAlertsLinkText: {
+    color: '#1976D2',
+    fontSize: 14,
+    fontWeight: '500',
   },
   locationError: {
     flexDirection: 'row',

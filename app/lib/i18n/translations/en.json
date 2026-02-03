@@ -14,6 +14,7 @@
     "crossStoreSearch": "Cross-Store Search",
     "selectFormula": "Select Formula",
     "reportFormula": "Report Availability",
+    "formulaAlerts": "Formula Alerts",
     "help": "Help & FAQ"
   },
   "home": {
@@ -303,5 +304,31 @@
     "expirationBody": "Your alert for {{formula}} expires in 3 days. Tap to renew.",
     "testNotificationTitle": "WIC Formula Alerts Active",
     "testNotificationBody": "You'll receive notifications when your formula becomes available nearby."
+  },
+  "formulaAlertsList": {
+    "title": "My Formula Alerts",
+    "subtitle": "Manage your restock notifications",
+    "loading": "Loading alerts...",
+    "loadError": "Failed to load your alerts. Please try again.",
+    "noAlerts": "No Active Alerts",
+    "noAlertsMessage": "You haven't set up any formula alerts yet. Set an alert to be notified when your formula becomes available.",
+    "setupAlert": "Set Up Alert",
+    "infoText": "Alerts automatically expire after 30 days. Renew before expiration to keep receiving notifications.",
+    "radius": "Search radius",
+    "anyDistance": "Any distance",
+    "stores": "Stores",
+    "specificStores": "{{count}} specific store(s)",
+    "allStores": "All nearby stores",
+    "notifications": "Notifications sent",
+    "expires": "Expires",
+    "expired": "Expired",
+    "expiresSoon": "Expires in {{days}}d",
+    "expiresIn": "{{days}} days left",
+    "active": "Active",
+    "renew": "Renew Alert",
+    "delete": "Delete",
+    "renewed": "Alert Renewed!",
+    "renewedMessage": "Your alert has been extended for another 30 days.",
+    "renewError": "Failed to renew alert. Please try again."
   }
 }

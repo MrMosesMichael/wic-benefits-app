@@ -77,6 +77,7 @@ function Navigation() {
       <Stack.Screen name="formula/cross-store-search" options={{ title: t('nav.crossStoreSearch') }} />
       <Stack.Screen name="formula/select" options={{ title: t('nav.selectFormula') }} />
       <Stack.Screen name="formula/report" options={{ title: t('nav.reportFormula') }} />
+      <Stack.Screen name="formula/alerts" options={{ title: t('nav.formulaAlerts') }} />
       <Stack.Screen name="help/index" options={{ title: t('nav.help') }} />
     </Stack>
   );
