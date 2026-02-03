@@ -1,7 +1,7 @@
 # WIC Benefits App — Roadmap
 
-> **Last Updated:** February 2, 2026
-> **Current Phase:** Phase 1 Completion + Phase 2 In Progress
+> **Last Updated:** February 3, 2026
+> **Current Phase:** Phase 1 Nearly Complete + Phase 2 In Progress
 > **Production:** https://mdmichael.com/wic/
 
 ---
@@ -10,8 +10,8 @@
 
 | Phase | Status | Completion |
 |-------|--------|------------|
-| **Phase 1: Foundation** | 🔄 In Progress | 79% |
-| **Phase 2: Store Intelligence** | 🔄 In Progress | 60% |
+| **Phase 1: Foundation** | 🔄 In Progress | 95% |
+| **Phase 2: Store Intelligence** | 🔄 In Progress | 80% |
 | **Phase 3: Discovery** | ⏳ Not Started | 0% |
 | **Phase 4: Community** | ⏳ Not Started | 0% |
 | **Phase 5: Manual Entry** | ✅ Complete | 100% |
@@ -28,6 +28,9 @@
 ✅ **Crowdsourced Inventory** — "I found this" reporting with confidence decay
 ✅ **Manual Benefits Entry** — AsyncStorage-based household setup
 ✅ **Formula Shortage Detection** — Severity levels + trend tracking
+✅ **Formula Features Complete** — Cross-store search, alternatives, sightings, alerts
+✅ **Food Bank Finder** — Location-based search with filters
+✅ **Data Sovereignty** — Data export, account deletion, privacy policy
 ✅ **Help & FAQ System** — Size/formula/checkout guides with harm prevention focus
 ✅ **Production Backend** — Deployed at https://mdmichael.com/wic/
 ✅ **Android APK** — Production build ready for sideloading  
@@ -47,7 +50,7 @@
 
 ## Roadmap Detail
 
-### Phase 1: Foundation (79% Complete)
+### Phase 1: Foundation (95% Complete)
 
 Core functionality for scanning, benefits, and formula support.
 
@@ -60,20 +63,20 @@ Core functionality for scanning, benefits, and formula support.
 | **A4.1** | Formula Availability Tracking | ✅ Done | |
 | **A4.2** | Formula Shortage Detection | ✅ Done | Severity + trends |
 | **A4.3** | Formula Restock Notifications | ✅ Done | Push + 30-day expiry |
-| **A4.4** | Cross-Store Formula Search | ❌ Not Started | **Next up** |
-| **A4.5** | Alternative Formula Suggestions | ❌ Not Started | |
-| **A4.6** | Crowdsourced Formula Sightings | ❌ Not Started | |
-| **A4.7** | Formula Alert Subscriptions | ❌ Not Started | |
+| **A4.4** | Cross-Store Formula Search | ✅ Done | Multi-store search with filters |
+| **A4.5** | Alternative Formula Suggestions | ✅ Done | 100+ formula equivalents seeded |
+| **A4.6** | Crowdsourced Formula Sightings | ✅ Done | Full i18n support |
+| **A4.7** | Formula Alert Subscriptions | ✅ Done | Management screen with renew/delete |
 | **B1** | Project Setup | ✅ Done | Expo SDK 52 |
 | **B2** | Backend Infrastructure | ✅ Done | Node/Express/Postgres |
-| **B3** | Data Sovereignty | ❌ Not Started | **Required pre-launch** |
+| **B3** | Data Sovereignty | ✅ Done | Export, delete, privacy policy |
 | **C** | Benefits System | ✅ Done | Three-state tracking |
 | **D** | UPC Scanner | ✅ Done | All formats |
 | **E** | Shopping Cart | ✅ Done | Multi-participant |
 | **F** | Help & FAQ | ✅ Done | Size/formula/checkout guides |
-| **G** | Spanish Support | ⚠️ Partial | i18n framework started |
+| **G** | Spanish Support | ⚠️ Partial | i18n framework + translations in progress |
 
-### Phase 2: Store Intelligence (60% Complete)
+### Phase 2: Store Intelligence (80% Complete)
 
 Know what's in stock, find supplemental food sources.
 
@@ -82,7 +85,7 @@ Know what's in stock, find supplemental food sources.
 | **H** | Store Detection | ✅ Done | GPS + WiFi + geofencing |
 | **I1** | Retailer API Integration | 🚫 Blocked | Requires partnerships |
 | **I2** | Inventory Display | ✅ Done | Via crowdsourced data |
-| **J** | Food Bank Finder | ❌ Not Started | Feeding America / 211 |
+| **J** | Food Bank Finder | ✅ Done | 10 MI food banks seeded, full UI |
 | **K** | Crowdsourced Inventory | ✅ Done | Sightings + confidence |
 
 ### Phase 3: Discovery & Navigation (Not Started)
@@ -142,30 +145,26 @@ Accessibility, testing, app store submission.
 
 Based on impact, effort, and what's unblocked:
 
-### 🔥 Immediate (This Week)
+### ✅ Recently Completed
 
-1. **Finish Formula Features (A4.4-A4.7)**
-   - Cross-store formula search
-   - Alternative suggestions
-   - Crowdsourced sightings
-   - Alert subscriptions
-   - *Effort: 1-2 weeks* | *Impact: High (SURVIVAL feature)*
+1. ~~**Finish Formula Features (A4.4-A4.7)**~~ ✅ DONE
+   - Cross-store formula search, alternatives, sightings, alerts
+
+2. ~~**Food Bank Finder (Group J)**~~ ✅ DONE
+   - Location search with filters, 10 MI food banks seeded
+
+3. ~~**Data Sovereignty (Track B3)**~~ ✅ DONE
+   - Data export, account deletion, privacy policy
 
 ### 📅 Short Term (Next 2-4 Weeks)
 
-2. **Complete Spanish Language Support (Group G)**
-   - Finish translating remaining UI strings
-   - Add locale selector
+1. **Complete Spanish Language Support (Group G)**
+   - Review existing translations with native speaker
+   - Finish any remaining untranslated strings
    - *Effort: 1 week* | *Impact: High (40% of WIC users)*
-   - *Status: i18n framework in place, partial translations done*
+   - *Status: i18n framework in place, most translations done*
 
-3. **Food Bank Finder (Group J)**
-   - Feeding America / 211 data integration
-   - Search & listing UI
-   - "Open now" filters
-   - *Effort: 1 week* | *Impact: Medium*
-
-4. **Multi-State APL Expansion**
+2. **Multi-State APL Expansion**
    - North Carolina APL ingestion
    - Florida APL ingestion
    - Oregon APL ingestion
@@ -173,17 +172,16 @@ Based on impact, effort, and what's unblocked:
 
 ### 📋 Pre-Launch Requirements
 
-5. **Data Sovereignty (Track B3)**
-   - Data export API
-   - Account deletion
-   - Privacy policy
-   - *Effort: 3-5 days* | *Impact: Required for launch*
-
-6. **Accessibility (Track T)**
+3. **Accessibility (Track T)**
    - VoiceOver support
    - TalkBack support
    - WCAG compliance
    - *Effort: 1-2 weeks* | *Impact: Required for launch*
+
+4. **Beta Testing & App Store Submission (Track V)**
+   - TestFlight / Play Store beta
+   - User feedback collection
+   - App store assets and metadata
 
 ---
 
