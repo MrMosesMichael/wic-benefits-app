@@ -15,6 +15,7 @@
     "selectFormula": "Select Formula",
     "reportFormula": "Report Availability",
     "formulaAlerts": "Formula Alerts",
+    "foodBanks": "Food Banks",
     "help": "Help & FAQ"
   },
   "home": {
@@ -23,6 +24,8 @@
     "scanProduct": "Scan Product",
     "viewBenefits": "View Benefits",
     "shoppingCart": "Shopping Cart",
+    "findFoodBanks": "Find Food Banks",
+    "findFoodBanksSubtext": "Local food assistance nearby",
     "helpFaq": "Help & FAQ"
   },
   "help": {
@@ -140,6 +143,7 @@
     "error": "Error",
     "loading": "Loading...",
     "retry": "Retry",
+    "tryAgain": "Try Again",
     "save": "Save",
     "delete": "Delete",
     "edit": "Edit",
@@ -330,5 +334,38 @@
     "renewed": "Alert Renewed!",
     "renewedMessage": "Your alert has been extended for another 30 days.",
     "renewError": "Failed to renew alert. Please try again."
+  },
+  "foodBanks": {
+    "title": "Food Banks & Pantries",
+    "subtitle": "Find free food assistance near you",
+    "supportMessage": "Food banks are here to help. Using these resources is a sign of strength, not weakness. Many families, including WIC participants, benefit from supplemental food assistance.",
+    "searchRadius": "Search Radius",
+    "openNow": "Open Now",
+    "filterByServices": "Filter by Services",
+    "search": "Search",
+    "searching": "Searching nearby food banks...",
+    "locationPermissionDenied": "Location permission is needed to find food banks near you. Please enable location services.",
+    "locationError": "Could not get your location. Please try again.",
+    "noResults": "No Food Banks Found",
+    "noResultsMessage": "Try expanding your search radius or removing some filters.",
+    "foundCount": "{{count}} food bank(s) found",
+    "types": {
+      "foodBank": "Food Bank",
+      "foodPantry": "Food Pantry",
+      "soupKitchen": "Soup Kitchen",
+      "mobilePantry": "Mobile Pantry",
+      "communityCenter": "Community Center"
+    },
+    "welcomesWic": "Welcomes WIC Participants",
+    "hours": "Hours",
+    "eligibility": "Eligibility",
+    "requiredDocs": "Required Documents",
+    "call": "Call",
+    "directions": "Directions",
+    "website": "Website",
+    "tapToExpand": "Tap for more details",
+    "tapToCollapse": "Tap to collapse",
+    "aboutTitle": "About Food Banks",
+    "aboutText": "Food banks provide free groceries and meals to anyone in need. Most locations serve all community members, and many specifically welcome WIC participants. If you're struggling to make ends meet, these resources can help supplement your WIC benefits."
   }
 }

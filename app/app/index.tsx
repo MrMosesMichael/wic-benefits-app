@@ -42,6 +42,14 @@ export default function Home() {
         </TouchableOpacity>
 
         <TouchableOpacity
+          style={styles.foodBankButton}
+          onPress={() => router.push('/foodbanks')}
+        >
+          <Text style={styles.buttonText}>🏠 {t('home.findFoodBanks')}</Text>
+          <Text style={styles.buttonSubtext}>{t('home.findFoodBanksSubtext')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           style={styles.helpButton}
           onPress={() => router.push('/help')}
         >
@@ -92,6 +100,12 @@ const styles = StyleSheet.create({
   },
   cartButton: {
     backgroundColor: '#FFA000',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  foodBankButton: {
+    backgroundColor: '#4CAF50',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',

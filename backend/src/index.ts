@@ -15,6 +15,7 @@ import manualBenefitsRoutes from './routes/manual-benefits';
 import ocrBenefitsRoutes from './routes/ocr-benefits';
 import crossStoreSearchRoutes from './routes/cross-store-search';
 import notificationsRoutes from './routes/notifications';
+import foodBanksRoutes from './routes/food-banks';
 // Temporarily disabled due to path resolution issues
 // import productsRoutes from './routes/products';
 // import productImagesRoutes from './routes/product-images';
@@ -59,6 +60,7 @@ app.use('/api/v1/manual-benefits', manualBenefitsRoutes);
 app.use('/api/v1/benefits/ocr', ocrBenefitsRoutes);
 app.use('/api/v1/cross-store-search', crossStoreSearchRoutes);
 app.use('/api/v1/notifications', notificationsRoutes);
+app.use('/api/v1/foodbanks', foodBanksRoutes);
 // Temporarily disabled due to path resolution issues
 // app.use('/api/v1/products', productsRoutes);
 // app.use('/api/v1/product-images', productImagesRoutes);

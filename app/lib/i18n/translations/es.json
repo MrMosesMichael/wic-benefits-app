@@ -15,6 +15,7 @@
     "selectFormula": "Seleccionar Fórmula",
     "reportFormula": "Reportar Disponibilidad",
     "formulaAlerts": "Alertas de Fórmula",
+    "foodBanks": "Bancos de Alimentos",
     "help": "Ayuda y Preguntas"
   },
   "home": {
@@ -23,6 +24,8 @@
     "scanProduct": "Escanear Producto",
     "viewBenefits": "Ver Beneficios",
     "shoppingCart": "Carrito de Compras",
+    "findFoodBanks": "Buscar Bancos de Alimentos",
+    "findFoodBanksSubtext": "Asistencia alimentaria local cerca",
     "helpFaq": "Ayuda y Preguntas"
   },
   "help": {
@@ -140,6 +143,7 @@
     "error": "Error",
     "loading": "Cargando...",
     "retry": "Reintentar",
+    "tryAgain": "Intentar de Nuevo",
     "save": "Guardar",
     "delete": "Eliminar",
     "edit": "Editar",
@@ -330,5 +334,38 @@
     "renewed": "¡Alerta Renovada!",
     "renewedMessage": "Su alerta ha sido extendida por otros 30 días.",
     "renewError": "No se pudo renovar la alerta. Por favor intente de nuevo."
+  },
+  "foodBanks": {
+    "title": "Bancos de Alimentos y Despensas",
+    "subtitle": "Encuentre asistencia alimentaria gratuita cerca",
+    "supportMessage": "Los bancos de alimentos están aquí para ayudar. Usar estos recursos es una señal de fortaleza, no de debilidad. Muchas familias, incluyendo participantes de WIC, se benefician de la asistencia alimentaria suplementaria.",
+    "searchRadius": "Radio de Búsqueda",
+    "openNow": "Abierto Ahora",
+    "filterByServices": "Filtrar por Servicios",
+    "search": "Buscar",
+    "searching": "Buscando bancos de alimentos cercanos...",
+    "locationPermissionDenied": "Se necesita permiso de ubicación para encontrar bancos de alimentos cerca. Por favor active los servicios de ubicación.",
+    "locationError": "No se pudo obtener su ubicación. Por favor intente de nuevo.",
+    "noResults": "No Se Encontraron Bancos de Alimentos",
+    "noResultsMessage": "Intente ampliar su radio de búsqueda o eliminar algunos filtros.",
+    "foundCount": "{{count}} banco(s) de alimentos encontrado(s)",
+    "types": {
+      "foodBank": "Banco de Alimentos",
+      "foodPantry": "Despensa de Alimentos",
+      "soupKitchen": "Comedor Comunitario",
+      "mobilePantry": "Despensa Móvil",
+      "communityCenter": "Centro Comunitario"
+    },
+    "welcomesWic": "Da Bienvenida a Participantes de WIC",
+    "hours": "Horario",
+    "eligibility": "Elegibilidad",
+    "requiredDocs": "Documentos Requeridos",
+    "call": "Llamar",
+    "directions": "Direcciones",
+    "website": "Sitio Web",
+    "tapToExpand": "Toque para más detalles",
+    "tapToCollapse": "Toque para colapsar",
+    "aboutTitle": "Sobre los Bancos de Alimentos",
+    "aboutText": "Los bancos de alimentos proporcionan comestibles y comidas gratis a cualquier persona que lo necesite. La mayoría de los lugares sirven a todos los miembros de la comunidad, y muchos específicamente dan la bienvenida a los participantes de WIC. Si está luchando para llegar a fin de mes, estos recursos pueden ayudar a complementar sus beneficios de WIC."
   }
 }
