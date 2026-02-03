@@ -39,27 +39,29 @@ export default function FormulaAlternativesScreen() {
       setError(null);
 
       // Request location (optional, but helpful for availability data)
+      let userLocation: { lat: number; lng: number } | undefined;
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status === 'granted') {
           const loc = await Location.getCurrentPositionAsync({
             accuracy: Location.Accuracy.Balanced,
           });
-          setLocation({
+          userLocation = {
             lat: loc.coords.latitude,
             lng: loc.coords.longitude,
-          });
+          };
+          setLocation(userLocation);
         }
       } catch (locError) {
         console.warn('Location not available:', locError);
         // Continue without location
       }
 
-      // Fetch alternatives
+      // Fetch alternatives (use local variable, not stale state)
       const response = await getFormulaAlternatives(
         params.upc,
         'MI',
-        location || undefined,
+        userLocation,
         25
       );
 
