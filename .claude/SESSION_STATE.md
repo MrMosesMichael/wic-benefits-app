@@ -197,4 +197,35 @@ GET  /api/v1/user/privacy-summary
 
 ---
 
-*Session complete. 5 major features implemented, committed, and ready for review.*
+---
+
+## Additional Work: Multi-State APL Expansion
+
+### Completed
+1. Updated eligibility API to accept `state` query parameter
+2. Added new endpoint `GET /api/v1/eligibility/states` to list supported states
+3. Created migration `018_multi_state_apl.sql` with sample APL data for:
+   - North Carolina (NC)
+   - Florida (FL)
+   - Oregon (OR)
+   - New York (NY)
+4. Updated APL data sources research to include New York
+5. Updated ROADMAP.md to reflect multi-state support
+
+### Technical Details
+- Eligibility API now accepts `?state=XX` parameter (default: MI)
+- Supported states: MI, NC, FL, OR, NY
+- Response includes `approvedInOtherStates` when product not found in queried state
+- Sample data includes common WIC products: milk, eggs, cereal, peanut butter, juice, cheese, whole grains, infant formula
+
+### Note
+The sample APL data is for development/testing. Production deployment should import official state APL files from:
+- Michigan: Excel from michigan.gov
+- North Carolina: Conduent FTP
+- Florida: PDF from floridahealth.gov
+- Oregon: Excel from oregon.gov
+- New York: PDF from health.ny.gov
+
+---
+
+*Session complete. 5 major features + multi-state APL expansion implemented and ready for review.*

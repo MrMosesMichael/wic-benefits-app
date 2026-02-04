@@ -1,17 +1,18 @@
 # APL Data Sources Research - Priority States
 
-**Task:** A1.1 - Research APL data sources for Michigan, North Carolina, Florida, Oregon
-**Date:** January 20, 2026
+**Task:** A1.1 - Research APL data sources for Michigan, North Carolina, Florida, Oregon, New York
+**Date:** January 20, 2026 (Updated: February 3, 2026)
 **Status:** Complete
 
 ## Executive Summary
 
-Researched Approved Product List (APL) data sources for the four priority states. All states maintain online APL databases, with varying levels of accessibility. Key findings:
+Researched Approved Product List (APL) data sources for the five priority states. All states maintain online APL databases, with varying levels of accessibility. Key findings:
 
 - **Michigan (FIS)**: Excel-based APL with monthly updates
 - **North Carolina (Conduent)**: Web-accessible APL with rolling updates
 - **Florida (FIS)**: PDF/App-based with recent policy changes
 - **Oregon (State-specific)**: Excel-based APL with frequent updates
+- **New York (FIS)**: PDF/App-based, largest WIC program in US
 
 **Recommended Strategy**: Start with state-published APL files, then explore vendor portal access for automated updates. Consider USDA National UPC Database as supplementary source.
 
@@ -176,6 +177,50 @@ English, Spanish, Arabic, Burmese, Chinese, Chuukese, Dari, Karen, Nepali, Pasht
 **Additional Resources:**
 - [Oregon WIC Authorized Vendors](https://www.oregon.gov/oha/ph/healthypeoplefamilies/wic/pages/vendor.aspx)
 - [WIC Food Changes for Vendors](https://www.oregon.gov/oha/ph/healthypeoplefamilies/wic/pages/vendor-new-food-more-choice.aspx)
+
+---
+
+### 5. New York WIC (FIS Processor)
+
+**Official Source:** [New York State WIC Approved Foods](https://www.health.ny.gov/prevention/nutrition/wic/foods.htm)
+
+**Data Format:**
+- PDF food lists
+- Web-accessible database
+- Mobile app (WICShopper NY) for eligibility checking
+
+**Update Frequency:**
+- Quarterly major updates
+- Rolling updates for product additions/removals
+- Contract formula changes annually (typically February)
+
+**Access Methods:**
+1. **Public Download**: PDF lists from health.ny.gov
+2. **WICShopper App**: Mobile barcode scanning for eligibility
+3. **Vendor Portal**: FIS vendor systems for authorized retailers
+
+**Data Categories:**
+- Contract Infant Formulas
+- Approved Cereals
+- Milk and Dairy
+- Juice and Fruits/Vegetables
+- Whole Grains
+- Peanut Butter and Legumes
+
+**Population Served:**
+- Largest WIC program in the US by participant count
+- Over 400,000 participants monthly
+- Significant Spanish-speaking population
+
+**FIS Integration:**
+- New York uses FIS as eWIC processor
+- EBT card system statewide since 2020
+- APL downloaded daily to POS systems
+
+**Additional Resources:**
+- [NY WIC Foods Shopping Guide](https://www.health.ny.gov/prevention/nutrition/wic/foods_shopping_guide.htm)
+- [WICShopper App (NY)](https://www.health.ny.gov/prevention/nutrition/wic/wicshopper.htm)
+- [NY WIC Vendor Information](https://www.health.ny.gov/prevention/nutrition/wic/vendors.htm)
 
 ---
 
@@ -504,6 +549,7 @@ interface APLEntry {
 | North Carolina | Conduent (Bnft) | Web/FTP | ✅ Yes (web) | ✅ Yes (FTP) | Rolling updates |
 | Florida | FIS | PDF/App | ✅ Yes | ✅ Yes (FIS) | Phased (Oct 25-Mar 26) |
 | Oregon | State-specific | Excel/PDF | ✅ Yes | ✅ Yes | Quarterly major, ongoing minor |
+| New York | FIS | PDF/App | ✅ Yes | ✅ Yes (FIS) | Quarterly major, daily vendor |
 
 ---
 

@@ -57,7 +57,7 @@ Core functionality for scanning, benefits, and formula support.
 | Track | Feature | Status | Notes |
 |-------|---------|--------|-------|
 | **A1** | Michigan APL Database | ✅ Done | 9,940 products |
-| **A1** | NC/FL/OR APL | ❌ Not Started | Expand market reach |
+| **A1** | NC/FL/OR/NY APL | ⚠️ Partial | Sample data seeded, needs official imports |
 | **A2** | Product Database | ✅ Done | UPC lookup working |
 | **A3** | Store Database | ⚠️ Partial | Manual stores only |
 | **A4.1** | Formula Availability Tracking | ✅ Done | |
@@ -164,10 +164,12 @@ Based on impact, effort, and what's unblocked:
    - *Effort: 1 week* | *Impact: High (40% of WIC users)*
    - *Status: i18n framework in place, most translations done*
 
-2. **Multi-State APL Expansion**
-   - North Carolina APL ingestion
-   - Florida APL ingestion
-   - Oregon APL ingestion
+2. **Multi-State APL Expansion** 🔄 IN PROGRESS
+   - ✅ North Carolina APL (sample data seeded)
+   - ✅ Florida APL (sample data seeded)
+   - ✅ Oregon APL (sample data seeded)
+   - ✅ New York APL (sample data seeded)
+   - ⚠️ Production: Needs official state APL file imports
    - *Effort: 2-3 days per state* | *Impact: Medium (market expansion)*
 
 ### 📋 Pre-Launch Requirements
