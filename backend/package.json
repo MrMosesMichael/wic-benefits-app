@@ -13,6 +13,7 @@
     "detect-shortages": "ts-node src/scripts/detect-shortages.ts",
     "seed-shortage-test": "ts-node src/scripts/seed-shortage-test-data.ts",
     "sync-inventory": "ts-node src/scripts/sync-walmart-inventory.ts",
+    "apl-sync": "ts-node src/scripts/run-apl-sync.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

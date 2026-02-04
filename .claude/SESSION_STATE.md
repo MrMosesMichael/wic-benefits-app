@@ -228,4 +228,53 @@ The sample APL data is for development/testing. Production deployment should imp
 
 ---
 
-*Session complete. 5 major features + multi-state APL expansion implemented and ready for review.*
+## APL Automation System (NEW)
+
+### Completed
+1. Created `backend/migrations/019_apl_sync_monitoring.sql`:
+   - `apl_sync_jobs` - Tracks import executions
+   - `apl_sync_status` - Current state per state/source
+   - `apl_product_changes` - Tracks individual product changes
+   - `apl_source_config` - Source URLs, schedules, parser configs
+   - Views: `apl_health_dashboard`, `apl_recent_syncs`, `apl_daily_changes`
+   - Trigger: Auto-updates sync status after job completion
+
+2. Created `backend/src/services/APLSyncService.ts`:
+   - Downloads APL files from configured URLs
+   - SHA-256 hash-based change detection
+   - Excel/CSV parsing with configurable column mapping
+   - Tracks added/updated/removed products
+   - Change threshold alerts
+   - Scheduled sync support
+
+3. Created `backend/src/routes/apl-sync.ts`:
+   - `GET /api/v1/apl-sync/health` - Health dashboard
+   - `GET /api/v1/apl-sync/sources` - List configured sources
+   - `GET /api/v1/apl-sync/jobs` - Recent sync jobs
+   - `GET /api/v1/apl-sync/jobs/:id` - Job details with changes
+   - `GET /api/v1/apl-sync/changes` - Daily change stats
+   - `GET /api/v1/apl-sync/due` - States due for sync
+   - `POST /api/v1/apl-sync/trigger` - Manual trigger
+   - `POST /api/v1/apl-sync/trigger-all` - Sync all due states
+   - `GET /api/v1/apl-sync/state/:state` - State-specific status
+
+4. Created `backend/src/scripts/run-apl-sync.ts`:
+   - CLI runner for cron jobs
+   - Options: --state, --force, --all, --help
+   - npm script: `npm run apl-sync`
+
+### Seeded Source Configurations
+- MI: Excel from michigan.gov, daily at 6am, min 9000 products
+- NC: HTML from nutritionnc.com, daily at 7am
+- FL: PDF from floridahealth.gov, daily at 8am
+- OR: Excel from oregon.gov, daily at 9am
+- NY: HTML from health.ny.gov, daily at 10am
+
+### Not Yet Implemented
+- PDF parsing (needs pdf-parse library)
+- HTML scraping (needs cheerio library)
+- Actual cron job setup (systemd/Docker)
+
+---
+
+*Session complete. 5 major features + multi-state APL expansion + APL automation implemented and ready for review.*

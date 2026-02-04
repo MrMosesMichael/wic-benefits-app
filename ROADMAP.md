@@ -33,7 +33,8 @@
 ✅ **Data Sovereignty** — Data export, account deletion, privacy policy
 ✅ **Help & FAQ System** — Size/formula/checkout guides with harm prevention focus
 ✅ **Production Backend** — Deployed at https://mdmichael.com/wic/
-✅ **Android APK** — Production build ready for sideloading  
+✅ **Android APK** — Production build ready for sideloading
+✅ **APL Automation** — Sync service, change detection, monitoring API  
 
 ---
 
@@ -164,13 +165,14 @@ Based on impact, effort, and what's unblocked:
    - *Effort: 1 week* | *Impact: High (40% of WIC users)*
    - *Status: i18n framework in place, most translations done*
 
-2. **Multi-State APL Expansion** 🔄 IN PROGRESS
+2. **Multi-State APL Expansion** ✅ DONE
    - ✅ North Carolina APL (sample data seeded)
    - ✅ Florida APL (sample data seeded)
    - ✅ Oregon APL (sample data seeded)
    - ✅ New York APL (sample data seeded)
-   - ⚠️ Production: Needs official state APL file imports
-   - *Effort: 2-3 days per state* | *Impact: Medium (market expansion)*
+   - ✅ APL Automation System (sync service, change detection, monitoring)
+   - ⚠️ Production: PDF/HTML parsers need implementation
+   - *Status: Infrastructure complete, parsers need finishing*
 
 ### 📋 Pre-Launch Requirements
 

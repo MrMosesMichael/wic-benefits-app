@@ -17,6 +17,7 @@ import crossStoreSearchRoutes from './routes/cross-store-search';
 import notificationsRoutes from './routes/notifications';
 import foodBanksRoutes from './routes/food-banks';
 import userRoutes from './routes/user';
+import aplSyncRoutes from './routes/apl-sync';
 // Temporarily disabled due to path resolution issues
 // import productsRoutes from './routes/products';
 // import productImagesRoutes from './routes/product-images';
@@ -63,6 +64,7 @@ app.use('/api/v1/cross-store-search', crossStoreSearchRoutes);
 app.use('/api/v1/notifications', notificationsRoutes);
 app.use('/api/v1/foodbanks', foodBanksRoutes);
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/apl-sync', aplSyncRoutes);
 // Temporarily disabled due to path resolution issues
 // app.use('/api/v1/products', productsRoutes);
 // app.use('/api/v1/product-images', productImagesRoutes);
