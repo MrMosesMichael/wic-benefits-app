@@ -27,15 +27,18 @@ wic_project/
 ├── app/                    # React Native + Expo mobile app
 ├── backend/                # Node.js/Express API
 ├── deployment/             # Docker, landing page
-├── docs/                   # Feature guides (active)
-│   └── archive/            # Old implementation summaries (72 files)
+├── docs/
+│   ├── guides/             # Implementation guides (consolidated from archive)
+│   └── archive/            # Historical implementation docs (72 files)
 ├── ROADMAP.md              # ⭐ Single source of truth for status/priorities
 ├── CHANGELOG.md            # Session-by-session progress
 ├── ARCHITECTURE.md         # Technical design
+├── TEST_STRATEGY.md        # Testing patterns & plans
 ├── CLAUDE.md               # This file
 └── .claude/
     ├── SESSION_STATE.md    # Current work state
-    └── MEMORY.md           # Long-term decisions
+    ├── DECISIONS.md        # Architectural decisions & trade-offs
+    └── MEMORY.md           # Long-term learnings
 ```
 
 ---
@@ -121,7 +124,19 @@ When working on multi-step tasks, checkpoint to `.claude/SESSION_STATE.md`:
 1. Read ROADMAP.md first, not old specs
 2. Be concise
 3. Batch tool calls
-4. Don't read archived docs unless needed
+4. Use `docs/guides/` for implementation patterns (pre-consolidated)
+5. Use `.claude/DECISIONS.md` for why things were built a certain way
+6. Only read `docs/archive/` for deep historical context
+
+### When to Use Which Docs
+
+| Need | Read This |
+|------|-----------|
+| Current status & priorities | `ROADMAP.md` |
+| How a feature works | `docs/guides/*.md` |
+| Why a decision was made | `.claude/DECISIONS.md` |
+| How to test something | `TEST_STRATEGY.md` |
+| Detailed historical specs | `docs/archive/` (last resort)
 
 ---
 

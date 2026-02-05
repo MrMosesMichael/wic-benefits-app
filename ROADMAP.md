@@ -272,8 +272,27 @@ This app should be owned by users, not exploited by corporations.
 | `ARCHITECTURE.md` | Technical design (store detection focus) |
 | `CLAUDE.md` | AI assistant instructions |
 | `.claude/SESSION_STATE.md` | Current work state for session handoffs |
-| `docs/` | Feature-specific guides |
-| `docs/archive/` | Old implementation summaries |
+| `.claude/DECISIONS.md` | Architectural decisions & trade-offs |
+| `TEST_STRATEGY.md` | Testing patterns & plans |
+| `docs/guides/` | Consolidated implementation guides |
+| `docs/archive/` | Historical implementation docs (72 files) |
+
+---
+
+## Archive Quick Reference
+
+For detailed implementation context, key archive files include:
+
+| Topic | Archive File | Content |
+|-------|--------------|---------|
+| **Why no Walmart API** | `docs/archive/PHASE2_REVISED_PLAN.md` | Retailer API investigation, pivot decision |
+| **Phase 1 gaps (Jan 2026)** | `docs/archive/PROJECT_STATUS_REPORT.md` | 25KB comprehensive audit |
+| **Formula implementation** | `docs/archive/PHASE1_MISSING_FEATURES_PLAN.md` | 9-week plan with SQL schemas |
+| **Store detection tests** | `docs/archive/TASK_H5_TEST_PLAN.md` | 28KB test specifications |
+| **Component architecture** | `docs/archive/H4_COMPONENT_ARCHITECTURE.md` | Store detection components |
+| **WiFi detection** | `docs/archive/wifi-store-detection.md` | WiFi + GPS combination logic |
+
+See `docs/guides/` for consolidated, actionable implementation patterns.
 
 ---
 

@@ -1,11 +1,24 @@
 # Session State
 
-> **Last Updated:** 2026-02-03
-> **Session:** Autonomous Feature Implementation Session
+> **Last Updated:** 2026-02-04
+> **Session:** Documentation Consolidation
 
 ---
 
 ## Current Status
+
+**✅ DOCUMENTATION ENHANCEMENT COMPLETE**
+
+Created 4 new documentation files to bridge gap between archive and primary docs:
+
+1. ✅ `.claude/DECISIONS.md` — Architectural decisions & trade-offs
+2. ✅ `TEST_STRATEGY.md` — Testing patterns & plans
+3. ✅ `docs/guides/` — Consolidated implementation guides
+4. ✅ Updated `ROADMAP.md` with archive references
+
+---
+
+## Previous Session Status
 
 **✅ ALL TASKS COMPLETE**
 
@@ -277,4 +290,67 @@ The sample APL data is for development/testing. Production deployment should imp
 
 ---
 
-*Session complete. 5 major features + multi-state APL expansion + APL automation implemented and ready for review.*
+---
+
+## 2026-02-04 Documentation Session
+
+### Problem Identified
+
+Analysis of `docs/archive/` (72 files) vs primary markdown files revealed:
+
+| Gap | Impact |
+|-----|--------|
+| No decision rationale documented | HIGH — devs re-investigate dead ends |
+| No test plans preserved | MEDIUM — QA work repeated |
+| No implementation guides | MEDIUM — patterns not reusable |
+| Archive knowledge scattered | MEDIUM — requires digging through 72 files |
+
+### Solution Implemented
+
+**1. Created `.claude/DECISIONS.md`**
+- Why retailer APIs (Walmart/Kroger) were rejected
+- Why crowdsourced inventory was chosen
+- Confidence threshold rationale (85% for auto-accept)
+- Three-state benefits rationale
+- Formula shortage threshold logic
+- Anti-patterns (never implement)
+
+**2. Created `TEST_STRATEGY.md`**
+- Links to archive test plans
+- Test commands
+- Unit testing patterns (distance, storage)
+- Integration testing patterns
+- Manual test checklists
+- Performance testing targets
+- Known issues to test for
+
+**3. Created `docs/guides/`**
+- `store-detection.md` — GPS + WiFi + geofence implementation
+- `formula-features.md` — Shortage detection, alerts, alternatives
+- `crowdsourced-inventory.md` — Community sighting system
+- `README.md` — Guide index with archive references
+
+**4. Updated Primary Docs**
+- `ROADMAP.md` — Added archive reference table
+- `CLAUDE.md` — Added new files to structure, "when to use which docs" table
+
+### Files Created
+```
+.claude/DECISIONS.md
+TEST_STRATEGY.md
+docs/guides/README.md
+docs/guides/store-detection.md
+docs/guides/formula-features.md
+docs/guides/crowdsourced-inventory.md
+```
+
+### Files Modified
+```
+ROADMAP.md — Added archive quick reference section
+CLAUDE.md — Updated project structure, added doc usage guide
+.claude/SESSION_STATE.md — This file
+```
+
+---
+
+*Previous session: 5 major features + multi-state APL expansion + APL automation implemented and ready for review.*
