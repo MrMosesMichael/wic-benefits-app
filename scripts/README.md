@@ -50,7 +50,7 @@ Builds production Android APK and optionally uploads to VPS.
 - Gradle: `app/android/app/build/outputs/apk/release/app-release.apk`
 - Versioned: `builds/wic-benefits_YYYYMMDD_HHMMSS.apk`
 - Latest: `builds/wic-benefits.apk`
-- VPS: `~/wic-app/deployment/wic-landing/wic-benefits.apk`
+- VPS: `~/projects/wic-app/deployment/wic-landing/wic-benefits.apk`
 
 **Requirements:**
 - Java 17: `/usr/local/opt/openjdk@17`
@@ -162,10 +162,10 @@ export JAVA_HOME=/usr/local/opt/openjdk@17
 ### Backend health check fails
 ```bash
 # View logs on VPS
-ssh tatertot.work 'cd ~/wic-app && docker compose logs -f backend'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose logs -f backend'
 
 # Check containers
-ssh tatertot.work 'cd ~/wic-app && docker compose ps'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose ps'
 ```
 
 ### APK won't install
@@ -176,6 +176,36 @@ adb uninstall com.wicbenefits.app
 # Reinstall
 adb install -r builds/wic-benefits.apk
 ```
+
+---
+
+## APL Automation (VPS)
+
+**Note:** VPS has no npm installed. All backend commands run via Docker.
+
+### Manual Sync
+```bash
+# Sync states due for update
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec -T backend npm run apl-sync'
+
+# Sync specific state
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec -T backend npm run apl-sync -- --state MI'
+
+# Force sync all states
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec -T backend npm run apl-sync -- --all --force'
+```
+
+### Cron Setup (on VPS)
+```bash
+# Edit crontab
+crontab -e
+
+# Add (daily at 5am):
+0 5 * * * cd ~/projects/wic-app && docker compose exec -T backend npm run apl-sync >> /var/log/apl-sync.log 2>&1
+```
+
+### Supported States
+MI (Excel), NC (HTML), FL (PDF), OR (Excel), NY (PDF)
 
 ---
 
@@ -197,4 +227,4 @@ For detailed documentation, see:
 
 ---
 
-*Scripts: B4.1-B4.4 | Last updated: 2026-02-02*
+*Scripts: B4.1-B4.4 | Last updated: 2026-02-10*

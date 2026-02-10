@@ -1,7 +1,7 @@
 #!/bin/bash
 # WIC Android APK Build Script (B4.2)
 # Builds production Android APK and optionally uploads to VPS
-# Usage: ./scripts/build-android.sh [--upload]
+# Usage: ./scripts/build-android.sh [--upload] [--upload-only]
 
 set -e  # Exit on error
 
@@ -13,7 +13,8 @@ BUILD_OUTPUT="${APP_DIR}/android/app/build/outputs/apk/release/app-release.apk"
 BUILDS_DIR="${PROJECT_ROOT}/builds"
 APK_NAME="wic-benefits.apk"
 SSH_HOST="tatertot.work"
-REMOTE_APK_PATH="~/wic-app/deployment/wic-landing/${APK_NAME}"
+REMOTE_APK_PATH="/data/docker/www/mdmichael.com/www/wic/downloads/${APK_NAME}"
+LATEST_APK="${BUILDS_DIR}/${APK_NAME}"
 
 # Color codes for output
 RED='\033[0;31m'
@@ -21,6 +22,44 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
+
+# Upload-only mode: skip build, just upload existing APK
+if [[ "$1" == "--upload-only" ]]; then
+    echo -e "${BLUE}=================================${NC}"
+    echo -e "${BLUE}WIC Android APK Upload (skip build)${NC}"
+    echo -e "${BLUE}=================================${NC}"
+    echo ""
+
+    if [ ! -f "${LATEST_APK}" ]; then
+        echo -e "${RED}❌ No APK found at ${LATEST_APK}${NC}"
+        echo -e "${YELLOW}Run './scripts/build-android.sh' first to build.${NC}"
+        exit 1
+    fi
+
+    APK_SIZE=$(du -h "${LATEST_APK}" | cut -f1)
+    echo -e "${GREEN}Found APK: ${LATEST_APK} (${APK_SIZE})${NC}"
+    echo ""
+
+    # Test SSH connection
+    if ! ssh -q -o BatchMode=yes -o ConnectTimeout=5 ${SSH_HOST} exit; then
+        echo -e "${RED}❌ Cannot connect to ${SSH_HOST}${NC}"
+        exit 1
+    fi
+
+    # Step 1: Upload to home directory
+    TEMP_REMOTE_PATH="~/${APK_NAME}"
+    echo -e "${YELLOW}Uploading to ${SSH_HOST}:${TEMP_REMOTE_PATH}${NC}"
+    rsync -arvz --progress "${LATEST_APK}" "${SSH_HOST}:${TEMP_REMOTE_PATH}"
+
+    # Step 2: Move to final location with sudo (interactive for password)
+    echo -e "${YELLOW}Moving to final location (sudo required)...${NC}"
+    ssh -t ${SSH_HOST} "sudo mv ~/${APK_NAME} ${REMOTE_APK_PATH} && sudo chown dmichael:dmichael ${REMOTE_APK_PATH} && sudo chmod 644 ${REMOTE_APK_PATH}"
+
+    echo -e "${GREEN}✅ APK uploaded successfully!${NC}"
+    echo ""
+    echo -e "${BLUE}Download URL:${NC} https://mdmichael.com/wic/downloads/${APK_NAME}"
+    exit 0
+fi
 
 echo -e "${BLUE}=================================${NC}"
 echo -e "${BLUE}WIC Android APK Build Script${NC}"
@@ -113,13 +152,18 @@ if [[ "$1" == "--upload" ]]; then
     # Test SSH connection
     if ! ssh -q -o BatchMode=yes -o ConnectTimeout=5 ${SSH_HOST} exit; then
         echo -e "${RED}❌ Cannot connect to ${SSH_HOST}${NC}"
-        echo -e "${YELLOW}APK built but not uploaded. Use 'rsync -arvz ${LATEST_APK} ${SSH_HOST}:${REMOTE_APK_PATH}' manually.${NC}"
+        echo -e "${YELLOW}APK built but not uploaded.${NC}"
         exit 0
     fi
 
-    # Upload APK
-    echo -e "${YELLOW}Uploading to ${SSH_HOST}:${REMOTE_APK_PATH}${NC}"
-    rsync -arvz --progress "${LATEST_APK}" "${SSH_HOST}:${REMOTE_APK_PATH}"
+    # Step 1: Upload to home directory
+    TEMP_REMOTE_PATH="~/${APK_NAME}"
+    echo -e "${YELLOW}Uploading to ${SSH_HOST}:${TEMP_REMOTE_PATH}${NC}"
+    rsync -arvz --progress "${LATEST_APK}" "${SSH_HOST}:${TEMP_REMOTE_PATH}"
+
+    # Step 2: Move to final location with sudo (interactive for password)
+    echo -e "${YELLOW}Moving to final location (sudo required)...${NC}"
+    ssh -t ${SSH_HOST} "sudo mv ~/${APK_NAME} ${REMOTE_APK_PATH} && sudo chown dmichael:dmichael ${REMOTE_APK_PATH} && sudo chmod 644 ${REMOTE_APK_PATH}"
 
     echo -e "${GREEN}✅ APK uploaded successfully!${NC}"
     echo ""

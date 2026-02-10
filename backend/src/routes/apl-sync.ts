@@ -76,7 +76,7 @@ router.get('/jobs', async (req: Request, res: Response) => {
  */
 router.get('/jobs/:id', async (req: Request, res: Response) => {
   try {
-    const jobId = parseInt(req.params.id);
+    const jobId = parseInt(req.params.id as string);
     const job = await aplSyncService.getSyncJob(jobId);
 
     if (!job) {
@@ -219,7 +219,7 @@ router.post('/trigger-all', async (req: Request, res: Response) => {
  */
 router.get('/state/:state', async (req: Request, res: Response) => {
   try {
-    const state = req.params.state.toUpperCase();
+    const state = (req.params.state as string).toUpperCase();
     const config = await aplSyncService.getSourceConfig(state);
 
     if (!config) {

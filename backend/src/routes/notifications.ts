@@ -205,8 +205,8 @@ router.get('/subscriptions/:upc', async (req: Request, res: Response) => {
  * Query params: userId
  */
 router.delete('/subscriptions/:id', async (req: Request, res: Response) => {
-  const subscriptionId = parseInt(req.params.id);
-  const userId = Array.isArray(req.query.userId) ? req.query.userId[0] : req.query.userId as string;
+  const subscriptionId = parseInt(req.params.id as string);
+  const userId = (Array.isArray(req.query.userId) ? req.query.userId[0] : req.query.userId) as string;
 
   if (!userId) {
     return res.status(400).json({

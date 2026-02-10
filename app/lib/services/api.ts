@@ -602,22 +602,6 @@ export async function reportFormulaAvailability(
 }
 
 /**
- * Get formula alternatives
- */
-export async function getFormulaAlternatives(upc: string, state: string = 'MI'): Promise<any[]> {
-  try {
-    const response = await api.get(`/formula/alternatives/${upc}?state=${state}`);
-    if (response.data.success) {
-      return response.data.alternatives;
-    }
-    throw new Error('Invalid API response');
-  } catch (error) {
-    console.error('Failed to fetch formula alternatives:', error);
-    throw error;
-  }
-}
-
-/**
  * Get formula shortages
  */
 export async function getFormulaShortages(region: string = 'Michigan'): Promise<any[]> {

@@ -7,7 +7,7 @@ set -e  # Exit on error
 
 # Configuration
 SSH_HOST="tatertot.work"
-REMOTE_DIR="~/wic-app"
+REMOTE_DIR="~/projects/wic-app"
 LOCAL_DIR="/Users/moses/projects/wic_project"
 
 # Color codes for output
@@ -83,12 +83,25 @@ ssh ${SSH_HOST} "cd ${REMOTE_DIR} && docker compose ps"
 
 echo ""
 echo -e "${BLUE}Step 6: Testing backend health endpoint...${NC}"
-if ssh ${SSH_HOST} "curl -sf http://localhost:3000/health" > /dev/null; then
+if curl -sf https://mdmichael.com/wic/health > /dev/null; then
     echo -e "${GREEN}✅ Backend is healthy!${NC}"
 else
-    echo -e "${YELLOW}⚠️  Backend health check failed. Checking logs...${NC}"
-    ssh ${SSH_HOST} "cd ${REMOTE_DIR} && docker compose logs --tail 50 backend"
-    exit 1
+    echo -e "${YELLOW}⚠️  Health check failed. Restarting backend to force Traefik rediscovery...${NC}"
+
+    # Restart backend twice to force Traefik to rediscover
+    ssh ${SSH_HOST} "cd ${REMOTE_DIR} && docker compose restart backend"
+    sleep 3
+    ssh ${SSH_HOST} "cd ${REMOTE_DIR} && docker compose restart backend"
+    sleep 5
+
+    echo -e "${BLUE}Retrying health check...${NC}"
+    if curl -sf https://mdmichael.com/wic/health > /dev/null; then
+        echo -e "${GREEN}✅ Backend is healthy after restart!${NC}"
+    else
+        echo -e "${RED}❌ Backend health check still failing. Checking logs...${NC}"
+        ssh ${SSH_HOST} "cd ${REMOTE_DIR} && docker compose logs --tail 50 backend"
+        exit 1
+    fi
 fi
 
 echo ""

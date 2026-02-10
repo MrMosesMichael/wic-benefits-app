@@ -50,7 +50,7 @@ curl https://mdmichael.com/wic/health
 
 **Output:**
 - APK location: `builds/wic-benefits.apk`
-- VPS location: `~/wic-app/deployment/wic-landing/wic-benefits.apk`
+- VPS location: `~/projects/wic-app/deployment/wic-landing/wic-benefits.apk`
 - Public URL: https://mdmichael.com/wic/downloads/wic-benefits.apk
 
 **Install:**
@@ -87,30 +87,30 @@ adb install -r builds/wic-benefits.apk
 curl https://mdmichael.com/wic/health
 
 # View backend logs
-ssh tatertot.work 'cd ~/wic-app && docker compose logs -f backend'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose logs -f backend'
 
 # Check container status
-ssh tatertot.work 'cd ~/wic-app && docker compose ps'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose ps'
 ```
 
 ### Database Backup
 
 ```bash
 # Create backup on VPS
-ssh tatertot.work 'cd ~/wic-app && docker compose exec postgres pg_dump -U wic_admin wic_benefits > backup_$(date +%Y%m%d).sql'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec postgres pg_dump -U wic_admin wic_benefits > backup_$(date +%Y%m%d).sql'
 
 # Download backup locally
-rsync -arvz tatertot.work:~/wic-app/backup_*.sql ./backups/
+rsync -arvz tatertot.work:~/projects/wic-app/backup_*.sql ./backups/
 ```
 
 ### Restart Services
 
 ```bash
 # Restart backend only
-ssh tatertot.work 'cd ~/wic-app && docker compose restart backend'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose restart backend'
 
 # Restart all services
-ssh tatertot.work 'cd ~/wic-app && docker compose restart'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose restart'
 ```
 
 ---
@@ -137,13 +137,13 @@ cat ~/.ssh/config | grep -A 5 "tatertot.work"
 
 ```bash
 # View logs
-ssh tatertot.work 'cd ~/wic-app && docker compose logs backend'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose logs backend'
 
 # Check if containers are running
-ssh tatertot.work 'cd ~/wic-app && docker compose ps'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose ps'
 
 # Restart backend
-ssh tatertot.work 'cd ~/wic-app && docker compose restart backend'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose restart backend'
 ```
 
 ### Android APK Won't Install

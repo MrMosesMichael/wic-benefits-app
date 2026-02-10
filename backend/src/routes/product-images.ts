@@ -221,7 +221,7 @@ router.get('/:upc', async (req: Request, res: Response) => {
   const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
   try {
-    const { upc } = req.params;
+    const upc = req.params.upc as string;
 
     // Validate UPC
     if (!upc || !/^\d{8,14}$/.test(upc)) {
@@ -362,7 +362,7 @@ router.delete('/:upc', async (req: Request, res: Response) => {
   const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
   try {
-    const { upc } = req.params;
+    const upc = req.params.upc as string;
 
     // Validate UPC
     if (!upc || !/^\d{8,14}$/.test(upc)) {

@@ -75,12 +75,35 @@ cd app
 # APK: android/app/build/outputs/apk/release/app-release.apk
 ```
 
-### Production (VPS)
+### Production (VPS: tatertot.work)
+
+**Note:** VPS has no npm installed. All commands run via Docker.
+
 ```bash
-cd deployment
+# SSH to VPS
+ssh tatertot.work
+cd ~/projects/wic-app
+
+# Docker management
 docker compose up -d                 # Start backend
 docker compose logs -f backend       # View logs
 docker compose down                  # Stop
+docker compose restart backend       # Restart
+
+# APL sync (5 states: MI, NC, FL, OR, NY)
+docker compose exec -T backend npm run apl-sync                    # Sync due states
+docker compose exec -T backend npm run apl-sync -- --state MI      # Sync specific state
+docker compose exec -T backend npm run apl-sync -- --all --force   # Force sync all
+
+# Shortage detection
+docker compose exec -T backend npm run detect-shortages
+```
+
+### Deploy Scripts (from local machine)
+```bash
+./scripts/deploy-backend.sh          # Deploy backend to VPS
+./scripts/build-android.sh --upload  # Build APK and upload
+./scripts/build-android.sh --upload-only  # Upload existing APK
 ```
 
 ---

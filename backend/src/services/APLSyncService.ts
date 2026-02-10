@@ -14,6 +14,7 @@ import * as crypto from 'crypto';
 import * as https from 'https';
 import * as http from 'http';
 import * as XLSX from 'xlsx';
+import * as cheerio from 'cheerio';
 
 // =====================================================
 // Types
@@ -239,8 +240,36 @@ export class APLSyncService {
   async downloadFile(url: string): Promise<{ buffer: Buffer; hash: string }> {
     return new Promise((resolve, reject) => {
       const protocol = url.startsWith('https') ? https : http;
+      const urlObj = new URL(url);
 
-      const request = protocol.get(url, { timeout: 30000 }, response => {
+      const options = {
+        hostname: urlObj.hostname,
+        port: urlObj.port || (url.startsWith('https') ? 443 : 80),
+        path: urlObj.pathname + urlObj.search,
+        method: 'GET',
+        timeout: 60000,
+        headers: {
+          'Host': urlObj.hostname,
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+          'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/pdf, text/html, */*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Accept-Encoding': 'identity',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'Sec-Ch-Ua': '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+          'Sec-Ch-Ua-Mobile': '?0',
+          'Sec-Ch-Ua-Platform': '"Windows"',
+          'Sec-Fetch-Dest': 'document',
+          'Sec-Fetch-Mode': 'navigate',
+          'Sec-Fetch-Site': 'none',
+          'Sec-Fetch-User': '?1',
+          'Upgrade-Insecure-Requests': '1',
+          'Connection': 'keep-alive',
+          'Referer': 'https://www.michigan.gov/mdhhs/assistance-programs/wic/wicvendors/wic-foods',
+        },
+      };
+
+      const request = protocol.request(options, response => {
         // Handle redirects
         if (response.statusCode && response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
           this.downloadFile(response.headers.location).then(resolve).catch(reject);
@@ -267,7 +296,133 @@ export class APLSyncService {
         request.destroy();
         reject(new Error('Request timed out'));
       });
+
+      request.end();
     });
+  }
+
+  /**
+   * Fetch HTML page content with browser-like headers
+   */
+  async fetchPage(url: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const protocol = url.startsWith('https') ? https : http;
+      const urlObj = new URL(url);
+
+      const options = {
+        hostname: urlObj.hostname,
+        port: urlObj.port || (url.startsWith('https') ? 443 : 80),
+        path: urlObj.pathname + urlObj.search,
+        method: 'GET',
+        timeout: 30000,
+        headers: {
+          'Host': urlObj.hostname,
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Accept-Encoding': 'identity',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'Sec-Ch-Ua': '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+          'Sec-Ch-Ua-Mobile': '?0',
+          'Sec-Ch-Ua-Platform': '"Windows"',
+          'Sec-Fetch-Dest': 'document',
+          'Sec-Fetch-Mode': 'navigate',
+          'Sec-Fetch-Site': 'none',
+          'Sec-Fetch-User': '?1',
+          'Upgrade-Insecure-Requests': '1',
+          'Connection': 'keep-alive',
+        },
+      };
+
+      const request = protocol.request(options, response => {
+        if (response.statusCode && response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
+          this.fetchPage(response.headers.location).then(resolve).catch(reject);
+          return;
+        }
+
+        if (response.statusCode !== 200) {
+          reject(new Error(`HTTP ${response.statusCode}: ${response.statusMessage}`));
+          return;
+        }
+
+        const chunks: string[] = [];
+        response.setEncoding('utf8');
+        response.on('data', chunk => chunks.push(chunk));
+        response.on('end', () => resolve(chunks.join('')));
+        response.on('error', reject);
+      });
+
+      request.on('error', reject);
+      request.on('timeout', () => {
+        request.destroy();
+        reject(new Error('Request timed out'));
+      });
+
+      request.end();
+    });
+  }
+
+  /**
+   * Scrape download link from a page
+   * Used when states require dynamic URL extraction
+   */
+  async scrapeDownloadLink(pageUrl: string, linkPattern: RegExp | string): Promise<string> {
+    console.log(`[Scraper] Fetching page: ${pageUrl}`);
+    const html = await this.fetchPage(pageUrl);
+    const $ = cheerio.load(html);
+
+    let downloadUrl: string | null = null;
+
+    // Find links matching the pattern
+    $('a').each((_, element) => {
+      const href = $(element).attr('href');
+      if (href) {
+        const matches = typeof linkPattern === 'string'
+          ? href.includes(linkPattern)
+          : linkPattern.test(href);
+
+        if (matches) {
+          // Handle relative URLs
+          if (href.startsWith('/')) {
+            const urlObj = new URL(pageUrl);
+            downloadUrl = `${urlObj.protocol}//${urlObj.host}${href}`;
+          } else if (href.startsWith('http')) {
+            downloadUrl = href;
+          }
+          return false; // Break the loop
+        }
+      }
+    });
+
+    if (!downloadUrl) {
+      throw new Error(`Could not find download link matching pattern on ${pageUrl}`);
+    }
+
+    console.log(`[Scraper] Found download URL: ${downloadUrl}`);
+    return downloadUrl;
+  }
+
+  /**
+   * Get actual download URL for a state (handles scraping if needed)
+   */
+  async getDownloadUrl(config: APLSourceConfig): Promise<string> {
+    // States that require page scraping to get dynamic download links
+    const scrapingConfigs: Record<string, { pageUrl: string; linkPattern: RegExp }> = {
+      'MI': {
+        pageUrl: 'https://www.michigan.gov/mdhhs/assistance-programs/wic/wicvendors/wic-foods',
+        linkPattern: /Michigan-WIC-Approved-Products-List\.xlsx/i,
+      },
+      // Add other states here as needed
+    };
+
+    const scrapeConfig = scrapingConfigs[config.state];
+    if (scrapeConfig) {
+      return this.scrapeDownloadLink(scrapeConfig.pageUrl, scrapeConfig.linkPattern);
+    }
+
+    // Default: use configured URL directly
+    return config.sourceUrl;
   }
 
   /**
@@ -298,32 +453,85 @@ export class APLSyncService {
     const sheetName = workbook.SheetNames[sheetIndex];
     const worksheet = workbook.Sheets[sheetName];
 
-    // Convert to JSON
+    console.log(`[Parser] Sheet names: ${workbook.SheetNames.join(', ')}`);
+    console.log(`[Parser] Using sheet: ${sheetName}`);
+
+    // Michigan and similar files have a title row, so we need to find the actual header row
+    // Try to detect the header row by looking for UPC column
+    let headerRow = config.headerRow || 1;
+
+    // First, read with raw headers to detect structure
+    const rawRows: Record<string, any>[] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+    // Look for a row containing 'UPC' or 'UPC/PLU' as a header
+    for (let i = 0; i < Math.min(5, rawRows.length); i++) {
+      const row = rawRows[i] as any[];
+      if (row && row.some(cell =>
+        typeof cell === 'string' &&
+        (cell.toUpperCase().includes('UPC') || cell.toUpperCase().includes('PLU'))
+      )) {
+        headerRow = i + 1; // 1-indexed
+        console.log(`[Parser] Detected header row at line ${headerRow}`);
+        break;
+      }
+    }
+
+    // Convert to JSON with proper headers
     const rows: Record<string, any>[] = XLSX.utils.sheet_to_json(worksheet, {
-      header: config.headerRow ? undefined : 1,
-      range: config.headerRow ? config.headerRow - 1 : undefined,
+      range: headerRow - 1, // 0-indexed, start from header row
     });
+
+    console.log(`[Parser] Total rows: ${rows.length}`);
+    if (rows.length > 0) {
+      console.log(`[Parser] Column names: ${Object.keys(rows[0]).join(', ')}`);
+      console.log(`[Parser] First row sample:`, JSON.stringify(rows[0]).substring(0, 500));
+    }
 
     const products: APLProduct[] = [];
     const columnMap = config.columns || {};
+    let skippedEmpty = 0;
+    let skippedUpc = 0;
 
     for (const row of rows) {
       // Get UPC from configured column or common names
       const upcColumn = columnMap.upc || 'UPC/PLU' || 'UPC' || 'upc';
       let upc = this.findColumnValue(row, upcColumn) || this.findColumnValue(row, ['UPC/PLU', 'UPC', 'upc', 'Upc', 'PLU']);
 
-      if (!upc) continue;
+      if (!upc) {
+        skippedEmpty++;
+        continue;
+      }
 
-      // Normalize UPC
+      // Normalize UPC - remove spaces, dashes, dots
       upc = upc.toString().replace(/[\s\-\.]/g, '');
-      if (upc.length < 8 || upc.length > 14) continue;
+
+      // Pad short UPCs with leading zeros (Excel often strips them)
+      // Standard lengths: 8 (UPC-E/EAN-8), 12 (UPC-A), 13 (EAN-13), 14 (GTIN-14)
+      if (upc.length > 0 && upc.length < 8) {
+        // Likely a UPC-A (12 digits) with leading zeros stripped
+        upc = upc.padStart(12, '0');
+      } else if (upc.length > 8 && upc.length < 12) {
+        // Likely a UPC-A (12 digits) with some leading zeros stripped
+        upc = upc.padStart(12, '0');
+      } else if (upc.length === 12) {
+        // Valid UPC-A, keep as is
+      } else if (upc.length === 13) {
+        // Valid EAN-13, keep as is
+      } else if (upc.length === 14) {
+        // Valid GTIN-14, keep as is
+      } else if (upc.length === 8) {
+        // Valid UPC-E or EAN-8, keep as is
+      } else if (upc.length > 14) {
+        skippedUpc++;
+        continue;
+      }
 
       // Extract other fields
       const productName = this.findColumnValue(row, columnMap.product_name || ['Food Description', 'Product Name', 'Description', 'product_name', 'Name']);
-      const brand = this.findColumnValue(row, columnMap.brand || ['Brand', 'brand', 'Manufacturer']);
+      const brand = this.findColumnValue(row, columnMap.brand || ['Brand Name', 'Brand', 'brand', 'Manufacturer']);
       const size = this.findColumnValue(row, columnMap.size || ['Package Size', 'Size', 'size', 'Container Size']);
-      const category = this.findColumnValue(row, columnMap.category || ['Category', 'category', 'Food Category']);
-      const subcategory = this.findColumnValue(row, columnMap.subcategory || ['SubCat', 'Subcategory', 'subcategory', 'Sub Category']);
+      const category = this.findColumnValue(row, columnMap.category || ['Category', 'Cat Desc', 'category', 'Food Category']);
+      const subcategory = this.findColumnValue(row, columnMap.subcategory || ['SubCat', 'Subcat Desc', 'Subcategory', 'subcategory', 'Sub Category']);
 
       products.push({
         upc,
@@ -336,6 +544,7 @@ export class APLSyncService {
       });
     }
 
+    console.log(`[Parser] Skipped: ${skippedEmpty} empty UPC, ${skippedUpc} invalid UPC length`);
     return products;
   }
 
@@ -548,11 +757,13 @@ export class APLSyncService {
     };
 
     try {
-      await this.startSyncJob(jobId, config.sourceUrl);
+      // Get actual download URL (may involve page scraping for some states)
+      const downloadUrl = await this.getDownloadUrl(config);
+      await this.startSyncJob(jobId, downloadUrl);
 
       // Download file
-      console.log(`[${state}] Downloading APL from ${config.sourceUrl}...`);
-      const { buffer, hash } = await this.downloadFile(config.sourceUrl);
+      console.log(`[${state}] Downloading APL from ${downloadUrl}...`);
+      const { buffer, hash } = await this.downloadFile(downloadUrl);
       metrics.sourceFileHash = hash;
 
       // Check if file changed

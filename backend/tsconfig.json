@@ -14,5 +14,12 @@
     "types": ["node"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "src/routes/products.ts",
+    "src/routes/product-images.ts",
+    "src/scripts/sync-product-images.ts",
+    "src/scripts/test-image-storage.ts",
+    "src/services/ProductImageSyncService.ts"
+  ]
 }

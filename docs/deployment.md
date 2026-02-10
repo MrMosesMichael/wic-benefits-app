@@ -84,7 +84,7 @@ Mobile Apps:
 
 - SSH access to `tatertot.work`
 - Docker and Docker Compose installed on VPS
-- VPS directory: `~/wic-app`
+- VPS directory: `~/projects/wic-app`
 
 ### For Android Build (B4.2)
 
@@ -129,10 +129,10 @@ chmod +x scripts/deploy-backend.sh
 
 ### Files Synced
 
-- `backend/` → `~/wic-app/backend/`
+- `backend/` → `~/projects/wic-app/backend/`
   - Excludes: `node_modules/`, `dist/`, `.env`, `*.log`
-- `docker-compose.yml` → `~/wic-app/docker-compose.yml`
-- `deployment/` → `~/wic-app/deployment/`
+- `docker-compose.yml` → `~/projects/wic-app/docker-compose.yml`
+- `deployment/` → `~/projects/wic-app/deployment/`
 
 ### Troubleshooting
 
@@ -148,19 +148,19 @@ cat ~/.ssh/config | grep -A 5 "tatertot.work"
 **Backend health check fails:**
 ```bash
 # View logs on VPS
-ssh tatertot.work 'cd ~/wic-app && docker compose logs -f backend'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose logs -f backend'
 
 # Check if containers are running
-ssh tatertot.work 'cd ~/wic-app && docker compose ps'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose ps'
 ```
 
 **Database connection issues:**
 ```bash
 # Check postgres container
-ssh tatertot.work 'cd ~/wic-app && docker compose logs postgres'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose logs postgres'
 
 # Verify .env file exists on VPS
-ssh tatertot.work 'cat ~/wic-app/.env'
+ssh tatertot.work 'cat ~/projects/wic-app/.env'
 ```
 
 ---
@@ -194,7 +194,7 @@ chmod +x scripts/build-android.sh
 - **Gradle output:** `app/android/app/build/outputs/apk/release/app-release.apk`
 - **Versioned copy:** `builds/wic-benefits_YYYYMMDD_HHMMSS.apk`
 - **Latest copy:** `builds/wic-benefits.apk`
-- **VPS location:** `~/wic-app/deployment/wic-landing/wic-benefits.apk`
+- **VPS location:** `~/projects/wic-app/deployment/wic-landing/wic-benefits.apk`
 - **Public URL:** `https://mdmichael.com/wic/downloads/wic-benefits.apk`
 
 ### Build Configuration
@@ -360,7 +360,7 @@ curl https://mdmichael.com/wic/health
 ./scripts/build-ios.sh
 
 # 5. Update landing page (if needed)
-ssh tatertot.work 'cd ~/wic-app/deployment/wic-landing && <update-commands>'
+ssh tatertot.work 'cd ~/projects/wic-app/deployment/wic-landing && <update-commands>'
 ```
 
 ### Backend-Only Update
@@ -399,13 +399,13 @@ When backend API is unchanged:
 rsync -arvz --delete \
   --exclude 'node_modules' \
   --exclude 'dist' \
-  backend/ tatertot.work:~/wic-app/backend/
+  backend/ tatertot.work:~/projects/wic-app/backend/
 
 # Restart backend
-ssh tatertot.work 'cd ~/wic-app && docker compose restart backend'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose restart backend'
 
 # View logs
-ssh tatertot.work 'cd ~/wic-app && docker compose logs -f backend'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose logs -f backend'
 ```
 
 ### Android Build (Manual)
@@ -423,7 +423,7 @@ export JAVA_HOME=/usr/local/opt/openjdk@17
 cp android/app/build/outputs/apk/release/app-release.apk builds/wic-benefits.apk
 
 # Upload
-rsync -arvz builds/wic-benefits.apk tatertot.work:~/wic-app/deployment/wic-landing/
+rsync -arvz builds/wic-benefits.apk tatertot.work:~/projects/wic-app/deployment/wic-landing/
 ```
 
 ### iOS Build (Manual)
@@ -452,10 +452,10 @@ curl https://mdmichael.com/wic/health
 curl https://mdmichael.com/wic/api/v1/stores
 
 # View backend logs
-ssh tatertot.work 'cd ~/wic-app && docker compose logs -f backend'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose logs -f backend'
 
 # Check container status
-ssh tatertot.work 'cd ~/wic-app && docker compose ps'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose ps'
 
 # View resource usage
 ssh tatertot.work 'docker stats wic-backend wic-postgres'
@@ -465,27 +465,94 @@ ssh tatertot.work 'docker stats wic-backend wic-postgres'
 
 ```bash
 # Create backup
-ssh tatertot.work 'cd ~/wic-app && docker compose exec postgres pg_dump -U wic_admin wic_benefits > backup_$(date +%Y%m%d).sql'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec postgres pg_dump -U wic_admin wic_benefits > backup_$(date +%Y%m%d).sql'
 
 # Download backup
-rsync -arvz tatertot.work:~/wic-app/backup_*.sql ./backups/
+rsync -arvz tatertot.work:~/projects/wic-app/backup_*.sql ./backups/
 
 # Restore backup (if needed)
-cat backup_20260202.sql | ssh tatertot.work 'cd ~/wic-app && docker compose exec -T postgres psql -U wic_admin wic_benefits'
+cat backup_20260202.sql | ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec -T postgres psql -U wic_admin wic_benefits'
 ```
 
 ### Update Dependencies
 
 ```bash
-# Backend dependencies
-ssh tatertot.work 'cd ~/wic-app/backend && npm update'
+# Backend dependencies (via Docker - no npm on VPS)
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec backend npm update'
 
 # Rebuild backend
-ssh tatertot.work 'cd ~/wic-app && docker compose build backend && docker compose up -d backend'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose build backend && docker compose up -d backend'
 
-# Mobile app dependencies
+# Mobile app dependencies (local dev machine)
 cd app
 npm update
+```
+
+---
+
+## APL Automation (5 States)
+
+The APL sync system automatically updates product data from state sources (MI, NC, FL, OR, NY).
+
+### Run APL Sync Manually
+
+```bash
+# Sync all states due for update
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec -T backend npm run apl-sync'
+
+# Sync specific state
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec -T backend npm run apl-sync -- --state MI'
+
+# Force sync all states (ignore cache)
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec -T backend npm run apl-sync -- --all --force'
+
+# View help
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec -T backend npm run apl-sync -- --help'
+```
+
+### Set Up Automated Cron Job
+
+```bash
+# SSH to VPS
+ssh tatertot.work
+
+# Edit crontab
+crontab -e
+
+# Add this line (daily at 5am EST):
+0 5 * * * cd ~/projects/wic-app && docker compose exec -T backend npm run apl-sync >> /var/log/apl-sync.log 2>&1
+```
+
+### Monitor APL Health
+
+```bash
+# Check sync health via API
+curl https://mdmichael.com/wic/api/v1/apl-sync/health
+
+# Check states due for sync
+curl https://mdmichael.com/wic/api/v1/apl-sync/due
+
+# View recent sync jobs
+curl https://mdmichael.com/wic/api/v1/apl-sync/jobs
+
+# Check logs
+ssh tatertot.work 'tail -50 /var/log/apl-sync.log'
+```
+
+### Supported States
+
+| State | Format | Schedule | Source |
+|-------|--------|----------|--------|
+| MI | Excel | Daily 6am | michigan.gov |
+| NC | HTML | Daily 7am | nutritionnc.com |
+| FL | PDF | Daily 8am | floridahealth.gov |
+| OR | Excel | Daily 9am | oregon.gov |
+| NY | PDF | Daily 10am | health.ny.gov |
+
+### Run Shortage Detection
+
+```bash
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec -T backend npm run detect-shortages'
 ```
 
 ---
@@ -521,7 +588,7 @@ npm update
 ssh tatertot.work
 
 # View recent commits
-cd ~/wic-app
+cd ~/projects/wic-app
 git log --oneline -10
 
 # Rollback to previous version
@@ -589,7 +656,7 @@ export const OFFLINE_MODE = false;  // Use backend API
 ssh tatertot.work
 
 # Sync single file
-rsync -arvz file.txt tatertot.work:~/wic-app/
+rsync -arvz file.txt tatertot.work:~/projects/wic-app/
 
 # Sync directory
 rsync -arvz --delete local-dir/ tatertot.work:~/remote-dir/
@@ -599,19 +666,19 @@ rsync -arvz --delete local-dir/ tatertot.work:~/remote-dir/
 
 ```bash
 # View logs
-ssh tatertot.work 'cd ~/wic-app && docker compose logs -f'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose logs -f'
 
 # Restart services
-ssh tatertot.work 'cd ~/wic-app && docker compose restart'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose restart'
 
 # Rebuild backend
-ssh tatertot.work 'cd ~/wic-app && docker compose build backend'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose build backend'
 
 # Stop all services
-ssh tatertot.work 'cd ~/wic-app && docker compose down'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose down'
 
 # Start all services
-ssh tatertot.work 'cd ~/wic-app && docker compose up -d'
+ssh tatertot.work 'cd ~/projects/wic-app && docker compose up -d'
 ```
 
 ### Android Development
@@ -653,7 +720,7 @@ eas submit --platform ios
 ### Common Issues
 
 **Issue:** Backend not responding after deployment
-- **Solution:** Check logs: `ssh tatertot.work 'cd ~/wic-app && docker compose logs backend'`
+- **Solution:** Check logs: `ssh tatertot.work 'cd ~/projects/wic-app && docker compose logs backend'`
 
 **Issue:** APK won't install on Android
 - **Solution:** Enable "Unknown sources" and uninstall old version first
