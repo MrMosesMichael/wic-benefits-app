@@ -427,7 +427,10 @@ export class APLSyncService {
         pageUrl: 'https://www.oregon.gov/oha/PH/HEALTHYPEOPLEFAMILIES/WIC/Pages/vendor_materials.aspx',
         linkPattern: /Oregon-APL\.xls/i,
       },
-      // Add other states here as needed
+      'NY': {
+        pageUrl: 'https://nyswicvendors.com/upc-resources/',
+        linkPattern: /Full-APL-.*-excel-for-posting\.xlsx/i,
+      },
     };
 
     const scrapeConfig = scrapingConfigs[config.state];
