@@ -1,7 +1,7 @@
 # WIC Benefits App — Roadmap
 
-> **Last Updated:** February 3, 2026
-> **Current Phase:** Phase 1 Nearly Complete + Phase 2 In Progress
+> **Last Updated:** February 10, 2026
+> **Current Phase:** Phase 1 Complete + Phase 2 In Progress
 > **Production:** https://mdmichael.com/wic/
 
 ---
@@ -10,7 +10,7 @@
 
 | Phase | Status | Completion |
 |-------|--------|------------|
-| **Phase 1: Foundation** | 🔄 In Progress | 95% |
+| **Phase 1: Foundation** | ✅ Complete | 100% |
 | **Phase 2: Store Intelligence** | 🔄 In Progress | 80% |
 | **Phase 3: Discovery** | ⏳ Not Started | 0% |
 | **Phase 4: Community** | ⏳ Not Started | 0% |
@@ -23,7 +23,8 @@
 ## What's Working Today
 
 ✅ **Core MVP** — Barcode scanner, eligibility checking, benefits tracking, shopping cart
-✅ **Michigan APL** — 9,940 products in database
+✅ **Multi-State APL** — 62,027 products across 4 states (MI, NC, NY, OR)
+✅ **APL Automation** — Daily sync via cron, web scraping, change detection
 ✅ **Store Detection** — GPS + WiFi + manual selection
 ✅ **Crowdsourced Inventory** — "I found this" reporting with confidence decay
 ✅ **Manual Benefits Entry** — AsyncStorage-based household setup
@@ -34,7 +35,7 @@
 ✅ **Help & FAQ System** — Size/formula/checkout guides with harm prevention focus
 ✅ **Production Backend** — Deployed at https://mdmichael.com/wic/
 ✅ **Android APK** — Production build ready for sideloading
-✅ **APL Automation** — Sync service, change detection, monitoring API  
+✅ **Apple Developer License** — Acquired, iOS build ready to start  
 
 ---
 
@@ -58,7 +59,8 @@ Core functionality for scanning, benefits, and formula support.
 | Track | Feature | Status | Notes |
 |-------|---------|--------|-------|
 | **A1** | Michigan APL Database | ✅ Done | 9,940 products |
-| **A1** | NC/FL/OR/NY APL | ⚠️ Partial | Sample data seeded, needs official imports |
+| **A1** | Multi-State APL | ✅ Done | MI (9,940) + NC (16,949) + NY (21,125) + OR (14,013) = 62,027 |
+| **A1** | APL Automation | ✅ Done | Daily cron sync, web scraping, change detection |
 | **A2** | Product Database | ✅ Done | UPC lookup working |
 | **A3** | Store Database | ⚠️ Partial | Manual stores only |
 | **A4.1** | Formula Availability Tracking | ✅ Done | |
@@ -159,20 +161,30 @@ Based on impact, effort, and what's unblocked:
 
 ### 📅 Short Term (Next 2-4 Weeks)
 
-1. **Complete Spanish Language Support (Group G)**
+1. **iOS App Store Submission**
+   - Apple Developer License acquired
+   - Build iOS version via EAS
+   - TestFlight beta testing
+   - App Store submission
+   - *Effort: 1-2 weeks* | *Impact: High (50%+ of users)*
+
+2. **Complete Spanish Language Support (Group G)**
    - Review existing translations with native speaker
    - Finish any remaining untranslated strings
    - *Effort: 1 week* | *Impact: High (40% of WIC users)*
    - *Status: i18n framework in place, most translations done*
 
-2. **Multi-State APL Expansion** ✅ DONE
-   - ✅ North Carolina APL (sample data seeded)
-   - ✅ Florida APL (sample data seeded)
-   - ✅ Oregon APL (sample data seeded)
-   - ✅ New York APL (sample data seeded)
-   - ✅ APL Automation System (sync service, change detection, monitoring)
-   - ⚠️ Production: PDF/HTML parsers need implementation
-   - *Status: Infrastructure complete, parsers need finishing*
+### ✅ Recently Completed (February 2026)
+
+3. **Multi-State APL Expansion** ✅ DONE
+   - ✅ Michigan: 9,940 products (Excel via web scraping)
+   - ✅ North Carolina: 16,949 products (Excel via web scraping)
+   - ✅ New York: 21,125 products (Excel via nyswicvendors.com)
+   - ✅ Oregon: 14,013 products (Excel via web scraping)
+   - ⏸️ Florida: Shelved (state has own app)
+   - ✅ Daily automated sync via cron (5am UTC)
+   - ✅ Change detection with SHA-256 hashing
+   - ✅ Health monitoring API
 
 ### 📋 Pre-Launch Requirements
 

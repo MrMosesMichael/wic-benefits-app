@@ -4,6 +4,56 @@
 
 ---
 
+## 2026-02-10 — Multi-State APL Automation Complete
+
+**4 states syncing automatically with 62,027 products**
+
+### Done
+- ✅ Michigan APL: 9,940 products (web scraping + Excel)
+- ✅ North Carolina APL: 16,949 products (web scraping + Excel)
+- ✅ New York APL: 21,125 products (nyswicvendors.com + Excel)
+- ✅ Oregon APL: 14,013 products (web scraping + Excel)
+- ✅ Daily automated sync via cron (5am UTC)
+- ✅ Web scraping for dynamic download URLs
+- ✅ Browser-like headers to bypass 403 blocks
+- ✅ UPC normalization with leading-zero padding
+- ✅ PDF parsing support (pdf-parse library)
+- ✅ Health monitoring dashboard
+
+### Shelved
+- ⏸️ Florida: State has own WIC app, no public UPC-based APL
+
+### Files Modified
+- `backend/src/services/APLSyncService.ts` — Web scraping, PDF parsing, UPC detection
+- `backend/package.json` — Added cheerio, pdf-parse dependencies
+
+### Technical Notes
+- NY Excel has headers at row 6 (disclaimer rows above) — configured via `parser_config.headerRow`
+- OR uses "UPC PLU" column name (space, not slash)
+- FL only publishes visual food guides, not UPC-based APL
+- Cron: `0 5 * * * cd ~/projects/wic-app && docker compose exec -T backend npm run apl-sync`
+
+### Commits
+```
+192ddb6 feat: Add NY APL sync via nyswicvendors.com
+1a812f5 feat: Add OR APL sync with web scraping, fix PDF parsing
+56ef420 feat: Add APL sync with web scraping and UPC padding for Michigan
+```
+
+---
+
+## 2026-02-04 — Documentation Consolidation
+
+**Bridged gap between archive and primary docs**
+
+### Done
+- ✅ Created `.claude/DECISIONS.md` — Architectural decisions & trade-offs
+- ✅ Created `TEST_STRATEGY.md` — Testing patterns & plans
+- ✅ Created `docs/guides/` — Consolidated implementation guides
+- ✅ Updated `ROADMAP.md` with archive references
+
+---
+
 ## 2026-01-26 — Production Deployment
 
 **Backend deployed to VPS + Production APK built**

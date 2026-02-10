@@ -102,11 +102,17 @@ APL sync runs via Docker on VPS. No cron configured yet but can be added:
 
 ## What's Next
 
-1. **Cron job setup** - Configure VPS cron for automated daily syncs
-2. **FL APL research** - Check if Florida has vendor-accessible APL data
-3. **NY workaround** - May need to use a different scraping approach for CloudFront
-4. **Spanish Language Support (G)** - Remaining from ROADMAP
-5. **Accessibility (T)** - VoiceOver/TalkBack support
+1. **iOS Build & App Store Submission** - Apple Developer License acquired!
+   - Build iOS via EAS
+   - TestFlight beta
+   - App Store submission
+2. **Spanish Language Support (G)** - Remaining from ROADMAP
+3. **Accessibility (T)** - VoiceOver/TalkBack support
+
+### Completed This Session
+- ✅ Cron job setup (5am UTC daily)
+- ✅ NY APL working via nyswicvendors.com
+- ⏸️ FL shelved (state has own app)
 
 ---
 
