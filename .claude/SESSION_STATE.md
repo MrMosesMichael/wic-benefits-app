@@ -102,17 +102,51 @@ APL sync runs via Docker on VPS. No cron configured yet but can be added:
 
 ## What's Next
 
-1. **iOS Build & App Store Submission** - Apple Developer License acquired!
-   - Build iOS via EAS
-   - TestFlight beta
-   - App Store submission
-2. **Spanish Language Support (G)** - Remaining from ROADMAP
-3. **Accessibility (T)** - VoiceOver/TalkBack support
+### iOS Build (Ready to Start)
 
-### Completed This Session
-- ✅ Cron job setup (5am UTC daily)
-- ✅ NY APL working via nyswicvendors.com
+Apple Developer License acquired. Next session steps:
+
+1. **EAS Setup**
+   ```bash
+   cd app
+   npx eas-cli login          # Log into Expo account
+   npx eas build:configure    # Configure iOS build
+   ```
+
+2. **Apple Developer Portal Setup**
+   - Create App ID (Bundle ID: likely `com.wicbenefits.app` or similar)
+   - Create provisioning profile
+   - EAS can handle most of this automatically
+
+3. **Build Commands**
+   ```bash
+   npx eas build --platform ios --profile preview   # TestFlight build
+   npx eas build --platform ios --profile production  # App Store build
+   ```
+
+4. **App Store Assets Needed**
+   - App icon (1024x1024)
+   - Screenshots (6.7", 6.5", 5.5" iPhones + iPad if supporting)
+   - App description, keywords, privacy policy URL
+   - Age rating questionnaire
+
+5. **TestFlight → App Store**
+   - Upload build via EAS Submit or Transporter
+   - Add testers to TestFlight
+   - Submit for App Review
+
+### Other Priorities
+- Spanish Language Support (G) - i18n framework ready
+- Accessibility (T) - VoiceOver/TalkBack support
+
+---
+
+## Completed This Session (Feb 10)
+- ✅ APL automation deployed for 4 states (62,027 products)
+- ✅ Cron job running (5am UTC daily)
+- ✅ NY APL via nyswicvendors.com
 - ⏸️ FL shelved (state has own app)
+- ✅ Documentation updated (ROADMAP, CHANGELOG)
 
 ---
 
