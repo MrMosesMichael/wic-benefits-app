@@ -15,6 +15,8 @@ import * as https from 'https';
 import * as http from 'http';
 import * as XLSX from 'xlsx';
 import * as cheerio from 'cheerio';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { PDFParse } = require('pdf-parse');
 
 // =====================================================
 // Types
@@ -413,6 +415,18 @@ export class APLSyncService {
         pageUrl: 'https://www.michigan.gov/mdhhs/assistance-programs/wic/wicvendors/wic-foods',
         linkPattern: /Michigan-WIC-Approved-Products-List\.xlsx/i,
       },
+      'NC': {
+        pageUrl: 'https://www.ncdhhs.gov/ncwicfoods',
+        linkPattern: /nc-wic-apl\/open/i,
+      },
+      'FL': {
+        pageUrl: 'https://www.floridahealth.gov/individual-family-health/womens-health/wic/wic-foods/',
+        linkPattern: /fl-wic-foods-eng\.pdf/i,
+      },
+      'OR': {
+        pageUrl: 'https://www.oregon.gov/oha/PH/HEALTHYPEOPLEFAMILIES/WIC/Pages/vendor_materials.aspx',
+        linkPattern: /Oregon-APL\.xls/i,
+      },
       // Add other states here as needed
     };
 
@@ -494,8 +508,11 @@ export class APLSyncService {
 
     for (const row of rows) {
       // Get UPC from configured column or common names
-      const upcColumn = columnMap.upc || 'UPC/PLU' || 'UPC' || 'upc';
-      let upc = this.findColumnValue(row, upcColumn) || this.findColumnValue(row, ['UPC/PLU', 'UPC', 'upc', 'Upc', 'PLU']);
+      // Note: "UPC PLU" (space) is used by Oregon, "UPC/PLU" (slash) by Michigan
+      const upcColumnNames = ['UPC/PLU', 'UPC PLU', 'UPC', 'upc', 'Upc', 'PLU', 'plu'];
+      let upc = columnMap.upc
+        ? this.findColumnValue(row, columnMap.upc)
+        : this.findColumnValue(row, upcColumnNames);
 
       if (!upc) {
         skippedEmpty++;
@@ -555,6 +572,156 @@ export class APLSyncService {
     // Use xlsx to parse CSV as well (it handles both)
     const workbook = XLSX.read(buffer, { type: 'buffer' });
     return this.parseExcelAPL(buffer, config);
+  }
+
+  /**
+   * Parse PDF APL file
+   * Extracts text and looks for UPC patterns
+   */
+  async parsePDFAPL(buffer: Buffer, config: Record<string, any>): Promise<APLProduct[]> {
+    console.log(`[Parser] Parsing PDF file...`);
+
+    // PDFParse requires LoadParameters with the PDF data
+    const parser = new PDFParse({ data: buffer, verbosity: 0 });
+
+    try {
+      const textResult = await parser.getText();
+      const text = textResult.text;
+
+      console.log(`[Parser] PDF pages: ${textResult.total}`);
+      console.log(`[Parser] PDF text length: ${text.length} characters`);
+
+      const products: APLProduct[] = [];
+      const seenUpcs = new Set<string>();
+      let skippedDuplicate = 0;
+
+      // Look for UPC patterns - 8-14 digit numbers
+      // Common patterns: standalone numbers, or with spaces/dashes
+      const upcPattern = /\b(\d{8,14})\b/g;
+      let match;
+
+      while ((match = upcPattern.exec(text)) !== null) {
+        let upc = match[1];
+
+        // Pad short UPCs
+        if (upc.length > 0 && upc.length < 8) {
+          upc = upc.padStart(12, '0');
+        } else if (upc.length > 8 && upc.length < 12) {
+          upc = upc.padStart(12, '0');
+        }
+
+        // Skip duplicates
+        if (seenUpcs.has(upc)) {
+          skippedDuplicate++;
+          continue;
+        }
+        seenUpcs.add(upc);
+
+        // Try to extract surrounding context for product name
+        const contextStart = Math.max(0, match.index - 100);
+        const contextEnd = Math.min(text.length, match.index + 50);
+        const context = text.substring(contextStart, contextEnd);
+
+        // Extract any text before the UPC as potential product name
+        const beforeUpc = text.substring(contextStart, match.index).trim();
+        const productName = beforeUpc.split('\n').pop()?.trim() || 'Unknown Product';
+
+        products.push({
+          upc,
+          productName: productName.substring(0, 255),
+          brand: null,
+          size: null,
+          category: config.defaultCategory || 'uncategorized',
+          subcategory: null,
+          restrictions: null,
+        });
+      }
+
+      console.log(`[Parser] Found ${products.length} UPCs in PDF, skipped ${skippedDuplicate} duplicates`);
+      return products;
+    } finally {
+      // Always cleanup the parser to free resources
+      await parser.destroy();
+    }
+  }
+
+  /**
+   * Parse HTML APL page
+   * Looks for tables or lists containing UPC data
+   */
+  parseHTMLAPL(buffer: Buffer, config: Record<string, any>): APLProduct[] {
+    console.log(`[Parser] Parsing HTML content...`);
+
+    const html = buffer.toString('utf-8');
+    const $ = cheerio.load(html);
+
+    const products: APLProduct[] = [];
+    const seenUpcs = new Set<string>();
+
+    // Look for UPCs in tables
+    $('table tr').each((_, row) => {
+      const cells = $(row).find('td, th');
+      cells.each((_, cell) => {
+        const text = $(cell).text().trim();
+        const upcMatch = text.match(/\b(\d{8,14})\b/);
+        if (upcMatch) {
+          let upc = upcMatch[1];
+
+          // Pad short UPCs
+          if (upc.length > 0 && upc.length < 8) {
+            upc = upc.padStart(12, '0');
+          } else if (upc.length > 8 && upc.length < 12) {
+            upc = upc.padStart(12, '0');
+          }
+
+          if (!seenUpcs.has(upc)) {
+            seenUpcs.add(upc);
+            // Try to get product name from adjacent cells
+            const firstCell = $(cells[0]).text().trim();
+            products.push({
+              upc,
+              productName: firstCell !== text ? firstCell : 'Unknown Product',
+              brand: null,
+              size: null,
+              category: config.defaultCategory || 'uncategorized',
+              subcategory: null,
+              restrictions: null,
+            });
+          }
+        }
+      });
+    });
+
+    // Also look for UPCs in text content
+    const bodyText = $('body').text();
+    const upcPattern = /\b(\d{8,14})\b/g;
+    let match;
+
+    while ((match = upcPattern.exec(bodyText)) !== null) {
+      let upc = match[1];
+
+      if (upc.length > 0 && upc.length < 8) {
+        upc = upc.padStart(12, '0');
+      } else if (upc.length > 8 && upc.length < 12) {
+        upc = upc.padStart(12, '0');
+      }
+
+      if (!seenUpcs.has(upc)) {
+        seenUpcs.add(upc);
+        products.push({
+          upc,
+          productName: 'Unknown Product',
+          brand: null,
+          size: null,
+          category: config.defaultCategory || 'uncategorized',
+          subcategory: null,
+          restrictions: null,
+        });
+      }
+    }
+
+    console.log(`[Parser] Found ${products.length} UPCs in HTML`);
+    return products;
   }
 
   /**
@@ -794,11 +961,11 @@ export class APLSyncService {
           products = this.parseCSVAPL(buffer, config.parserConfig);
           break;
         case 'pdf':
-          // PDF parsing requires additional libraries - placeholder
-          throw new Error('PDF parsing not yet implemented. Requires pdf-parse or similar library.');
+          products = await this.parsePDFAPL(buffer, config.parserConfig);
+          break;
         case 'html':
-          // HTML scraping requires cheerio - placeholder
-          throw new Error('HTML scraping not yet implemented. Requires cheerio library.');
+          products = this.parseHTMLAPL(buffer, config.parserConfig);
+          break;
         default:
           throw new Error(`Unsupported file format: ${config.fileFormat}`);
       }
