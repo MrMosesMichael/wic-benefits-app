@@ -109,14 +109,6 @@ export default function FeedbackScreen() {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>{t('feedback.title')}</Text>
-          <Text style={styles.subtitle}>
-            {t('feedback.subtitle')}
-          </Text>
-        </View>
-
         {/* Category Selection */}
         <Text style={styles.sectionLabel}>{t('feedback.categoryLabel')}</Text>
         <View style={styles.categoryContainer}>
@@ -223,15 +215,6 @@ export default function FeedbackScreen() {
         )}
       </ScrollView>
 
-      {/* Back Button */}
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <Text style={styles.backButtonText}>{t('feedback.back')}</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }

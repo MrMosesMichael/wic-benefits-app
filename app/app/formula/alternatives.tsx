@@ -75,20 +75,6 @@ export default function FormulaAlternativesScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>← {t('common.back')}</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>
-          {data?.primary
-            ? t('alternatives.alternativesFor', {
-                product: `${data.primary.brand} ${data.primary.productName}`,
-              })
-            : t('alternatives.suggestedAlternatives')}
-        </Text>
-      </View>
-
       {/* Content */}
       {loading ? (
         <View style={styles.loadingContainer}>

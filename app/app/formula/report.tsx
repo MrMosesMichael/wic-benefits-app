@@ -137,12 +137,6 @@ export default function FormulaReport() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>{t('formulaReport.title')}</Text>
-        <Text style={styles.subtitle}>{t('formulaReport.subtitle')}</Text>
-      </View>
-
       {/* Step: Scan */}
       {step === 'scan' && (
         <View style={styles.scanContainer}>

@@ -147,11 +147,6 @@ export default function ManualEntry() {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Manual Benefits Entry</Text>
-        <Text style={styles.subtitle}>Add your WIC benefits manually</Text>
-      </View>
-
       <View style={styles.form}>
         {/* Category Selector */}
         <View style={styles.fieldGroup}>

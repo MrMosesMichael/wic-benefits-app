@@ -253,11 +253,6 @@ export default function LogPurchase() {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Log Purchase</Text>
-        <Text style={styles.subtitle}>Manually record a purchase to update benefits</Text>
-      </View>
-
       <View style={styles.form}>
         {/* Product Name Input */}
         <View style={styles.fieldGroup}>

@@ -63,12 +63,6 @@ export default function HelpScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>{t('help.title')}</Text>
-        <Text style={styles.subtitle}>{t('help.subtitle')}</Text>
-      </View>
-
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
@@ -205,15 +199,6 @@ export default function HelpScreen() {
         </TouchableOpacity>
       </ScrollView>
 
-      {/* Back Button */}
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <Text style={styles.backButtonText}>{t('help.backToHome')}</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }

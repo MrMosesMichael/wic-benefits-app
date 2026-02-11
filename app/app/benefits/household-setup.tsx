@@ -259,11 +259,6 @@ export default function HouseholdSetup() {
 
     return (
       <ScrollView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Edit Benefits</Text>
-          <Text style={styles.subtitle}>{participant.name}</Text>
-        </View>
-
         <View style={styles.content}>
           {editingBenefits.map((benefit, index) => (
             <View key={index} style={styles.benefitCard}>
@@ -344,11 +339,6 @@ export default function HouseholdSetup() {
   // Main household setup view
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Household Setup</Text>
-        <Text style={styles.subtitle}>Configure your WIC benefits manually</Text>
-      </View>
-
       <View style={styles.content}>
         {/* Participants List */}
         {participants.map(participant => (

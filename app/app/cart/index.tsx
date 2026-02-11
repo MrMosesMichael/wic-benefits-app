@@ -167,11 +167,6 @@ export default function CartScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{t('cart.title')}</Text>
-        <Text style={styles.itemCount}>{t('cart.itemCount', { count: cart.items.length })}</Text>
-      </View>
-
       <ScrollView style={styles.scrollView}>
         {Object.entries(itemsByParticipant).map(([participantId, items]) => {
           const firstItem = items[0];

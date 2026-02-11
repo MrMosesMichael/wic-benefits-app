@@ -86,19 +86,13 @@ export default function Benefits() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <View style={styles.header}>
-        <View style={styles.headerTop}>
-          <View>
-            <Text style={styles.title}>{t('benefits.title')}</Text>
-            <Text style={styles.subtitle}>{t('benefits.michiganWic')}</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.setupButton}
-            onPress={() => router.push('/benefits/household-setup')}
-          >
-            <Text style={styles.setupButtonText}>{t('benefits.setup')}</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.headerTop}>
+        <TouchableOpacity
+          style={styles.setupButton}
+          onPress={() => router.push('/benefits/household-setup')}
+        >
+          <Text style={styles.setupButtonText}>{t('benefits.setup')}</Text>
+        </TouchableOpacity>
       </View>
 
       {household.participants.map((participant) => (

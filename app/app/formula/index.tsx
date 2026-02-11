@@ -194,12 +194,6 @@ export default function FormulaFinder() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>{t('formula.title')}</Text>
-        <Text style={styles.subtitle}>{t('formula.subtitle')}</Text>
-      </View>
-
       {/* Assigned Formula Card */}
       <View style={styles.formulaCard}>
         <View style={styles.formulaCardHeader}>

@@ -144,15 +144,6 @@ export default function FormulaAlertsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>{t('common.back')}</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>{t('formulaAlertsList.title')}</Text>
-        <Text style={styles.subtitle}>{t('formulaAlertsList.subtitle')}</Text>
-      </View>
-
       {/* Content */}
       <ScrollView
         style={styles.content}

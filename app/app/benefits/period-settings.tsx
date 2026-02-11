@@ -264,11 +264,6 @@ export default function PeriodSettings() {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Benefit Period</Text>
-        <Text style={styles.subtitle}>Manage your benefit period dates</Text>
-      </View>
-
       {/* Period Status Card */}
       <View style={styles.section}>
         <View style={[

@@ -263,15 +263,6 @@ export default function CrossStoreSearchScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>← {t('common.back')}</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>{t('crossStoreSearch.title')}</Text>
-        <Text style={styles.subtitle}>{t('crossStoreSearch.subtitle')}</Text>
-      </View>
-
       {/* Location Prompt */}
       {!location && !loadingLocation && (
         <LocationPrompt

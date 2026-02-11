@@ -94,12 +94,6 @@ export default function FormulaSelect() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Select Your Formula</Text>
-        <Text style={styles.subtitle}>Choose the formula assigned by your WIC office</Text>
-      </View>
-
       {/* Search */}
       <View style={styles.searchContainer}>
         <TextInput

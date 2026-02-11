@@ -55,15 +55,6 @@ export default function LocationSettingsScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>{'<-'} Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Location Settings</Text>
-        <Text style={styles.subtitle}>Set your location for WIC data</Text>
-      </View>
-
       <View style={styles.content}>
         {/* Current Location */}
         {location && (

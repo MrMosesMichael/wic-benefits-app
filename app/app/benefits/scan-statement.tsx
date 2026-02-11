@@ -192,13 +192,6 @@ export default function ScanStatement() {
   if (capturedImage) {
     return (
       <ScrollView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Review Scanned Statement</Text>
-          <Text style={styles.subtitle}>
-            {isProcessing ? 'Processing image...' : 'Verify extracted benefits below'}
-          </Text>
-        </View>
-
         {/* Captured image preview */}
         <View style={styles.imagePreview}>
           <Image source={{ uri: capturedImage }} style={styles.previewImage} />

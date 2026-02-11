@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Stack, useRouter } from 'expo-router';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { I18nProvider, useI18n } from '@/lib/i18n/I18nContext';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import notificationService from '@/lib/services/notificationService';
@@ -54,6 +55,7 @@ function Navigation() {
           fontWeight: 'bold',
         },
         headerRight: () => <LanguageSwitcher compact />,
+        contentStyle: { paddingBottom: 16 },
       }}
     >
       <Stack.Screen name="index" options={{ title: t('nav.home') }} />
@@ -90,8 +92,10 @@ function Navigation() {
 
 export default function RootLayout() {
   return (
-    <I18nProvider>
-      <Navigation />
-    </I18nProvider>
+    <SafeAreaProvider>
+      <I18nProvider>
+        <Navigation />
+      </I18nProvider>
+    </SafeAreaProvider>
   );
 }

@@ -165,15 +165,6 @@ export default function FoodBankFinderScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>← {t('common.back')}</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>{t('foodBanks.title')}</Text>
-        <Text style={styles.subtitle}>{t('foodBanks.subtitle')}</Text>
-      </View>
-
       <ScrollView
         style={styles.content}
         refreshControl={
