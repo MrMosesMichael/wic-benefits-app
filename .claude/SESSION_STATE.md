@@ -1,176 +1,158 @@
 # Session State
 
-> **Last Updated:** 2026-02-10
-> **Session:** APL Automation Deployment
+> **Last Updated:** 2026-02-11
+> **Session:** GPS Location System, Feedback i18n, Privacy Page, Landing Page Fixes
 
 ---
 
 ## Current Status
 
-**✅ APL SYNC AUTOMATION DEPLOYED**
-
-Successfully deployed automated APL synchronization for 3 states:
-
-| State | Products | Source | Format |
-|-------|----------|--------|--------|
-| **MI** | 9,940 | michigan.gov (scraped) | Excel |
-| **NC** | 16,949 | ncdhhs.gov (scraped) | Excel |
-| **OR** | 14,013 | oregon.gov (scraped) | Excel |
-
-**Total: ~41,000 WIC-approved products**
-
-### Disabled States (Cannot Automate)
-- **FL** - No public APL with UPCs (only visual food guides)
-- **NY** - CloudFront WAF blocking all requests
+**All tasks complete for this session. Ready for Android APK + iOS IPA rebuild.**
 
 ---
 
 ## Work Completed This Session
 
-### 1. PDF Parsing Fix
-- Fixed `pdf-parse` v2.4.5 API usage
-- Constructor requires `LoadParameters` with `data` and `verbosity`
-- Uses `getText()` method, not `parse()`
-- Added proper cleanup with `destroy()` in try/finally
+### 1. GPS-Based State Detection (Major Feature)
+Centralized location system replacing per-screen hardcoded Michigan defaults.
 
-### 2. Web Scraping Implementation
-Added dynamic URL extraction for states where APL file URLs change:
-- **MI**: Scrapes michigan.gov/mdhhs for Excel link
-- **NC**: Scrapes ncdhhs.gov for Excel link
-- **OR**: Scrapes oregon.gov vendor materials for Excel link
-- **FL**: Scrapes floridahealth.gov (config exists but disabled)
+**New files:**
+- `app/lib/services/locationService.ts` — GPS wrapper, AsyncStorage persistence, zip fallback
+- `app/lib/hooks/useLocation.ts` — React hook wrapping locationService
+- `app/components/LocationPrompt.tsx` — Reusable "Use GPS / Enter Zip Code" component
+- `app/app/settings/location.tsx` — Location settings screen (GPS, zip entry, preferences)
+- `backend/src/routes/location.ts` — `/resolve` (zip→coords) + `/detect-state` (coords→state)
+- `backend/migrations/020_zip_codes.sql` — Table definition
+- `backend/migrations/020_zip_codes_seed.sql` — 33,760 US zip codes from Census ZCTA
+- `backend/scripts/generate-zip-seed.ts` — Seed generator from Census Gazetteer data
 
-### 3. UPC Column Detection Fix
-- Added "UPC PLU" (space) format used by Oregon
-- Previously only detected "UPC/PLU" (slash)
+**Refactored screens (5):**
+- `app/app/formula/index.tsx` — Replaced inline GPS with useLocation hook
+- `app/app/formula/cross-store-search.tsx` — Same
+- `app/app/formula/alternatives.tsx` — Same, uses detected state instead of hardcoded MI
+- `app/app/formula/report.tsx` — Same
+- `app/app/foodbanks/index.tsx` — Same
 
-### 4. Browser-like Headers
-- Added comprehensive browser headers to bypass 403 blocks
-- Includes User-Agent, Sec-Ch-Ua, Sec-Fetch-* headers
+**Other modified files:**
+- `backend/src/index.ts` — Registered location routes
+- `app/app/_layout.tsx` — Added Stack.Screen entries for alternatives + location settings
+- `app/lib/services/api.ts` — `checkEligibility()` now accepts optional `state` param
+- `app/app/scanner/index.tsx` — Passes detected state to eligibility check
+- `app/app/formula/select.tsx` — Uses detected state for formula lookup
 
----
+**Deployed:** Zip codes seeded on VPS (33,760 records in `zip_codes` table).
 
-## Commits Made
+### 2. Feedback Screen i18n
+- Added `feedback` section (20 keys) to `en.json` and `es.json`
+- Updated `app/app/feedback/index.tsx` to use `useI18n()` + `t()` calls
+- All strings translated: title, categories, placeholders, success/error messages
 
-```
-1a812f5 feat: Add OR APL sync with web scraping, fix PDF parsing
-56ef420 feat: Add APL sync with web scraping and UPC padding for Michigan
-```
+### 3. Privacy Policy Page
+- Created `deployment/wic-landing/privacy.html` — comprehensive privacy policy
+- Covers: data collected, data never collected, sharing, third parties, user rights
+- Matches support.html styling (purple gradient, card layout)
+- Deployed to VPS
 
----
+### 4. Landing Page Link Fixes
+- Fixed `index.html`: `/wic/support` → `/wic/support.html`
+- Fixed `support.html`: self-referencing link + privacy link updated to `.html`
+- Root cause: nginx default config doesn't resolve extensionless URLs
 
-## Files Modified
-
-```
-backend/src/services/APLSyncService.ts
-- Fixed PDFParse API usage
-- Added FL and OR scraping configs
-- Fixed UPC column detection for "UPC PLU"
-- Added try/finally cleanup for PDF parser
-
-backend/package.json
-- Added cheerio dependency for web scraping
-- Added pdf-parse dependency for PDF parsing
-```
-
----
-
-## Database Updates
-
-```sql
--- Disabled FL and NY sync (can't automate)
-UPDATE apl_source_config SET sync_enabled = false
-WHERE state IN ('FL', 'NY');
-
--- Added OR to sync status
-INSERT INTO apl_sync_status (state, data_source, ...)
-SELECT ... FROM apl_sync_jobs WHERE state = 'OR';
-```
+### 5. Documentation Updates
+- Updated `ROADMAP.md` — Phase 7 to 45%, added location system + feedback to "What's Working", marked support/privacy URLs done
+- Updated `DECISIONS.md` — Added GPS/location architecture decision
+- Updated `SESSION_STATE.md` — This file
+- Updated `MEMORY.md` — Modernized to match current project state
 
 ---
 
-## Cron Job Setup (VPS)
+## Files Modified (Summary)
 
-APL sync runs via Docker on VPS. No cron configured yet but can be added:
+```
+# New files
+app/lib/services/locationService.ts
+app/lib/hooks/useLocation.ts
+app/components/LocationPrompt.tsx
+app/app/settings/location.tsx
+backend/src/routes/location.ts
+backend/migrations/020_zip_codes.sql
+backend/migrations/020_zip_codes_seed.sql
+backend/scripts/generate-zip-seed.ts
+deployment/wic-landing/privacy.html
 
-```bash
-# Example cron entry for daily sync at 6am UTC
-0 6 * * * cd ~/projects/wic-app && docker compose exec -T backend node dist/scripts/run-apl-sync.js >> /var/log/wic-apl-sync.log 2>&1
+# Modified files
+backend/src/index.ts
+app/app/_layout.tsx
+app/app/index.tsx
+app/lib/services/api.ts
+app/app/scanner/index.tsx
+app/app/formula/index.tsx
+app/app/formula/cross-store-search.tsx
+app/app/formula/alternatives.tsx
+app/app/formula/report.tsx
+app/app/formula/select.tsx
+app/app/foodbanks/index.tsx
+app/app/feedback/index.tsx
+app/lib/i18n/translations/en.json
+app/lib/i18n/translations/es.json
+deployment/wic-landing/index.html
+deployment/wic-landing/support.html
+ROADMAP.md
+.claude/DECISIONS.md
+.claude/MEMORY.md
 ```
 
 ---
 
 ## What's Next
 
-### iOS Build (Ready to Start)
+### Immediate: Rebuild Apps
+- Deploy updated backend (location routes + feedback GitHub integration)
+- Rebuild Android APK: `./scripts/build-android.sh --upload`
+- Rebuild iOS IPA: `npx eas-cli build --platform ios --profile production --local`
+- Resubmit to TestFlight
 
-Apple Developer License acquired. Next session steps:
+### Short Term
+1. **Complete Spanish i18n** — Have native speaker review all translations
+2. **App Store assets** — Screenshots, description, keywords (see ROADMAP.md checklist)
+3. **Accessibility (Track T)** — VoiceOver/TalkBack support
+4. **External TestFlight beta** — Enable public link after Apple review
 
-1. **EAS Setup**
-   ```bash
-   cd app
-   npx eas-cli login          # Log into Expo account
-   npx eas build:configure    # Configure iOS build
-   ```
-
-2. **Apple Developer Portal Setup**
-   - Create App ID (Bundle ID: likely `com.wicbenefits.app` or similar)
-   - Create provisioning profile
-   - EAS can handle most of this automatically
-
-3. **Build Commands**
-   ```bash
-   npx eas build --platform ios --profile preview   # TestFlight build
-   npx eas build --platform ios --profile production  # App Store build
-   ```
-
-4. **App Store Assets Needed**
-   - App icon (1024x1024)
-   - Screenshots (6.7", 6.5", 5.5" iPhones + iPad if supporting)
-   - App description, keywords, privacy policy URL
-   - Age rating questionnaire
-
-5. **TestFlight → App Store**
-   - Upload build via EAS Submit or Transporter
-   - Add testers to TestFlight
-   - Submit for App Review
-
-### Other Priorities
-- Spanish Language Support (G) - i18n framework ready
-- Accessibility (T) - VoiceOver/TalkBack support
-
----
-
-## Completed This Session (Feb 10)
-- ✅ APL automation deployed for 4 states (62,027 products)
-- ✅ Cron job running (5am UTC daily)
-- ✅ NY APL via nyswicvendors.com
-- ⏸️ FL shelved (state has own app)
-- ✅ Documentation updated (ROADMAP, CHANGELOG)
+### VPS Environment Notes
+- SSH user: `mmichael` (files owned by `dmichael`, sudo needed for some ops)
+- Docker services: `backend`, `postgres` (user: `wic_admin`)
+- Web root: `/data/docker/www/mdmichael.com/www/wic/`
+- Env vars needed: `GITHUB_TOKEN`, `GITHUB_FEEDBACK_REPO` (both set as of this session)
 
 ---
 
 ## Technical Notes
 
-### APL Sources (Working)
-- **MI**: `https://www.michigan.gov/mdhhs/assistance-programs/wic/wicvendors/wic-foods`
-  - Scrapes page for `Michigan-WIC-Approved-Products-List.xlsx`
-- **NC**: `https://www.ncdhhs.gov/ncwicfoods`
-  - Scrapes page for Excel download link
-- **OR**: `https://www.oregon.gov/oha/PH/HEALTHYPEOPLEFAMILIES/WIC/Pages/vendor_materials.aspx`
-  - Scrapes page for `Oregon-APL.xls`
-
-### APL Sources (Blocked)
-- **FL**: Only visual food guides, no UPC-based APL for public download
-- **NY**: CloudFront WAF requires cookies/JS challenge
-
-### API Endpoints
+### Location System Architecture
 ```
-GET  /api/v1/apl-sync/health          # Health dashboard with all states
-POST /api/v1/apl-sync/trigger         # Manual trigger {state, forceSync}
-GET  /api/v1/apl-sync/due             # States due for sync
+User opens screen → useLocation hook
+  ├── Cached location? → return it (check 30-day staleness)
+  ├── Preference = 'gps'? → request GPS → detect-state API → cache
+  ├── Preference = 'manual'? → show zip prompt → resolve API → cache
+  └── Preference = 'ask'? → show LocationPrompt component
+```
+
+### APL Sources (Working — 5 states)
+- **MI**: michigan.gov → Excel scraping (9,940 products)
+- **NC**: ncdhhs.gov → Excel scraping (16,949 products)
+- **NY**: nyswicvendors.com → Excel scraping (21,125 products)
+- **OR**: oregon.gov → Excel scraping (14,013 products)
+- **FL**: Shelved (state has own app, no UPC-based APL)
+
+### Key API Endpoints
+```
+GET  /api/v1/location/detect-state?lat=X&lng=Y   # GPS → state
+POST /api/v1/location/resolve                      # {zipCode} → coords+state
+GET  /api/v1/location/supported-states             # [MI, NC, FL, OR, NY]
+POST /api/v1/feedback                              # Creates GitHub Issue
+GET  /api/v1/apl-sync/health                       # APL sync dashboard
 ```
 
 ---
 
-*Previous session: Documentation consolidation completed*
+*Previous session: iOS build + TestFlight submission (Feb 10)*

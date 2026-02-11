@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WIC Benefits Assistant - Support</title>
+    <meta name="description" content="Get help with the WIC Benefits Assistant app. Report bugs, request features, or ask questions.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 6px;
+            font-size: 0.95em;
+        }
+
+        .category-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-size: 0.95em;
+        }
+
+        .category-btn:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+
+        .category-btn.selected {
+            border-color: #2E7D32;
+            background: #f0f9f0;
+            color: #2E7D32;
+            font-weight: 600;
+        }
+
+        .category-btn .icon {
+            display: block;
+            font-size: 1.4em;
+            margin-bottom: 4px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 0.8em;
+            color: #a0aec0;
+            margin-top: 4px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #2E7D32;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #256d29;
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            background: #A5D6A7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .privacy-note {
+            text-align: center;
+            font-size: 0.85em;
+            color: #a0aec0;
+            margin-top: 12px;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-message .check {
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            border-radius: 50%;
+            background: #E8F5E9;
+            color: #2E7D32;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0 auto 16px;
+        }
+
+        .success-message h2 {
+            color: #2E7D32;
+            margin-bottom: 12px;
+        }
+
+        .success-message p {
+            color: #4a5568;
+            margin-bottom: 24px;
+        }
+
+        .success-message a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .error-message {
+            display: none;
+            background: #FFF5F5;
+            border: 1px solid #FC8181;
+            border-radius: 8px;
+            padding: 12px;
+            color: #C53030;
+            margin-bottom: 16px;
+            font-size: 0.95em;
+        }
+
+        .quick-help {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .quick-help h3 {
+            color: #2d3748;
+            margin-bottom: 16px;
+        }
+
+        .help-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .help-item:last-child {
+            border-bottom: none;
+        }
+
+        .help-item strong {
+            color: #2d3748;
+        }
+
+        .help-item p {
+            color: #718096;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .card { padding: 24px; }
+            .category-options { flex-direction: column; }
+            .category-btn { min-width: unset; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Support & Feedback</h1>
+            <p class="subtitle">WIC Benefits Assistant</p>
+
+            <div id="form-container">
+                <div id="error-msg" class="error-message"></div>
+
+                <div class="form-group">
+                    <label>What can we help with?</label>
+                    <div class="category-options">
+                        <button class="category-btn" data-category="bug" onclick="selectCategory(this)">
+                            <span class="icon">!</span>
+                            Bug Report
+                        </button>
+                        <button class="category-btn" data-category="feature" onclick="selectCategory(this)">
+                            <span class="icon">+</span>
+                            Feature Request
+                        </button>
+                        <button class="category-btn" data-category="question" onclick="selectCategory(this)">
+                            <span class="icon">?</span>
+                            Question
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Tell us more</label>
+                    <textarea
+                        id="description"
+                        placeholder="Describe the issue, idea, or question..."
+                        maxlength="4000"
+                        oninput="updateCharCount()"
+                    ></textarea>
+                    <div class="char-count"><span id="char-count">0</span>/4000</div>
+                </div>
+
+                <button class="submit-btn" id="submit-btn" onclick="submitFeedback()" disabled>
+                    Submit Feedback
+                </button>
+
+                <p class="privacy-note">
+                    Your feedback is submitted anonymously. No personal information is collected.
+                </p>
+            </div>
+
+            <div id="success-msg" class="success-message">
+                <div class="check">&#10003;</div>
+                <h2>Thank You!</h2>
+                <p>Your feedback has been submitted. We review every submission and use it to improve the app.</p>
+                <a href="/wic/support.html">Submit another</a>
+            </div>
+        </div>
+
+        <div class="quick-help">
+            <h3>Common Questions</h3>
+            <div class="help-item">
+                <strong>How do I scan products?</strong>
+                <p>Open the app, tap "Scan Product", and point your camera at the barcode. The app works offline.</p>
+            </div>
+            <div class="help-item">
+                <strong>Which states are supported?</strong>
+                <p>Michigan, North Carolina, New York, and Oregon. More states coming soon.</p>
+            </div>
+            <div class="help-item">
+                <strong>Is my data private?</strong>
+                <p>Yes. We don't collect personal information, sell data, or track your location history. <a href="/wic/privacy.html" style="color: #667eea;">Privacy Policy</a></p>
+            </div>
+            <div class="help-item">
+                <strong>Contact your WIC office</strong>
+                <p>For questions about your specific benefits or eligibility, contact your local WIC clinic.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><a href="/wic/">Back to WIC Benefits Assistant</a></p>
+        </div>
+    </div>
+
+    <script>
+        let selectedCategory = null;
+
+        function selectCategory(btn) {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedCategory = btn.dataset.category;
+            validateForm();
+        }
+
+        function updateCharCount() {
+            const desc = document.getElementById('description');
+            document.getElementById('char-count').textContent = desc.value.length;
+            validateForm();
+        }
+
+        function validateForm() {
+            const desc = document.getElementById('description').value.trim();
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = !(selectedCategory && desc.length >= 10);
+        }
+
+        async function submitFeedback() {
+            const btn = document.getElementById('submit-btn');
+            const errorMsg = document.getElementById('error-msg');
+            const desc = document.getElementById('description').value.trim();
+
+            if (!selectedCategory || desc.length < 10) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Submitting...';
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch('https://mdmichael.com/wic/api/v1/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        category: selectedCategory,
+                        description: desc,
+                        source: 'web',
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('form-container').style.display = 'none';
+                    document.getElementById('success-msg').style.display = 'block';
+                } else {
+                    throw new Error(data.error || 'Submission failed');
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Failed to submit feedback. Please try again later.';
+                errorMsg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Submit Feedback';
+            }
+        }
+    </script>
+</body>
+</html>

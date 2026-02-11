@@ -108,7 +108,7 @@ export interface Cart {
  * Check if a product is WIC-eligible
  * Uses offline data when OFFLINE_MODE is true
  */
-export async function checkEligibility(upc: string): Promise<EligibilityResult> {
+export async function checkEligibility(upc: string, state?: string): Promise<EligibilityResult> {
   // Use offline mode - no server needed
   if (OFFLINE_MODE) {
     const result = checkEligibilityOffline(upc);
@@ -127,7 +127,8 @@ export async function checkEligibility(upc: string): Promise<EligibilityResult> 
 
   // Online mode - requires backend server
   try {
-    const response = await api.get(`/eligibility/${upc}`);
+    const params = state ? `?state=${state}` : '';
+    const response = await api.get(`/eligibility/${upc}${params}`);
     if (response.data.success) {
       return response.data.data;
     }
@@ -1139,6 +1140,38 @@ export async function getFormulaBrands(): Promise<FormulaBrand[]> {
     throw new Error('Failed to fetch brands');
   } catch (error) {
     console.error('Failed to fetch formula brands:', error);
+    throw error;
+  }
+}
+
+// ==================== Feedback API ====================
+
+export interface FeedbackRequest {
+  category: 'bug' | 'feature' | 'question';
+  description: string;
+  deviceInfo?: {
+    platform: string;
+    osVersion: string;
+    appVersion: string;
+  };
+  source: 'app' | 'web';
+}
+
+/**
+ * Submit feedback — creates a GitHub Issue via the backend
+ */
+export async function submitFeedback(request: FeedbackRequest): Promise<{ issueUrl: string }> {
+  try {
+    const response = await api.post('/feedback', request);
+    if (response.data.success) {
+      return { issueUrl: response.data.issueUrl };
+    }
+    throw new Error(response.data.error || 'Failed to submit feedback');
+  } catch (error: any) {
+    console.error('Failed to submit feedback:', error);
+    if (error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
     throw error;
   }
 }

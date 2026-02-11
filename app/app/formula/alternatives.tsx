@@ -9,9 +9,9 @@ import {
   Alert
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import * as Location from 'expo-location';
 import { getFormulaAlternatives } from '@/lib/services/api';
 import FormulaAlternatives from '@/components/FormulaAlternatives';
+import { useLocation } from '@/lib/hooks/useLocation';
 import type { FormulaAlternative, FormulaAlternativesResponse } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 
@@ -26,42 +26,25 @@ export default function FormulaAlternativesScreen() {
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<FormulaAlternativesResponse | null>(null);
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const { location: userLocation } = useLocation();
+  const location = userLocation ? { lat: userLocation.lat, lng: userLocation.lng } : null;
+  const detectedState = userLocation?.state || 'MI';
 
   useEffect(() => {
     initialize();
-  }, []);
+  }, [userLocation]);
 
   const initialize = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Request location (optional, but helpful for availability data)
-      let userLocation: { lat: number; lng: number } | undefined;
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status === 'granted') {
-          const loc = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.Balanced,
-          });
-          userLocation = {
-            lat: loc.coords.latitude,
-            lng: loc.coords.longitude,
-          };
-          setLocation(userLocation);
-        }
-      } catch (locError) {
-        console.warn('Location not available:', locError);
-        // Continue without location
-      }
-
-      // Fetch alternatives (use local variable, not stale state)
       const response = await getFormulaAlternatives(
         params.upc,
-        'MI',
-        userLocation,
+        detectedState,
+        location || undefined,
         25
       );
 

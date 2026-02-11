@@ -149,6 +149,43 @@ When WiFi and GPS agree on same store:
 
 ---
 
+### 6. Centralized Location System (GPS + Zip Code Fallback)
+
+**Date:** 2026-02-11
+**Status:** CHOSEN
+
+**Problem:** 5 screens each had inline `expo-location` GPS code with hardcoded Michigan defaults. Users in other states got wrong eligibility results. GPS permission denial was a dead end.
+
+**Options Considered:**
+1. Keep per-screen GPS code, add state param — Quick but duplicated logic, no fallback
+2. Centralized location service with zip code fallback — Single source of truth, graceful degradation
+
+**Decision:** Option 2 — `locationService.ts` + `useLocation` hook + backend zip code resolution
+
+**Architecture:**
+- `app/lib/services/locationService.ts` — GPS wrapper, AsyncStorage persistence, API calls
+- `app/lib/hooks/useLocation.ts` — React hook for all screens
+- `app/components/LocationPrompt.tsx` — Reusable "Use GPS / Enter Zip Code" UI
+- `backend/src/routes/location.ts` — `POST /resolve` (zip→coords) + `GET /detect-state` (coords→state)
+- `backend/migrations/020_zip_codes.sql` — 33,760 US zip codes from Census ZCTA data
+- `app/app/settings/location.tsx` — Manual zip entry, GPS toggle, preference management
+
+**Why This Works:**
+- Single location source for all screens (DRY)
+- GPS permission denial → zip code fallback (no dead end)
+- State detection from coordinates via nearest-zip lookup
+- 30-day staleness check with refresh prompt
+- Preference persistence (always GPS / always zip / ask each time)
+
+**Trade-offs:**
+| Benefit | Cost |
+|---------|------|
+| No hardcoded state defaults | Requires backend zip code table (1.4MB seed) |
+| GPS denial isn't a dead end | Extra API call for state resolution |
+| Works for all 50 states | City names not populated (Census data lacks them) |
+
+---
+
 ## Deferred Decisions
 
 ### 1. Authentication System

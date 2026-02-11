@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { getWicFormulas, setParticipantFormula } from '@/lib/services/api';
 import FormulaCard from '@/components/FormulaCard';
+import { useLocation } from '@/lib/hooks/useLocation';
 import type { WicFormula, FormulaType } from '@/lib/types';
 
 const FORMULA_TYPES: { value: FormulaType | 'all'; label: string }[] = [
@@ -26,17 +27,19 @@ export default function FormulaSelect() {
   const [selectedFormula, setSelectedFormula] = useState<WicFormula | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState<FormulaType | 'all'>('all');
+  const { location } = useLocation();
+  const detectedState = location?.state || 'MI';
 
   // Load formulas on mount and when filters change
   useEffect(() => {
     loadFormulas();
-  }, [selectedType, searchQuery]);
+  }, [selectedType, searchQuery, detectedState]);
 
   const loadFormulas = useCallback(async () => {
     try {
       setLoading(true);
       const results = await getWicFormulas(
-        'MI', // Default to Michigan
+        detectedState,
         selectedType === 'all' ? undefined : selectedType,
         searchQuery || undefined
       );

@@ -55,6 +55,13 @@ export default function Home() {
         >
           <Text style={styles.helpButtonText}>❓ {t('home.helpFaq')}</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.settingsButton}
+          onPress={() => router.push('/settings/location')}
+        >
+          <Text style={styles.settingsButtonText}>📍 Location Settings</Text>
+        </TouchableOpacity>
       </View>
 
       <Text style={styles.footer}>{t('app.version')}</Text>
@@ -138,6 +145,19 @@ const styles = StyleSheet.create({
   },
   helpButtonText: {
     color: '#1976D2',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  settingsButton: {
+    backgroundColor: '#fff',
+    padding: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#666',
+  },
+  settingsButtonText: {
+    color: '#666',
     fontSize: 16,
     fontWeight: '600',
   },

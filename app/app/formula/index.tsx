@@ -1,13 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, RefreshControl } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import * as Location from 'expo-location';
 import { searchFormulaStores, getFormulaShortages, getParticipantFormula, getFormulaByUpc } from '@/lib/services/api';
 import StoreResultCard from '@/components/StoreResultCard';
 import FormulaSightingModal from '@/components/FormulaSightingModal';
 import FormulaAlertButton from '@/components/FormulaAlertButton';
+import LocationPrompt from '@/components/LocationPrompt';
+import { useLocation } from '@/lib/hooks/useLocation';
 import type { StoreResult, WicFormula, ParticipantFormula } from '@/lib/types';
 import Constants from 'expo-constants';
+import { useI18n } from '@/lib/i18n/I18nContext';
 
 interface FormulaShortage {
   id: string;
@@ -21,6 +23,7 @@ interface FormulaShortage {
 
 export default function FormulaFinder() {
   const router = useRouter();
+  const { t } = useI18n();
   const params = useLocalSearchParams<{ selectedUpc?: string; selectedName?: string }>();
 
   // State
@@ -33,9 +36,10 @@ export default function FormulaFinder() {
   const [loadingShortages, setLoadingShortages] = useState(true);
   const [sightingModalVisible, setSightingModalVisible] = useState(false);
 
-  // Location state
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [locationError, setLocationError] = useState<string | null>(null);
+  // Location from centralized hook
+  const { location: userLocation, loading: locationLoading, error: locationError, refresh: refreshLocation, setZipCode } = useLocation();
+  const location = userLocation ? { lat: userLocation.lat, lng: userLocation.lng } : null;
+  const detectedState = userLocation?.state || 'MI';
 
   // Formula state
   const [assignedFormula, setAssignedFormula] = useState<{
@@ -70,32 +74,9 @@ export default function FormulaFinder() {
 
   const initializeScreen = async () => {
     await Promise.all([
-      requestLocation(),
       loadAssignedFormula(),
       loadShortages(),
     ]);
-  };
-
-  const requestLocation = async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setLocationError('Location permission denied. Enable location to find nearby stores.');
-        return;
-      }
-
-      const loc = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-      });
-      setLocation({
-        lat: loc.coords.latitude,
-        lng: loc.coords.longitude,
-      });
-      setLocationError(null);
-    } catch (error) {
-      console.error('Failed to get location:', error);
-      setLocationError('Could not get your location. Please try again.');
-    }
   };
 
   const loadAssignedFormula = async () => {
@@ -138,7 +119,8 @@ export default function FormulaFinder() {
   const loadShortages = async () => {
     try {
       setLoadingShortages(true);
-      const result = await getFormulaShortages('Michigan');
+      const stateNames: Record<string, string> = { MI: 'Michigan', NC: 'North Carolina', FL: 'Florida', OR: 'Oregon', NY: 'New York' };
+      const result = await getFormulaShortages(stateNames[detectedState] || 'Michigan');
       setShortages(result);
     } catch (error) {
       console.error('Failed to load shortages:', error);
@@ -149,12 +131,12 @@ export default function FormulaFinder() {
 
   const handleSearch = async () => {
     if (!location) {
-      Alert.alert('Location Required', 'Please enable location services to search for nearby stores.');
+      Alert.alert(t('formula.locationRequired'), t('formula.locationRequiredMsg'));
       return;
     }
 
     if (!assignedFormula) {
-      Alert.alert('Select Formula', 'Please select your assigned formula first.');
+      Alert.alert(t('formula.selectFormulaAlert'), t('formula.selectFormulaAlertMsg'));
       router.push('/formula/select');
       return;
     }
@@ -174,7 +156,7 @@ export default function FormulaFinder() {
       setStoreResults(results);
     } catch (error) {
       console.error('Formula search failed:', error);
-      Alert.alert('Search Failed', 'Unable to search for formula. Please try again.');
+      Alert.alert(t('formula.searchFailed'), t('formula.searchFailedMsg'));
     } finally {
       setLoading(false);
     }
@@ -200,9 +182,9 @@ export default function FormulaFinder() {
 
   const formatTimeAgo = (timestamp: string) => {
     const hours = (Date.now() - new Date(timestamp).getTime()) / (1000 * 60 * 60);
-    if (hours < 1) return 'Just now';
-    if (hours < 24) return `${Math.round(hours)}h ago`;
-    return `${Math.round(hours / 24)}d ago`;
+    if (hours < 1) return t('formula.justNow');
+    if (hours < 24) return t('formula.hoursAgo', { hours: Math.round(hours) });
+    return t('formula.daysAgo', { days: Math.round(hours / 24) });
   };
 
   return (
@@ -214,16 +196,16 @@ export default function FormulaFinder() {
     >
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Formula Finder</Text>
-        <Text style={styles.subtitle}>Find infant formula at nearby stores</Text>
+        <Text style={styles.title}>{t('formula.title')}</Text>
+        <Text style={styles.subtitle}>{t('formula.subtitle')}</Text>
       </View>
 
       {/* Assigned Formula Card */}
       <View style={styles.formulaCard}>
         <View style={styles.formulaCardHeader}>
-          <Text style={styles.sectionTitle}>Finding Formula</Text>
+          <Text style={styles.sectionTitle}>{t('formula.findingFormula')}</Text>
           <TouchableOpacity onPress={() => router.push('/formula/select')}>
-            <Text style={styles.editLink}>{assignedFormula ? 'Change' : 'Select'}</Text>
+            <Text style={styles.editLink}>{assignedFormula ? t('formula.change') : t('formula.select')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -255,7 +237,7 @@ export default function FormulaFinder() {
               })}
             >
               <Text style={styles.alternativesButtonText}>
-                🔄 View Alternative Formulas
+                {t('formula.viewAlternatives')}
               </Text>
             </TouchableOpacity>
 
@@ -273,7 +255,7 @@ export default function FormulaFinder() {
               onPress={() => router.push('/formula/alerts')}
             >
               <Text style={styles.manageAlertsLinkText}>
-                Manage All Formula Alerts →
+                {t('formula.manageAlerts')} →
               </Text>
             </TouchableOpacity>
           </View>
@@ -283,20 +265,20 @@ export default function FormulaFinder() {
             onPress={() => router.push('/formula/select')}
           >
             <Text style={styles.selectFormulaButtonText}>
-              Tap to select your assigned formula
+              {t('formula.selectFormula')}
             </Text>
           </TouchableOpacity>
         )}
       </View>
 
-      {/* Location Status */}
-      {locationError && (
-        <View style={styles.locationError}>
-          <Text style={styles.locationErrorText}>{locationError}</Text>
-          <TouchableOpacity onPress={requestLocation}>
-            <Text style={styles.retryLink}>Retry</Text>
-          </TouchableOpacity>
-        </View>
+      {/* Location Prompt */}
+      {!location && !locationLoading && (
+        <LocationPrompt
+          onGPS={refreshLocation}
+          onZipCode={setZipCode}
+          loading={locationLoading}
+          error={locationError}
+        />
       )}
 
       {/* Shortage Alerts */}
@@ -320,12 +302,12 @@ export default function FormulaFinder() {
                   { backgroundColor: getSeverityColor(shortage.severity) }
                 ]}>
                   <Text style={styles.severityBadgeText}>
-                    {shortage.severity.charAt(0).toUpperCase() + shortage.severity.slice(1)} Shortage
+                    {shortage.severity.charAt(0).toUpperCase() + shortage.severity.slice(1)} {t('formula.shortage')}
                   </Text>
                 </View>
                 <Text style={styles.shortageProductName}>{shortage.productName}</Text>
                 <Text style={styles.shortageStatText}>
-                  {shortage.outOfStockPercentage}% of stores out of stock
+                  {t('formula.ofStoresOut', { percent: shortage.outOfStockPercentage })}
                 </Text>
 
                 {/* Show alternatives button if this is user's formula */}
@@ -342,7 +324,7 @@ export default function FormulaFinder() {
                     })}
                   >
                     <Text style={styles.shortageAlternativesButtonText}>
-                      View Alternative Formulas →
+                      {t('formula.viewAlternativeFormulas')} →
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -354,7 +336,7 @@ export default function FormulaFinder() {
 
       {/* Search Controls */}
       <View style={styles.searchCard}>
-        <Text style={styles.sectionTitle}>Search Radius</Text>
+        <Text style={styles.sectionTitle}>{t('formula.searchRadius')}</Text>
         <View style={styles.radiusButtons}>
           {[5, 10, 25, 50].map(radius => (
             <TouchableOpacity
@@ -369,7 +351,7 @@ export default function FormulaFinder() {
                 styles.radiusButtonText,
                 searchRadius === radius && styles.radiusButtonTextActive
               ]}>
-                {radius} mi
+                {radius} {t('units.mi')}
               </Text>
             </TouchableOpacity>
           ))}
@@ -386,13 +368,13 @@ export default function FormulaFinder() {
           {loading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.searchButtonText}>Find Formula Now</Text>
+            <Text style={styles.searchButtonText}>{t('formula.findFormulaNow')}</Text>
           )}
         </TouchableOpacity>
 
         {!location && (
           <Text style={styles.helpText}>
-            Waiting for location...
+            {t('formula.waitingForLocation')}
           </Text>
         )}
       </View>
@@ -401,22 +383,22 @@ export default function FormulaFinder() {
       {loading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#1976D2" />
-          <Text style={styles.loadingText}>Searching nearby stores...</Text>
+          <Text style={styles.loadingText}>{t('formula.searchingStores')}</Text>
         </View>
       )}
 
       {!loading && searchPerformed && storeResults.length === 0 && (
         <View style={styles.emptyState}>
           <Text style={styles.emptyIcon}>📍</Text>
-          <Text style={styles.emptyTitle}>No Stores Found</Text>
+          <Text style={styles.emptyTitle}>{t('formula.noStoresFound')}</Text>
           <Text style={styles.emptyText}>
-            No stores found within {searchRadius} miles that carry this formula.
+            {t('formula.noStoresMessage', { radius: searchRadius })}
           </Text>
           <TouchableOpacity
             style={styles.emptyButton}
             onPress={() => setSearchRadius(50)}
           >
-            <Text style={styles.emptyButtonText}>Expand Search to 50 Miles</Text>
+            <Text style={styles.emptyButtonText}>{t('formula.expandSearch')}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -424,7 +406,7 @@ export default function FormulaFinder() {
       {!loading && storeResults.length > 0 && (
         <View style={styles.resultsContainer}>
           <Text style={styles.resultsHeader}>
-            {storeResults.length} store{storeResults.length !== 1 ? 's' : ''} nearby
+            {t('formula.storesNearby', { count: storeResults.length })}
           </Text>
 
           {storeResults.map((store) => (
@@ -433,13 +415,13 @@ export default function FormulaFinder() {
 
           <View style={styles.reportPrompt}>
             <Text style={styles.reportPromptText}>
-              Found formula? Help others by reporting it!
+              {t('formula.foundFormulaHelp')}
             </Text>
             <TouchableOpacity
               style={styles.reportPromptButton}
               onPress={() => router.push('/formula/report')}
             >
-              <Text style={styles.reportPromptButtonText}>Report Formula</Text>
+              <Text style={styles.reportPromptButtonText}>{t('formula.reportFormula')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -453,9 +435,9 @@ export default function FormulaFinder() {
         <View style={styles.advancedSearchContent}>
           <Text style={styles.advancedSearchIcon}>🔍</Text>
           <View style={styles.advancedSearchText}>
-            <Text style={styles.advancedSearchTitle}>Advanced Cross-Store Search</Text>
+            <Text style={styles.advancedSearchTitle}>{t('formula.advancedSearch')}</Text>
             <Text style={styles.advancedSearchSubtitle}>
-              Search by brand, type, or name across all stores
+              {t('formula.advancedSearchDesc')}
             </Text>
           </View>
         </View>
@@ -464,14 +446,12 @@ export default function FormulaFinder() {
 
       {/* Info Section */}
       <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>About Formula Finder</Text>
+        <Text style={styles.infoTitle}>{t('formula.aboutTitle')}</Text>
         <Text style={styles.infoText}>
-          Results combine store availability data with community reports. Stores shown
-          "usually" or "always" carry this formula type, while confirmed reports show
-          actual recent availability.
+          {t('formula.aboutText')}
         </Text>
         <Text style={[styles.infoText, { marginTop: 12 }]}>
-          Always call ahead to verify before traveling.
+          {t('formula.callAhead')}
         </Text>
       </View>
 
@@ -482,13 +462,12 @@ export default function FormulaFinder() {
           if (assignedFormula) {
             setSightingModalVisible(true);
           } else {
-            Alert.alert('Select Formula', 'Please select your assigned formula first.');
+            router.push('/formula/select');
           }
         }}
-        disabled={!assignedFormula}
       >
         <Text style={styles.floatingReportButtonText}>
-          {assignedFormula ? 'Quick Report - I Found This!' : 'Select Formula to Report'}
+          {assignedFormula ? t('formula.quickReport') : t('formula.selectFormulaToReport')}
         </Text>
       </TouchableOpacity>
 

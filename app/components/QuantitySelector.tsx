@@ -124,13 +124,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 4,
+    textAlign: 'center',
   },
   description: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#666',
+    textAlign: 'center',
   },
 });

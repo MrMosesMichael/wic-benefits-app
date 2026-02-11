@@ -1,73 +1,72 @@
 # WIC Benefits App - Persistent Memory
 
 > This file is read when resuming work. Keep it concise (<2k tokens).
+> Last updated: February 11, 2026
 
 ## Project Summary
-WIC Benefits Assistant - Mobile app helping WIC participants scan products, track benefits, find formula, and navigate the program. Built with React Native + Expo, TypeScript, PostgreSQL backend.
+WIC Benefits Assistant — Mobile app helping WIC participants scan products, track benefits, find formula, and navigate the program. Built with React Native + Expo (SDK 52), TypeScript, Node.js/Express + PostgreSQL backend.
 
-**Priority States**: Michigan, North Carolina, Florida, Oregon
-**Core Values**: User sovereignty, privacy-first, anti-capitalist (serves users, not corporations)
+**Supported States**: Michigan, North Carolina, New York, Oregon (Florida shelved — state has own app)
+**Core Values**: User sovereignty, privacy-first, no data harvesting, no paternalism
+**Production**: https://mdmichael.com/wic/
 
-## Architecture Decisions
+## Architecture
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Mobile Framework | React Native + Expo | Cross-platform, rapid development |
-| Language | TypeScript | Type safety, better tooling |
-| State Management | React Context + hooks | Simpler than Redux for this scale |
-| Backend | Node.js/Express + PostgreSQL | Familiar stack, good for API |
-| Store Detection | GPS + WiFi + Geofence | Multiple methods for accuracy |
-| Inventory API | Walmart Affiliate API first | Best documented, largest coverage |
+| Component | Technology | Notes |
+|-----------|-----------|-------|
+| Mobile App | React Native + Expo SDK 52 | File-based routing via expo-router |
+| Language | TypeScript | Throughout app + backend |
+| State Mgmt | React Context + hooks | I18nContext, useLocation, useHousehold |
+| Backend | Node.js/Express + PostgreSQL | Deployed via Docker on VPS |
+| Location | Centralized locationService.ts | GPS + zip code fallback, 33K zip codes |
+| i18n | Custom I18nContext | `useI18n()` → `t('key')`, en + es |
+| Storage | AsyncStorage (client) | Location prefs, household data, benefits |
+| Builds | EAS Build (iOS + Android) | Local builds, manual deploy |
 
-## Completed Milestones
+## Key Patterns
 
-### Phase 0 - Specifications (Complete)
-- All specs written in `specs/wic-benefits-app/specs/`
-- Design doc at `specs/wic-benefits-app/design.md`
-- Task roadmap at `specs/wic-benefits-app/tasks.md`
+- **i18n**: `import { useI18n } from '@/lib/i18n/I18nContext'` → `const { t } = useI18n()`
+- **Location**: `import { useLocation } from '@/lib/hooks/useLocation'` → `const { location } = useLocation()`
+- **API calls**: `app/lib/services/api.ts` — all backend calls go through this
+- **Eligibility**: `checkEligibility(upc, state?)` — state param optional, defaults to MI on backend
 
-### Phase 1 - Michigan Vertical Slice MVP ✅ **COMPLETE** (Jan 17, 2026)
-- **Backend**: PostgreSQL + Node.js/Express API running on localhost
-- **Frontend**: React Native + Expo with barcode scanner (react-native-vision-camera v4)
-- **Android Build**: Development .apk built via EAS, deployed to physical device
-- **Testing**: Validated end-to-end with real products (Cheerios, Kroger milk)
-- **Critical Features**:
-  - Barcode scanning (UPC-A, UPC-E, EAN-13)
-  - UPC normalization (handles leading zeros: `11110416605` ↔ `0011110416605`)
-  - Eligibility checking via local backend
-  - Network communication (phone → laptop via WiFi)
-- **Production Status**: ON HOLD until Phases 1-2 fully complete
+## VPS (tatertot.work)
 
-### Phase 2 - Store Intelligence (In Progress)
-- **Group H - Store Detection**: 6/6 tasks complete
-- **Group I - Store Inventory**: 1/9 tasks complete (I1.2 in progress)
-- **Groups J, K**: Not started
+- SSH user: `mmichael`, files owned by `dmichael` (sudo needed for some ops)
+- No npm on VPS — all commands via Docker: `docker compose exec -T backend npm run ...`
+- Docker services: `backend`, `postgres` (db user: `wic_admin`)
+- Web root: `/data/docker/www/mdmichael.com/www/wic/`
+- Env vars: `GITHUB_TOKEN` + `GITHUB_FEEDBACK_REPO` configured for feedback→GitHub Issues
 
-## Known Issues & Workarounds
+## Known Issues
 
-| Issue | Workaround |
-|-------|------------|
-| Rate limits on Claude API | Orchestrator waits and retries; use haiku for simple tasks |
-| macOS lacks `timeout` command | Removed timeout, rely on rate limit handling |
-| Bash `${var^}` not on macOS | Use awk for string capitalization |
-| UPC leading zeros mismatch | Backend tries multiple UPC variants (with/without leading zeros) |
-| Android cleartext HTTP blocking | Use expo-build-properties plugin with usesCleartextTraffic: true |
+| Issue | Notes |
+|-------|-------|
+| UPC leading zeros | Backend tries multiple variants (with/without leading zeros) |
+| City names empty in zip_codes table | Census ZCTA data lacks city names; state detection works fine |
+| nginx extensionless URLs | Must use `.html` extension in links (no try_files config) |
+| No authentication system | Using demo household (ID=1); needed pre-launch |
+| Java 17 required for Android builds | `export JAVA_HOME=/usr/local/opt/openjdk@17` |
 
 ## Key Files
 
 | File | Purpose |
 |------|---------|
-| `orchestrator.sh` | Automated task processing (daemon mode) |
-| `specs/wic-benefits-app/tasks.md` | Master task list with status |
-| `.orchestrator-logs/STATUS.md` | Quick status check |
-| `src/` | Implementation code |
+| `ROADMAP.md` | Single source of truth for status/priorities |
+| `.claude/SESSION_STATE.md` | Current work state for session handoffs |
+| `.claude/DECISIONS.md` | Why things were built a certain way |
+| `.claude/MEMORY.md` | This file — persistent context |
+| `app/lib/services/locationService.ts` | Centralized GPS + zip location |
+| `app/lib/services/api.ts` | All backend API calls |
+| `app/lib/i18n/translations/en.json` | English translations |
+| `app/lib/i18n/translations/es.json` | Spanish translations |
+| `backend/src/index.ts` | Express app entry point + route registration |
 
 ## GitHub
 Repository: https://github.com/MrMosesMichael/wic-benefits-app
 
 ## Session Workflow
 1. Start fresh Claude Code session
-2. Say "resume" - I'll read STATUS.md and continue
-3. When token limit approaches, tell me to "save state and close"
-4. I'll update STATUS.md and you can end session
-5. Orchestrator can run independently between sessions
+2. Read `ROADMAP.md` for status, `SESSION_STATE.md` for current work
+3. Check `.claude/DECISIONS.md` before re-investigating past decisions
+4. When session ends: update `SESSION_STATE.md`, commit work, note next steps

@@ -12,10 +12,11 @@ import {
   Platform,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import * as Location from 'expo-location';
 import { crossStoreSearch, getFormulaBrands, getWicFormulas } from '@/lib/services/api';
 import CrossStoreSearchResults from '@/components/CrossStoreSearchResults';
 import FormulaSightingModal from '@/components/FormulaSightingModal';
+import LocationPrompt from '@/components/LocationPrompt';
+import { useLocation } from '@/lib/hooks/useLocation';
 import type { CrossStoreResult, CrossStoreSearchRequest, WicFormula, FormulaBrand, FormulaType } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 
@@ -41,10 +42,9 @@ export default function CrossStoreSearchScreen() {
     autoSearch?: string;
   }>();
 
-  // Location state
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [locationError, setLocationError] = useState<string | null>(null);
-  const [loadingLocation, setLoadingLocation] = useState(true);
+  // Location from centralized hook
+  const { location: userLocation, loading: loadingLocation, error: locationError, refresh: refreshLocation, setZipCode } = useLocation();
+  const location = userLocation ? { lat: userLocation.lat, lng: userLocation.lng } : null;
 
   // Search state
   const [searchMode, setSearchMode] = useState<SearchMode>('text');
@@ -82,35 +82,7 @@ export default function CrossStoreSearchScreen() {
   }, [location, params.autoSearch]);
 
   const initializeScreen = async () => {
-    await Promise.all([
-      requestLocation(),
-      loadBrands(),
-    ]);
-  };
-
-  const requestLocation = async () => {
-    try {
-      setLoadingLocation(true);
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setLocationError(t('crossStoreSearch.locationError'));
-        return;
-      }
-
-      const loc = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-      });
-      setLocation({
-        lat: loc.coords.latitude,
-        lng: loc.coords.longitude,
-      });
-      setLocationError(null);
-    } catch (error) {
-      console.error('Failed to get location:', error);
-      setLocationError(t('crossStoreSearch.locationErrorRetry'));
-    } finally {
-      setLoadingLocation(false);
-    }
+    await loadBrands();
   };
 
   const loadBrands = async () => {
@@ -300,14 +272,14 @@ export default function CrossStoreSearchScreen() {
         <Text style={styles.subtitle}>{t('crossStoreSearch.subtitle')}</Text>
       </View>
 
-      {/* Location Status */}
-      {locationError && (
-        <View style={styles.locationError}>
-          <Text style={styles.locationErrorText}>{locationError}</Text>
-          <TouchableOpacity onPress={requestLocation}>
-            <Text style={styles.retryLink}>{t('crossStoreSearch.retry')}</Text>
-          </TouchableOpacity>
-        </View>
+      {/* Location Prompt */}
+      {!location && !loadingLocation && (
+        <LocationPrompt
+          onGPS={refreshLocation}
+          onZipCode={setZipCode}
+          loading={loadingLocation}
+          error={locationError}
+        />
       )}
 
       {/* Search Section */}

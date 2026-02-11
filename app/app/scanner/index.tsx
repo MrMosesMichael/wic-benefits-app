@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { checkEligibility } from '@/lib/services/api';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { useLocation } from '@/lib/hooks/useLocation';
 
 type ScanMode = 'check' | 'shopping';
 
@@ -15,6 +16,8 @@ export default function Scanner() {
   const [scanning, setScanning] = useState(false);
   const [lastScannedCode, setLastScannedCode] = useState<string | null>(null);
   const [scanMode, setScanMode] = useState<ScanMode>('check');
+  const { location } = useLocation();
+  const detectedState = location?.state;
 
   useEffect(() => {
     // Reset scanning state when component mounts
@@ -34,7 +37,7 @@ export default function Scanner() {
 
     try {
       console.log('Scanned UPC:', data);
-      const result = await checkEligibility(data);
+      const result = await checkEligibility(data, detectedState);
 
       // Navigate to result screen with data (replace instead of push to avoid stacking)
       router.replace({

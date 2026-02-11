@@ -11,8 +11,9 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import * as Location from 'expo-location';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { useLocation } from '@/lib/hooks/useLocation';
+import LocationPrompt from '@/components/LocationPrompt';
 
 // API base URL - would come from config
 const API_BASE = __DEV__
@@ -56,67 +57,29 @@ const SERVICE_ICONS: Record<string, string> = {
   formula: '🍼',
 };
 
-const SERVICE_LABELS: Record<string, string> = {
-  groceries: 'Groceries',
-  produce: 'Fresh Produce',
-  meat: 'Meat',
-  dairy: 'Dairy',
-  hot_meals: 'Hot Meals',
-  baby_supplies: 'Baby Supplies',
-  diapers: 'Diapers',
-  formula: 'Infant Formula',
-};
+const SERVICE_KEYS = ['groceries', 'produce', 'meat', 'dairy', 'hot_meals', 'baby_supplies', 'diapers', 'formula'];
 
 export default function FoodBankFinderScreen() {
   const router = useRouter();
   const t = useTranslation();
 
-  const [loading, setLoading] = useState(true);
+  const { location: userLocation, loading: locationLoading, error: locationError, refresh: refreshLocation, setZipCode } = useLocation();
+  const location = userLocation ? { lat: userLocation.lat, lng: userLocation.lng } : null;
+
+  const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [foodBanks, setFoodBanks] = useState<FoodBank[]>([]);
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [locationError, setLocationError] = useState<string | null>(null);
   const [searchRadius, setSearchRadius] = useState(25);
   const [showOpenOnly, setShowOpenOnly] = useState(false);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
+  // Search when location becomes available
   useEffect(() => {
-    initializeScreen();
-  }, []);
-
-  const initializeScreen = async () => {
-    await requestLocation();
-  };
-
-  const requestLocation = async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setLocationError(t('foodBanks.locationPermissionDenied'));
-        setLoading(false);
-        return;
-      }
-
-      const loc = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-      });
-
-      const coords = {
-        lat: loc.coords.latitude,
-        lng: loc.coords.longitude,
-      };
-      setLocation(coords);
-      setLocationError(null);
-
-      // Search with location
-      await searchFoodBanks(coords);
-    } catch (error) {
-      console.error('Failed to get location:', error);
-      setLocationError(t('foodBanks.locationError'));
-      setLoading(false);
+    if (location) {
+      searchFoodBanks(location);
     }
-  };
+  }, [location?.lat, location?.lng]);
 
   const searchFoodBanks = async (coords: { lat: number; lng: number }) => {
     try {
@@ -242,7 +205,7 @@ export default function FoodBankFinderScreen() {
                     searchRadius === radius && styles.radiusButtonTextActive,
                   ]}
                 >
-                  {radius} mi
+                  {radius} {t('units.mi')}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -285,7 +248,7 @@ export default function FoodBankFinderScreen() {
                     selectedServices.includes(service) && styles.serviceChipTextActive,
                   ]}
                 >
-                  {SERVICE_LABELS[service]}
+                  {t(`services.${service}`)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -304,15 +267,14 @@ export default function FoodBankFinderScreen() {
           </View>
         )}
 
-        {/* Location Error */}
-        {locationError && !loading && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorIcon}>📍</Text>
-            <Text style={styles.errorText}>{locationError}</Text>
-            <TouchableOpacity style={styles.retryButton} onPress={requestLocation}>
-              <Text style={styles.retryButtonText}>{t('common.tryAgain')}</Text>
-            </TouchableOpacity>
-          </View>
+        {/* Location Prompt */}
+        {!location && !locationLoading && (
+          <LocationPrompt
+            onGPS={refreshLocation}
+            onZipCode={setZipCode}
+            loading={locationLoading}
+            error={locationError}
+          />
         )}
 
         {/* Results */}
@@ -372,7 +334,7 @@ export default function FoodBankFinderScreen() {
                       <View key={service} style={styles.serviceBadge}>
                         <Text style={styles.serviceBadgeIcon}>{SERVICE_ICONS[service] || '📦'}</Text>
                         <Text style={styles.serviceBadgeText}>
-                          {SERVICE_LABELS[service] || service}
+                          {t(`services.${service}`)}
                         </Text>
                       </View>
                     ))}

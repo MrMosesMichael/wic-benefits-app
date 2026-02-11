@@ -1,7 +1,7 @@
 # WIC Benefits App — Roadmap
 
-> **Last Updated:** February 10, 2026
-> **Current Phase:** Phase 1 Complete + Phase 2 In Progress
+> **Last Updated:** February 11, 2026
+> **Current Phase:** Phase 1 Complete + Phase 2 Complete + Phase 7 In Progress
 > **Production:** https://mdmichael.com/wic/
 
 ---
@@ -11,12 +11,12 @@
 | Phase | Status | Completion |
 |-------|--------|------------|
 | **Phase 1: Foundation** | ✅ Complete | 100% |
-| **Phase 2: Store Intelligence** | 🔄 In Progress | 80% |
+| **Phase 2: Store Intelligence** | ✅ Complete | 100% |
 | **Phase 3: Discovery** | ⏳ Not Started | 0% |
 | **Phase 4: Community** | ⏳ Not Started | 0% |
 | **Phase 5: Manual Entry** | ✅ Complete | 100% |
 | **Phase 6: eWIC Integration** | 🚫 Blocked | 0% |
-| **Phase 7: Polish & Launch** | ⏳ Not Started | 0% |
+| **Phase 7: Polish & Launch** | 🔄 In Progress | 45% |
 
 ---
 
@@ -33,9 +33,12 @@
 ✅ **Food Bank Finder** — Location-based search with filters
 ✅ **Data Sovereignty** — Data export, account deletion, privacy policy
 ✅ **Help & FAQ System** — Size/formula/checkout guides with harm prevention focus
+✅ **GPS State Detection** — Centralized location system with zip code fallback, 33K zip codes seeded
+✅ **Support & Feedback** — In-app feedback, web form, GitHub Issues integration
+✅ **Landing Pages** — Landing page, support form, privacy policy at mdmichael.com/wic/
 ✅ **Production Backend** — Deployed at https://mdmichael.com/wic/
 ✅ **Android APK** — Production build ready for sideloading
-✅ **Apple Developer License** — Acquired, iOS build ready to start  
+✅ **iOS Build** — Submitted to TestFlight, awaiting review (build-1770760890868.ipa)
 
 ---
 
@@ -77,7 +80,9 @@ Core functionality for scanning, benefits, and formula support.
 | **D** | UPC Scanner | ✅ Done | All formats |
 | **E** | Shopping Cart | ✅ Done | Multi-participant |
 | **F** | Help & FAQ | ✅ Done | Size/formula/checkout guides |
-| **G** | Spanish Support | ⚠️ Partial | i18n framework + translations in progress |
+| **G** | Spanish Support | ⚠️ Partial | i18n framework done, most screens translated, needs native speaker review |
+| **G2** | GPS State Detection | ✅ Done | Centralized location system, zip code fallback, 33K zip codes |
+| **G3** | Support & Feedback | ✅ Done | In-app + web form + GitHub Issues, i18n complete |
 
 ### Phase 2: Store Intelligence (80% Complete)
 
@@ -131,16 +136,16 @@ Live balance from eWIC card — requires state partnership.
 | **S2** | Live Balance Sync | 🚫 Blocked | |
 | **S3** | Transaction History | 🚫 Blocked | |
 
-### Phase 7: Polish & Launch (Not Started)
+### Phase 7: Polish & Launch (In Progress)
 
 Accessibility, testing, app store submission.
 
 | Track | Feature | Status |
 |-------|---------|--------|
 | **T** | Accessibility (VoiceOver, TalkBack) | ❌ |
-| **U** | Additional Languages | ❌ |
-| **V** | Beta Testing | ❌ |
-| **V** | App Store Submission | ❌ |
+| **U** | Additional Languages | ⚠️ Partial (Spanish i18n in progress) |
+| **V** | Beta Testing | 🔄 In Progress (iOS TestFlight submitted) |
+| **V** | App Store Submission | 🔄 In Progress (assets needed - see [iOS Release Checklist](#ios-app-store-release-checklist)) |
 
 ---
 
@@ -161,11 +166,12 @@ Based on impact, effort, and what's unblocked:
 
 ### 📅 Short Term (Next 2-4 Weeks)
 
-1. **iOS App Store Submission**
-   - Apple Developer License acquired
-   - Build iOS version via EAS
-   - TestFlight beta testing
-   - App Store submission
+1. **iOS App Store Submission** 🚧 IN PROGRESS
+   - ✅ Apple Developer License acquired
+   - ✅ Build iOS version via EAS (`build-1770760890868.ipa`)
+   - ✅ Submitted to App Store Connect
+   - 🔄 TestFlight beta testing (awaiting review)
+   - ⏳ App Store submission preparation (see [iOS Release Checklist](#ios-app-store-release-checklist))
    - *Effort: 1-2 weeks* | *Impact: High (50%+ of users)*
 
 2. **Complete Spanish Language Support (Group G)**
@@ -198,6 +204,147 @@ Based on impact, effort, and what's unblocked:
    - TestFlight / Play Store beta
    - User feedback collection
    - App store assets and metadata
+
+---
+
+## iOS App Store Release Checklist
+
+**Current Status:** TestFlight submission complete, awaiting review
+**Target:** Production App Store release
+
+### Required Assets
+
+| Asset | Status | Notes |
+|-------|--------|-------|
+| **App Screenshots** | ⏳ Todo | Required sizes: 6.7", 6.5", 5.5" iPhones |
+| **App Icon** | ✅ Done | 1024×1024px at `app/assets/icon.png` |
+| **App Description** | ⏳ Todo | Max 4,000 characters |
+| **Keywords** | ⏳ Todo | Max 100 characters, comma-separated |
+| **Promotional Text** | ⏳ Todo | 170 characters (updateable without review) |
+| **Support URL** | ✅ Done | https://mdmichael.com/wic/support.html |
+| **Privacy Policy URL** | ✅ Done | https://mdmichael.com/wic/privacy.html |
+| **App Preview Video** | ❌ Optional | 15-30 seconds (optional but recommended) |
+
+### Screenshot Requirements
+
+Apple requires screenshots for multiple device sizes:
+
+- **6.7" Display (iPhone 15 Pro Max)** — 1 required, up to 10 total
+- **6.5" Display (iPhone 14 Plus)** — Optional but recommended
+- **5.5" Display (iPhone 8 Plus)** — Fallback for older devices
+
+**Recommended shots:**
+1. Barcode scanner in action
+2. Benefits overview with shopping cart
+3. Formula search results
+4. Store detection / food bank finder
+5. Help & FAQ screen
+
+**Tools:**
+- iOS Simulator (Xcode)
+- Expo Go on physical device + screenshots
+- Design tool mockups (Figma, Sketch)
+
+### App Metadata
+
+**App Name:** WIC Benefits (25 characters max, consider "WIC Benefits Assistant")
+
+**Subtitle:** (30 characters max)
+- Option 1: "Scan, shop, and track benefits"
+- Option 2: "Never waste WIC benefits again"
+- Option 3: "Your WIC shopping assistant"
+
+**Keywords (100 chars max):**
+```
+WIC,benefits,food,nutrition,formula,barcode,scanner,grocery,SNAP,EBT,babies,children,health
+```
+
+**Description (4,000 chars max):** ⏳ Draft needed
+
+**Promotional Text (170 chars):**
+```
+Find formula during shortages. Know what's WIC-approved before checkout. Track your benefits across participants. Shop with confidence.
+```
+
+### Support & Feedback System ✅ IMPLEMENTED
+
+All three channels are live:
+
+1. **GitHub Issues** ✅
+   - Backend route creates issues via GitHub API (`GITHUB_TOKEN` + `GITHUB_FEEDBACK_REPO` env vars)
+   - Auto-labels by category (bug, feature, question)
+
+2. **Web Form** ✅
+   - URL: `https://mdmichael.com/wic/support.html`
+   - Posts to `/api/v1/feedback` endpoint
+
+3. **In-App Feedback** ✅
+   - Accessible from Help screen
+   - Includes device info (platform, OS version, app version)
+   - Full i18n support (English + Spanish)
+
+### Privacy & Compliance
+
+- ✅ Privacy Policy published: https://mdmichael.com/wic/privacy.html
+- ✅ No third-party analytics/tracking (confirmed — no IDFA, no cookies, no pixel trackers)
+- ✅ Encryption: `ITSAppUsesNonExemptEncryption: false` set in app.json
+
+### App Review Preparation
+
+**Common Rejection Reasons:**
+1. ❌ Missing functionality (app crashes, broken features)
+2. ❌ Misleading metadata (screenshots don't match app)
+3. ❌ Privacy issues (undeclared data collection)
+4. ❌ Incomplete information (broken support URL)
+
+**Pre-submission Checklist:**
+- [ ] Test all core features on physical device
+- [ ] Verify barcode scanner works (camera permission granted)
+- [ ] Test location services (food bank finder)
+- [ ] Confirm no crashes or critical bugs
+- [x] Support URL is live and working
+- [ ] Screenshots accurately represent current app
+- [x] Privacy policy reflects actual data practices
+
+**Review Timeline:**
+- TestFlight internal: Usually 1-24 hours
+- App Store review: 24-48 hours average
+- Rejections: Can resubmit immediately after fixes
+
+### Release Strategy
+
+**Phase 1: TestFlight Beta** 🔄 Current
+- Internal testing (you + up to 100 App Store Connect users)
+- Fix critical bugs
+- Gather initial feedback
+
+**Phase 2: External TestFlight** ⏳ Next
+- Up to 10,000 external testers
+- Requires Apple review per build
+- Useful for broader testing before public release
+- **Action items:**
+  1. In App Store Connect → TestFlight → External Testing, create a group (e.g., "Beta Testers")
+  2. Add the build to the external group — this triggers an Apple review (typically 24-48 hours)
+  3. Once approved, enable the public link (TestFlight → External Testing → group → Enable Public Link)
+  4. Copy the public link and update `deployment/wic-landing/index.html` — replace the placeholder TestFlight URL with the real one
+  5. Optionally add a "What to Test" description for testers
+
+**Phase 3: App Store Release**
+- Submit for review
+- Release options: Manual, automatic, scheduled
+- Monitor reviews and crash reports
+
+### Tracking & Monitoring
+
+**Built-in Tools (Free):**
+- App Store Connect Analytics (installs, sessions, retention)
+- TestFlight feedback
+- Crash reports (automatic from iOS)
+
+**Future Considerations:**
+- Sentry (crash reporting)
+- PostHog (privacy-friendly analytics)
+- Firebase (if needed, but avoid for privacy)
 
 ---
 
@@ -308,4 +455,4 @@ See `docs/guides/` for consolidated, actionable implementation patterns.
 
 ---
 
-*Last human review: February 2, 2026*
+*Last human review: February 11, 2026*

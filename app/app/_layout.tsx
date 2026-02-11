@@ -76,11 +76,14 @@ function Navigation() {
       <Stack.Screen name="formula/index" options={{ title: t('nav.formula') }} />
       <Stack.Screen name="formula/cross-store-search" options={{ title: t('nav.crossStoreSearch') }} />
       <Stack.Screen name="formula/select" options={{ title: t('nav.selectFormula') }} />
+      <Stack.Screen name="formula/alternatives" options={{ title: 'Formula Alternatives' }} />
       <Stack.Screen name="formula/report" options={{ title: t('nav.reportFormula') }} />
       <Stack.Screen name="formula/alerts" options={{ title: t('nav.formulaAlerts') }} />
       <Stack.Screen name="foodbanks/index" options={{ title: t('nav.foodBanks') }} />
       <Stack.Screen name="settings/privacy" options={{ title: t('nav.privacy') }} />
+      <Stack.Screen name="settings/location" options={{ title: 'Location' }} />
       <Stack.Screen name="help/index" options={{ title: t('nav.help') }} />
+      <Stack.Screen name="feedback/index" options={{ title: t('nav.feedback') }} />
     </Stack>
   );
 }

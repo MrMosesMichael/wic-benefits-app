@@ -22,62 +22,58 @@ import {
   getFAQById,
 } from '@/lib/services/faqService';
 import type { FAQCategory } from '@/lib/types/faq';
+import { useI18n } from '@/lib/i18n/I18nContext';
 
 export default function HelpScreen() {
   const router = useRouter();
+  const { t } = useI18n();
   const { faqId } = useLocalSearchParams<{ faqId?: string }>();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<FAQCategory | 'all'>('all');
   const [expandedFaqId, setExpandedFaqId] = useState<string | null>(null);
-  
+
   // Handle deep linking to specific FAQ
   useEffect(() => {
     if (faqId) {
       const faq = getFAQById(faqId);
       if (faq) {
-        // Set the category to show the FAQ and mark it for expansion
         setSelectedCategory(faq.category);
         setExpandedFaqId(faqId);
         setSearchQuery('');
       }
     }
   }, [faqId]);
-  
+
   const categories = useMemo(() => getCategoriesWithCounts(), []);
-  
+
   const displayedFAQs = useMemo(() => {
-    // If searching, use search results
     if (searchQuery.trim()) {
       return searchFAQs(searchQuery).map((r) => r.item);
     }
-    
-    // If category selected, filter by category
     if (selectedCategory !== 'all') {
       return getFAQsByCategory(selectedCategory);
     }
-    
-    // Otherwise show all
     return getAllFAQs();
   }, [searchQuery, selectedCategory]);
-  
+
   const handleCategoryPress = (category: FAQCategory | 'all') => {
     setSelectedCategory(category);
-    setSearchQuery(''); // Clear search when switching categories
+    setSearchQuery('');
   };
-  
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Help & FAQ</Text>
-        <Text style={styles.subtitle}>Find answers to common questions</Text>
+        <Text style={styles.title}>{t('help.title')}</Text>
+        <Text style={styles.subtitle}>{t('help.subtitle')}</Text>
       </View>
-      
+
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
-          placeholder="Search FAQs..."
+          placeholder={t('help.searchPlaceholder')}
           placeholderTextColor="#999"
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -93,7 +89,7 @@ export default function HelpScreen() {
           </TouchableOpacity>
         )}
       </View>
-      
+
       {/* Category Filter */}
       {!searchQuery && (
         <ScrollView
@@ -115,10 +111,10 @@ export default function HelpScreen() {
                 selectedCategory === 'all' && styles.categoryChipTextSelected,
               ]}
             >
-              All
+              {t('help.allCategories')}
             </Text>
           </TouchableOpacity>
-          
+
           {categories.map((cat) => (
             <TouchableOpacity
               key={cat.id}
@@ -141,7 +137,7 @@ export default function HelpScreen() {
           ))}
         </ScrollView>
       )}
-      
+
       {/* FAQ List */}
       <ScrollView
         style={styles.scrollView}
@@ -150,33 +146,48 @@ export default function HelpScreen() {
         {searchQuery ? (
           <View style={styles.searchResultsHeader}>
             <Text style={styles.searchResultsText}>
-              {displayedFAQs.length} result{displayedFAQs.length !== 1 ? 's' : ''} for "{searchQuery}"
+              {t('help.resultsFor', { count: displayedFAQs.length, query: searchQuery })}
             </Text>
           </View>
         ) : null}
-        
+
         <FAQList
           items={displayedFAQs}
           showCategories={selectedCategory === 'all' || !!searchQuery}
           emptyMessage={
             searchQuery
-              ? 'No FAQs match your search. Try different keywords.'
-              : 'No FAQs available in this category.'
+              ? t('help.noSearchResults')
+              : t('help.noFaqsInCategory')
           }
           initialExpandedId={expandedFaqId}
         />
-        
+
         {/* Contact Support */}
         <View style={styles.contactSection}>
-          <Text style={styles.contactTitle}>Still need help?</Text>
+          <Text style={styles.contactTitle}>{t('help.stillNeedHelp')}</Text>
           <Text style={styles.contactText}>
-            Contact your local WIC office for questions about your specific benefits or eligibility.
+            {t('help.contactLocalWic')}
           </Text>
           <View style={styles.contactInfo}>
             <Text style={styles.contactLabel}>Michigan WIC:</Text>
             <Text style={styles.contactValue}>1-800-26-BIRTH (1-800-262-4784)</Text>
           </View>
         </View>
+
+        {/* Send Feedback */}
+        <TouchableOpacity
+          style={styles.privacyLink}
+          onPress={() => router.push('/feedback')}
+        >
+          <Text style={styles.privacyLinkIcon}>✉</Text>
+          <View style={styles.privacyLinkContent}>
+            <Text style={styles.privacyLinkTitle}>{t('help.sendFeedback')}</Text>
+            <Text style={styles.privacyLinkText}>
+              {t('help.sendFeedbackDesc')}
+            </Text>
+          </View>
+          <Text style={styles.privacyLinkArrow}>→</Text>
+        </TouchableOpacity>
 
         {/* Privacy & Data */}
         <TouchableOpacity
@@ -185,22 +196,22 @@ export default function HelpScreen() {
         >
           <Text style={styles.privacyLinkIcon}>🔒</Text>
           <View style={styles.privacyLinkContent}>
-            <Text style={styles.privacyLinkTitle}>Privacy & Data</Text>
+            <Text style={styles.privacyLinkTitle}>{t('help.privacyData')}</Text>
             <Text style={styles.privacyLinkText}>
-              Export or delete your data, view privacy policy
+              {t('help.privacyDataDesc')}
             </Text>
           </View>
           <Text style={styles.privacyLinkArrow}>→</Text>
         </TouchableOpacity>
       </ScrollView>
-      
+
       {/* Back Button */}
       <View style={styles.footer}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
         >
-          <Text style={styles.backButtonText}>Back to Home</Text>
+          <Text style={styles.backButtonText}>{t('help.backToHome')}</Text>
         </TouchableOpacity>
       </View>
     </View>

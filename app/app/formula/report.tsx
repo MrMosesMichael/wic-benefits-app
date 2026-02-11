@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import * as Location from 'expo-location';
 import { getFormulaByUpc, getNearbyStores, reportFormulaSimple } from '@/lib/services/api';
 import QuantitySelector from '@/components/QuantitySelector';
+import { useLocation } from '@/lib/hooks/useLocation';
 import type { WicFormula, Store, QuantitySeen } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 
@@ -22,14 +22,19 @@ export default function FormulaReport() {
   const [quantity, setQuantity] = useState<QuantitySeen | null>(null);
   const [nearbyStores, setNearbyStores] = useState<Store[]>([]);
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // Get location on mount
+  // Centralized location
+  const { location: userLocation } = useLocation();
+  const location = userLocation ? { lat: userLocation.lat, lng: userLocation.lng } : null;
+
+  // Load nearby stores when location is available
   useEffect(() => {
-    getLocation();
-  }, []);
+    if (location) {
+      loadNearbyStores(location.lat, location.lng);
+    }
+  }, [location?.lat, location?.lng]);
 
   // If UPC provided via params, skip to confirm step
   useEffect(() => {
@@ -38,19 +43,6 @@ export default function FormulaReport() {
       lookupFormula(params.upc);
     }
   }, [params.upc]);
-
-  const getLocation = async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === 'granted') {
-        const loc = await Location.getCurrentPositionAsync({});
-        setLocation({ lat: loc.coords.latitude, lng: loc.coords.longitude });
-        loadNearbyStores(loc.coords.latitude, loc.coords.longitude);
-      }
-    } catch (error) {
-      console.error('Failed to get location:', error);
-    }
-  };
 
   const loadNearbyStores = async (lat: number, lng: number) => {
     try {

@@ -171,7 +171,7 @@ export default function ScanResult() {
 
       {/* Product Details */}
       <View style={styles.detailsCard}>
-        <Text style={styles.productName}>{name}</Text>
+        <Text style={styles.productName}>{name === 'Unknown Product' ? t('formulaReport.unknownProduct') : name}</Text>
         {brand && <Text style={styles.productBrand}>{brand}</Text>}
         <Text style={styles.upcLabel}>{t('result.upc')}: {upc}</Text>
 

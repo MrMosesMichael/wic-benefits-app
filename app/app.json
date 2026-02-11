@@ -30,7 +30,8 @@
           "locationAlwaysAndWhenInUsePermission": "We need location access to find nearby stores with formula.",
           "locationWhenInUsePermission": "We need location access to find nearby stores with formula."
         }
-      ]
+      ],
+      "expo-router"
     ],
     "splash": {
       "image": "./assets/splash-icon.png",

@@ -106,7 +106,7 @@
 
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 24px;
             margin-bottom: 40px;
         }
@@ -262,12 +262,12 @@
                 <a href="/wic/downloads/wic-benefits.apk" class="btn btn-primary" download>
                     📱 Download for Android
                 </a>
-                <a href="#" class="btn btn-secondary btn-disabled" title="Coming soon!">
-                    🍎 iOS (Coming Soon)
+                <a href="https://testflight.apple.com/join/wicbenefits" class="btn btn-secondary">
+                    🍎 iOS (TestFlight Beta)
                 </a>
             </div>
             <p style="margin-top: 16px; color: #718096; font-size: 0.9em;">
-                Android 6.0+ required • 95MB download
+                Android 6.0+ • iOS 15+ (TestFlight)
             </p>
         </div>
 
@@ -281,7 +281,7 @@
             <div class="feature-card">
                 <div class="feature-icon">🍼</div>
                 <h3>Formula Finder</h3>
-                <p>Find WIC-approved formula across stores during shortages. Get restock notifications.</p>
+                <p>Search for formula across stores during shortages. Get restock alerts and find alternatives.</p>
             </div>
 
             <div class="feature-card">
@@ -289,17 +289,25 @@
                 <h3>Benefits Tracking</h3>
                 <p>Track your benefits with visual progress bars. See what's available, in cart, or consumed.</p>
             </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🏠</div>
+                <h3>Food Bank Finder</h3>
+                <p>Find nearby food banks and pantries for supplemental food assistance when you need it.</p>
+            </div>
         </div>
 
         <div class="status" id="status">
             <h2>Current Status</h2>
-            <div class="status-badge">MVP - Field Testing</div>
+            <div class="status-badge">Beta - 4 States</div>
             <ul class="status-list">
-                <li>Offline UPC scanner with 9,940 Michigan WIC products</li>
-                <li>Manual benefits entry and tracking</li>
-                <li>Shopping cart with three-state tracking</li>
-                <li>Standalone Android APK (no internet required)</li>
-                <li>Backend API deployed and operational</li>
+                <li>62,000+ WIC-approved products across MI, NC, NY, and OR</li>
+                <li>Barcode scanner with offline eligibility checking</li>
+                <li>Cross-store formula search with shortage tracking</li>
+                <li>Manual benefits entry and three-state tracking</li>
+                <li>Food bank finder with location search</li>
+                <li>Daily automated product list sync</li>
+                <li>Available on Android and iOS (TestFlight)</li>
             </ul>
         </div>
 
@@ -316,8 +324,12 @@
 
         <div class="footer">
             <p>Built with care for WIC participants.</p>
-            <p style="margin-top: 8px;">
-                <a href="https://github.com/MrMosesMichael/wic-benefits-app">View on GitHub</a>
+            <p style="margin-top: 12px;">
+                <a href="/wic/support.html">Support & Feedback</a>
+                &nbsp;&middot;&nbsp;
+                <a href="/wic/privacy">Privacy Policy</a>
+                &nbsp;&middot;&nbsp;
+                <a href="https://github.com/MrMosesMichael/wic-benefits-app">GitHub</a>
             </p>
         </div>
     </div>
