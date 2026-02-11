@@ -16,7 +16,7 @@
 | **Phase 4: Community** | ⏳ Not Started | 0% |
 | **Phase 5: Manual Entry** | ✅ Complete | 100% |
 | **Phase 6: eWIC Integration** | 🚫 Blocked | 0% |
-| **Phase 7: Polish & Launch** | 🔄 In Progress | 45% |
+| **Phase 7: Polish & Launch** | 🔄 In Progress | 55% |
 
 ---
 
@@ -38,7 +38,8 @@
 ✅ **Landing Pages** — Landing page, support form, privacy policy at mdmichael.com/wic/
 ✅ **Production Backend** — Deployed at https://mdmichael.com/wic/
 ✅ **Android APK** — Production build ready for sideloading
-✅ **iOS Build** — Submitted to TestFlight, awaiting review (build-1770760890868.ipa)
+✅ **UI Polish** — Removed duplicate headers from all 17 screens, SafeAreaProvider for Android nav bar
+✅ **iOS Build** — Submitted to TestFlight, awaiting review
 
 ---
 
@@ -146,6 +147,7 @@ Accessibility, testing, app store submission.
 | **U** | Additional Languages | ⚠️ Partial (Spanish i18n in progress) |
 | **V** | Beta Testing | 🔄 In Progress (iOS TestFlight submitted) |
 | **V** | App Store Submission | 🔄 In Progress (assets needed - see [iOS Release Checklist](#ios-app-store-release-checklist)) |
+| **W** | UI Polish (duplicate headers, SafeArea) | ✅ Done |
 
 ---
 
@@ -169,7 +171,8 @@ Based on impact, effort, and what's unblocked:
 1. **iOS App Store Submission** 🚧 IN PROGRESS
    - ✅ Apple Developer License acquired
    - ✅ Build iOS version via EAS (`build-1770760890868.ipa`)
-   - ✅ Submitted to App Store Connect
+   - ✅ Submitted to App Store Connect (v1.1.0)
+   - ✅ v1.1.1 ready (header fixes, feedback form, privacy email)
    - 🔄 TestFlight beta testing (awaiting review)
    - ⏳ App Store submission preparation (see [iOS Release Checklist](#ios-app-store-release-checklist))
    - *Effort: 1-2 weeks* | *Impact: High (50%+ of users)*
@@ -454,5 +457,7 @@ For detailed implementation context, key archive files include:
 See `docs/guides/` for consolidated, actionable implementation patterns.
 
 ---
+
+**Current Version:** 1.1.1 (iOS buildNumber: 1, Android versionCode: 3)
 
 *Last human review: February 11, 2026*
