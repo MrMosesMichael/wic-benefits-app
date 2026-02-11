@@ -18,6 +18,14 @@
 2. Commit uncommitted work
 3. Note what to do next session
 
+### Before Building / Committing for Release
+- **Bump version in `app/app.json`** if features were added or bugs fixed:
+  - `expo.version` — display version (semver: major.minor.patch)
+  - `expo.ios.buildNumber` — must increment per version for App Store (string, e.g. "1")
+  - `expo.android.versionCode` — must increment globally for Play Store (integer, e.g. 2)
+- Rule of thumb: new features → minor bump, bug fixes → patch bump, breaking changes → major bump
+- `buildNumber` resets to "1" on version bump; `versionCode` never resets (always increases)
+
 ---
 
 ## Project Structure
@@ -48,7 +56,7 @@ wic_project/
 1. **Three-state benefits:** Available (green) → In Cart (amber) → Consumed (gray)
 2. **Hybrid household view:** Unified view with participant filter chips
 3. **Scan modes:** "Check Eligibility" (default) vs "Shopping Mode"
-4. **Priority States:** Michigan (working), NC, FL, OR (planned)
+4. **Supported States:** MI, NC, NY, OR (FL shelved — state has own app)
 
 ---
 
@@ -69,7 +77,6 @@ npx expo start                       # Start Expo dev server
 
 ### Android Build
 ```bash
-export JAVA_HOME=/usr/local/opt/openjdk@17
 cd app
 ./android/gradlew -p android assembleRelease
 # APK: android/app/build/outputs/apk/release/app-release.apk

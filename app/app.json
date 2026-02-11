@@ -4,7 +4,7 @@
     "slug": "wic-benefits-app",
     "owner": "mrmosesmichael",
     "scheme": "wicbenefits",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -40,6 +40,7 @@
     },
     "ios": {
       "supportsTablet": true,
+      "buildNumber": "1",
       "bundleIdentifier": "com.wicbenefits.app",
       "infoPlist": {
         "NSCameraUsageDescription": "We need camera access to scan product barcodes",
@@ -48,6 +49,7 @@
       }
     },
     "android": {
+      "versionCode": 2,
       "package": "com.wicbenefits.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
