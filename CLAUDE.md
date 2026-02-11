@@ -77,9 +77,11 @@ npx expo start                       # Start Expo dev server
 
 ### Android Build
 ```bash
+export JAVA_HOME=/usr/local/opt/openjdk@17   # Required unless set in ~/.zshrc
 cd app
 ./android/gradlew -p android assembleRelease
 # APK: android/app/build/outputs/apk/release/app-release.apk
+# AAB (for Play Store): npx eas-cli build --platform android --profile production --local
 ```
 
 ### Production (VPS: tatertot.work)
