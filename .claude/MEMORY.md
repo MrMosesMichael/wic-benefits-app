@@ -30,6 +30,11 @@ WIC Benefits Assistant — Mobile app helping WIC participants scan products, tr
 - **API calls**: `app/lib/services/api.ts` — all backend calls go through this
 - **Eligibility**: `checkEligibility(upc, state?)` — state param optional, defaults to MI on backend
 
+## Contact Email
+
+- **Current:** `wic.benefits.app@gmail.com` (Gmail, used in privacy policy and support)
+- **Future:** Migrate to Google Workspace with a dedicated domain (e.g. `privacy@wicbenefits.app`)
+
 ## VPS (tatertot.work)
 
 - SSH user: `mmichael`, files owned by `dmichael` (sudo needed for some ops)

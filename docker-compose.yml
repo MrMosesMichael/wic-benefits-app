@@ -31,6 +31,8 @@ services:
       PORT: 3000
       DATABASE_URL: postgresql://${POSTGRES_USER:-wic_admin}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-wic_benefits}?sslmode=disable
       CORS_ORIGIN: https://mdmichael.com,https://www.mdmichael.com
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      GITHUB_FEEDBACK_REPO: ${GITHUB_FEEDBACK_REPO}
     depends_on:
       postgres:
         condition: service_healthy
