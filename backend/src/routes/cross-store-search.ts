@@ -219,15 +219,68 @@ router.post('/', async (req: Request, res: Response) => {
       });
     }
 
-    // Step 3.5: Enrich Kroger-family stores with live API data
+    // Step 3.5: Dynamic Kroger store discovery + live inventory enrichment
     if (krogerIntegration) {
       const krogerChains = ['kroger', 'harris-teeter', 'fred-meyer', 'qfc'];
-      const krogerStores = storesResult.rows.filter(
+      let krogerStores = storesResult.rows.filter(
         (s: any) => krogerChains.includes(s.chain?.toLowerCase())
       );
 
+      // If no Kroger stores in results, try dynamic discovery
+      if (krogerStores.length === 0) {
+        try {
+          // Reverse-lookup nearest zip from user coordinates
+          const zipResult = await pool.query(
+            `SELECT zip FROM zip_codes
+             ORDER BY (lat - $1)*(lat - $1) + (lng - $2)*(lng - $2)
+             LIMIT 1`,
+            [lat, lng]
+          );
+
+          if (zipResult.rows.length > 0) {
+            const nearestZip = zipResult.rows[0].zip;
+            const newStores = await krogerIntegration.discoverStoresNear(nearestZip, radiusMiles);
+
+            if (newStores > 0) {
+              // Re-query to pick up newly inserted Kroger stores
+              const newStoresResult = await pool.query(
+                `SELECT
+                  id, store_id, chain, name, street_address, city, state, zip,
+                  latitude, longitude, phone, wic_authorized,
+                  3959 * acos(
+                    cos(radians($1)) * cos(radians(latitude)) *
+                    cos(radians(longitude) - radians($2)) +
+                    sin(radians($1)) * sin(radians(latitude))
+                  ) as distance_miles
+                FROM stores
+                WHERE active = TRUE
+                  AND store_id LIKE 'kroger-%'
+                  AND 3959 * acos(
+                    cos(radians($1)) * cos(radians(latitude)) *
+                    cos(radians(longitude) - radians($2)) +
+                    sin(radians($1)) * sin(radians(latitude))
+                  ) <= $3
+                ORDER BY distance_miles ASC
+                LIMIT 20`,
+                [lat, lng, radiusMiles]
+              );
+
+              // Append to main results
+              for (const row of newStoresResult.rows) {
+                if (!storesResult.rows.find((s: any) => s.store_id === row.store_id)) {
+                  storesResult.rows.push(row);
+                }
+              }
+              krogerStores = newStoresResult.rows;
+            }
+          }
+        } catch {
+          // Discovery failed — continue without Kroger stores
+        }
+      }
+
+      // Enrich Kroger stores with live product availability
       if (krogerStores.length > 0) {
-        // Limit to first 10 Kroger stores to stay within rate limits
         const storesToEnrich = krogerStores.slice(0, 10);
 
         for (const store of storesToEnrich) {
@@ -240,7 +293,6 @@ router.post('/', async (req: Request, res: Response) => {
               );
 
               if (apiResult && apiResult.status !== 'unknown') {
-                // Add/merge API data into the availability map
                 const storeNameKey = store.name.toLowerCase().trim();
                 if (!availabilityByStore.has(storeNameKey)) {
                   availabilityByStore.set(storeNameKey, []);

@@ -66,6 +66,11 @@ interface KrogerProduct {
 const availabilityCache = new Map<string, { data: InventoryData; expiry: number }>();
 const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
 
+// Zip-level cache to avoid re-querying the locations API for known areas
+// Key: 5-digit zip prefix, Value: expiry timestamp
+const discoveredZips = new Map<string, number>();
+const ZIP_CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
 export class KrogerIntegration {
   private config: KrogerConfig;
   private baseUrl = 'https://api.kroger.com';
@@ -380,6 +385,78 @@ export class KrogerIntegration {
     if (chain.includes('fred') || chain.includes('meyer')) return 'fred-meyer';
     if (chain.includes('qfc')) return 'qfc';
     return 'kroger';
+  }
+
+  /**
+   * Discover and persist Kroger stores near a zip code on demand.
+   * Skips if we've already discovered stores for this zip within 24h.
+   * Returns the number of newly inserted stores.
+   */
+  async discoverStoresNear(zip: string, radiusMiles: number = 25): Promise<number> {
+    // Check zip-level cache — skip if we've queried this area recently
+    const zipPrefix = zip.substring(0, 5);
+    const cached = discoveredZips.get(zipPrefix);
+    if (cached && Date.now() < cached) {
+      return 0;
+    }
+
+    // Also check DB — if we already have Kroger stores in this zip, mark as discovered
+    const existingResult = await pool.query(
+      `SELECT COUNT(*) as count FROM stores
+       WHERE store_id LIKE 'kroger-%' AND zip = $1 AND active = TRUE`,
+      [zipPrefix]
+    );
+    if (parseInt(existingResult.rows[0].count) > 0) {
+      discoveredZips.set(zipPrefix, Date.now() + ZIP_CACHE_TTL_MS);
+      return 0;
+    }
+
+    let totalInserted = 0;
+
+    try {
+      const locations = await this.searchStores(zip, radiusMiles, undefined, 20);
+
+      for (const loc of locations) {
+        const storeId = `kroger-${loc.locationId}`;
+        const chainName = KrogerIntegration.mapChainName(loc.chain);
+
+        try {
+          const result = await pool.query(
+            `INSERT INTO stores
+             (store_id, chain, name, street_address, city, state, zip, latitude, longitude, phone, wic_authorized, active)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, TRUE, TRUE)
+             ON CONFLICT (store_id) DO NOTHING
+             RETURNING store_id`,
+            [
+              storeId,
+              chainName,
+              loc.name,
+              loc.address.addressLine1,
+              loc.address.city,
+              loc.address.state,
+              loc.address.zipCode,
+              loc.geolocation.latitude,
+              loc.geolocation.longitude,
+              loc.phone,
+            ]
+          );
+          if (result.rows.length > 0) {
+            totalInserted++;
+          }
+        } catch {
+          // Skip individual store errors
+        }
+      }
+
+      console.log(`Kroger discovery: found ${locations.length} stores near ${zip}, inserted ${totalInserted} new`);
+    } catch (error) {
+      console.error(`Kroger store discovery failed for zip ${zip}:`, error);
+    }
+
+    // Mark zip as discovered regardless of result (avoid hammering on errors)
+    discoveredZips.set(zipPrefix, Date.now() + ZIP_CACHE_TTL_MS);
+
+    return totalInserted;
   }
 
   /**

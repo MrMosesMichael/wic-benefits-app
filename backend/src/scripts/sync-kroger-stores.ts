@@ -18,7 +18,8 @@ import pool from '../config/database';
 const STATE_ZIPS: Record<string, { zips: string[]; chains: string[] }> = {
   MI: {
     zips: [
-      '48201', // Detroit
+      '48201', // Detroit (downtown)
+      '48076', // Southfield
       '48150', // Livonia
       '48105', // Ann Arbor
       '49503', // Grand Rapids
@@ -26,6 +27,7 @@ const STATE_ZIPS: Record<string, { zips: string[]; chains: string[] }> = {
       '48507', // Flint
       '49001', // Kalamazoo
       '48601', // Saginaw
+      '49684', // Traverse City
     ],
     chains: ['KROGER'],
   },
@@ -43,7 +45,11 @@ const STATE_ZIPS: Record<string, { zips: string[]; chains: string[] }> = {
   },
   OR: {
     zips: [
-      '97201', // Portland
+      '97203', // N Portland / St. Johns
+      '97215', // SE Portland / Hawthorne
+      '97005', // Beaverton
+      '97086', // Happy Valley / Clackamas
+      '97229', // Cedar Mill / West Portland
       '97401', // Eugene
       '97301', // Salem
       '97701', // Bend
