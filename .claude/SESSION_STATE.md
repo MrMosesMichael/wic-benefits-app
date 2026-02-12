@@ -1,76 +1,81 @@
 # Session State
 
 > **Last Updated:** 2026-02-12
-> **Session:** Accessibility + Polish implementation (all 4 phases)
+> **Session:** Accessibility i18n wiring, touch targets, UI fixes, seed scripts
 
 ---
 
 ## Current Status
 
-**All accessibility phases complete. 65 i18n keys added to both en.json and es.json. Hardcoded English a11y strings in components/screens — wiring to t() calls is a follow-up task.**
+**Accessibility fully wired to i18n (153 keys EN+ES). Touch targets fixed (38 elements). UI fixes for home header overlap and benefits spacing. Formula + store seed scripts ready — user deploying to VPS and running `seed-all`.**
+
+---
+
+## Testing Environment
+
+**All testing is done on the production VPS (tatertot.work).** No local backend testing.
+
+Deploy workflow:
+1. `./scripts/deploy-backend.sh` (rsyncs backend + docker-compose, rebuilds + restarts container)
+2. Seed data if needed: `ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec -T backend npm run seed-all'`
 
 ---
 
 ## Work Completed This Session
 
-### Phase 0: Android Bottom Nav Fix
-- `app/app/cart/index.tsx` — Added `useSafeAreaInsets()` bottom padding to checkout footer
-- `app/app/formula/select.tsx` — Added `useSafeAreaInsets()` bottom padding to confirm container
+### Accessibility (carried over from previous session context)
+- Phases 0-3: a11y props on all 12 components + 20 screens
+- Phase 4: 153 i18n keys in `a11y.*` namespace (EN + ES)
+- All hardcoded a11y strings wired to `t()` calls (components + all 20 screens)
+- Touch target audit: 38 fixes with `hitSlop` across 18 files
 
-### Phase 1: Shared Components Accessibility (12 files)
-Added `accessibilityRole`, `accessibilityLabel`, `accessibilityState`, `accessibilityHint`, hidden decorative emojis:
-- `NeedHelpLink.tsx` — role="link", hint, hidden arrow/emoji
-- `FormulaCard.tsx` — role="radio", selected state, combined label
-- `QuantitySelector.tsx` — role="radiogroup"/"radio", selected/disabled state
-- `FAQList.tsx` — expanded state, liveRegion="polite" on answers
-- `FormulaSightingModal.tsx` — accessibilityViewIsModal, store radio options
-- `FormulaAlertButton.tsx` — contextual labels for loading/active/inactive
-- `BenefitValidationAlert.tsx` — role="alert", liveRegion="assertive"
-- `LocationPrompt.tsx` — GPS/zip button labels, input labels, error role
-- `CrossStoreSearchResults.tsx` — store card labels, call/directions buttons
-- `StoreResultCard.tsx` — card-level label, call/directions buttons
-- `FormulaAlternatives.tsx` — card labels with stock/WIC info
-- `LanguageSwitcher.tsx` — modal focus trap, language option labels
+### UI Fixes
+- **Home screen**: Title was hidden behind Stack header — switched from centered `View` to `ScrollView` with `paddingTop: 24`
+- **Benefits screen**: Setup button flush against nav bar — added `paddingTop: 16` + `paddingHorizontal: 16` to `headerTop`
 
-### Phase 2: High-Priority Screens (7 screens)
-- `app/index.tsx` — Button roles+labels+hints on all nav buttons
-- `scanner/index.tsx` — tablist/tab roles, camera hidden from a11y
-- `scanner/result.tsx` — result card grouping, participant radios
-- `cart/index.tsx` — remove/clear/checkout button labels
-- `benefits/index.tsx` — benefit card groups, progress bar labels
-- `formula/index.tsx` — search/expand/report buttons, radius radios
-- `help/index.tsx` — search label, category tabs, hitSlop on clear
-
-### Phase 3: Remaining Screens (13 screens)
-- `formula/cross-store-search.tsx`, `formula/alternatives.tsx`, `formula/alerts.tsx`, `formula/report.tsx`
-- `foodbanks/index.tsx`, `settings/privacy.tsx`, `settings/location.tsx`
-- `feedback/index.tsx`, `benefits/household-setup.tsx`, `benefits/manual-entry.tsx`
-- `benefits/period-settings.tsx`, `benefits/scan-statement.tsx`
-
-### Phase 4: i18n Accessibility Keys
-- Added `a11y` namespace (65 keys) to `en.json`
-- Added matching `a11y` namespace (65 keys) to `es.json` with Spanish translations
-- Keys organized as `a11y.<component|screen>.<elementLabel|Hint>`
+### Backend Seed Scripts
+- Added `npm run seed-formulas` (48 WIC formulas)
+- Added `npm run seed-stores` (53 Michigan stores)
+- Added `npm run seed-all` (runs both)
+- Added `store_brand` filter option to formula selector UI
 
 ---
 
-## Remaining Work (Not Done)
+## Commits This Session
 
-### Wire Up i18n t() Calls
-All accessibility labels currently use **hardcoded English strings** in components/screens. To support Spanish screen readers, these need to be replaced with `t('a11y.xxx')` calls. This is a follow-up task.
-
-### Touch Target Audit
-The plan called for 44pt (iOS) / 48dp (Android) minimum on all interactive elements. Only `hitSlop` was added to the help screen's clear search button. A systematic review is still needed.
-
-### App Icon
-Tracked separately as a design task — need custom 1024x1024 icon.
+| Hash | Description |
+|------|-------------|
+| `932a87c` | feat: Full accessibility with i18n, touch targets, UI fixes |
+| (pending) | seed script npm commands added |
 
 ---
 
-## Known Issues
-- 3 pre-existing TypeScript errors in `lib/services/notificationService.ts` (unrelated to accessibility)
-- Hardcoded English a11y strings won't work for Spanish VoiceOver/TalkBack users until wired to t() calls
+## What's Next
+
+### Immediate
+1. **Deploy backend to VPS** and run `npm run seed-all`
+2. **Test formula finder** end-to-end with seeded data
+3. **Version bump** if shipping a new build
+
+### Short Term
+1. **App icon** — custom 1024x1024 icon needed
+2. **Multi-state stores** — only Michigan stores seeded currently
+3. **Crowdsourced availability** — test formula sighting reporting flow
+4. **App Store/Play Store submission**
+
+### Known Issues
+- 3 pre-existing TypeScript errors in `lib/services/notificationService.ts` (unrelated)
+- Store seed is Michigan-only (53 stores); NC, FL, OR, NY need store data
+- Formula-retailer likelihood rules come from migration 010 (already applied)
 
 ---
 
-*Previous session: Header fixes, feedback form debugging, version bumps, build prep*
+## VPS Notes
+- All testing on VPS: `tatertot.work`
+- Backend: Docker, `docker compose exec -T backend <cmd>`
+- Web root: `/data/docker/www/mdmichael.com/www/wic/`
+- Feedback system live (GitHub Issues integration)
+
+---
+
+*Previous session: Accessibility phases 0-4, Android nav fix*

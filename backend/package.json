@@ -12,6 +12,8 @@
     "import-apl": "node dist/scripts/import-michigan-apl.js",
     "detect-shortages": "node dist/scripts/detect-shortages.js",
     "seed-formulas": "node dist/scripts/seed-wic-formulas.js",
+    "seed-stores": "node dist/scripts/seed-michigan-stores.js",
+    "seed-all": "npm run seed-formulas && npm run seed-stores",
     "seed-shortage-test": "node dist/scripts/seed-shortage-test-data.js",
     "sync-inventory": "node dist/scripts/sync-walmart-inventory.js",
     "apl-sync": "node dist/scripts/run-apl-sync.js",

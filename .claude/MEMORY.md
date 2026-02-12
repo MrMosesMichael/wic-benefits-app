@@ -1,7 +1,7 @@
 # WIC Benefits App - Persistent Memory
 
 > This file is read when resuming work. Keep it concise (<2k tokens).
-> Last updated: February 11, 2026
+> Last updated: February 12, 2026
 
 ## Project Summary
 WIC Benefits Assistant — Mobile app helping WIC participants scan products, track benefits, find formula, and navigate the program. Built with React Native + Expo (SDK 52), TypeScript, Node.js/Express + PostgreSQL backend.
@@ -34,6 +34,12 @@ WIC Benefits Assistant — Mobile app helping WIC participants scan products, tr
 
 - **Current:** `wic.benefits.app@gmail.com` (Gmail, used in privacy policy and support)
 - **Future:** Migrate to Google Workspace with a dedicated domain (e.g. `privacy@wicbenefits.app`)
+
+## Testing & Deployment
+
+- **All testing is done on the production VPS** — no local backend testing
+- Deploy: `./scripts/deploy-backend.sh` (rsyncs backend + docker-compose.yml, rebuilds container)
+- Seed data: `ssh tatertot.work 'cd ~/projects/wic-app && docker compose exec -T backend npm run seed-all'`
 
 ## VPS (tatertot.work)
 

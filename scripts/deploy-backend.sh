@@ -1,6 +1,6 @@
 #!/bin/bash
-# WIC Backend Deployment Script (B4.1)
-# Deploys backend to VPS using rsync and restarts Docker services
+# WIC Backend Deployment Script
+# Deploys backend to VPS via git pull and restarts Docker services
 # Usage: ./scripts/deploy-backend.sh
 
 set -e  # Exit on error
@@ -8,7 +8,6 @@ set -e  # Exit on error
 # Configuration
 SSH_HOST="tatertot.work"
 REMOTE_DIR="~/projects/wic-app"
-LOCAL_DIR="/Users/moses/projects/wic_project"
 
 # Color codes for output
 RED='\033[0;31m'
@@ -22,9 +21,32 @@ echo -e "${BLUE}WIC Backend Deployment Script${NC}"
 echo -e "${BLUE}=================================${NC}"
 echo ""
 
-# Safety check - confirm deployment
-echo -e "${YELLOW}This will deploy backend code to: ${SSH_HOST}${NC}"
-echo -e "${YELLOW}Remote directory: ${REMOTE_DIR}${NC}"
+# Pre-flight: check for uncommitted changes
+if ! git diff --quiet || ! git diff --cached --quiet; then
+    echo -e "${RED}❌ You have uncommitted changes. Commit and push before deploying.${NC}"
+    echo ""
+    git status --short
+    echo ""
+    exit 1
+fi
+
+# Pre-flight: check if local is ahead of remote
+LOCAL_HASH=$(git rev-parse HEAD)
+REMOTE_HASH=$(git rev-parse origin/main 2>/dev/null || echo "unknown")
+if [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
+    echo -e "${YELLOW}⚠️  Local HEAD (${LOCAL_HASH:0:7}) differs from origin/main (${REMOTE_HASH:0:7}).${NC}"
+    echo -e "${YELLOW}   Did you forget to push?${NC}"
+    echo ""
+    read -p "Continue anyway? (y/N): " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${RED}Deployment cancelled. Run: git push${NC}"
+        exit 1
+    fi
+fi
+
+echo -e "${YELLOW}Deploying commit: ${LOCAL_HASH:0:7}${NC}"
+echo -e "${YELLOW}Target: ${SSH_HOST}:${REMOTE_DIR}${NC}"
 echo ""
 read -p "Continue with deployment? (y/N): " -n 1 -r
 echo ""
@@ -43,31 +65,9 @@ fi
 echo -e "${GREEN}✅ SSH connection successful${NC}"
 
 echo ""
-echo -e "${BLUE}Step 2: Syncing backend code...${NC}"
-echo -e "${YELLOW}Syncing: backend/ directory${NC}"
-rsync -arvz \
-    --delete \
-    --exclude 'node_modules' \
-    --exclude 'dist' \
-    --exclude '.env' \
-    --exclude 'backend.log' \
-    --exclude '*.log' \
-    "${LOCAL_DIR}/backend/" \
-    "${SSH_HOST}:${REMOTE_DIR}/backend/"
-
-echo ""
-echo -e "${YELLOW}Syncing: docker-compose.yml${NC}"
-rsync -arvz \
-    "${LOCAL_DIR}/docker-compose.yml" \
-    "${SSH_HOST}:${REMOTE_DIR}/"
-
-echo ""
-echo -e "${YELLOW}Syncing: deployment files${NC}"
-rsync -arvz \
-    "${LOCAL_DIR}/deployment/" \
-    "${SSH_HOST}:${REMOTE_DIR}/deployment/"
-
-echo -e "${GREEN}✅ Files synced successfully${NC}"
+echo -e "${BLUE}Step 2: Pulling latest code on VPS...${NC}"
+ssh ${SSH_HOST} "cd ${REMOTE_DIR} && git pull"
+echo -e "${GREEN}✅ Code updated${NC}"
 
 echo ""
 echo -e "${BLUE}Step 3: Building and restarting backend...${NC}"
@@ -88,7 +88,6 @@ if curl -sf https://mdmichael.com/wic/health > /dev/null; then
 else
     echo -e "${YELLOW}⚠️  Health check failed. Restarting backend to force Traefik rediscovery...${NC}"
 
-    # Restart backend twice to force Traefik to rediscover
     ssh ${SSH_HOST} "cd ${REMOTE_DIR} && docker compose restart backend"
     sleep 3
     ssh ${SSH_HOST} "cd ${REMOTE_DIR} && docker compose restart backend"
@@ -113,12 +112,14 @@ echo -e "${GREEN}=================================${NC}"
 echo -e "${GREEN}✅ Deployment complete!${NC}"
 echo -e "${GREEN}=================================${NC}"
 echo ""
-echo -e "${BLUE}Backend URL:${NC} https://mdmichael.com/wic/api/v1/"
+echo -e "${BLUE}Deployed:${NC}     ${LOCAL_HASH:0:7}"
+echo -e "${BLUE}Backend URL:${NC}  https://mdmichael.com/wic/api/v1/"
 echo -e "${BLUE}Health Check:${NC} https://mdmichael.com/wic/health"
 echo ""
 echo -e "${YELLOW}Useful commands:${NC}"
 echo -e "  View logs:    ssh ${SSH_HOST} 'cd ${REMOTE_DIR} && docker compose logs -f backend'"
 echo -e "  Restart:      ssh ${SSH_HOST} 'cd ${REMOTE_DIR} && docker compose restart backend'"
 echo -e "  Stop:         ssh ${SSH_HOST} 'cd ${REMOTE_DIR} && docker compose down'"
+echo -e "  Seed data:    ssh ${SSH_HOST} 'cd ${REMOTE_DIR} && docker compose exec -T backend npm run seed-all'"
 echo -e "  Shell access: ssh ${SSH_HOST} 'cd ${REMOTE_DIR} && docker compose exec backend sh'"
 echo ""
