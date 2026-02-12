@@ -11,6 +11,7 @@
 | [Store Detection](./store-detection.md) | GPS + WiFi + geofence detection | H3, H4, H5 task docs |
 | [Formula Features](./formula-features.md) | Shortage detection, alerts, alternatives | Phase 1 formula week 1-2 |
 | [Crowdsourced Inventory](./crowdsourced-inventory.md) | Community sighting reports | Phase 2 revised plan |
+| [State Onboarding](./state-onboarding.md) | Checklist for adding new states | Multi-state APL, store seeding |
 
 ---
 

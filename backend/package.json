@@ -13,6 +13,8 @@
     "detect-shortages": "node dist/scripts/detect-shortages.js",
     "seed-formulas": "node dist/scripts/seed-wic-formulas.js",
     "seed-stores": "node dist/scripts/seed-michigan-stores.js",
+    "seed-nc-stores": "node dist/scripts/seed-nc-stores.js",
+    "seed-or-stores": "node dist/scripts/seed-or-stores.js",
     "seed-all": "npm run seed-formulas && npm run seed-stores",
     "seed-shortage-test": "node dist/scripts/seed-shortage-test-data.js",
     "sync-inventory": "node dist/scripts/sync-walmart-inventory.js",
