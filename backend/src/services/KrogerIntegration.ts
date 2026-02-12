@@ -1,0 +1,402 @@
+/**
+ * Kroger API Integration
+ * Provides real-time store locations and product availability for WIC formulas
+ * via Kroger's public developer API.
+ *
+ * Kroger family banners: Kroger (MI, NC), Harris Teeter (NC), Fred Meyer (OR), QFC (OR)
+ */
+
+import { inventorySyncService } from './InventorySyncService';
+import pool from '../config/database';
+
+interface KrogerConfig {
+  clientId: string;
+  clientSecret: string;
+}
+
+interface InventoryData {
+  storeId: string;
+  upc: string;
+  status: 'in_stock' | 'low_stock' | 'out_of_stock' | 'unknown';
+  quantity?: number;
+  quantityRange?: 'few' | 'some' | 'plenty';
+  aisle?: string;
+  source: 'api';
+  confidence: number;
+}
+
+interface KrogerLocation {
+  locationId: string;
+  chain: string;
+  name: string;
+  address: {
+    addressLine1: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    county: string;
+  };
+  geolocation: {
+    latitude: number;
+    longitude: number;
+  };
+  phone: string;
+  departments: string[];
+}
+
+interface KrogerProduct {
+  productId: string;
+  upc: string;
+  description: string;
+  brand: string;
+  items: Array<{
+    itemId: string;
+    inventory?: {
+      stockLevel: string; // 'HIGH' | 'LOW' | 'TEMPORARILY_OUT_OF_STOCK' | null
+    };
+    price?: {
+      regular: number;
+      promo: number;
+    };
+    size: string;
+  }>;
+}
+
+// In-memory cache for rate limit protection
+const availabilityCache = new Map<string, { data: InventoryData; expiry: number }>();
+const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
+
+export class KrogerIntegration {
+  private config: KrogerConfig;
+  private baseUrl = 'https://api.kroger.com';
+  private accessToken: string | null = null;
+  private tokenExpiry: number = 0;
+
+  constructor(config: KrogerConfig) {
+    this.config = config;
+  }
+
+  /**
+   * OAuth2 client credentials flow
+   */
+  private async authenticate(): Promise<string> {
+    if (this.accessToken && Date.now() < this.tokenExpiry) {
+      return this.accessToken;
+    }
+
+    const authString = Buffer.from(
+      `${this.config.clientId}:${this.config.clientSecret}`
+    ).toString('base64');
+
+    const response = await fetch(`${this.baseUrl}/v1/connect/oauth2/token`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${authString}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'grant_type=client_credentials&scope=product.compact',
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Kroger auth failed: ${response.status} ${text}`);
+    }
+
+    const data = await response.json() as { access_token: string; expires_in: number };
+    this.accessToken = data.access_token;
+    // Cache token at 95% of its lifetime
+    this.tokenExpiry = Date.now() + data.expires_in * 950;
+
+    return this.accessToken;
+  }
+
+  /**
+   * Make authenticated API request
+   */
+  private async makeRequest<T>(endpoint: string): Promise<T> {
+    const token = await this.authenticate();
+
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',
+      },
+    });
+
+    if (response.status === 429) {
+      throw new Error('Kroger rate limit exceeded');
+    }
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Kroger API ${response.status}: ${text}`);
+    }
+
+    return await response.json() as T;
+  }
+
+  /**
+   * Search for Kroger-family store locations near a zip code
+   */
+  async searchStores(
+    zip: string,
+    radiusMiles: number = 50,
+    chain?: string,
+    limit: number = 50
+  ): Promise<KrogerLocation[]> {
+    let endpoint = `/v1/locations?filter.zipCode.near=${zip}&filter.radiusInMiles=${radiusMiles}&filter.limit=${limit}`;
+    if (chain) {
+      endpoint += `&filter.chain=${chain}`;
+    }
+
+    const data = await this.makeRequest<{ data: any[] }>(endpoint);
+
+    return (data.data || []).map((loc: any) => ({
+      locationId: loc.locationId,
+      chain: loc.chain?.toLowerCase() || 'kroger',
+      name: loc.name,
+      address: {
+        addressLine1: loc.address?.addressLine1 || '',
+        city: loc.address?.city || '',
+        state: loc.address?.state || '',
+        zipCode: loc.address?.zipCode || '',
+        county: loc.address?.county || '',
+      },
+      geolocation: {
+        latitude: loc.geolocation?.latitude || 0,
+        longitude: loc.geolocation?.longitude || 0,
+      },
+      phone: loc.phone || '',
+      departments: (loc.departments || []).map((d: any) => d.name),
+    }));
+  }
+
+  /**
+   * Search products by term with optional store-specific availability
+   */
+  async searchProducts(
+    term: string,
+    locationId?: string,
+    limit: number = 10
+  ): Promise<KrogerProduct[]> {
+    let endpoint = `/v1/products?filter.term=${encodeURIComponent(term)}&filter.limit=${limit}`;
+    if (locationId) {
+      endpoint += `&filter.locationId=${locationId}`;
+    }
+
+    const data = await this.makeRequest<{ data: any[] }>(endpoint);
+
+    return (data.data || []).map((prod: any) => ({
+      productId: prod.productId,
+      upc: prod.upc,
+      description: prod.description,
+      brand: prod.brand,
+      items: (prod.items || []).map((item: any) => ({
+        itemId: item.itemId,
+        inventory: item.inventory ? { stockLevel: item.inventory.stockLevel } : undefined,
+        price: item.price ? { regular: item.price.regular, promo: item.price.promo } : undefined,
+        size: item.size || '',
+      })),
+    }));
+  }
+
+  /**
+   * Get a specific product by ID
+   */
+  async getProduct(productId: string, locationId?: string): Promise<KrogerProduct | null> {
+    let endpoint = `/v1/products/${productId}`;
+    if (locationId) {
+      endpoint += `?filter.locationId=${locationId}`;
+    }
+
+    try {
+      const data = await this.makeRequest<{ data: any }>(endpoint);
+      const prod = data.data;
+      if (!prod) return null;
+
+      return {
+        productId: prod.productId,
+        upc: prod.upc,
+        description: prod.description,
+        brand: prod.brand,
+        items: (prod.items || []).map((item: any) => ({
+          itemId: item.itemId,
+          inventory: item.inventory ? { stockLevel: item.inventory.stockLevel } : undefined,
+          price: item.price ? { regular: item.price.regular, promo: item.price.promo } : undefined,
+          size: item.size || '',
+        })),
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Map Kroger stock level to our inventory status
+   */
+  private mapStockStatus(stockLevel: string | undefined): InventoryData['status'] {
+    if (!stockLevel) return 'unknown';
+    switch (stockLevel.toUpperCase()) {
+      case 'HIGH':
+        return 'in_stock';
+      case 'LOW':
+        return 'low_stock';
+      case 'TEMPORARILY_OUT_OF_STOCK':
+        return 'out_of_stock';
+      default:
+        return 'unknown';
+    }
+  }
+
+  /**
+   * Map stock level to quantity range
+   */
+  private mapQuantityRange(stockLevel: string | undefined): InventoryData['quantityRange'] {
+    if (!stockLevel) return undefined;
+    switch (stockLevel.toUpperCase()) {
+      case 'HIGH':
+        return 'plenty';
+      case 'LOW':
+        return 'few';
+      default:
+        return undefined;
+    }
+  }
+
+  /**
+   * Check formula availability at a specific Kroger store.
+   * Uses in-memory cache to avoid burning rate limits.
+   */
+  async checkFormulaAvailability(
+    upc: string,
+    krogerLocationId: string,
+    storeId: string
+  ): Promise<InventoryData | null> {
+    // Check cache first
+    const cacheKey = `${krogerLocationId}:${upc}`;
+    const cached = availabilityCache.get(cacheKey);
+    if (cached && Date.now() < cached.expiry) {
+      return { ...cached.data, storeId };
+    }
+
+    try {
+      const products = await this.searchProducts(upc, krogerLocationId, 5);
+
+      // Find exact or close UPC match
+      const match = products.find(p => p.upc === upc) || products[0];
+      if (!match || match.items.length === 0) {
+        return null;
+      }
+
+      const item = match.items[0];
+      const status = this.mapStockStatus(item.inventory?.stockLevel);
+      const quantityRange = this.mapQuantityRange(item.inventory?.stockLevel);
+
+      const result: InventoryData = {
+        storeId,
+        upc,
+        status,
+        quantityRange,
+        source: 'api',
+        confidence: status !== 'unknown' ? 90 : 50,
+      };
+
+      // Cache result
+      availabilityCache.set(cacheKey, { data: result, expiry: Date.now() + CACHE_TTL_MS });
+
+      return result;
+    } catch (error) {
+      console.error(`Kroger availability check failed for ${upc} at ${krogerLocationId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Batch sync formula inventory across Kroger stores.
+   * Reads formula UPCs from wic_formulas and writes results via inventorySyncService.
+   */
+  async syncFormulaInventory(storeIds: string[]): Promise<{
+    jobId: number;
+    processed: number;
+    succeeded: number;
+    failed: number;
+  }> {
+    // Get formula UPCs from database
+    const formulaResult = await pool.query(
+      `SELECT DISTINCT upc FROM wic_formulas WHERE active = true LIMIT 50`
+    );
+    const upcs = formulaResult.rows.map((row: any) => row.upc);
+
+    if (upcs.length === 0) {
+      console.log('No active formula UPCs found in database');
+      return { jobId: 0, processed: 0, succeeded: 0, failed: 0 };
+    }
+
+    console.log(`Syncing ${upcs.length} formulas across ${storeIds.length} Kroger stores`);
+
+    const inventories: InventoryData[] = [];
+
+    for (const storeId of storeIds) {
+      // Extract Kroger location ID from our store_id format (kroger-XXXXX)
+      const krogerLocationId = storeId.replace(/^kroger-/, '');
+
+      for (const upc of upcs) {
+        const inventory = await this.checkFormulaAvailability(upc, krogerLocationId, storeId);
+        if (inventory) {
+          inventories.push(inventory);
+        }
+
+        // Rate limit: 250ms between calls
+        await new Promise(resolve => setTimeout(resolve, 250));
+      }
+    }
+
+    console.log(`Fetched ${inventories.length} inventory records`);
+
+    const result = await inventorySyncService.syncInventoryBatch(inventories);
+    return result;
+  }
+
+  /**
+   * Get Kroger-family stores from database
+   */
+  async getKrogerStores(limit: number = 50): Promise<string[]> {
+    const result = await pool.query(
+      `SELECT store_id FROM stores
+       WHERE store_id LIKE 'kroger-%'
+         AND active = TRUE
+       LIMIT $1`,
+      [limit]
+    );
+    return result.rows.map((row: any) => row.store_id);
+  }
+
+  /**
+   * Map Kroger chain name to our normalized chain value
+   */
+  static mapChainName(krogerChain: string): string {
+    const chain = krogerChain.toLowerCase();
+    if (chain.includes('harris') || chain.includes('teeter')) return 'harris-teeter';
+    if (chain.includes('fred') || chain.includes('meyer')) return 'fred-meyer';
+    if (chain.includes('qfc')) return 'qfc';
+    return 'kroger';
+  }
+
+  /**
+   * Factory method — returns null if credentials aren't configured
+   */
+  static fromEnvironment(): KrogerIntegration | null {
+    const clientId = process.env.KROGER_CLIENT_ID;
+    const clientSecret = process.env.KROGER_CLIENT_SECRET;
+
+    if (!clientId || !clientSecret) {
+      console.warn('Kroger API credentials not configured');
+      return null;
+    }
+
+    return new KrogerIntegration({ clientId, clientSecret });
+  }
+}
+
+// Export singleton (null if no credentials)
+export const krogerIntegration = KrogerIntegration.fromEnvironment();

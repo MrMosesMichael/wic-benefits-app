@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import pool from '../config/database';
+import { krogerIntegration } from '../services/KrogerIntegration';
 
 const router = express.Router();
 
@@ -216,6 +217,52 @@ router.post('/', async (req: Request, res: Response) => {
         latitude: row.latitude,
         longitude: row.longitude
       });
+    }
+
+    // Step 3.5: Enrich Kroger-family stores with live API data
+    if (krogerIntegration) {
+      const krogerChains = ['kroger', 'harris-teeter', 'fred-meyer', 'qfc'];
+      const krogerStores = storesResult.rows.filter(
+        (s: any) => krogerChains.includes(s.chain?.toLowerCase())
+      );
+
+      if (krogerStores.length > 0) {
+        // Limit to first 10 Kroger stores to stay within rate limits
+        const storesToEnrich = krogerStores.slice(0, 10);
+
+        for (const store of storesToEnrich) {
+          const krogerLocationId = store.store_id.replace(/^kroger-/, '');
+
+          for (const formulaUpc of searchUpcs.slice(0, 5)) {
+            try {
+              const apiResult = await krogerIntegration.checkFormulaAvailability(
+                formulaUpc, krogerLocationId, store.store_id
+              );
+
+              if (apiResult && apiResult.status !== 'unknown') {
+                // Add/merge API data into the availability map
+                const storeNameKey = store.name.toLowerCase().trim();
+                if (!availabilityByStore.has(storeNameKey)) {
+                  availabilityByStore.set(storeNameKey, []);
+                }
+                availabilityByStore.get(storeNameKey)!.push({
+                  upc: formulaUpc,
+                  status: apiResult.status,
+                  quantityRange: apiResult.quantityRange,
+                  lastUpdated: new Date(),
+                  confidence: apiResult.confidence,
+                  reportCount: 1,
+                  source: 'api',
+                  latitude: store.latitude,
+                  longitude: store.longitude,
+                });
+              }
+            } catch {
+              // Silently skip — graceful degradation
+            }
+          }
+        }
+      }
     }
 
     // Step 4: Get retailer likelihood data

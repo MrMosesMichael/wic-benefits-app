@@ -1,6 +1,6 @@
 # WIC Benefits App — Roadmap
 
-> **Last Updated:** February 11, 2026
+> **Last Updated:** February 12, 2026
 > **Current Phase:** Phase 1 Complete + Phase 2 Complete + Phase 7 In Progress
 > **Production:** https://mdmichael.com/wic/
 
@@ -16,7 +16,7 @@
 | **Phase 4: Community** | ⏳ Not Started | 0% |
 | **Phase 5: Manual Entry** | ✅ Complete | 100% |
 | **Phase 6: eWIC Integration** | 🚫 Blocked | 0% |
-| **Phase 7: Polish & Launch** | 🔄 In Progress | 55% |
+| **Phase 7: Polish & Launch** | 🔄 In Progress | 75% |
 
 ---
 
@@ -35,7 +35,9 @@
 ✅ **Help & FAQ System** — Size/formula/checkout guides with harm prevention focus
 ✅ **GPS State Detection** — Centralized location system with zip code fallback, 33K zip codes seeded
 ✅ **Support & Feedback** — In-app feedback, web form, GitHub Issues integration
-✅ **Landing Pages** — Landing page, support form, privacy policy at mdmichael.com/wic/
+✅ **Landing Pages** — Landing page, support form, privacy policy, data deletion page at mdmichael.com/wic/
+✅ **Google Play Data Safety** — Data safety form completed, delete-data.html published
+✅ **Accessibility** — Full a11y implementation: roles, labels, hints, states across all components/screens; 153 i18n a11y keys; touch target fixes on 38 elements
 ✅ **Production Backend** — Deployed at https://mdmichael.com/wic/
 ✅ **Android APK** — Production build ready for sideloading
 ✅ **UI Polish** — Removed duplicate headers from all 17 screens, SafeAreaProvider for Android nav bar
@@ -92,7 +94,7 @@ Know what's in stock, find supplemental food sources.
 | Track | Feature | Status | Notes |
 |-------|---------|--------|-------|
 | **H** | Store Detection | ✅ Done | GPS + WiFi + geofencing |
-| **I1** | Retailer API Integration | 🚫 Blocked | Requires partnerships |
+| **I1** | Retailer API Integration | 🔄 In Progress | Kroger API in development |
 | **I2** | Inventory Display | ✅ Done | Via crowdsourced data |
 | **J** | Food Bank Finder | ✅ Done | 10 MI food banks seeded, full UI |
 | **K** | Crowdsourced Inventory | ✅ Done | Sightings + confidence |
@@ -143,11 +145,14 @@ Accessibility, testing, app store submission.
 
 | Track | Feature | Status |
 |-------|---------|--------|
-| **T** | Accessibility (VoiceOver, TalkBack) | ❌ |
+| **T** | Accessibility (VoiceOver, TalkBack) | ✅ Done |
 | **U** | Additional Languages | ⚠️ Partial (Spanish i18n in progress) |
 | **V** | Beta Testing | 🔄 In Progress (iOS TestFlight submitted) |
 | **V** | App Store Submission | 🔄 In Progress (assets needed - see [iOS Release Checklist](#ios-app-store-release-checklist)) |
+| **V2** | Google Play Submission | 🔄 In Progress (data safety done, screenshots needed) |
 | **W** | UI Polish (duplicate headers, SafeArea) | ✅ Done |
+| **X** | Register LLC | ⏳ Todo |
+| **Y** | Retailer API Partnerships | ⏳ Todo (Kroger integration started, Walmart outreach planned) |
 
 ---
 
@@ -168,16 +173,31 @@ Based on impact, effort, and what's unblocked:
 
 ### 📅 Short Term (Next 2-4 Weeks)
 
-1. **iOS App Store Submission** 🚧 IN PROGRESS
+1. **iOS & Android App Store Submissions** 🚧 IN PROGRESS
    - ✅ Apple Developer License acquired
    - ✅ Build iOS version via EAS (`build-1770760890868.ipa`)
    - ✅ Submitted to App Store Connect (v1.1.0)
    - ✅ v1.1.1 ready (header fixes, feedback form, privacy email)
+   - ✅ Google Play data safety form completed
+   - ✅ Data deletion page published (https://mdmichael.com/wic/delete-data.html)
    - 🔄 TestFlight beta testing (awaiting review)
+   - 🔄 Google Play Console setup in progress
+   - ⏳ Generate store listing screenshots/images (Apple + Android)
    - ⏳ App Store submission preparation (see [iOS Release Checklist](#ios-app-store-release-checklist))
-   - *Effort: 1-2 weeks* | *Impact: High (50%+ of users)*
+   - *Status: UAT in progress, screenshots are the main remaining blocker*
 
-2. **Complete Spanish Language Support (Group G)**
+2. **Register LLC & Update Org Info**
+   - Register LLC for the app business entity
+   - Update app store listings with LLC as developer/publisher
+   - Update privacy policy, support pages, and all public-facing org references
+   - *Impact: Required for professional store presence and partnerships*
+
+3. **Retailer API Partnerships**
+   - 🔄 Kroger API integration (in progress — separate thread)
+   - ⏳ Walmart API — reach out to Walmart business unit once app is live on stores
+   - *Strategy: Having a published app on stores strengthens partnership outreach*
+
+4. **Complete Spanish Language Support (Group G)**
    - Review existing translations with native speaker
    - Finish any remaining untranslated strings
    - *Effort: 1 week* | *Impact: High (40% of WIC users)*
@@ -197,16 +217,16 @@ Based on impact, effort, and what's unblocked:
 
 ### 📋 Pre-Launch Requirements
 
-3. **Accessibility (Track T)**
-   - VoiceOver support
-   - TalkBack support
-   - WCAG compliance
-   - *Effort: 1-2 weeks* | *Impact: Required for launch*
+3. ~~**Accessibility (Track T)**~~ ✅ DONE
+   - Full a11y implementation across all components and screens
+   - 153 i18n accessibility keys (English + Spanish screen readers)
+   - Touch target fixes on 38 undersized elements
 
 4. **Beta Testing & App Store Submission (Track V)**
-   - TestFlight / Play Store beta
-   - User feedback collection
-   - App store assets and metadata
+   - 🔄 TestFlight beta (iOS — awaiting review)
+   - 🔄 Google Play Console setup (Android — data safety done)
+   - ⏳ Generate store listing screenshots (Apple + Android)
+   - ⏳ User feedback collection during UAT
 
 ---
 
@@ -289,8 +309,12 @@ All three channels are live:
 ### Privacy & Compliance
 
 - ✅ Privacy Policy published: https://mdmichael.com/wic/privacy.html
+- ✅ Data Deletion page published: https://mdmichael.com/wic/delete-data.html
+- ✅ Google Play data safety form completed
 - ✅ No third-party analytics/tracking (confirmed — no IDFA, no cookies, no pixel trackers)
+- ✅ No Advertising ID usage
 - ✅ Encryption: `ITSAppUsesNonExemptEncryption: false` set in app.json
+- ✅ All data encrypted in transit (HTTPS)
 
 ### App Review Preparation
 
@@ -352,6 +376,29 @@ All three channels are live:
 ---
 
 ## Partnership Strategy
+
+### Retailer API Partnerships
+
+**Goal:** Real-time inventory data for WIC-approved products
+
+| Retailer | Status | Notes |
+|----------|--------|-------|
+| **Kroger** | 🔄 In Progress | API integration being built, developer account active |
+| **Walmart** | ⏳ Planned | Reach out to business unit once app is live on stores |
+
+**Strategy:** Having published apps on Apple/Google stores demonstrates legitimacy and user base, which strengthens outreach to retailer business development teams.
+
+### Register LLC
+
+**Goal:** Formal business entity for app store presence and partnerships
+
+**Tasks:**
+- [ ] Register LLC (state TBD)
+- [ ] Update Apple Developer account org info
+- [ ] Update Google Play Console developer info
+- [ ] Update privacy policy with LLC name
+- [ ] Update support pages and landing page
+- [ ] Update app.json owner/org fields if needed
 
 ### Michigan MDHHS Outreach
 
@@ -460,4 +507,4 @@ See `docs/guides/` for consolidated, actionable implementation patterns.
 
 **Current Version:** 1.1.1 (iOS buildNumber: 1, Android versionCode: 3)
 
-*Last human review: February 11, 2026*
+*Last human review: February 12, 2026*
