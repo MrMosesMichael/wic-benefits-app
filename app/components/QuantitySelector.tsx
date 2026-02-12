@@ -55,7 +55,7 @@ export default function QuantitySelector({ value, onChange, disabled, hideTitle 
   return (
     <View style={styles.container}>
       {!hideTitle && <Text style={styles.title}>{t('quantitySelector.title')}</Text>}
-      <View style={styles.grid}>
+      <View style={styles.grid} accessibilityRole="radiogroup" accessibilityLabel={t('a11y.quantitySelector.groupLabel')}>
         {options.map((option) => {
           const isSelected = value === option.value;
           return (
@@ -68,8 +68,11 @@ export default function QuantitySelector({ value, onChange, disabled, hideTitle 
               ]}
               onPress={() => !disabled && onChange(option.value)}
               activeOpacity={disabled ? 1 : 0.7}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: isSelected, disabled: disabled || false }}
+              accessibilityLabel={`${t(option.labelKey)}, ${t(option.descriptionKey)}`}
             >
-              <Text style={styles.icon}>{option.icon}</Text>
+              <Text style={styles.icon} accessible={false} importantForAccessibility="no">{option.icon}</Text>
               <Text style={[
                 styles.label,
                 isSelected && { color: option.color }

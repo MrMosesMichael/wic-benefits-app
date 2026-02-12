@@ -238,18 +238,21 @@ export default function PrivacySettingsScreen() {
       <ScrollView style={styles.content}>
         {/* Your Rights */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>{t('privacy.yourRights')}</Text>
+          <Text style={styles.cardTitle} accessibilityRole="header">{t('privacy.yourRights')}</Text>
 
           <TouchableOpacity
             style={[styles.actionButton, exporting && styles.actionButtonDisabled]}
             onPress={handleExportData}
             disabled={exporting}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.privacy.exportLabel')}
+            accessibilityState={{ disabled: exporting }}
           >
             {exporting ? (
               <ActivityIndicator color="#fff" size="small" />
             ) : (
               <>
-                <Text style={styles.actionButtonIcon}>📥</Text>
+                <Text style={styles.actionButtonIcon} accessible={false} importantForAccessibility="no">📥</Text>
                 <View>
                   <Text style={styles.actionButtonText}>{t('privacy.exportData')}</Text>
                   <Text style={styles.actionButtonSubtext}>{t('privacy.exportDataDesc')}</Text>
@@ -262,12 +265,15 @@ export default function PrivacySettingsScreen() {
             style={[styles.deleteButton, deleting && styles.actionButtonDisabled]}
             onPress={handleDeleteAccount}
             disabled={deleting}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.privacy.deleteLabel')}
+            accessibilityState={{ disabled: deleting }}
           >
             {deleting ? (
               <ActivityIndicator color="#fff" size="small" />
             ) : (
               <>
-                <Text style={styles.actionButtonIcon}>🗑️</Text>
+                <Text style={styles.actionButtonIcon} accessible={false} importantForAccessibility="no">🗑️</Text>
                 <View>
                   <Text style={styles.deleteButtonText}>{t('privacy.deleteAccount')}</Text>
                   <Text style={styles.deleteButtonSubtext}>{t('privacy.deleteAccountDesc')}</Text>
@@ -281,9 +287,12 @@ export default function PrivacySettingsScreen() {
         <TouchableOpacity
           style={styles.expandableCard}
           onPress={() => toggleSection('collected')}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.privacy.dataCollectedLabel')}
+          accessibilityState={{ expanded: expandedSection === 'collected' }}
         >
           <View style={styles.expandableHeader}>
-            <Text style={styles.cardTitle}>{t('privacy.dataCollected')}</Text>
+            <Text style={styles.cardTitle} accessibilityRole="header">{t('privacy.dataCollected')}</Text>
             <Text style={styles.expandIcon}>{expandedSection === 'collected' ? '▼' : '▶'}</Text>
           </View>
           {expandedSection === 'collected' && privacySummary && (
@@ -305,9 +314,12 @@ export default function PrivacySettingsScreen() {
         <TouchableOpacity
           style={styles.expandableCard}
           onPress={() => toggleSection('notCollected')}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.privacy.dataNotCollectedLabel')}
+          accessibilityState={{ expanded: expandedSection === 'notCollected' }}
         >
           <View style={styles.expandableHeader}>
-            <Text style={styles.cardTitle}>{t('privacy.dataNotCollected')}</Text>
+            <Text style={styles.cardTitle} accessibilityRole="header">{t('privacy.dataNotCollected')}</Text>
             <Text style={styles.expandIcon}>{expandedSection === 'notCollected' ? '▼' : '▶'}</Text>
           </View>
           {expandedSection === 'notCollected' && privacySummary && (
@@ -321,7 +333,7 @@ export default function PrivacySettingsScreen() {
 
         {/* Data Sharing */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>{t('privacy.dataSharing')}</Text>
+          <Text style={styles.cardTitle} accessibilityRole="header">{t('privacy.dataSharing')}</Text>
           <View style={styles.neverSoldBadge}>
             <Text style={styles.neverSoldText}>🔒 {t('privacy.neverSold')}</Text>
           </View>
@@ -330,7 +342,7 @@ export default function PrivacySettingsScreen() {
 
         {/* Contact */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>{t('privacy.contact')}</Text>
+          <Text style={styles.cardTitle} accessibilityRole="header">{t('privacy.contact')}</Text>
           <Text style={styles.contactText}>
             {t('privacy.contactMessage')}
           </Text>

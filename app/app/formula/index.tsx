@@ -198,7 +198,12 @@ export default function FormulaFinder() {
       <View style={styles.formulaCard}>
         <View style={styles.formulaCardHeader}>
           <Text style={styles.sectionTitle}>{t('formula.findingFormula')}</Text>
-          <TouchableOpacity onPress={() => router.push('/formula/select')}>
+          <TouchableOpacity
+            onPress={() => router.push('/formula/select')}
+            accessibilityRole="link"
+            accessibilityHint={t('a11y.formula.changeHint')}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          >
             <Text style={styles.editLink}>{assignedFormula ? t('formula.change') : t('formula.select')}</Text>
           </TouchableOpacity>
         </View>
@@ -229,6 +234,7 @@ export default function FormulaFinder() {
                   brand: assignedFormula.details?.brand || assignedFormula.name.split(' ')[0]
                 }
               })}
+              accessibilityRole="button"
             >
               <Text style={styles.alternativesButtonText}>
                 {t('formula.viewAlternatives')}
@@ -247,6 +253,8 @@ export default function FormulaFinder() {
             <TouchableOpacity
               style={styles.manageAlertsLink}
               onPress={() => router.push('/formula/alerts')}
+              accessibilityRole="link"
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Text style={styles.manageAlertsLinkText}>
                 {t('formula.manageAlerts')} →
@@ -257,6 +265,8 @@ export default function FormulaFinder() {
           <TouchableOpacity
             style={styles.selectFormulaButton}
             onPress={() => router.push('/formula/select')}
+            accessibilityRole="button"
+            accessibilityHint={t('a11y.formula.selectHint')}
           >
             <Text style={styles.selectFormulaButtonText}>
               {t('formula.selectFormula')}
@@ -316,6 +326,8 @@ export default function FormulaFinder() {
                         brand: assignedFormula.details?.brand || assignedFormula.name.split(' ')[0]
                       }
                     })}
+                    accessibilityRole="button"
+                    hitSlop={{ top: 6, bottom: 6 }}
                   >
                     <Text style={styles.shortageAlternativesButtonText}>
                       {t('formula.viewAlternativeFormulas')} →
@@ -340,6 +352,8 @@ export default function FormulaFinder() {
                 searchRadius === radius && styles.radiusButtonActive
               ]}
               onPress={() => setSearchRadius(radius)}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: searchRadius === radius }}
             >
               <Text style={[
                 styles.radiusButtonText,
@@ -358,6 +372,8 @@ export default function FormulaFinder() {
           ]}
           onPress={handleSearch}
           disabled={loading || !location || !assignedFormula}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: loading || !location || !assignedFormula }}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
@@ -383,7 +399,7 @@ export default function FormulaFinder() {
 
       {!loading && searchPerformed && storeResults.length === 0 && (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyIcon}>📍</Text>
+          <Text style={styles.emptyIcon} accessible={false} importantForAccessibility="no">📍</Text>
           <Text style={styles.emptyTitle}>{t('formula.noStoresFound')}</Text>
           <Text style={styles.emptyText}>
             {t('formula.noStoresMessage', { radius: searchRadius })}
@@ -391,6 +407,7 @@ export default function FormulaFinder() {
           <TouchableOpacity
             style={styles.emptyButton}
             onPress={() => setSearchRadius(50)}
+            accessibilityRole="button"
           >
             <Text style={styles.emptyButtonText}>{t('formula.expandSearch')}</Text>
           </TouchableOpacity>
@@ -414,6 +431,7 @@ export default function FormulaFinder() {
             <TouchableOpacity
               style={styles.reportPromptButton}
               onPress={() => router.push('/formula/report')}
+              accessibilityRole="button"
             >
               <Text style={styles.reportPromptButtonText}>{t('formula.reportFormula')}</Text>
             </TouchableOpacity>
@@ -425,9 +443,11 @@ export default function FormulaFinder() {
       <TouchableOpacity
         style={styles.advancedSearchCard}
         onPress={() => router.push('/formula/cross-store-search')}
+        accessibilityRole="link"
+        accessibilityHint={t('a11y.formula.crossStoreHint')}
       >
         <View style={styles.advancedSearchContent}>
-          <Text style={styles.advancedSearchIcon}>🔍</Text>
+          <Text style={styles.advancedSearchIcon} accessible={false} importantForAccessibility="no">🔍</Text>
           <View style={styles.advancedSearchText}>
             <Text style={styles.advancedSearchTitle}>{t('formula.advancedSearch')}</Text>
             <Text style={styles.advancedSearchSubtitle}>
@@ -435,7 +455,7 @@ export default function FormulaFinder() {
             </Text>
           </View>
         </View>
-        <Text style={styles.advancedSearchArrow}>→</Text>
+        <Text style={styles.advancedSearchArrow} accessible={false}>→</Text>
       </TouchableOpacity>
 
       {/* Info Section */}
@@ -459,6 +479,7 @@ export default function FormulaFinder() {
             router.push('/formula/select');
           }
         }}
+        accessibilityRole="button"
       >
         <Text style={styles.floatingReportButtonText}>
           {assignedFormula ? t('formula.quickReport') : t('formula.selectFormulaToReport')}

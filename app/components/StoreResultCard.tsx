@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Platform } from 'react-native';
 import type { StoreResult, LikelihoodLevel } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 interface StoreResultCardProps {
   store: StoreResult;
@@ -49,6 +50,8 @@ const formatTimeAgo = (timestamp: string): string => {
 };
 
 export default function StoreResultCard({ store, onReport }: StoreResultCardProps) {
+  const t = useTranslation();
+
   const handleCall = () => {
     if (store.phone) {
       Linking.openURL(`tel:${store.phone.replace(/[^\d]/g, '')}`);
@@ -84,11 +87,14 @@ export default function StoreResultCard({ store, onReport }: StoreResultCardProp
   }
 
   return (
-    <View style={[styles.card, { borderLeftColor: borderColor }]}>
+    <View
+      style={[styles.card, { borderLeftColor: borderColor }]}
+      accessibilityLabel={`${store.name}, ${t('a11y.storeCard.milesAwayLabel', { distance: store.distanceMiles })}${hasCrowdsourcedData ? ', ' + statusInfo!.text : store.likelihood ? ', ' + likelihoodInfo!.text : ''}${store.wicAuthorized ? ', ' + t('a11y.storeCard.wicAuthorizedLabel') : ''}`}
+    >
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.storeInfo}>
-          <Text style={styles.chainIcon}>{getChainIcon(store.chain)}</Text>
+          <Text style={styles.chainIcon} accessible={false} importantForAccessibility="no">{getChainIcon(store.chain)}</Text>
           <View style={styles.storeNameContainer}>
             <Text style={styles.storeName}>{store.name}</Text>
             <Text style={styles.distance}>{store.distanceMiles} mi</Text>
@@ -141,11 +147,11 @@ export default function StoreResultCard({ store, onReport }: StoreResultCardProp
       {/* Actions */}
       <View style={styles.actions}>
         {store.phone && (
-          <TouchableOpacity style={styles.actionButton} onPress={handleCall}>
+          <TouchableOpacity style={styles.actionButton} onPress={handleCall} accessibilityRole="button" accessibilityLabel={t('a11y.storeCard.callLabel')}>
             <Text style={styles.actionButtonText}>📞 Call</Text>
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={styles.actionButtonPrimary} onPress={handleDirections}>
+        <TouchableOpacity style={styles.actionButtonPrimary} onPress={handleDirections} accessibilityRole="button" accessibilityLabel={t('a11y.storeCard.directionsLabel')}>
           <Text style={styles.actionButtonPrimaryText}>🗺️ Directions</Text>
         </TouchableOpacity>
       </View>

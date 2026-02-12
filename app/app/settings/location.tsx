@@ -10,11 +10,13 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useLocation } from '@/lib/hooks/useLocation';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 import { SUPPORTED_STATES, setLocationPreference, getLocationPreference, LocationPreference } from '@/lib/services/locationService';
 import { useEffect } from 'react';
 
 export default function LocationSettingsScreen() {
   const router = useRouter();
+  const t = useTranslation();
   const { location, loading, error, refresh, setZipCode, clear } = useLocation();
   const [zipInput, setZipInput] = useState('');
   const [zipError, setZipError] = useState<string | null>(null);
@@ -59,7 +61,7 @@ export default function LocationSettingsScreen() {
         {/* Current Location */}
         {location && (
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Current Location</Text>
+            <Text style={styles.cardTitle} accessibilityRole="header">Current Location</Text>
             <View style={styles.locationInfo}>
               <Text style={styles.locationCity}>
                 {location.city ? `${location.city}, ` : ''}{location.state}
@@ -80,7 +82,7 @@ export default function LocationSettingsScreen() {
               </View>
             )}
 
-            <TouchableOpacity style={styles.clearButton} onPress={handleClear}>
+            <TouchableOpacity style={styles.clearButton} onPress={handleClear} accessibilityRole="button" accessibilityLabel={t('a11y.location.clearLabel')} hitSlop={{ top: 4, bottom: 4 }}>
               <Text style={styles.clearButtonText}>Clear Location</Text>
             </TouchableOpacity>
           </View>
@@ -88,7 +90,7 @@ export default function LocationSettingsScreen() {
 
         {/* GPS Button */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Use GPS</Text>
+          <Text style={styles.cardTitle} accessibilityRole="header">Use GPS</Text>
           <Text style={styles.cardDescription}>
             Automatically detect your location and state.
           </Text>
@@ -96,6 +98,9 @@ export default function LocationSettingsScreen() {
             style={[styles.primaryButton, loading && styles.buttonDisabled]}
             onPress={handleUseGPS}
             disabled={loading}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.location.detectGpsLabel')}
+            accessibilityState={{ disabled: loading }}
           >
             {loading ? (
               <ActivityIndicator color="#fff" size="small" />
@@ -107,7 +112,7 @@ export default function LocationSettingsScreen() {
 
         {/* Zip Code Entry */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Enter Zip Code</Text>
+          <Text style={styles.cardTitle} accessibilityRole="header">Enter Zip Code</Text>
           <Text style={styles.cardDescription}>
             Works without GPS permission. Enter your 5-digit zip code.
           </Text>
@@ -122,11 +127,15 @@ export default function LocationSettingsScreen() {
               placeholder="e.g. 48201"
               keyboardType="number-pad"
               maxLength={5}
+              accessibilityLabel={t('a11y.location.zipInputLabel')}
             />
             <TouchableOpacity
               style={[styles.zipButton, (loading || zipInput.length !== 5) && styles.buttonDisabled]}
               onPress={handleSubmitZip}
               disabled={loading || zipInput.length !== 5}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.location.setZipLabel')}
+              accessibilityState={{ disabled: loading || zipInput.length !== 5 }}
             >
               <Text style={styles.zipButtonText}>Set</Text>
             </TouchableOpacity>
@@ -143,7 +152,7 @@ export default function LocationSettingsScreen() {
 
         {/* Preference */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Default Behavior</Text>
+          <Text style={styles.cardTitle} accessibilityRole="header">Default Behavior</Text>
           <Text style={styles.cardDescription}>
             How should location be determined when you open the app?
           </Text>
@@ -152,6 +161,9 @@ export default function LocationSettingsScreen() {
               key={pref}
               style={[styles.prefOption, preference === pref && styles.prefOptionActive]}
               onPress={() => handleSetPreference(pref)}
+              accessibilityRole="radio"
+              accessibilityLabel={pref === 'gps' ? t('a11y.location.prefGpsLabel') : pref === 'manual' ? t('a11y.location.prefManualLabel') : t('a11y.location.prefAskLabel')}
+              accessibilityState={{ selected: preference === pref }}
             >
               <View style={[styles.prefRadio, preference === pref && styles.prefRadioActive]} />
               <View style={styles.prefTextContainer}>
@@ -172,7 +184,7 @@ export default function LocationSettingsScreen() {
 
         {/* Info */}
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Why Location Matters</Text>
+          <Text style={styles.infoTitle} accessibilityRole="header">Why Location Matters</Text>
           <Text style={styles.infoText}>
             WIC-approved products vary by state. Your location helps us show the right product list, find nearby stores, and locate food banks in your area.
           </Text>

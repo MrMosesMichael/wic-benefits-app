@@ -73,11 +73,15 @@ export default function HelpScreen() {
           onChangeText={setSearchQuery}
           autoCapitalize="none"
           autoCorrect={false}
+          accessibilityLabel={t('a11y.help.searchLabel')}
         />
         {searchQuery.length > 0 && (
           <TouchableOpacity
             style={styles.clearButton}
             onPress={() => setSearchQuery('')}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.help.clearSearchLabel')}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Text style={styles.clearButtonText}>✕</Text>
           </TouchableOpacity>
@@ -98,6 +102,9 @@ export default function HelpScreen() {
               selectedCategory === 'all' && styles.categoryChipSelected,
             ]}
             onPress={() => handleCategoryPress('all')}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: selectedCategory === 'all' }}
+            hitSlop={{ top: 6, bottom: 6 }}
           >
             <Text
               style={[
@@ -118,6 +125,9 @@ export default function HelpScreen() {
                 selectedCategory === cat.id && { backgroundColor: cat.color },
               ]}
               onPress={() => handleCategoryPress(cat.id)}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: selectedCategory === cat.id }}
+              hitSlop={{ top: 6, bottom: 6 }}
             >
               <Text
                 style={[
@@ -164,7 +174,7 @@ export default function HelpScreen() {
           </Text>
           <View style={styles.contactInfo}>
             <Text style={styles.contactLabel}>Michigan WIC:</Text>
-            <Text style={styles.contactValue}>1-800-26-BIRTH (1-800-262-4784)</Text>
+            <Text style={styles.contactValue} accessibilityRole="link">1-800-26-BIRTH (1-800-262-4784)</Text>
           </View>
         </View>
 
@@ -172,30 +182,34 @@ export default function HelpScreen() {
         <TouchableOpacity
           style={styles.privacyLink}
           onPress={() => router.push('/feedback')}
+          accessibilityRole="link"
+          accessibilityHint={t('a11y.help.feedbackHint')}
         >
-          <Text style={styles.privacyLinkIcon}>✉</Text>
+          <Text style={styles.privacyLinkIcon} accessible={false} importantForAccessibility="no">✉</Text>
           <View style={styles.privacyLinkContent}>
             <Text style={styles.privacyLinkTitle}>{t('help.sendFeedback')}</Text>
             <Text style={styles.privacyLinkText}>
               {t('help.sendFeedbackDesc')}
             </Text>
           </View>
-          <Text style={styles.privacyLinkArrow}>→</Text>
+          <Text style={styles.privacyLinkArrow} accessible={false} importantForAccessibility="no">→</Text>
         </TouchableOpacity>
 
         {/* Privacy & Data */}
         <TouchableOpacity
           style={styles.privacyLink}
           onPress={() => router.push('/settings/privacy')}
+          accessibilityRole="link"
+          accessibilityHint={t('a11y.help.privacyHint')}
         >
-          <Text style={styles.privacyLinkIcon}>🔒</Text>
+          <Text style={styles.privacyLinkIcon} accessible={false} importantForAccessibility="no">🔒</Text>
           <View style={styles.privacyLinkContent}>
             <Text style={styles.privacyLinkTitle}>{t('help.privacyData')}</Text>
             <Text style={styles.privacyLinkText}>
               {t('help.privacyDataDesc')}
             </Text>
           </View>
-          <Text style={styles.privacyLinkArrow}>→</Text>
+          <Text style={styles.privacyLinkArrow} accessible={false} importantForAccessibility="no">→</Text>
         </TouchableOpacity>
       </ScrollView>
 

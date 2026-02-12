@@ -128,7 +128,7 @@ export default function FormulaReport() {
         <Text style={styles.permissionText}>
           {t('formulaReport.cameraPermission')}
         </Text>
-        <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
+        <TouchableOpacity style={styles.permissionButton} onPress={requestPermission} accessibilityRole="button" accessibilityLabel={t('a11y.report.grantCameraLabel')}>
           <Text style={styles.permissionButtonText}>{t('formulaReport.grantPermission')}</Text>
         </TouchableOpacity>
       </View>
@@ -146,6 +146,7 @@ export default function FormulaReport() {
               barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e'],
             }}
             onBarcodeScanned={handleBarCodeScanned}
+            accessible={false}
           >
             <View style={styles.scanOverlay}>
               <View style={styles.scanFrame} />
@@ -179,12 +180,16 @@ export default function FormulaReport() {
                 <TouchableOpacity
                   style={styles.confirmButtonNo}
                   onPress={handleNotMyProduct}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('a11y.report.scanAgainLabel')}
                 >
                   <Text style={styles.confirmButtonNoText}>{t('formulaReport.noScanAgain')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.confirmButtonYes}
                   onPress={handleConfirmProduct}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('a11y.report.confirmProductLabel')}
                 >
                   <Text style={styles.confirmButtonYesText}>{t('formulaReport.yesThisIsIt')}</Text>
                 </TouchableOpacity>
@@ -199,6 +204,8 @@ export default function FormulaReport() {
               <TouchableOpacity
                 style={styles.tryAgainButton}
                 onPress={handleNotMyProduct}
+                accessibilityRole="button"
+                accessibilityLabel={t('a11y.report.rescanLabel')}
               >
                 <Text style={styles.tryAgainButtonText}>{t('formulaReport.scanAgain')}</Text>
               </TouchableOpacity>
@@ -244,6 +251,9 @@ export default function FormulaReport() {
                       selectedStore?.storeId === store.storeId && styles.storeOptionSelected
                     ]}
                     onPress={() => handleStoreSelect(store)}
+                    accessibilityRole="radio"
+                    accessibilityLabel={t('a11y.report.storeLabel', { name: store.name, address: store.streetAddress, city: store.city, distance: store.distanceMiles })}
+                    accessibilityState={{ selected: selectedStore?.storeId === store.storeId }}
                   >
                     <View style={styles.storeOptionInfo}>
                       <Text style={styles.storeOptionName}>{store.name}</Text>
@@ -263,6 +273,9 @@ export default function FormulaReport() {
                   ]}
                   onPress={handleSubmit}
                   disabled={!selectedStore || submitting}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('a11y.report.submitLabel')}
+                  accessibilityState={{ disabled: !selectedStore || submitting }}
                 >
                   {submitting ? (
                     <ActivityIndicator color="#fff" size="small" />
@@ -287,6 +300,8 @@ export default function FormulaReport() {
           <TouchableOpacity
             style={styles.successButton}
             onPress={() => router.push('/formula')}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.report.backToFinderLabel')}
           >
             <Text style={styles.successButtonText}>{t('formulaReport.backToFormulaFinder')}</Text>
           </TouchableOpacity>
@@ -298,6 +313,8 @@ export default function FormulaReport() {
               setQuantity(null);
               setStep('scan');
             }}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.report.reportAnotherLabel')}
           >
             <Text style={styles.reportAnotherButtonText}>{t('formulaReport.reportAnother')}</Text>
           </TouchableOpacity>

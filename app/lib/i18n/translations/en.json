@@ -516,5 +516,220 @@
     "backToHelp": "Back to Help",
     "errorTitle": "Submission Failed",
     "errorMessage": "Could not send your feedback. Please check your internet connection and try again."
+  },
+  "a11y": {
+    "needHelpLink": {
+      "hint": "Opens help and FAQ screen"
+    },
+    "formulaCard": {
+      "selectedLabel": "selected",
+      "wicContractLabel": "WIC contract brand"
+    },
+    "quantitySelector": {
+      "groupLabel": "Quantity options"
+    },
+    "faqList": {
+      "expandHint": "Expand answer",
+      "collapseHint": "Collapse answer"
+    },
+    "formulaSighting": {
+      "cancelLabel": "Cancel",
+      "goBackLabel": "Go back",
+      "storeLabel": "{{name}}, {{address}}, {{city}}, {{distance}} miles away"
+    },
+    "formulaAlert": {
+      "loadingLabel": "Loading formula alert",
+      "activeLabel": "Formula alert active. Tap to cancel alert",
+      "activeHint": "Cancels notification alerts for this formula",
+      "inactiveLabel": "Set formula alert",
+      "inactiveHint": "Get notified when this formula is available"
+    },
+    "benefitValidation": {
+      "dismissLabel": "Dismiss warning",
+      "resolveLabel": "Review and fix this issue"
+    },
+    "locationPrompt": {
+      "gpsLabel": "Use GPS for location",
+      "gpsHint": "Requests location permission to detect your state",
+      "zipLabel": "Enter zip code",
+      "zipHint": "Enter your zip code manually",
+      "zipInputLabel": "5-digit zip code",
+      "zipInputHint": "Enter your 5-digit zip code to detect your state",
+      "submitZipLabel": "Submit zip code",
+      "switchToGpsLabel": "Switch to GPS location"
+    },
+    "storeCard": {
+      "callLabel": "Call store",
+      "directionsLabel": "Get directions to store",
+      "wicAuthorizedLabel": "WIC authorized",
+      "milesAwayLabel": "{{distance}} miles away"
+    },
+    "formulaAlternatives": {
+      "cardHint": "View alternative formula details",
+      "inStockLabel": "in stock nearby",
+      "contractLabel": "WIC contract brand"
+    },
+    "languageSwitcher": {
+      "hint": "Opens language selection",
+      "closeLabel": "Close language selection"
+    },
+    "home": {
+      "findFormulaLabel": "Find Formula. Find infant formula nearby",
+      "findFormulaHint": "Opens formula finder",
+      "scanHint": "Opens barcode scanner",
+      "benefitsHint": "Shows your WIC benefits balance",
+      "cartHint": "View items in your shopping cart",
+      "foodBanksLabel": "Find Food Banks. Local food assistance nearby",
+      "foodBanksHint": "Search for nearby food banks",
+      "helpHint": "Get help and find answers",
+      "locationHint": "Change your location settings"
+    },
+    "scanner": {
+      "cancelLabel": "Cancel scanning"
+    },
+    "result": {
+      "approvedLabel": "WIC Approved, Michigan",
+      "notApprovedLabel": "Not WIC Approved, Michigan",
+      "storeNameLabel": "Store name"
+    },
+    "cart": {
+      "scanHint": "Opens barcode scanner",
+      "removeLabel": "Remove {{product}} from cart",
+      "clearHint": "Removes all items from cart",
+      "checkoutLabel": "Checkout {{count}} items"
+    },
+    "benefits": {
+      "setupHint": "Configure household and participants",
+      "scanHint": "Opens barcode scanner",
+      "benefitLabel": "{{category}}: {{available}} {{unit}} available, {{inCart}} {{unit}} in cart, {{consumed}} {{unit}} used, total {{total}} {{unit}}"
+    },
+    "formula": {
+      "changeHint": "Opens formula selection screen",
+      "selectHint": "Opens formula selection",
+      "crossStoreHint": "Opens cross-store search",
+      "searchLabel": "Search formulas by brand or name",
+      "confirmLabel": "Confirm formula selection"
+    },
+    "help": {
+      "searchLabel": "Search FAQs",
+      "clearSearchLabel": "Clear search",
+      "feedbackHint": "Opens feedback form",
+      "privacyHint": "Opens privacy settings"
+    },
+    "feedback": {
+      "descriptionLabel": "Describe your feedback",
+      "submitAnotherLabel": "Submit another feedback",
+      "backToHelpLabel": "Back to help",
+      "includeDeviceLabel": "Include device information",
+      "submitLabel": "Submit feedback"
+    },
+    "foodBanks": {
+      "openNowLabel": "Open now filter",
+      "searchLabel": "Search food banks",
+      "expandHint": "Tap to expand or collapse details"
+    },
+    "crossStoreSearch": {
+      "searchByTextLabel": "Search by text",
+      "searchByBrandLabel": "Search by brand",
+      "searchByTypeLabel": "Search by type",
+      "searchInputLabel": "Search formula by name, brand, or UPC",
+      "radiusLabel": "{{radius}} mile radius",
+      "inStockOnlyLabel": "In stock only",
+      "searchStoresLabel": "Search nearby stores",
+      "reportLabel": "Report formula sighting",
+      "reportHint": "Opens a form to report where you found this formula"
+    },
+    "alternatives": {
+      "retryLabel": "Try again"
+    },
+    "alerts": {
+      "goBackLabel": "Go back",
+      "retryLabel": "Try again",
+      "setupLabel": "Set up a formula alert",
+      "setupHint": "Navigate to formula finder to set up an alert",
+      "renewLabel": "Renew alert subscription",
+      "deleteLabel": "Delete alert subscription"
+    },
+    "report": {
+      "grantCameraLabel": "Grant camera permission",
+      "scanAgainLabel": "No, scan again",
+      "confirmProductLabel": "Yes, this is my product",
+      "rescanLabel": "Scan again",
+      "storeLabel": "{{name}}, {{address}}, {{city}}, {{distance}} miles away",
+      "submitLabel": "Submit formula sighting report",
+      "backToFinderLabel": "Back to formula finder",
+      "reportAnotherLabel": "Report another formula"
+    },
+    "privacy": {
+      "exportLabel": "Export my data",
+      "deleteLabel": "Delete my account and data",
+      "dataCollectedLabel": "Data we collect",
+      "dataNotCollectedLabel": "Data we do not collect"
+    },
+    "location": {
+      "clearLabel": "Clear location",
+      "detectGpsLabel": "Detect my location using GPS",
+      "zipInputLabel": "Enter 5-digit zip code",
+      "setZipLabel": "Set zip code",
+      "prefGpsLabel": "Always use GPS",
+      "prefManualLabel": "Always use zip code",
+      "prefAskLabel": "Ask each time"
+    },
+    "householdSetup": {
+      "removeBenefitLabel": "Remove benefit {{index}}",
+      "benefitAmountLabel": "Amount for benefit {{index}}",
+      "addBenefitLabel": "Add another benefit",
+      "saveBenefitsLabel": "Save benefits",
+      "cancelEditLabel": "Cancel editing benefits",
+      "removeParticipantLabel": "Remove {{name}}",
+      "addBenefitsForLabel": "Add benefits for {{name}}",
+      "editBenefitsForLabel": "Edit benefits for {{name}}",
+      "addParticipantLabel": "Add participant",
+      "nameInputLabel": "Participant name",
+      "selectTypeLabel": "Select participant type",
+      "typeSelectedLabel": "Participant type: {{type}}",
+      "cancelAddLabel": "Cancel adding participant",
+      "saveHouseholdLabel": "Save and apply household",
+      "clearAllLabel": "Clear all household data"
+    },
+    "manualEntry": {
+      "selectCategoryLabel": "Select benefit category",
+      "categorySelectedLabel": "Category: {{category}}",
+      "amountLabel": "Benefit amount",
+      "unitLabel": "Unit: {{unit}}",
+      "startDateLabel": "Start date: {{date}}",
+      "startThisMonthLabel": "Set start to first of this month",
+      "startTodayLabel": "Set start to today",
+      "endDateLabel": "End date: {{date}}",
+      "endOfMonthLabel": "Set end to end of month",
+      "end30DaysLabel": "Set end to 30 days from now",
+      "saveLabel": "Save benefit entry",
+      "cancelLabel": "Cancel and go back"
+    },
+    "periodSettings": {
+      "retryLabel": "Retry loading benefits",
+      "startDateLabel": "Start date: {{date}}",
+      "startThisMonthLabel": "Set to this month",
+      "startNextMonthLabel": "Set to next month",
+      "endDateLabel": "End date: {{date}}",
+      "endOfMonthLabel": "Set end to end of month",
+      "end30DaysLabel": "Set end to 30 days from start",
+      "saveLabel": "Save period dates",
+      "newPeriodLabel": "Start new benefit period",
+      "newPeriodHint": "Archives current period and resets all benefit amounts",
+      "backLabel": "Back to benefits"
+    },
+    "scanStatement": {
+      "grantCameraLabel": "Grant camera permission",
+      "manualEntryLabel": "Enter benefits manually instead",
+      "editBenefitLabel": "Edit {{category}}",
+      "confirmLabel": "Confirm and save extracted benefits",
+      "retakeLabel": "Retake photo",
+      "cancelLabel": "Cancel and go back",
+      "closeCameraLabel": "Close camera",
+      "flipCameraLabel": "Flip camera",
+      "takePhotoLabel": "Take photo of benefit statement",
+      "enterManuallyLabel": "Enter benefits manually"
+    }
   }
 }

@@ -128,7 +128,7 @@ export default function FormulaSightingModal({
         {t('formulaSighting.quantityQuestion', { formula: formulaName })}
       </Text>
       <QuantitySelector value={quantity} onChange={handleQuantitySelect} hideTitle />
-      <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+      <TouchableOpacity style={styles.cancelButton} onPress={onClose} accessibilityRole="button" accessibilityLabel={t('a11y.formulaSighting.cancelLabel')}>
         <Text style={styles.cancelButtonText}>{t('formulaSighting.cancel')}</Text>
       </TouchableOpacity>
     </View>
@@ -148,7 +148,7 @@ export default function FormulaSightingModal({
           <Text style={styles.emptyText}>
             {t('formulaSighting.noStoresFound')}
           </Text>
-          <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+          <TouchableOpacity style={styles.cancelButton} onPress={onClose} accessibilityRole="button" accessibilityLabel={t('a11y.formulaSighting.cancelLabel')}>
             <Text style={styles.cancelButtonText}>{t('formulaSighting.close')}</Text>
           </TouchableOpacity>
         </View>
@@ -162,6 +162,9 @@ export default function FormulaSightingModal({
                 selectedStore?.storeId === store.storeId && styles.storeOptionSelected,
               ]}
               onPress={() => setSelectedStore(store)}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: selectedStore?.storeId === store.storeId }}
+              accessibilityLabel={t('a11y.formulaSighting.storeLabel', { name: store.name, address: store.streetAddress, city: store.city, distance: store.distanceMiles })}
             >
               <View style={styles.storeInfo}>
                 <Text style={styles.storeName}>{store.name}</Text>
@@ -177,6 +180,8 @@ export default function FormulaSightingModal({
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => setStep('quantity')}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.formulaSighting.goBackLabel')}
             >
               <Text style={styles.backButtonText}>← {t('formulaSighting.back')}</Text>
             </TouchableOpacity>
@@ -187,6 +192,8 @@ export default function FormulaSightingModal({
               ]}
               onPress={handleSubmit}
               disabled={!selectedStore}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: !selectedStore }}
             >
               <Text style={styles.submitButtonText}>{t('formulaSighting.submitReport')}</Text>
             </TouchableOpacity>
@@ -205,7 +212,7 @@ export default function FormulaSightingModal({
 
   const renderSuccessStep = () => (
     <View style={styles.statusContainer}>
-      <Text style={styles.successIcon}>✓</Text>
+      <Text style={styles.successIcon} accessible={false}>✓</Text>
       <Text style={styles.successTitle}>{t('formulaSighting.thankYou')}</Text>
       <Text style={styles.successMessage}>{impactMessage || t('formulaSighting.impactMessage')}</Text>
     </View>
@@ -219,7 +226,7 @@ export default function FormulaSightingModal({
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <View style={styles.modal}>
+        <View style={styles.modal} accessibilityViewIsModal={true}>
           <View style={styles.header}>
             <Text style={styles.headerTitle}>{t('formulaSighting.modalTitle')}</Text>
             <Text style={styles.headerSubtitle}>{t('formulaSighting.modalSubtitle')}</Text>

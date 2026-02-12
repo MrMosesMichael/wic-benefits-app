@@ -31,6 +31,8 @@ export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
           onPress={() => setModalVisible(true)}
           accessibilityLabel={t('settings.selectLanguage')}
           accessibilityRole="button"
+          accessibilityHint={t('a11y.languageSwitcher.hint')}
+          hitSlop={{ top: 10, bottom: 10, left: 8, right: 8 }}
         >
           <Text style={styles.compactButtonText}>{locale.toUpperCase()}</Text>
         </TouchableOpacity>
@@ -54,12 +56,13 @@ export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
         onPress={() => setModalVisible(true)}
         accessibilityLabel={t('settings.selectLanguage')}
         accessibilityRole="button"
+        accessibilityHint={t('a11y.languageSwitcher.hint')}
       >
         <View style={styles.buttonContent}>
           <Text style={styles.buttonLabel}>{t('settings.language')}</Text>
           <View style={styles.currentLanguage}>
             <Text style={styles.languageName}>{currentLanguage?.nativeName}</Text>
-            <Text style={styles.chevron}>›</Text>
+            <Text style={styles.chevron} accessible={false} importantForAccessibility="no">›</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -94,7 +97,7 @@ function LanguageModal({ visible, onClose, currentLocale, languages, onSelect, t
       onRequestClose={onClose}
     >
       <Pressable style={styles.modalOverlay} onPress={onClose}>
-        <View style={styles.modalContent}>
+        <View style={styles.modalContent} accessibilityViewIsModal={true}>
           <Text style={styles.modalTitle}>{t('settings.selectLanguage')}</Text>
           
           <FlatList
@@ -109,6 +112,7 @@ function LanguageModal({ visible, onClose, currentLocale, languages, onSelect, t
                 onPress={() => onSelect(item.code)}
                 accessibilityRole="radio"
                 accessibilityState={{ checked: item.code === currentLocale }}
+                accessibilityLabel={item.nativeName + ', ' + item.name}
               >
                 <View style={styles.languageOptionContent}>
                   <Text style={[
@@ -125,13 +129,13 @@ function LanguageModal({ visible, onClose, currentLocale, languages, onSelect, t
                   </Text>
                 </View>
                 {item.code === currentLocale && (
-                  <Text style={styles.checkmark}>✓</Text>
+                  <Text style={styles.checkmark} accessible={false}>✓</Text>
                 )}
               </TouchableOpacity>
             )}
           />
 
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose} accessibilityRole="button" accessibilityLabel={t('a11y.languageSwitcher.closeLabel')}>
             <Text style={styles.closeButtonText}>{t('common.close')}</Text>
           </TouchableOpacity>
         </View>

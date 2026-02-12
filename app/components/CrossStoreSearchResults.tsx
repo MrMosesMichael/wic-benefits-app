@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Platform, FlatList } from 'react-native';
 import type { CrossStoreResult } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 interface CrossStoreSearchResultsProps {
   results: CrossStoreResult[];
@@ -52,6 +53,8 @@ const getLikelihoodInfo = (level: string): { color: string; text: string } => {
 };
 
 function StoreCard({ store, onPress }: { store: CrossStoreResult; onPress?: () => void }) {
+  const t = useTranslation();
+
   const handleCall = () => {
     if (store.phone) {
       Linking.openURL(`tel:${store.phone.replace(/[^\d]/g, '')}`);
@@ -91,11 +94,12 @@ function StoreCard({ store, onPress }: { store: CrossStoreResult; onPress?: () =
       style={[styles.card, { borderLeftColor: borderColor }]}
       onPress={onPress}
       activeOpacity={0.9}
+      accessibilityLabel={`${store.name}, ${t('a11y.storeCard.milesAwayLabel', { distance: store.distanceMiles })}${statusInfo ? ', ' + statusInfo.text : ''}${store.wicAuthorized ? ', ' + t('a11y.storeCard.wicAuthorizedLabel') : ''}`}
     >
       {/* Header Row */}
       <View style={styles.headerRow}>
         <View style={styles.storeInfo}>
-          <Text style={styles.chainIcon}>{getChainIcon(store.chain)}</Text>
+          <Text style={styles.chainIcon} accessible={false} importantForAccessibility="no">{getChainIcon(store.chain)}</Text>
           <View style={styles.storeDetails}>
             <Text style={styles.storeName} numberOfLines={1}>{store.name}</Text>
             <Text style={styles.distance}>{store.distanceMiles} miles away</Text>
@@ -135,7 +139,7 @@ function StoreCard({ store, onPress }: { store: CrossStoreResult; onPress?: () =
                 </Text>
               )}
               <View style={styles.timeRow}>
-                <Text style={styles.timeIcon}>🕐</Text>
+                <Text style={styles.timeIcon} accessible={false} importantForAccessibility="no">🕐</Text>
                 <Text style={styles.timeText}>
                   Reported {store.availability!.lastReportedAgo}
                 </Text>
@@ -158,11 +162,11 @@ function StoreCard({ store, onPress }: { store: CrossStoreResult; onPress?: () =
       {/* Action Buttons */}
       <View style={styles.actions}>
         {store.phone && (
-          <TouchableOpacity style={styles.actionButton} onPress={handleCall}>
+          <TouchableOpacity style={styles.actionButton} onPress={handleCall} accessibilityRole="button" accessibilityLabel={t('a11y.storeCard.callLabel')}>
             <Text style={styles.actionButtonText}>📞 Call</Text>
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={styles.actionButtonPrimary} onPress={handleDirections}>
+        <TouchableOpacity style={styles.actionButtonPrimary} onPress={handleDirections} accessibilityRole="button" accessibilityLabel={t('a11y.storeCard.directionsLabel')}>
           <Text style={styles.actionButtonPrimaryText}>🗺️ Directions</Text>
         </TouchableOpacity>
       </View>
@@ -178,7 +182,7 @@ export default function CrossStoreSearchResults({
   if (results.length === 0) {
     return (
       <View style={styles.emptyContainer}>
-        <Text style={styles.emptyIcon}>🔍</Text>
+        <Text style={styles.emptyIcon} accessible={false} importantForAccessibility="no">🔍</Text>
         <Text style={styles.emptyText}>{emptyMessage}</Text>
       </View>
     );

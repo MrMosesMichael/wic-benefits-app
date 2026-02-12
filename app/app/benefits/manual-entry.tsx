@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BenefitCategory, BenefitUnit } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 // Category options for dropdown - based on specs/wic-benefits-app/specs/benefits/spec.md
 const CATEGORY_OPTIONS: { value: BenefitCategory; label: string }[] = [
@@ -51,6 +52,7 @@ interface BenefitEntry {
 
 export default function ManualEntry() {
   const router = useRouter();
+  const t = useTranslation();
 
   // Calculate default period (current month)
   const now = new Date();
@@ -156,6 +158,9 @@ export default function ManualEntry() {
           <TouchableOpacity
             style={[styles.pickerButton, errors.category && styles.inputError]}
             onPress={() => setShowCategoryPicker(!showCategoryPicker)}
+            accessibilityRole="button"
+            accessibilityLabel={entry.category ? t('a11y.manualEntry.categorySelectedLabel', { category: getCategoryLabel(entry.category) }) : t('a11y.manualEntry.selectCategoryLabel')}
+            accessibilityState={{ expanded: showCategoryPicker }}
           >
             <Text style={[styles.pickerButtonText, !entry.category && styles.placeholderText]}>
               {entry.category ? getCategoryLabel(entry.category) : 'Select category'}
@@ -178,6 +183,9 @@ export default function ManualEntry() {
                     setShowCategoryPicker(false);
                     setErrors({ ...errors, category: undefined });
                   }}
+                  accessibilityRole="radio"
+                  accessibilityLabel={option.label}
+                  accessibilityState={{ selected: entry.category === option.value }}
                 >
                   <Text
                     style={[
@@ -207,6 +215,7 @@ export default function ManualEntry() {
               setEntry({ ...entry, amount: text });
               setErrors({ ...errors, amount: undefined });
             }}
+            accessibilityLabel={t('a11y.manualEntry.amountLabel')}
           />
           {errors.amount && <Text style={styles.errorText}>{errors.amount}</Text>}
         </View>
@@ -217,6 +226,9 @@ export default function ManualEntry() {
           <TouchableOpacity
             style={styles.pickerButton}
             onPress={() => setShowUnitPicker(!showUnitPicker)}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.manualEntry.unitLabel', { unit: getUnitLabel(entry.unit) })}
+            accessibilityState={{ expanded: showUnitPicker }}
           >
             <Text style={styles.pickerButtonText}>{getUnitLabel(entry.unit)}</Text>
             <Text style={styles.chevron}>{showUnitPicker ? '▲' : '▼'}</Text>
@@ -235,6 +247,9 @@ export default function ManualEntry() {
                     setEntry({ ...entry, unit: option.value });
                     setShowUnitPicker(false);
                   }}
+                  accessibilityRole="radio"
+                  accessibilityLabel={option.label}
+                  accessibilityState={{ selected: entry.unit === option.value }}
                 >
                   <Text
                     style={[
@@ -261,6 +276,9 @@ export default function ManualEntry() {
           <TouchableOpacity
             style={styles.pickerButton}
             onPress={() => setShowStartDatePicker(!showStartDatePicker)}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.manualEntry.startDateLabel', { date: formatDate(entry.periodStart) })}
+            accessibilityState={{ expanded: showStartDatePicker }}
           >
             <Text style={styles.pickerButtonText}>{formatDate(entry.periodStart)}</Text>
             <Text style={styles.chevron}>{showStartDatePicker ? '▲' : '▼'}</Text>
@@ -276,6 +294,9 @@ export default function ManualEntry() {
                     setEntry({ ...entry, periodStart: firstDay });
                     setShowStartDatePicker(false);
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('a11y.manualEntry.startThisMonthLabel')}
+                  hitSlop={{ top: 4, bottom: 4 }}
                 >
                   <Text style={styles.datePresetButtonText}>This Month (1st)</Text>
                 </TouchableOpacity>
@@ -285,6 +306,9 @@ export default function ManualEntry() {
                     setEntry({ ...entry, periodStart: now });
                     setShowStartDatePicker(false);
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('a11y.manualEntry.startTodayLabel')}
+                  hitSlop={{ top: 4, bottom: 4 }}
                 >
                   <Text style={styles.datePresetButtonText}>Today</Text>
                 </TouchableOpacity>
@@ -302,6 +326,9 @@ export default function ManualEntry() {
           <TouchableOpacity
             style={[styles.pickerButton, errors.periodEnd && styles.inputError]}
             onPress={() => setShowEndDatePicker(!showEndDatePicker)}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.manualEntry.endDateLabel', { date: formatDate(entry.periodEnd) })}
+            accessibilityState={{ expanded: showEndDatePicker }}
           >
             <Text style={styles.pickerButtonText}>{formatDate(entry.periodEnd)}</Text>
             <Text style={styles.chevron}>{showEndDatePicker ? '▲' : '▼'}</Text>
@@ -319,6 +346,9 @@ export default function ManualEntry() {
                     setShowEndDatePicker(false);
                     setErrors({ ...errors, periodEnd: undefined });
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('a11y.manualEntry.endOfMonthLabel')}
+                  hitSlop={{ top: 4, bottom: 4 }}
                 >
                   <Text style={styles.datePresetButtonText}>End of Month</Text>
                 </TouchableOpacity>
@@ -331,6 +361,9 @@ export default function ManualEntry() {
                     setShowEndDatePicker(false);
                     setErrors({ ...errors, periodEnd: undefined });
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('a11y.manualEntry.end30DaysLabel')}
+                  hitSlop={{ top: 4, bottom: 4 }}
                 >
                   <Text style={styles.datePresetButtonText}>30 Days</Text>
                 </TouchableOpacity>
@@ -353,13 +386,15 @@ export default function ManualEntry() {
 
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave} accessibilityRole="button" accessibilityLabel={t('a11y.manualEntry.saveLabel')}>
           <Text style={styles.saveButtonText}>Save Benefit</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.cancelButton}
           onPress={() => router.back()}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.manualEntry.cancelLabel')}
         >
           <Text style={styles.cancelButtonText}>Cancel</Text>
         </TouchableOpacity>

@@ -15,6 +15,7 @@ import {
 import { useRouter } from 'expo-router';
 import { saveHousehold, loadHousehold, clearHousehold } from '@/lib/services/householdStorage';
 import { Household, Participant, BenefitAmount } from '@/lib/services/api';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 type ParticipantType = 'pregnant' | 'postpartum' | 'breastfeeding' | 'infant' | 'child';
 
@@ -52,6 +53,7 @@ interface BenefitInput {
 
 export default function HouseholdSetup() {
   const router = useRouter();
+  const t = useTranslation();
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [showAddParticipant, setShowAddParticipant] = useState(false);
   const [newParticipantName, setNewParticipantName] = useState('');
@@ -264,7 +266,7 @@ export default function HouseholdSetup() {
             <View key={index} style={styles.benefitCard}>
               <View style={styles.benefitHeader}>
                 <Text style={styles.benefitTitle}>Benefit {index + 1}</Text>
-                <TouchableOpacity onPress={() => handleRemoveBenefit(index)}>
+                <TouchableOpacity onPress={() => handleRemoveBenefit(index)} accessibilityRole="button" accessibilityLabel={t('a11y.householdSetup.removeBenefitLabel', { index: index + 1 })} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
                   <Text style={styles.removeButton}>Remove</Text>
                 </TouchableOpacity>
               </View>
@@ -281,6 +283,10 @@ export default function HouseholdSetup() {
                         benefit.category === cat.category && styles.categoryChipSelected,
                       ]}
                       onPress={() => handleUpdateBenefit(index, 'category', cat.category)}
+                      accessibilityRole="radio"
+                      accessibilityLabel={cat.label}
+                      accessibilityState={{ selected: benefit.category === cat.category }}
+                      hitSlop={{ top: 6, bottom: 6 }}
                     >
                       <Text
                         style={[
@@ -304,13 +310,14 @@ export default function HouseholdSetup() {
                   keyboardType="numeric"
                   value={benefit.total}
                   onChangeText={(text) => handleUpdateBenefit(index, 'total', text)}
+                  accessibilityLabel={t('a11y.householdSetup.benefitAmountLabel', { index: index + 1 })}
                 />
                 <Text style={styles.unitText}>{benefit.unit}</Text>
               </View>
             </View>
           ))}
 
-          <TouchableOpacity style={styles.addBenefitButton} onPress={handleAddBenefit}>
+          <TouchableOpacity style={styles.addBenefitButton} onPress={handleAddBenefit} accessibilityRole="button" accessibilityLabel={t('a11y.householdSetup.addBenefitLabel')}>
             <Text style={styles.addBenefitButtonText}>+ Add Benefit</Text>
           </TouchableOpacity>
 
@@ -318,6 +325,8 @@ export default function HouseholdSetup() {
             <TouchableOpacity
               style={styles.saveButton}
               onPress={handleSaveBenefits}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.householdSetup.saveBenefitsLabel')}
             >
               <Text style={styles.saveButtonText}>Save Benefits</Text>
             </TouchableOpacity>
@@ -327,6 +336,8 @@ export default function HouseholdSetup() {
                 setEditingParticipantId(null);
                 setEditingBenefits([]);
               }}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.householdSetup.cancelEditLabel')}
             >
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
@@ -350,7 +361,7 @@ export default function HouseholdSetup() {
                   {PARTICIPANT_TYPES.find(t => t.value === participant.type)?.label}
                 </Text>
               </View>
-              <TouchableOpacity onPress={() => handleRemoveParticipant(participant.id)}>
+              <TouchableOpacity onPress={() => handleRemoveParticipant(participant.id)} accessibilityRole="button" accessibilityLabel={t('a11y.householdSetup.removeParticipantLabel', { name: participant.name })} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
                 <Text style={styles.removeButton}>Remove</Text>
               </TouchableOpacity>
             </View>
@@ -361,6 +372,9 @@ export default function HouseholdSetup() {
               <TouchableOpacity
                 style={styles.editBenefitsButton}
                 onPress={() => handleEditBenefits(participant.id)}
+                accessibilityRole="button"
+                accessibilityLabel={participant.benefits.length === 0 ? t('a11y.householdSetup.addBenefitsForLabel', { name: participant.name }) : t('a11y.householdSetup.editBenefitsForLabel', { name: participant.name })}
+                hitSlop={{ top: 6, bottom: 6 }}
               >
                 <Text style={styles.editBenefitsButtonText}>
                   {participant.benefits.length === 0 ? 'Add Benefits' : 'Edit Benefits'}
@@ -375,6 +389,8 @@ export default function HouseholdSetup() {
           <TouchableOpacity
             style={styles.addParticipantButton}
             onPress={() => setShowAddParticipant(true)}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.householdSetup.addParticipantLabel')}
           >
             <Text style={styles.addParticipantButtonText}>+ Add Participant</Text>
           </TouchableOpacity>
@@ -386,12 +402,16 @@ export default function HouseholdSetup() {
               placeholder="Enter name"
               value={newParticipantName}
               onChangeText={setNewParticipantName}
+              accessibilityLabel={t('a11y.householdSetup.nameInputLabel')}
             />
 
             <Text style={styles.label}>Participant Type</Text>
             <TouchableOpacity
               style={styles.pickerButton}
               onPress={() => setShowTypePicker(!showTypePicker)}
+              accessibilityRole="button"
+              accessibilityLabel={newParticipantType ? t('a11y.householdSetup.typeSelectedLabel', { type: PARTICIPANT_TYPES.find(pt => pt.value === newParticipantType)?.label }) : t('a11y.householdSetup.selectTypeLabel')}
+              accessibilityState={{ expanded: showTypePicker }}
             >
               <Text style={[styles.pickerButtonText, !newParticipantType && styles.placeholderText]}>
                 {newParticipantType
@@ -411,6 +431,9 @@ export default function HouseholdSetup() {
                       setNewParticipantType(type.value);
                       setShowTypePicker(false);
                     }}
+                    accessibilityRole="radio"
+                    accessibilityLabel={type.label}
+                    accessibilityState={{ selected: newParticipantType === type.value }}
                   >
                     <Text style={styles.pickerOptionText}>{type.label}</Text>
                   </TouchableOpacity>
@@ -419,7 +442,7 @@ export default function HouseholdSetup() {
             )}
 
             <View style={styles.buttonRow}>
-              <TouchableOpacity style={styles.saveButton} onPress={handleAddParticipant}>
+              <TouchableOpacity style={styles.saveButton} onPress={handleAddParticipant} accessibilityRole="button" accessibilityLabel={t('a11y.householdSetup.addParticipantLabel')}>
                 <Text style={styles.saveButtonText}>Add</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -429,6 +452,8 @@ export default function HouseholdSetup() {
                   setNewParticipantName('');
                   setNewParticipantType(null);
                 }}
+                accessibilityRole="button"
+                accessibilityLabel={t('a11y.householdSetup.cancelAddLabel')}
               >
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
@@ -439,10 +464,10 @@ export default function HouseholdSetup() {
         {/* Action Buttons */}
         {participants.length > 0 && (
           <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.primaryButton} onPress={handleSaveHousehold}>
+            <TouchableOpacity style={styles.primaryButton} onPress={handleSaveHousehold} accessibilityRole="button" accessibilityLabel={t('a11y.householdSetup.saveHouseholdLabel')}>
               <Text style={styles.primaryButtonText}>Save & Apply</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.clearButton} onPress={handleClearAll}>
+            <TouchableOpacity style={styles.clearButton} onPress={handleClearAll} accessibilityRole="button" accessibilityLabel={t('a11y.householdSetup.clearAllLabel')}>
               <Text style={styles.clearButtonText}>Clear All Data</Text>
             </TouchableOpacity>
           </View>

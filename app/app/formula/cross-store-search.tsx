@@ -150,6 +150,10 @@ export default function CrossStoreSearchScreen() {
       <TouchableOpacity
         style={[styles.modeButton, searchMode === 'text' && styles.modeButtonActive]}
         onPress={() => setSearchMode('text')}
+        accessibilityRole="tab"
+        accessibilityLabel={t('a11y.crossStoreSearch.searchByTextLabel')}
+        accessibilityState={{ selected: searchMode === 'text' }}
+        hitSlop={{ top: 4, bottom: 4 }}
       >
         <Text style={[styles.modeButtonText, searchMode === 'text' && styles.modeButtonTextActive]}>
           🔍 {t('crossStoreSearch.searchMode')}
@@ -158,6 +162,10 @@ export default function CrossStoreSearchScreen() {
       <TouchableOpacity
         style={[styles.modeButton, searchMode === 'brand' && styles.modeButtonActive]}
         onPress={() => setSearchMode('brand')}
+        accessibilityRole="tab"
+        accessibilityLabel={t('a11y.crossStoreSearch.searchByBrandLabel')}
+        accessibilityState={{ selected: searchMode === 'brand' }}
+        hitSlop={{ top: 4, bottom: 4 }}
       >
         <Text style={[styles.modeButtonText, searchMode === 'brand' && styles.modeButtonTextActive]}>
           🏷️ {t('crossStoreSearch.byBrand')}
@@ -166,6 +174,10 @@ export default function CrossStoreSearchScreen() {
       <TouchableOpacity
         style={[styles.modeButton, searchMode === 'type' && styles.modeButtonActive]}
         onPress={() => setSearchMode('type')}
+        accessibilityRole="tab"
+        accessibilityLabel={t('a11y.crossStoreSearch.searchByTypeLabel')}
+        accessibilityState={{ selected: searchMode === 'type' }}
+        hitSlop={{ top: 4, bottom: 4 }}
       >
         <Text style={[styles.modeButtonText, searchMode === 'type' && styles.modeButtonTextActive]}>
           📋 {t('crossStoreSearch.byType')}
@@ -186,6 +198,8 @@ export default function CrossStoreSearchScreen() {
             onSubmitEditing={handleSearch}
             returnKeyType="search"
             placeholderTextColor="#9E9E9E"
+            accessibilityLabel={t('a11y.crossStoreSearch.searchInputLabel')}
+            accessibilityRole="search"
           />
         </View>
       );
@@ -210,6 +224,9 @@ export default function CrossStoreSearchScreen() {
                   selectedBrand === brand.name && styles.chipActive
                 ]}
                 onPress={() => setSelectedBrand(brand.name)}
+                accessibilityRole="radio"
+                accessibilityLabel={`${brand.name}, ${brand.formulaCount} formulas`}
+                accessibilityState={{ selected: selectedBrand === brand.name }}
               >
                 <Text style={[
                   styles.chipText,
@@ -241,8 +258,11 @@ export default function CrossStoreSearchScreen() {
                 selectedType === type.value && styles.chipActive
               ]}
               onPress={() => setSelectedType(type.value)}
+              accessibilityRole="radio"
+              accessibilityLabel={type.label}
+              accessibilityState={{ selected: selectedType === type.value }}
             >
-              <Text style={styles.chipIcon}>{type.icon}</Text>
+              <Text style={styles.chipIcon} accessible={false} importantForAccessibility="no">{type.icon}</Text>
               <Text style={[
                 styles.chipText,
                 selectedType === type.value && styles.chipTextActive
@@ -300,6 +320,10 @@ export default function CrossStoreSearchScreen() {
                   searchRadius === radius && styles.radiusButtonActive
                 ]}
                 onPress={() => setSearchRadius(radius)}
+                accessibilityRole="radio"
+                accessibilityLabel={t('a11y.crossStoreSearch.radiusLabel', { radius })}
+                accessibilityState={{ selected: searchRadius === radius }}
+                hitSlop={{ top: 6, bottom: 6 }}
               >
                 <Text style={[
                   styles.radiusButtonText,
@@ -318,6 +342,10 @@ export default function CrossStoreSearchScreen() {
               inStockOnly && styles.filterToggleActive
             ]}
             onPress={() => setInStockOnly(!inStockOnly)}
+            accessibilityRole="switch"
+            accessibilityLabel={t('a11y.crossStoreSearch.inStockOnlyLabel')}
+            accessibilityState={{ checked: inStockOnly }}
+            hitSlop={{ top: 6, bottom: 6 }}
           >
             <Text style={[
               styles.filterToggleText,
@@ -336,6 +364,9 @@ export default function CrossStoreSearchScreen() {
           ]}
           onPress={handleSearch}
           disabled={loading || loadingLocation || !location}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.crossStoreSearch.searchStoresLabel')}
+          accessibilityState={{ disabled: loading || loadingLocation || !location }}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
@@ -366,7 +397,7 @@ export default function CrossStoreSearchScreen() {
           />
         ) : (
           <View style={styles.initialState}>
-            <Text style={styles.initialIcon}>🍼</Text>
+            <Text style={styles.initialIcon} accessible={false} importantForAccessibility="no">🍼</Text>
             <Text style={styles.initialTitle}>{t('crossStoreSearch.initialTitle')}</Text>
             <Text style={styles.initialText}>
               {t('crossStoreSearch.initialText')}
@@ -389,6 +420,9 @@ export default function CrossStoreSearchScreen() {
         <TouchableOpacity
           style={styles.quickReportButton}
           onPress={() => setSightingModalVisible(true)}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.crossStoreSearch.reportLabel')}
+          accessibilityHint={t('a11y.crossStoreSearch.reportHint')}
         >
           <Text style={styles.quickReportButtonText}>
             Found This Formula? Report It!

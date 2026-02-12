@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 
@@ -7,14 +7,17 @@ export default function Home() {
   const t = useTranslation();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{t('app.title')}</Text>
+    <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.container}>
+      <Text style={styles.title} accessibilityRole="header">{t('app.title')}</Text>
       <Text style={styles.subtitle}>{t('app.subtitle')}</Text>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.formulaButton}
           onPress={() => router.push('/formula')}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.home.findFormulaLabel')}
+          accessibilityHint={t('a11y.home.findFormulaHint')}
         >
           <Text style={styles.buttonText}>🍼 {t('home.findFormula')}</Text>
           <Text style={styles.buttonSubtext}>{t('home.findFormulaSubtext')}</Text>
@@ -23,6 +26,8 @@ export default function Home() {
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => router.push('/scanner')}
+          accessibilityRole="button"
+          accessibilityHint={t('a11y.home.scanHint')}
         >
           <Text style={styles.buttonText}>{t('home.scanProduct')}</Text>
         </TouchableOpacity>
@@ -30,6 +35,8 @@ export default function Home() {
         <TouchableOpacity
           style={styles.secondaryButton}
           onPress={() => router.push('/benefits')}
+          accessibilityRole="button"
+          accessibilityHint={t('a11y.home.benefitsHint')}
         >
           <Text style={styles.buttonText}>{t('home.viewBenefits')}</Text>
         </TouchableOpacity>
@@ -37,6 +44,8 @@ export default function Home() {
         <TouchableOpacity
           style={styles.cartButton}
           onPress={() => router.push('/cart')}
+          accessibilityRole="button"
+          accessibilityHint={t('a11y.home.cartHint')}
         >
           <Text style={styles.buttonText}>{t('home.shoppingCart')}</Text>
         </TouchableOpacity>
@@ -44,6 +53,9 @@ export default function Home() {
         <TouchableOpacity
           style={styles.foodBankButton}
           onPress={() => router.push('/foodbanks')}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.home.foodBanksLabel')}
+          accessibilityHint={t('a11y.home.foodBanksHint')}
         >
           <Text style={styles.buttonText}>🏠 {t('home.findFoodBanks')}</Text>
           <Text style={styles.buttonSubtext}>{t('home.findFoodBanksSubtext')}</Text>
@@ -52,6 +64,8 @@ export default function Home() {
         <TouchableOpacity
           style={styles.helpButton}
           onPress={() => router.push('/help')}
+          accessibilityRole="button"
+          accessibilityHint={t('a11y.home.helpHint')}
         >
           <Text style={styles.helpButtonText}>❓ {t('home.helpFaq')}</Text>
         </TouchableOpacity>
@@ -59,23 +73,27 @@ export default function Home() {
         <TouchableOpacity
           style={styles.settingsButton}
           onPress={() => router.push('/settings/location')}
+          accessibilityRole="button"
+          accessibilityHint={t('a11y.home.locationHint')}
         >
           <Text style={styles.settingsButtonText}>📍 Location Settings</Text>
         </TouchableOpacity>
       </View>
 
       <Text style={styles.footer}>{t('app.version')}</Text>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollContainer: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  container: {
     alignItems: 'center',
-    justifyContent: 'center',
     padding: 20,
+    paddingTop: 24,
   },
   title: {
     fontSize: 28,

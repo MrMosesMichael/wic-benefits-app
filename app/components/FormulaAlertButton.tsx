@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import notificationService, { type NotificationSubscription } from '@/lib/services/notificationService';
-import { t } from '@/lib/i18n';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 import Constants from 'expo-constants';
 
 interface FormulaAlertButtonProps {
@@ -21,6 +21,7 @@ export default function FormulaAlertButton({
   storeIds,
   onSubscriptionChange,
 }: FormulaAlertButtonProps) {
+  const t = useTranslation();
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(false);
   const [subscription, setSubscription] = useState<NotificationSubscription | null>(null);
@@ -150,7 +151,13 @@ export default function FormulaAlertButton({
 
   if (subscribing) {
     return (
-      <TouchableOpacity style={[styles.button, styles.buttonLoading]} disabled>
+      <TouchableOpacity
+        style={[styles.button, styles.buttonLoading]}
+        disabled
+        accessibilityRole="button"
+        accessibilityLabel={t('a11y.formulaAlert.loadingLabel')}
+        accessibilityState={{ disabled: true }}
+      >
         <ActivityIndicator size="small" color="#fff" />
         <Text style={styles.buttonText}>{t('formulaAlerts.loading')}</Text>
       </TouchableOpacity>
@@ -163,8 +170,11 @@ export default function FormulaAlertButton({
         style={[styles.button, styles.buttonActive]}
         onPress={handleUnsubscribe}
         activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={t('a11y.formulaAlert.activeLabel')}
+        accessibilityHint={t('a11y.formulaAlert.activeHint')}
       >
-        <Text style={styles.buttonIcon}>🔔</Text>
+        <Text style={styles.buttonIcon} accessible={false} importantForAccessibility="no">🔔</Text>
         <Text style={styles.buttonText}>{t('formulaAlerts.alertActive')}</Text>
       </TouchableOpacity>
     );
@@ -175,8 +185,11 @@ export default function FormulaAlertButton({
       style={[styles.button, styles.buttonInactive]}
       onPress={handleSubscribe}
       activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={t('a11y.formulaAlert.inactiveLabel')}
+      accessibilityHint={t('a11y.formulaAlert.inactiveHint')}
     >
-      <Text style={styles.buttonIcon}>🔕</Text>
+      <Text style={styles.buttonIcon} accessible={false} importantForAccessibility="no">🔕</Text>
       <Text style={styles.buttonText}>{t('formulaAlerts.setAlert')}</Text>
     </TouchableOpacity>
   );

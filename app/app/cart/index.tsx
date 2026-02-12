@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { getCart, removeFromCart, clearCart, checkout, Cart } from '@/lib/services/api';
 import { useTranslation } from '@/lib/i18n/I18nContext';
@@ -8,6 +9,7 @@ import NeedHelpLink from '@/components/NeedHelpLink';
 export default function CartScreen() {
   const router = useRouter();
   const t = useTranslation();
+  const insets = useSafeAreaInsets();
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -133,7 +135,7 @@ export default function CartScreen() {
     return (
       <View style={styles.centerContainer}>
         <Text style={styles.errorText}>{t('cart.failedToLoad')}</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={loadCart}>
+        <TouchableOpacity style={styles.retryButton} onPress={loadCart} accessibilityRole="button">
           <Text style={styles.retryButtonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
@@ -143,12 +145,14 @@ export default function CartScreen() {
   if (!cart || cart.items.length === 0) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.emptyIcon}>🛒</Text>
+        <Text style={styles.emptyIcon} accessible={false} importantForAccessibility="no">🛒</Text>
         <Text style={styles.emptyTitle}>{t('cart.emptyCart')}</Text>
         <Text style={styles.emptySubtitle}>{t('cart.emptyCartSubtitle')}</Text>
         <TouchableOpacity
           style={styles.startScanningButton}
           onPress={() => router.push('/scanner')}
+          accessibilityRole="button"
+          accessibilityHint={t('a11y.cart.scanHint')}
         >
           <Text style={styles.startScanningButtonText}>{t('cart.startScanning')}</Text>
         </TouchableOpacity>
@@ -173,14 +177,19 @@ export default function CartScreen() {
           return (
             <View key={participantId} style={styles.participantSection}>
               <View style={styles.participantHeader}>
-                <Text style={styles.participantName}>{firstItem.participant_name}</Text>
+                <Text style={styles.participantName} accessibilityRole="header">{firstItem.participant_name}</Text>
                 <View style={styles.typeBadge}>
                   <Text style={styles.typeText}>{firstItem.participant_type}</Text>
                 </View>
               </View>
 
               {items.map(item => (
-                <View key={item.id} style={styles.cartItem}>
+                <View
+                  key={item.id}
+                  style={styles.cartItem}
+                  accessible={true}
+                  accessibilityLabel={`${item.product_name}${item.brand ? `, ${item.brand}` : ''}${item.size ? `, ${item.size}` : ''}, ${item.category}, ${item.quantity} ${item.unit}`}
+                >
                   <View style={styles.itemInfo}>
                     <Text style={styles.productName}>{item.product_name}</Text>
                     {item.brand && <Text style={styles.brand}>{item.brand}</Text>}
@@ -195,6 +204,8 @@ export default function CartScreen() {
                   <TouchableOpacity
                     style={styles.removeButton}
                     onPress={() => handleRemoveItem(item.id, item.product_name)}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('a11y.cart.removeLabel', { product: item.product_name })}
                   >
                     <Text style={styles.removeButtonText}>{t('cart.remove')}</Text>
                   </TouchableOpacity>
@@ -208,6 +219,8 @@ export default function CartScreen() {
           <TouchableOpacity
             style={styles.clearButton}
             onPress={handleClearCart}
+            accessibilityRole="button"
+            accessibilityHint={t('a11y.cart.clearHint')}
           >
             <Text style={styles.clearButtonText}>{t('cart.clearAllItems')}</Text>
           </TouchableOpacity>
@@ -222,10 +235,12 @@ export default function CartScreen() {
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingBottom: Math.max(16, insets.bottom) }]}>
         <TouchableOpacity
           style={styles.checkoutButton}
           onPress={handleCheckout}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.cart.checkoutLabel', { count: cart.items.length })}
         >
           <Text style={styles.checkoutButtonText}>{t('cart.checkout')} ({cart.items.length})</Text>
         </TouchableOpacity>

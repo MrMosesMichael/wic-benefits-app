@@ -78,7 +78,7 @@ export default function Scanner() {
     return (
       <View style={styles.container}>
         <Text style={styles.message}>{t('scanner.permissionRequired')}</Text>
-        <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
+        <TouchableOpacity style={styles.permissionButton} onPress={requestPermission} accessibilityRole="button">
           <Text style={styles.permissionButtonText}>{t('scanner.grantPermission')}</Text>
         </TouchableOpacity>
       </View>
@@ -94,13 +94,17 @@ export default function Scanner() {
           barcodeTypes: ['ean13', 'upc_a', 'upc_e'],
         }}
         onBarcodeScanned={isActive && !scanning ? handleBarCodeScanned : undefined}
+        accessible={false}
       />
 
       {/* Mode toggle */}
-      <View style={styles.modeToggle}>
+      <View style={styles.modeToggle} accessibilityRole="tablist">
         <TouchableOpacity
           style={[styles.modeButton, scanMode === 'check' && styles.modeButtonActive]}
           onPress={() => setScanMode('check')}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: scanMode === 'check' }}
+          hitSlop={{ top: 6, bottom: 6 }}
         >
           <Text style={[styles.modeButtonText, scanMode === 'check' && styles.modeButtonTextActive]}>
             {t('scanner.checkEligibility')}
@@ -109,6 +113,9 @@ export default function Scanner() {
         <TouchableOpacity
           style={[styles.modeButton, scanMode === 'shopping' && styles.modeButtonActive]}
           onPress={() => setScanMode('shopping')}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: scanMode === 'shopping' }}
+          hitSlop={{ top: 6, bottom: 6 }}
         >
           <Text style={[styles.modeButtonText, scanMode === 'shopping' && styles.modeButtonTextActive]}>
             {t('scanner.shoppingMode')}
@@ -141,6 +148,9 @@ export default function Scanner() {
       <TouchableOpacity
         style={styles.cancelButton}
         onPress={() => router.back()}
+        accessibilityRole="button"
+        accessibilityLabel={t('a11y.scanner.cancelLabel')}
+        hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
       >
         <Text style={styles.cancelText}>{t('scanner.cancel')}</Text>
       </TouchableOpacity>

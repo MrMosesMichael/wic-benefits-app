@@ -16,6 +16,7 @@ import {
   updateBenefitPeriod,
   rolloverBenefitPeriod,
 } from '@/lib/services/api';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 interface PeriodSettings {
   periodStart: Date;
@@ -24,6 +25,7 @@ interface PeriodSettings {
 
 export default function PeriodSettings() {
   const router = useRouter();
+  const t = useTranslation();
   const [household, setHousehold] = useState<Household | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -248,7 +250,7 @@ export default function PeriodSettings() {
     return (
       <View style={styles.centerContainer}>
         <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={loadBenefits}>
+        <TouchableOpacity style={styles.retryButton} onPress={loadBenefits} accessibilityRole="button" accessibilityLabel={t('a11y.periodSettings.retryLabel')}>
           <Text style={styles.retryButtonText}>Retry</Text>
         </TouchableOpacity>
       </View>
@@ -326,7 +328,7 @@ export default function PeriodSettings() {
 
               {daysRemaining <= 5 && (
                 <View style={styles.warningBox}>
-                  <Text style={styles.warningIcon}>⚠️</Text>
+                  <Text style={styles.warningIcon} accessible={false} importantForAccessibility="no">⚠️</Text>
                   <Text style={styles.warningText}>
                     Your benefit period expires in {daysRemaining} {daysRemaining === 1 ? 'day' : 'days'}.
                     Unused benefits will not roll over.
@@ -338,7 +340,7 @@ export default function PeriodSettings() {
 
           {isExpired && (
             <View style={styles.expiredBox}>
-              <Text style={styles.expiredIcon}>🕐</Text>
+              <Text style={styles.expiredIcon} accessible={false} importantForAccessibility="no">🕐</Text>
               <Text style={styles.expiredText}>
                 This benefit period has ended. Start a new period to continue tracking benefits.
               </Text>
@@ -349,7 +351,7 @@ export default function PeriodSettings() {
 
       {/* Edit Period Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Edit Period Dates</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">Edit Period Dates</Text>
 
         {/* Start Date Picker */}
         <View style={styles.fieldGroup}>
@@ -357,6 +359,9 @@ export default function PeriodSettings() {
           <TouchableOpacity
             style={styles.pickerButton}
             onPress={() => setShowStartPicker(!showStartPicker)}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.periodSettings.startDateLabel', { date: formatDate(periodStart) })}
+            accessibilityState={{ expanded: showStartPicker }}
           >
             <Text style={styles.pickerButtonText}>{formatDate(periodStart)}</Text>
             <Text style={styles.chevron}>{showStartPicker ? '▲' : '▼'}</Text>
@@ -368,12 +373,18 @@ export default function PeriodSettings() {
                 <TouchableOpacity
                   style={styles.datePresetButton}
                   onPress={() => setPresetPeriod('current_month')}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('a11y.periodSettings.startThisMonthLabel')}
+                  hitSlop={{ top: 4, bottom: 4 }}
                 >
                   <Text style={styles.datePresetButtonText}>This Month</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.datePresetButton}
                   onPress={() => setPresetPeriod('next_month')}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('a11y.periodSettings.startNextMonthLabel')}
+                  hitSlop={{ top: 4, bottom: 4 }}
                 >
                   <Text style={styles.datePresetButtonText}>Next Month</Text>
                 </TouchableOpacity>
@@ -391,6 +402,9 @@ export default function PeriodSettings() {
           <TouchableOpacity
             style={styles.pickerButton}
             onPress={() => setShowEndPicker(!showEndPicker)}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.periodSettings.endDateLabel', { date: formatDate(periodEnd) })}
+            accessibilityState={{ expanded: showEndPicker }}
           >
             <Text style={styles.pickerButtonText}>{formatDate(periodEnd)}</Text>
             <Text style={styles.chevron}>{showEndPicker ? '▲' : '▼'}</Text>
@@ -406,6 +420,9 @@ export default function PeriodSettings() {
                     setPeriodEnd(lastDay);
                     setShowEndPicker(false);
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('a11y.periodSettings.endOfMonthLabel')}
+                  hitSlop={{ top: 4, bottom: 4 }}
                 >
                   <Text style={styles.datePresetButtonText}>End of Month</Text>
                 </TouchableOpacity>
@@ -417,6 +434,9 @@ export default function PeriodSettings() {
                     setPeriodEnd(thirtyDays);
                     setShowEndPicker(false);
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('a11y.periodSettings.end30DaysLabel')}
+                  hitSlop={{ top: 4, bottom: 4 }}
                 >
                   <Text style={styles.datePresetButtonText}>30 Days</Text>
                 </TouchableOpacity>
@@ -432,6 +452,9 @@ export default function PeriodSettings() {
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           onPress={handleSavePeriod}
           disabled={saving}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.periodSettings.saveLabel')}
+          accessibilityState={{ disabled: saving }}
         >
           {saving ? (
             <ActivityIndicator size="small" color="#fff" />
@@ -444,7 +467,7 @@ export default function PeriodSettings() {
       {/* Period Rollover Section */}
       {isExpired && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Start New Period</Text>
+          <Text style={styles.sectionTitle} accessibilityRole="header">Start New Period</Text>
           <View style={styles.infoBox}>
             <Text style={styles.infoText}>
               When you start a new benefit period, the current period will be archived and all
@@ -456,6 +479,10 @@ export default function PeriodSettings() {
             style={[styles.rolloverButton, saving && styles.rolloverButtonDisabled]}
             onPress={handleRolloverPeriod}
             disabled={saving}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.periodSettings.newPeriodLabel')}
+            accessibilityState={{ disabled: saving }}
+            accessibilityHint={t('a11y.periodSettings.newPeriodHint')}
           >
             {saving ? (
               <ActivityIndicator size="small" color="#fff" />
@@ -485,6 +512,8 @@ export default function PeriodSettings() {
         <TouchableOpacity
           style={styles.cancelButton}
           onPress={() => router.back()}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.periodSettings.backLabel')}
         >
           <Text style={styles.cancelButtonText}>Back to Benefits</Text>
         </TouchableOpacity>

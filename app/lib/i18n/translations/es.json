@@ -516,5 +516,220 @@
     "backToHelp": "Volver a Ayuda",
     "errorTitle": "Error al Enviar",
     "errorMessage": "No se pudieron enviar sus comentarios. Verifique su conexión a internet e intente de nuevo."
+  },
+  "a11y": {
+    "needHelpLink": {
+      "hint": "Abre la pantalla de ayuda y preguntas frecuentes"
+    },
+    "formulaCard": {
+      "selectedLabel": "seleccionado",
+      "wicContractLabel": "Marca de contrato WIC"
+    },
+    "quantitySelector": {
+      "groupLabel": "Opciones de cantidad"
+    },
+    "faqList": {
+      "expandHint": "Expandir respuesta",
+      "collapseHint": "Contraer respuesta"
+    },
+    "formulaSighting": {
+      "cancelLabel": "Cancelar",
+      "goBackLabel": "Volver",
+      "storeLabel": "{{name}}, {{address}}, {{city}}, a {{distance}} millas"
+    },
+    "formulaAlert": {
+      "loadingLabel": "Cargando alerta de fórmula",
+      "activeLabel": "Alerta de fórmula activa. Toque para cancelar la alerta",
+      "activeHint": "Cancela las notificaciones de alerta para esta fórmula",
+      "inactiveLabel": "Establecer alerta de fórmula",
+      "inactiveHint": "Recibir notificación cuando esta fórmula esté disponible"
+    },
+    "benefitValidation": {
+      "dismissLabel": "Descartar advertencia",
+      "resolveLabel": "Revisar y corregir este problema"
+    },
+    "locationPrompt": {
+      "gpsLabel": "Usar GPS para ubicación",
+      "gpsHint": "Solicita permiso de ubicación para detectar su estado",
+      "zipLabel": "Ingresar código postal",
+      "zipHint": "Ingrese su código postal manualmente",
+      "zipInputLabel": "Código postal de 5 dígitos",
+      "zipInputHint": "Ingrese su código postal de 5 dígitos para detectar su estado",
+      "submitZipLabel": "Enviar código postal",
+      "switchToGpsLabel": "Cambiar a ubicación por GPS"
+    },
+    "storeCard": {
+      "callLabel": "Llamar a la tienda",
+      "directionsLabel": "Obtener indicaciones a la tienda",
+      "wicAuthorizedLabel": "Autorizado por WIC",
+      "milesAwayLabel": "A {{distance}} millas"
+    },
+    "formulaAlternatives": {
+      "cardHint": "Ver detalles de fórmula alternativa",
+      "inStockLabel": "en existencia cercana",
+      "contractLabel": "Marca de contrato WIC"
+    },
+    "languageSwitcher": {
+      "hint": "Abre la selección de idioma",
+      "closeLabel": "Cerrar selección de idioma"
+    },
+    "home": {
+      "findFormulaLabel": "Buscar Fórmula. Encontrar fórmula infantil cercana",
+      "findFormulaHint": "Abre el buscador de fórmulas",
+      "scanHint": "Abre el escáner de códigos de barras",
+      "benefitsHint": "Muestra el saldo de sus beneficios WIC",
+      "cartHint": "Ver artículos en su carrito de compras",
+      "foodBanksLabel": "Buscar Bancos de Alimentos. Asistencia alimentaria local cercana",
+      "foodBanksHint": "Buscar bancos de alimentos cercanos",
+      "helpHint": "Obtener ayuda y encontrar respuestas",
+      "locationHint": "Cambiar su configuración de ubicación"
+    },
+    "scanner": {
+      "cancelLabel": "Cancelar escaneo"
+    },
+    "result": {
+      "approvedLabel": "Aprobado por WIC, Michigan",
+      "notApprovedLabel": "No aprobado por WIC, Michigan",
+      "storeNameLabel": "Nombre de la tienda"
+    },
+    "cart": {
+      "scanHint": "Abre el escáner de códigos de barras",
+      "removeLabel": "Eliminar {{product}} del carrito",
+      "clearHint": "Elimina todos los artículos del carrito",
+      "checkoutLabel": "Pagar {{count}} artículos"
+    },
+    "benefits": {
+      "setupHint": "Configurar hogar y participantes",
+      "scanHint": "Abre el escáner de códigos de barras",
+      "benefitLabel": "{{category}}: {{available}} {{unit}} disponible, {{inCart}} {{unit}} en carrito, {{consumed}} {{unit}} usado, total {{total}} {{unit}}"
+    },
+    "formula": {
+      "changeHint": "Abre la pantalla de selección de fórmula",
+      "selectHint": "Abre la selección de fórmula",
+      "crossStoreHint": "Abre la búsqueda en múltiples tiendas",
+      "searchLabel": "Buscar fórmulas por marca o nombre",
+      "confirmLabel": "Confirmar selección de fórmula"
+    },
+    "help": {
+      "searchLabel": "Buscar preguntas frecuentes",
+      "clearSearchLabel": "Borrar búsqueda",
+      "feedbackHint": "Abre el formulario de comentarios",
+      "privacyHint": "Abre la configuración de privacidad"
+    },
+    "feedback": {
+      "descriptionLabel": "Describa sus comentarios",
+      "submitAnotherLabel": "Enviar otro comentario",
+      "backToHelpLabel": "Volver a ayuda",
+      "includeDeviceLabel": "Incluir información del dispositivo",
+      "submitLabel": "Enviar comentarios"
+    },
+    "foodBanks": {
+      "openNowLabel": "Filtro abierto ahora",
+      "searchLabel": "Buscar bancos de alimentos",
+      "expandHint": "Toque para expandir o contraer detalles"
+    },
+    "crossStoreSearch": {
+      "searchByTextLabel": "Buscar por texto",
+      "searchByBrandLabel": "Buscar por marca",
+      "searchByTypeLabel": "Buscar por tipo",
+      "searchInputLabel": "Buscar fórmula por nombre, marca o UPC",
+      "radiusLabel": "Radio de {{radius}} millas",
+      "inStockOnlyLabel": "Solo en existencia",
+      "searchStoresLabel": "Buscar tiendas cercanas",
+      "reportLabel": "Reportar avistamiento de fórmula",
+      "reportHint": "Abre un formulario para reportar dónde encontró esta fórmula"
+    },
+    "alternatives": {
+      "retryLabel": "Intentar de nuevo"
+    },
+    "alerts": {
+      "goBackLabel": "Volver",
+      "retryLabel": "Intentar de nuevo",
+      "setupLabel": "Configurar alerta de fórmula",
+      "setupHint": "Navegar al buscador de fórmulas para configurar una alerta",
+      "renewLabel": "Renovar suscripción de alerta",
+      "deleteLabel": "Eliminar suscripción de alerta"
+    },
+    "report": {
+      "grantCameraLabel": "Otorgar permiso de cámara",
+      "scanAgainLabel": "No, escanear de nuevo",
+      "confirmProductLabel": "Sí, este es mi producto",
+      "rescanLabel": "Escanear de nuevo",
+      "storeLabel": "{{name}}, {{address}}, {{city}}, a {{distance}} millas",
+      "submitLabel": "Enviar reporte de avistamiento de fórmula",
+      "backToFinderLabel": "Volver al buscador de fórmulas",
+      "reportAnotherLabel": "Reportar otra fórmula"
+    },
+    "privacy": {
+      "exportLabel": "Exportar mis datos",
+      "deleteLabel": "Eliminar mi cuenta y datos",
+      "dataCollectedLabel": "Datos que recopilamos",
+      "dataNotCollectedLabel": "Datos que no recopilamos"
+    },
+    "location": {
+      "clearLabel": "Borrar ubicación",
+      "detectGpsLabel": "Detectar mi ubicación usando GPS",
+      "zipInputLabel": "Ingresar código postal de 5 dígitos",
+      "setZipLabel": "Establecer código postal",
+      "prefGpsLabel": "Siempre usar GPS",
+      "prefManualLabel": "Siempre usar código postal",
+      "prefAskLabel": "Preguntar cada vez"
+    },
+    "householdSetup": {
+      "removeBenefitLabel": "Eliminar beneficio {{index}}",
+      "benefitAmountLabel": "Cantidad para beneficio {{index}}",
+      "addBenefitLabel": "Agregar otro beneficio",
+      "saveBenefitsLabel": "Guardar beneficios",
+      "cancelEditLabel": "Cancelar edición de beneficios",
+      "removeParticipantLabel": "Eliminar {{name}}",
+      "addBenefitsForLabel": "Agregar beneficios para {{name}}",
+      "editBenefitsForLabel": "Editar beneficios para {{name}}",
+      "addParticipantLabel": "Agregar participante",
+      "nameInputLabel": "Nombre del participante",
+      "selectTypeLabel": "Seleccionar tipo de participante",
+      "typeSelectedLabel": "Tipo de participante: {{type}}",
+      "cancelAddLabel": "Cancelar agregar participante",
+      "saveHouseholdLabel": "Guardar y aplicar hogar",
+      "clearAllLabel": "Borrar todos los datos del hogar"
+    },
+    "manualEntry": {
+      "selectCategoryLabel": "Seleccionar categoría de beneficio",
+      "categorySelectedLabel": "Categoría: {{category}}",
+      "amountLabel": "Cantidad del beneficio",
+      "unitLabel": "Unidad: {{unit}}",
+      "startDateLabel": "Fecha de inicio: {{date}}",
+      "startThisMonthLabel": "Establecer inicio al primero de este mes",
+      "startTodayLabel": "Establecer inicio a hoy",
+      "endDateLabel": "Fecha de fin: {{date}}",
+      "endOfMonthLabel": "Establecer fin a fin de mes",
+      "end30DaysLabel": "Establecer fin a 30 días desde ahora",
+      "saveLabel": "Guardar entrada de beneficio",
+      "cancelLabel": "Cancelar y volver"
+    },
+    "periodSettings": {
+      "retryLabel": "Reintentar carga de beneficios",
+      "startDateLabel": "Fecha de inicio: {{date}}",
+      "startThisMonthLabel": "Establecer a este mes",
+      "startNextMonthLabel": "Establecer al próximo mes",
+      "endDateLabel": "Fecha de fin: {{date}}",
+      "endOfMonthLabel": "Establecer fin a fin de mes",
+      "end30DaysLabel": "Establecer fin a 30 días desde inicio",
+      "saveLabel": "Guardar fechas del período",
+      "newPeriodLabel": "Iniciar nuevo período de beneficios",
+      "newPeriodHint": "Archiva el período actual y reinicia todas las cantidades de beneficios",
+      "backLabel": "Volver a beneficios"
+    },
+    "scanStatement": {
+      "grantCameraLabel": "Otorgar permiso de cámara",
+      "manualEntryLabel": "Ingresar beneficios manualmente",
+      "editBenefitLabel": "Editar {{category}}",
+      "confirmLabel": "Confirmar y guardar beneficios extraídos",
+      "retakeLabel": "Retomar foto",
+      "cancelLabel": "Cancelar y volver",
+      "closeCameraLabel": "Cerrar cámara",
+      "flipCameraLabel": "Voltear cámara",
+      "takePhotoLabel": "Tomar foto del estado de beneficios",
+      "enterManuallyLabel": "Ingresar beneficios manualmente"
+    }
   }
 }

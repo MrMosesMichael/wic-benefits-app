@@ -129,10 +129,10 @@ export default function FormulaAlertsScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton} accessibilityRole="button" accessibilityLabel={t('a11y.alerts.goBackLabel')} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
             <Text style={styles.backButtonText}>{t('common.back')}</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>{t('formulaAlertsList.title')}</Text>
+          <Text style={styles.title} accessibilityRole="header">{t('formulaAlertsList.title')}</Text>
         </View>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#1976D2" />
@@ -153,20 +153,23 @@ export default function FormulaAlertsScreen() {
       >
         {error ? (
           <View style={styles.errorContainer}>
-            <Text style={styles.errorIcon}>⚠️</Text>
+            <Text style={styles.errorIcon} accessible={false} importantForAccessibility="no">⚠️</Text>
             <Text style={styles.errorText}>{error}</Text>
-            <TouchableOpacity style={styles.retryButton} onPress={loadSubscriptions}>
+            <TouchableOpacity style={styles.retryButton} onPress={loadSubscriptions} accessibilityRole="button" accessibilityLabel={t('a11y.alerts.retryLabel')}>
               <Text style={styles.retryButtonText}>{t('common.tryAgain')}</Text>
             </TouchableOpacity>
           </View>
         ) : subscriptions.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyIcon}>🔔</Text>
-            <Text style={styles.emptyTitle}>{t('formulaAlertsList.noAlerts')}</Text>
+            <Text style={styles.emptyIcon} accessible={false} importantForAccessibility="no">🔔</Text>
+            <Text style={styles.emptyTitle} accessibilityRole="header">{t('formulaAlertsList.noAlerts')}</Text>
             <Text style={styles.emptyText}>{t('formulaAlertsList.noAlertsMessage')}</Text>
             <TouchableOpacity
               style={styles.setupButton}
               onPress={() => router.push('/formula')}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.alerts.setupLabel')}
+              accessibilityHint={t('a11y.alerts.setupHint')}
             >
               <Text style={styles.setupButtonText}>{t('formulaAlertsList.setupAlert')}</Text>
             </TouchableOpacity>
@@ -175,7 +178,7 @@ export default function FormulaAlertsScreen() {
           <>
             {/* Info Card */}
             <View style={styles.infoCard}>
-              <Text style={styles.infoIcon}>💡</Text>
+              <Text style={styles.infoIcon} accessible={false} importantForAccessibility="no">💡</Text>
               <Text style={styles.infoText}>
                 {t('formulaAlertsList.infoText')}
               </Text>
@@ -233,6 +236,9 @@ export default function FormulaAlertsScreen() {
                       <TouchableOpacity
                         style={styles.renewButton}
                         onPress={() => handleRenew(sub)}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('a11y.alerts.renewLabel')}
+                        hitSlop={{ top: 4, bottom: 4 }}
                       >
                         <Text style={styles.renewButtonText}>{t('formulaAlertsList.renew')}</Text>
                       </TouchableOpacity>
@@ -240,6 +246,9 @@ export default function FormulaAlertsScreen() {
                     <TouchableOpacity
                       style={styles.deleteButton}
                       onPress={() => handleDelete(sub)}
+                      accessibilityRole="button"
+                      accessibilityLabel={t('a11y.alerts.deleteLabel')}
+                      hitSlop={{ top: 4, bottom: 4 }}
                     >
                       <Text style={styles.deleteButtonText}>{t('formulaAlertsList.delete')}</Text>
                     </TouchableOpacity>

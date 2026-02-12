@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import type { FAQItem, FAQCategory } from '@/lib/types/faq';
 import { getCategoryInfo } from '@/lib/services/faqService';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -28,6 +29,7 @@ interface FAQListItemProps {
 }
 
 function FAQListItem({ item, expanded, onToggle, showCategory = false }: FAQListItemProps) {
+  const t = useTranslation();
   const categoryInfo = getCategoryInfo(item.category);
   
   return (
@@ -36,6 +38,9 @@ function FAQListItem({ item, expanded, onToggle, showCategory = false }: FAQList
         style={styles.questionRow}
         onPress={onToggle}
         activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityState={{ expanded }}
+        accessibilityHint={expanded ? t('a11y.faqList.collapseHint') : t('a11y.faqList.expandHint')}
       >
         <View style={styles.questionContent}>
           {showCategory && categoryInfo && (
@@ -47,13 +52,13 @@ function FAQListItem({ item, expanded, onToggle, showCategory = false }: FAQList
           )}
           <Text style={styles.questionText}>{item.question}</Text>
         </View>
-        <View style={[styles.expandIcon, expanded && styles.expandIconRotated]}>
+        <View style={[styles.expandIcon, expanded && styles.expandIconRotated]} accessible={false} importantForAccessibility="no">
           <Text style={styles.expandIconText}>▼</Text>
         </View>
       </TouchableOpacity>
       
       {expanded && (
-        <View style={styles.answerContainer}>
+        <View style={styles.answerContainer} accessibilityLiveRegion="polite">
           <Text style={styles.answerText}>{item.answer}</Text>
         </View>
       )}

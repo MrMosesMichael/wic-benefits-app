@@ -173,13 +173,13 @@ export default function FoodBankFinderScreen() {
       >
         {/* De-stigmatizing Message */}
         <View style={styles.messageCard}>
-          <Text style={styles.messageIcon}>💚</Text>
+          <Text style={styles.messageIcon} accessible={false} importantForAccessibility="no">💚</Text>
           <Text style={styles.messageText}>{t('foodBanks.supportMessage')}</Text>
         </View>
 
         {/* Filters */}
         <View style={styles.filtersCard}>
-          <Text style={styles.filterTitle}>{t('foodBanks.searchRadius')}</Text>
+          <Text style={styles.filterTitle} accessibilityRole="header">{t('foodBanks.searchRadius')}</Text>
           <View style={styles.radiusButtons}>
             {[10, 25, 50].map((radius) => (
               <TouchableOpacity
@@ -189,6 +189,10 @@ export default function FoodBankFinderScreen() {
                   searchRadius === radius && styles.radiusButtonActive,
                 ]}
                 onPress={() => setSearchRadius(radius)}
+                accessibilityRole="radio"
+                accessibilityLabel={`${radius} mile radius`}
+                accessibilityState={{ selected: searchRadius === radius }}
+                hitSlop={{ top: 4, bottom: 4 }}
               >
                 <Text
                   style={[
@@ -206,6 +210,9 @@ export default function FoodBankFinderScreen() {
           <TouchableOpacity
             style={[styles.toggleButton, showOpenOnly && styles.toggleButtonActive]}
             onPress={() => setShowOpenOnly(!showOpenOnly)}
+            accessibilityRole="switch"
+            accessibilityLabel={t('a11y.foodBanks.openNowLabel')}
+            accessibilityState={{ checked: showOpenOnly }}
           >
             <Text
               style={[
@@ -219,7 +226,7 @@ export default function FoodBankFinderScreen() {
           </TouchableOpacity>
 
           {/* Service Filters */}
-          <Text style={[styles.filterTitle, { marginTop: 12 }]}>
+          <Text style={[styles.filterTitle, { marginTop: 12 }]} accessibilityRole="header">
             {t('foodBanks.filterByServices')}
           </Text>
           <View style={styles.serviceFilters}>
@@ -231,8 +238,12 @@ export default function FoodBankFinderScreen() {
                   selectedServices.includes(service) && styles.serviceChipActive,
                 ]}
                 onPress={() => toggleService(service)}
+                accessibilityRole="checkbox"
+                accessibilityLabel={service.replace(/_/g, ' ')}
+                accessibilityState={{ checked: selectedServices.includes(service) }}
+                hitSlop={{ top: 6, bottom: 6 }}
               >
-                <Text style={styles.serviceChipIcon}>{SERVICE_ICONS[service]}</Text>
+                <Text style={styles.serviceChipIcon} accessible={false} importantForAccessibility="no">{SERVICE_ICONS[service]}</Text>
                 <Text
                   style={[
                     styles.serviceChipText,
@@ -245,7 +256,7 @@ export default function FoodBankFinderScreen() {
             ))}
           </View>
 
-          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+          <TouchableOpacity style={styles.searchButton} onPress={handleSearch} accessibilityRole="button" accessibilityLabel={t('a11y.foodBanks.searchLabel')}>
             <Text style={styles.searchButtonText}>{t('foodBanks.search')}</Text>
           </TouchableOpacity>
         </View>
@@ -271,7 +282,7 @@ export default function FoodBankFinderScreen() {
         {/* Results */}
         {!loading && !locationError && foodBanks.length === 0 && (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyIcon}>🏠</Text>
+            <Text style={styles.emptyIcon} accessible={false} importantForAccessibility="no">🏠</Text>
             <Text style={styles.emptyTitle}>{t('foodBanks.noResults')}</Text>
             <Text style={styles.emptyText}>{t('foodBanks.noResultsMessage')}</Text>
           </View>
@@ -279,7 +290,7 @@ export default function FoodBankFinderScreen() {
 
         {!loading && foodBanks.length > 0 && (
           <View style={styles.resultsContainer}>
-            <Text style={styles.resultsHeader}>
+            <Text style={styles.resultsHeader} accessibilityRole="header">
               {t('foodBanks.foundCount', { count: foodBanks.length })}
             </Text>
 
@@ -292,6 +303,9 @@ export default function FoodBankFinderScreen() {
                   style={styles.foodBankCard}
                   onPress={() => setExpandedCard(isExpanded ? null : foodBank.id)}
                   activeOpacity={0.7}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${foodBank.name}, ${foodBank.distanceMiles} miles, ${isExpanded ? 'expanded' : 'collapsed'}`}
+                  accessibilityHint={t('a11y.foodBanks.expandHint')}
                 >
                   {/* Header */}
                   <View style={styles.cardHeader}>
@@ -323,7 +337,7 @@ export default function FoodBankFinderScreen() {
                   <View style={styles.servicesRow}>
                     {foodBank.services.slice(0, 4).map((service) => (
                       <View key={service} style={styles.serviceBadge}>
-                        <Text style={styles.serviceBadgeIcon}>{SERVICE_ICONS[service] || '📦'}</Text>
+                        <Text style={styles.serviceBadgeIcon} accessible={false} importantForAccessibility="no">{SERVICE_ICONS[service] || '📦'}</Text>
                         <Text style={styles.serviceBadgeText}>
                           {t(`services.${service}`)}
                         </Text>
@@ -386,6 +400,8 @@ export default function FoodBankFinderScreen() {
                           <TouchableOpacity
                             style={styles.actionButton}
                             onPress={() => handleCall(foodBank.phone!)}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Call ${foodBank.name}`}
                           >
                             <Text style={styles.actionButtonText}>📞 {t('foodBanks.call')}</Text>
                           </TouchableOpacity>
@@ -393,6 +409,8 @@ export default function FoodBankFinderScreen() {
                         <TouchableOpacity
                           style={styles.actionButton}
                           onPress={() => handleDirections(foodBank)}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Get directions to ${foodBank.name}`}
                         >
                           <Text style={styles.actionButtonText}>🗺️ {t('foodBanks.directions')}</Text>
                         </TouchableOpacity>
@@ -400,6 +418,8 @@ export default function FoodBankFinderScreen() {
                           <TouchableOpacity
                             style={styles.actionButton}
                             onPress={() => handleWebsite(foodBank.website!)}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Visit ${foodBank.name} website`}
                           >
                             <Text style={styles.actionButtonText}>🌐 {t('foodBanks.website')}</Text>
                           </TouchableOpacity>
@@ -420,7 +440,7 @@ export default function FoodBankFinderScreen() {
 
         {/* Info Card */}
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>{t('foodBanks.aboutTitle')}</Text>
+          <Text style={styles.infoTitle} accessibilityRole="header">{t('foodBanks.aboutTitle')}</Text>
           <Text style={styles.infoText}>{t('foodBanks.aboutText')}</Text>
         </View>
 

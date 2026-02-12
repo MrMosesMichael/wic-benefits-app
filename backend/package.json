@@ -11,6 +11,7 @@
     "migrate:007": "node dist/scripts/run-migration-007.js",
     "import-apl": "node dist/scripts/import-michigan-apl.js",
     "detect-shortages": "node dist/scripts/detect-shortages.js",
+    "seed-formulas": "node dist/scripts/seed-wic-formulas.js",
     "seed-shortage-test": "node dist/scripts/seed-shortage-test-data.js",
     "sync-inventory": "node dist/scripts/sync-walmart-inventory.js",
     "apl-sync": "node dist/scripts/run-apl-sync.js",

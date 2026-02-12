@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, TextInput, Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { getWicFormulas, setParticipantFormula } from '@/lib/services/api';
 import FormulaCard from '@/components/FormulaCard';
 import { useLocation } from '@/lib/hooks/useLocation';
 import type { WicFormula, FormulaType } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 const FORMULA_TYPES: { value: FormulaType | 'all'; label: string }[] = [
   { value: 'all', label: 'All' },
@@ -15,10 +17,13 @@ const FORMULA_TYPES: { value: FormulaType | 'all'; label: string }[] = [
   { value: 'organic', label: 'Organic' },
   { value: 'soy', label: 'Soy' },
   { value: 'specialty', label: 'Specialty' },
+  { value: 'store_brand', label: 'Store Brand' },
 ];
 
 export default function FormulaSelect() {
   const router = useRouter();
+  const t = useTranslation();
+  const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ participantId?: string; returnTo?: string }>();
 
   const [formulas, setFormulas] = useState<WicFormula[]>([]);
@@ -102,6 +107,8 @@ export default function FormulaSelect() {
           value={searchQuery}
           onChangeText={setSearchQuery}
           placeholderTextColor="#999"
+          accessibilityLabel={t('a11y.formula.searchLabel')}
+          accessibilityRole="search"
         />
       </View>
 
@@ -120,6 +127,10 @@ export default function FormulaSelect() {
               selectedType === type.value && styles.filterChipActive
             ]}
             onPress={() => setSelectedType(type.value)}
+            accessibilityRole="tab"
+            accessibilityLabel={`Filter by ${type.label}`}
+            accessibilityState={{ selected: selectedType === type.value }}
+            hitSlop={{ top: 6, bottom: 6 }}
           >
             <Text style={[
               styles.filterChipText,
@@ -141,7 +152,7 @@ export default function FormulaSelect() {
         <ScrollView style={styles.listContainer} contentContainerStyle={styles.listContent}>
           {formulas.length === 0 ? (
             <View style={styles.emptyState}>
-              <Text style={styles.emptyIcon}>🍼</Text>
+              <Text style={styles.emptyIcon} accessible={false} importantForAccessibility="no">🍼</Text>
               <Text style={styles.emptyText}>No formulas found</Text>
               <Text style={styles.emptySubtext}>Try adjusting your search or filters</Text>
             </View>
@@ -161,7 +172,7 @@ export default function FormulaSelect() {
 
       {/* Confirm Button */}
       {selectedFormula && (
-        <View style={styles.confirmContainer}>
+        <View style={[styles.confirmContainer, { paddingBottom: Math.max(16, insets.bottom) }]}>
           <View style={styles.selectedInfo}>
             <Text style={styles.selectedLabel}>Selected:</Text>
             <Text style={styles.selectedName} numberOfLines={1}>
@@ -172,6 +183,9 @@ export default function FormulaSelect() {
             style={[styles.confirmButton, saving && styles.confirmButtonDisabled]}
             onPress={handleConfirmSelection}
             disabled={saving}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.formula.confirmLabel')}
+            accessibilityState={{ disabled: saving }}
           >
             {saving ? (
               <ActivityIndicator color="#fff" size="small" />

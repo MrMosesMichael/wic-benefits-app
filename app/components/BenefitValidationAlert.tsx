@@ -7,6 +7,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { DiscrepancyWarning } from '../lib/services/benefitValidation';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 interface BenefitValidationAlertProps {
   warning: DiscrepancyWarning;
@@ -37,6 +38,8 @@ export function BenefitValidationAlert({
   onResolve,
   showRecommendation = true,
 }: BenefitValidationAlertProps) {
+  const t = useTranslation();
+
   const severityColors = {
     low: '#FFA726', // Orange
     medium: '#FF9800', // Dark Orange
@@ -61,9 +64,11 @@ export function BenefitValidationAlert({
         styles.container,
         { backgroundColor: severityBackgrounds[warning.severity] },
       ]}
+      accessibilityRole="alert"
+      accessibilityLiveRegion="assertive"
     >
       <View style={styles.header}>
-        <Text style={styles.icon}>{icon[warning.severity]}</Text>
+        <Text style={styles.icon} accessible={false} importantForAccessibility="no">{icon[warning.severity]}</Text>
         <Text
           style={[
             styles.severity,
@@ -114,6 +119,9 @@ export function BenefitValidationAlert({
           <TouchableOpacity
             style={[styles.button, styles.dismissButton]}
             onPress={onDismiss}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.benefitValidation.dismissLabel')}
+            hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
           >
             <Text style={styles.dismissButtonText}>Dismiss</Text>
           </TouchableOpacity>
@@ -127,6 +135,9 @@ export function BenefitValidationAlert({
               { backgroundColor: severityColors[warning.severity] },
             ]}
             onPress={() => onResolve(warning)}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.benefitValidation.resolveLabel')}
+            hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
           >
             <Text style={styles.resolveButtonText}>Review & Fix</Text>
           </TouchableOpacity>

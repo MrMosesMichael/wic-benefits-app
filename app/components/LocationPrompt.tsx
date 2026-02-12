@@ -13,6 +13,7 @@ import {
   TextInput,
   ActivityIndicator,
 } from 'react-native';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 interface LocationPromptProps {
   onGPS: () => Promise<void>;
@@ -22,6 +23,7 @@ interface LocationPromptProps {
 }
 
 export default function LocationPrompt({ onGPS, onZipCode, loading, error }: LocationPromptProps) {
+  const t = useTranslation();
   const [showZipInput, setShowZipInput] = useState(false);
   const [zipInput, setZipInput] = useState('');
 
@@ -34,14 +36,14 @@ export default function LocationPrompt({ onGPS, onZipCode, loading, error }: Loc
 
   return (
     <View style={styles.container}>
-      <Text style={styles.icon}>📍</Text>
+      <Text style={styles.icon} accessible={false} importantForAccessibility="no">📍</Text>
       <Text style={styles.title}>Location Needed</Text>
       <Text style={styles.description}>
         We need your location to show relevant WIC data and find nearby stores.
       </Text>
 
       {error && (
-        <View style={styles.errorBanner}>
+        <View style={styles.errorBanner} accessibilityRole="alert" accessibilityLiveRegion="assertive">
           <Text style={styles.errorText}>{error}</Text>
         </View>
       )}
@@ -63,25 +65,47 @@ export default function LocationPrompt({ onGPS, onZipCode, loading, error }: Loc
               keyboardType="number-pad"
               maxLength={5}
               autoFocus
+              accessibilityLabel={t('a11y.locationPrompt.zipInputLabel')}
+              accessibilityHint={t('a11y.locationPrompt.zipInputHint')}
             />
             <TouchableOpacity
               style={[styles.zipSubmit, zipInput.length !== 5 && styles.disabled]}
               onPress={handleSubmitZip}
               disabled={zipInput.length !== 5}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.locationPrompt.submitZipLabel')}
+              accessibilityState={{ disabled: zipInput.length !== 5 }}
             >
               <Text style={styles.zipSubmitText}>Go</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => setShowZipInput(false)}>
+          <TouchableOpacity
+            onPress={() => setShowZipInput(false)}
+            accessibilityRole="link"
+            accessibilityLabel={t('a11y.locationPrompt.switchToGpsLabel')}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          >
             <Text style={styles.switchLink}>Use GPS instead</Text>
           </TouchableOpacity>
         </View>
       ) : (
         <View style={styles.buttons}>
-          <TouchableOpacity style={styles.gpsButton} onPress={onGPS}>
+          <TouchableOpacity
+            style={styles.gpsButton}
+            onPress={onGPS}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.locationPrompt.gpsLabel')}
+            accessibilityHint={t('a11y.locationPrompt.gpsHint')}
+          >
             <Text style={styles.gpsButtonText}>Use GPS</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.zipButton} onPress={() => setShowZipInput(true)}>
+          <TouchableOpacity
+            style={styles.zipButton}
+            onPress={() => setShowZipInput(true)}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.locationPrompt.zipLabel')}
+            accessibilityHint={t('a11y.locationPrompt.zipHint')}
+          >
             <Text style={styles.zipButtonText}>Enter Zip Code</Text>
           </TouchableOpacity>
         </View>

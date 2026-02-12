@@ -30,7 +30,7 @@ export default function FormulaAlternatives({
   if (alternatives.length === 0) {
     return (
       <View style={styles.emptyContainer}>
-        <Text style={styles.emptyIcon}>🍼</Text>
+        <Text style={styles.emptyIcon} accessible={false} importantForAccessibility="no">🍼</Text>
         <Text style={styles.emptyText}>{t('alternatives.noAlternatives')}</Text>
       </View>
     );
@@ -65,7 +65,7 @@ export default function FormulaAlternatives({
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Medical Disclaimer */}
       <View style={styles.disclaimerCard}>
-        <Text style={styles.disclaimerIcon}>⚕️</Text>
+        <Text style={styles.disclaimerIcon} accessible={false} importantForAccessibility="no">⚕️</Text>
         <View style={styles.disclaimerTextContainer}>
           <Text style={styles.disclaimerTitle}>{t('alternatives.disclaimerTitle')}</Text>
           <Text style={styles.disclaimerText}>
@@ -92,6 +92,8 @@ export default function FormulaAlternatives({
           ]}
           onPress={() => onAlternativePress?.(alternative)}
           disabled={!onAlternativePress}
+          accessibilityLabel={`${alternative.brand} ${alternative.productName}, ${alternative.form}${alternative.inStockNearby ? ', ' + t('a11y.formulaAlternatives.inStockLabel') : ''}${alternative.stateContractBrand ? ', ' + t('a11y.formulaAlternatives.contractLabel') : ''}`}
+          {...(onAlternativePress ? { accessibilityRole: 'button' as const, accessibilityHint: t('a11y.formulaAlternatives.cardHint') } : {})}
         >
           {/* Priority Badges */}
           <View style={styles.badgeRow}>
@@ -144,6 +146,7 @@ export default function FormulaAlternatives({
                         styles.statusDot,
                         { backgroundColor: getStatusColor(avail.status) }
                       ]}
+                      accessible={false}
                     />
                     <Text style={styles.storeNameText} numberOfLines={1}>
                       {avail.storeName}

@@ -83,10 +83,10 @@ export default function FormulaAlternativesScreen() {
         </View>
       ) : error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorIcon}>⚠️</Text>
+          <Text style={styles.errorIcon} accessible={false} importantForAccessibility="no">⚠️</Text>
           <Text style={styles.errorTitle}>{t('alternatives.failedToLoad')}</Text>
           <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={handleRetry}>
+          <TouchableOpacity style={styles.retryButton} onPress={handleRetry} accessibilityRole="button" accessibilityLabel={t('a11y.alternatives.retryLabel')}>
             <Text style={styles.retryButtonText}>{t('alternatives.tryAgain')}</Text>
           </TouchableOpacity>
         </View>
@@ -124,7 +124,7 @@ export default function FormulaAlternativesScreen() {
         </View>
       ) : (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyIcon}>🍼</Text>
+          <Text style={styles.emptyIcon} accessible={false} importantForAccessibility="no">🍼</Text>
           <Text style={styles.emptyTitle}>{t('alternatives.noAlternativesTitle')}</Text>
           <Text style={styles.emptyText}>{t('alternatives.noAlternativesMessage')}</Text>
         </View>

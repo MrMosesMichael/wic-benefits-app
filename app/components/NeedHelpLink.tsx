@@ -44,9 +44,11 @@ export default function NeedHelpLink({
         style={styles.cardContainer}
         onPress={handlePress}
         activeOpacity={0.7}
+        accessibilityRole="link"
+        accessibilityHint={t('a11y.needHelpLink.hint')}
       >
         <View style={styles.cardContent}>
-          <Text style={styles.cardIcon}>❓</Text>
+          <Text style={styles.cardIcon} accessible={false} importantForAccessibility="no">❓</Text>
           <View style={styles.cardTextContainer}>
             <Text style={styles.cardLabel}>{displayLabel}</Text>
             {contextHint && (
@@ -54,7 +56,7 @@ export default function NeedHelpLink({
             )}
           </View>
         </View>
-        <Text style={styles.cardArrow}>→</Text>
+        <Text style={styles.cardArrow} accessible={false} importantForAccessibility="no">→</Text>
       </TouchableOpacity>
     );
   }
@@ -65,6 +67,9 @@ export default function NeedHelpLink({
         style={styles.inlineContainer}
         onPress={handlePress}
         activeOpacity={0.7}
+        accessibilityRole="link"
+        accessibilityHint={t('a11y.needHelpLink.hint')}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       >
         <Text style={styles.inlineText}>❓ {displayLabel}</Text>
       </TouchableOpacity>
@@ -77,6 +82,8 @@ export default function NeedHelpLink({
       style={styles.defaultContainer}
       onPress={handlePress}
       activeOpacity={0.7}
+      accessibilityRole="link"
+      accessibilityHint={t('a11y.needHelpLink.hint')}
     >
       <Text style={styles.defaultText}>❓ {displayLabel}</Text>
       {contextHint && (

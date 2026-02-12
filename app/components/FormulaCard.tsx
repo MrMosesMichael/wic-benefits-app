@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import type { WicFormula, FormulaType } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 interface FormulaCardProps {
   formula: WicFormula;
@@ -46,6 +47,8 @@ const getFormLabel = (form: string): string => {
 };
 
 export default function FormulaCard({ formula, onPress, selected }: FormulaCardProps) {
+  const t = useTranslation();
+
   return (
     <TouchableOpacity
       style={[
@@ -54,6 +57,9 @@ export default function FormulaCard({ formula, onPress, selected }: FormulaCardP
       ]}
       onPress={() => onPress(formula)}
       activeOpacity={0.7}
+      accessibilityRole="radio"
+      accessibilityState={{ selected: selected || false }}
+      accessibilityLabel={`${formula.brand} ${formula.productName}, ${getTypeLabel(formula.formulaType)}, ${getFormLabel(formula.form)}${formula.stateContractBrand ? ', ' + t('a11y.formulaCard.wicContractLabel') : ''}${selected ? ', ' + t('a11y.formulaCard.selectedLabel') : ''}`}
     >
       {/* Formula Image or Placeholder */}
       <View style={styles.imageContainer}>
@@ -61,14 +67,14 @@ export default function FormulaCard({ formula, onPress, selected }: FormulaCardP
           <Image source={{ uri: formula.imageUrl }} style={styles.image} />
         ) : (
           <View style={styles.imagePlaceholder}>
-            <Text style={styles.imagePlaceholderText}>
+            <Text style={styles.imagePlaceholderText} accessible={false}>
               {formula.brand.charAt(0)}
             </Text>
           </View>
         )}
         {formula.stateContractBrand && (
           <View style={styles.contractBadge}>
-            <Text style={styles.contractBadgeText}>WIC</Text>
+            <Text style={styles.contractBadgeText} accessible={false}>WIC</Text>
           </View>
         )}
       </View>
@@ -95,7 +101,7 @@ export default function FormulaCard({ formula, onPress, selected }: FormulaCardP
       {/* Selection indicator */}
       {selected && (
         <View style={styles.selectedIndicator}>
-          <Text style={styles.selectedIndicatorText}>✓</Text>
+          <Text style={styles.selectedIndicatorText} accessible={false}>✓</Text>
         </View>
       )}
     </TouchableOpacity>

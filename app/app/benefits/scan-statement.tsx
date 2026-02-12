@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
 import { BenefitCategory, BenefitUnit } from '@/lib/types';
 import { uploadBenefitStatement, OCRResult } from '@/lib/services/api';
+import { useTranslation } from '@/lib/i18n/I18nContext';
 
 // OCR extracted benefit line item
 interface ExtractedBenefit {
@@ -24,6 +25,7 @@ interface ExtractedBenefit {
 
 export default function ScanStatement() {
   const router = useRouter();
+  const t = useTranslation();
   const [permission, requestPermission] = useCameraPermissions();
   const [facing, setFacing] = useState<CameraType>('back');
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -174,12 +176,14 @@ export default function ScanStatement() {
           <Text style={styles.message}>
             To scan your benefit statement, we need access to your camera.
           </Text>
-          <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
+          <TouchableOpacity style={styles.permissionButton} onPress={requestPermission} accessibilityRole="button" accessibilityLabel={t('a11y.scanStatement.grantCameraLabel')}>
             <Text style={styles.permissionButtonText}>Grant Camera Permission</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.manualEntryButton}
             onPress={() => router.push('/benefits/manual-entry')}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.scanStatement.manualEntryLabel')}
           >
             <Text style={styles.manualEntryButtonText}>Enter Manually Instead</Text>
           </TouchableOpacity>
@@ -253,6 +257,9 @@ export default function ScanStatement() {
                       <TouchableOpacity
                         style={styles.editButton}
                         onPress={() => editBenefit(index)}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('a11y.scanStatement.editBenefitLabel', { category: getCategoryLabel(benefit.category) })}
+                        hitSlop={{ top: 10, bottom: 10, left: 6, right: 6 }}
                       >
                         <Text style={styles.editButtonText}>Edit</Text>
                       </TouchableOpacity>
@@ -271,17 +278,19 @@ export default function ScanStatement() {
 
             {/* Action buttons */}
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.confirmButton} onPress={confirmBenefits}>
+              <TouchableOpacity style={styles.confirmButton} onPress={confirmBenefits} accessibilityRole="button" accessibilityLabel={t('a11y.scanStatement.confirmLabel')}>
                 <Text style={styles.confirmButtonText}>Confirm & Save</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.retakeButton} onPress={retakePicture}>
+              <TouchableOpacity style={styles.retakeButton} onPress={retakePicture} accessibilityRole="button" accessibilityLabel={t('a11y.scanStatement.retakeLabel')}>
                 <Text style={styles.retakeButtonText}>Retake Photo</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.cancelButton}
                 onPress={() => router.back()}
+                accessibilityRole="button"
+                accessibilityLabel={t('a11y.scanStatement.cancelLabel')}
               >
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
@@ -299,6 +308,7 @@ export default function ScanStatement() {
         ref={cameraRef}
         style={StyleSheet.absoluteFillObject}
         facing={facing}
+        accessible={false}
       >
         {/* Camera overlay with instructions */}
         <View style={styles.cameraOverlay}>
@@ -306,6 +316,9 @@ export default function ScanStatement() {
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => router.back()}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.scanStatement.closeCameraLabel')}
+              hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
             >
               <Text style={styles.backButtonText}>✕</Text>
             </TouchableOpacity>
@@ -335,17 +348,21 @@ export default function ScanStatement() {
             <TouchableOpacity
               style={styles.flipButton}
               onPress={() => setFacing(current => (current === 'back' ? 'front' : 'back'))}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.scanStatement.flipCameraLabel')}
             >
               <Text style={styles.flipButtonText}>🔄 Flip</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.captureButton} onPress={takePicture}>
+            <TouchableOpacity style={styles.captureButton} onPress={takePicture} accessibilityRole="button" accessibilityLabel={t('a11y.scanStatement.takePhotoLabel')}>
               <View style={styles.captureButtonInner} />
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.manualLinkButton}
               onPress={() => router.push('/benefits/manual-entry')}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.scanStatement.enterManuallyLabel')}
             >
               <Text style={styles.manualLinkText}>Manual</Text>
             </TouchableOpacity>

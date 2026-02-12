@@ -52,7 +52,7 @@ export default function Benefits() {
     return (
       <View style={styles.centerContainer}>
         <Text style={styles.errorText}>{t('benefits.failedToLoad')}</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={loadBenefits}>
+        <TouchableOpacity style={styles.retryButton} onPress={loadBenefits} accessibilityRole="button">
           <Text style={styles.retryButtonText}>{t('benefits.retry')}</Text>
         </TouchableOpacity>
       </View>
@@ -69,6 +69,7 @@ export default function Benefits() {
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => router.push('/benefits/household-setup')}
+          accessibilityRole="button"
         >
           <Text style={styles.primaryButtonText}>{t('benefits.setupHousehold')}</Text>
         </TouchableOpacity>
@@ -90,6 +91,9 @@ export default function Benefits() {
         <TouchableOpacity
           style={styles.setupButton}
           onPress={() => router.push('/benefits/household-setup')}
+          accessibilityRole="button"
+          accessibilityHint={t('a11y.benefits.setupHint')}
+          hitSlop={{ top: 6, bottom: 6 }}
         >
           <Text style={styles.setupButtonText}>{t('benefits.setup')}</Text>
         </TouchableOpacity>
@@ -98,7 +102,7 @@ export default function Benefits() {
       {household.participants.map((participant) => (
         <View key={participant.id} style={styles.participantSection}>
           <View style={styles.participantHeader}>
-            <Text style={styles.participantName}>{participant.name}</Text>
+            <Text style={styles.participantName} accessibilityRole="header">{participant.name}</Text>
             <View style={styles.typeBadge}>
               <Text style={styles.typeText}>{participant.type}</Text>
             </View>
@@ -115,7 +119,12 @@ export default function Benefits() {
                 const total = parseFloat(benefit.total);
 
                 return (
-                  <View key={index} style={styles.benefitCard}>
+                  <View
+                    key={index}
+                    style={styles.benefitCard}
+                    accessible={true}
+                    accessibilityLabel={t('a11y.benefits.benefitLabel', { category: benefit.categoryLabel, available: benefit.available, unit: benefit.unit, inCart: benefit.inCart, consumed: benefit.consumed, total: benefit.total })}
+                  >
                     <Text style={styles.categoryName}>{benefit.categoryLabel}</Text>
 
                     {/* Three-state progress bar */}
@@ -166,7 +175,7 @@ export default function Benefits() {
         </View>
       ))}
 
-      <View style={styles.notice}>
+      <View style={styles.notice} accessibilityLabel={t('benefits.notice')}>
         <Text style={styles.noticeText}>
           💡 {t('benefits.notice')}
         </Text>
@@ -184,6 +193,7 @@ export default function Benefits() {
         <TouchableOpacity
           style={styles.periodButton}
           onPress={() => router.push('/benefits/period-settings')}
+          accessibilityRole="button"
         >
           <Text style={styles.periodButtonText}>{t('benefits.managePeriod')}</Text>
         </TouchableOpacity>
@@ -191,6 +201,7 @@ export default function Benefits() {
         <TouchableOpacity
           style={styles.addBenefitButton}
           onPress={() => router.push('/benefits/manual-entry')}
+          accessibilityRole="button"
         >
           <Text style={styles.addBenefitButtonText}>{t('benefits.addManually')}</Text>
         </TouchableOpacity>
@@ -198,6 +209,8 @@ export default function Benefits() {
         <TouchableOpacity
           style={styles.scanButton}
           onPress={() => router.push('/scanner')}
+          accessibilityRole="button"
+          accessibilityHint={t('a11y.benefits.scanHint')}
         >
           <Text style={styles.scanButtonText}>{t('benefits.scanProducts')}</Text>
         </TouchableOpacity>
@@ -205,6 +218,7 @@ export default function Benefits() {
         <TouchableOpacity
           style={styles.homeButton}
           onPress={() => router.back()}
+          accessibilityRole="button"
         >
           <Text style={styles.homeButtonText}>{t('result.backToHome')}</Text>
         </TouchableOpacity>
@@ -235,6 +249,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
+    paddingTop: 16,
+    paddingHorizontal: 16,
   },
   setupButton: {
     backgroundColor: '#2E7D32',

@@ -88,12 +88,16 @@ export default function FeedbackScreen() {
               setCategory(null);
               setDescription('');
             }}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.feedback.submitAnotherLabel')}
           >
             <Text style={styles.successButtonText}>{t('feedback.submitAnother')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.backButtonAlt}
             onPress={() => router.back()}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.feedback.backToHelpLabel')}
           >
             <Text style={styles.backButtonAltText}>{t('feedback.backToHelp')}</Text>
           </TouchableOpacity>
@@ -123,6 +127,9 @@ export default function FeedbackScreen() {
                   category === cat.id && styles.categoryCardSelected,
                 ]}
                 onPress={() => setCategory(cat.id)}
+                accessibilityRole="radio"
+                accessibilityLabel={cat.id === 'bug' ? 'Bug report' : cat.id === 'feature' ? 'Feature request' : 'Question'}
+                accessibilityState={{ selected: category === cat.id }}
               >
                 <View style={[
                   styles.categoryIcon,
@@ -169,6 +176,7 @@ export default function FeedbackScreen() {
           onChangeText={setDescription}
           maxLength={4000}
           textAlignVertical="top"
+          accessibilityLabel={t('a11y.feedback.descriptionLabel')}
         />
         <Text style={styles.charCount}>
           {description.length}/4000
@@ -178,6 +186,9 @@ export default function FeedbackScreen() {
         <TouchableOpacity
           style={styles.deviceInfoToggle}
           onPress={() => setIncludeDeviceInfo(!includeDeviceInfo)}
+          accessibilityRole="checkbox"
+          accessibilityLabel={t('a11y.feedback.includeDeviceLabel')}
+          accessibilityState={{ checked: includeDeviceInfo }}
         >
           <View style={[styles.checkbox, includeDeviceInfo && styles.checkboxChecked]}>
             {includeDeviceInfo && <Text style={styles.checkmark}>✓</Text>}
@@ -200,6 +211,9 @@ export default function FeedbackScreen() {
           style={[styles.submitButton, !canSubmit && styles.submitButtonDisabled]}
           onPress={handleSubmit}
           disabled={!canSubmit || submitting}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.feedback.submitLabel')}
+          accessibilityState={{ disabled: !canSubmit || submitting }}
         >
           {submitting ? (
             <ActivityIndicator color="#fff" />

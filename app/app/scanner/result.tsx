@@ -159,11 +159,15 @@ export default function ScanResult() {
   return (
     <ScrollView style={styles.container}>
       {/* Result Header */}
-      <View style={[styles.resultCard, isEligible ? styles.eligible : styles.notEligible]}>
+      <View
+        style={[styles.resultCard, isEligible ? styles.eligible : styles.notEligible]}
+        accessible={true}
+        accessibilityLabel={isEligible ? t('a11y.result.approvedLabel') : t('a11y.result.notApprovedLabel')}
+      >
         <View style={styles.statusBadge}>
-          <Text style={styles.statusIcon}>{isEligible ? '✓' : '✗'}</Text>
+          <Text style={styles.statusIcon} accessible={false}>{isEligible ? '✓' : '✗'}</Text>
         </View>
-        <Text style={styles.statusText}>
+        <Text style={styles.statusText} accessibilityRole="header">
           {isEligible ? t('result.wicApproved') : t('result.notApproved')}
         </Text>
         <Text style={styles.statusSubtext}>{t('result.michigan')}</Text>
@@ -195,6 +199,8 @@ export default function ScanResult() {
           <TouchableOpacity
             style={styles.reportButton}
             onPress={() => setShowReportModal(true)}
+            accessibilityRole="button"
+            hitSlop={{ top: 10, bottom: 10, left: 6, right: 6 }}
           >
             <Text style={styles.reportButtonText}>{t('result.reportSighting')}</Text>
           </TouchableOpacity>
@@ -259,6 +265,9 @@ export default function ScanResult() {
                   selectedParticipantId === participant.id && styles.participantOptionSelected
                 ]}
                 onPress={() => setSelectedParticipantId(participant.id)}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: selectedParticipantId === participant.id }}
+                accessibilityLabel={`${participant.name}, ${participant.type}${benefit ? `, ${benefit.available} ${benefit.unit} available` : ''}`}
               >
                 <View style={styles.participantInfo}>
                   <Text style={styles.participantOptionName}>{participant.name}</Text>
@@ -282,6 +291,8 @@ export default function ScanResult() {
             style={[styles.addToCartButton, adding && styles.addToCartButtonDisabled]}
             onPress={handleAddToCart}
             disabled={adding || !selectedParticipantId}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: adding || !selectedParticipantId }}
           >
             {adding ? (
               <ActivityIndicator color="#fff" />
@@ -294,6 +305,7 @@ export default function ScanResult() {
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => router.replace('/scanner')}
+          accessibilityRole="button"
         >
           <Text style={styles.primaryButtonText}>{t('result.scanAnother')}</Text>
         </TouchableOpacity>
@@ -301,6 +313,7 @@ export default function ScanResult() {
         <TouchableOpacity
           style={styles.secondaryButton}
           onPress={() => router.replace('/benefits')}
+          accessibilityRole="button"
         >
           <Text style={styles.secondaryButtonText}>{t('result.viewMyBenefits')}</Text>
         </TouchableOpacity>
@@ -308,6 +321,8 @@ export default function ScanResult() {
         <TouchableOpacity
           style={styles.textButton}
           onPress={() => router.replace('/')}
+          accessibilityRole="button"
+          hitSlop={{ top: 4, bottom: 4 }}
         >
           <Text style={styles.textButtonText}>{t('result.backToHome')}</Text>
         </TouchableOpacity>
@@ -340,7 +355,7 @@ export default function ScanResult() {
         onRequestClose={() => setShowReportModal(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+          <View style={styles.modalContent} accessibilityViewIsModal={true}>
             <Text style={styles.modalTitle}>{t('result.reportProductSighting')}</Text>
             <Text style={styles.modalSubtitle}>{t('result.helpOthersFind', { product: name })}</Text>
 
@@ -351,6 +366,7 @@ export default function ScanResult() {
               value={reportStoreName}
               onChangeText={setReportStoreName}
               autoCapitalize="words"
+              accessibilityLabel={t('a11y.result.storeNameLabel')}
             />
 
             <Text style={styles.inputLabel}>{t('result.stockLevel')}</Text>
@@ -363,6 +379,8 @@ export default function ScanResult() {
                     reportStockLevel === level && styles.stockLevelButtonSelected,
                   ]}
                   onPress={() => setReportStockLevel(level)}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: reportStockLevel === level }}
                 >
                   <Text style={[
                     styles.stockLevelButtonText,
@@ -385,6 +403,7 @@ export default function ScanResult() {
                   setReportStoreName('');
                   setReportStockLevel('plenty');
                 }}
+                accessibilityRole="button"
               >
                 <Text style={styles.modalButtonCancelText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
@@ -392,6 +411,7 @@ export default function ScanResult() {
                 style={[styles.modalButton, styles.modalButtonSubmit]}
                 onPress={handleReportSighting}
                 disabled={reporting}
+                accessibilityRole="button"
               >
                 {reporting ? (
                   <ActivityIndicator color="#fff" />
