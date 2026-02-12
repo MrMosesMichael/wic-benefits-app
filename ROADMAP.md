@@ -87,14 +87,14 @@ Core functionality for scanning, benefits, and formula support.
 | **G2** | GPS State Detection | ✅ Done | Centralized location system, zip code fallback, 33K zip codes |
 | **G3** | Support & Feedback | ✅ Done | In-app + web form + GitHub Issues, i18n complete |
 
-### Phase 2: Store Intelligence (80% Complete)
+### Phase 2: Store Intelligence (95% Complete)
 
 Know what's in stock, find supplemental food sources.
 
 | Track | Feature | Status | Notes |
 |-------|---------|--------|-------|
 | **H** | Store Detection | ✅ Done | GPS + WiFi + geofencing |
-| **I1** | Retailer API Integration | 🔄 In Progress | Kroger API in development |
+| **I1** | Retailer API Integration | ✅ Done | Kroger API live (MI/NC/OR), dynamic store discovery |
 | **I2** | Inventory Display | ✅ Done | Via crowdsourced data |
 | **J** | Food Bank Finder | ✅ Done | 10 MI food banks seeded, full UI |
 | **K** | Crowdsourced Inventory | ✅ Done | Sightings + confidence |
@@ -193,7 +193,8 @@ Based on impact, effort, and what's unblocked:
    - *Impact: Required for professional store presence and partnerships*
 
 3. **Retailer API Partnerships**
-   - 🔄 Kroger API integration (in progress — separate thread)
+   - ✅ Kroger API integration live (MI/NC/OR — real-time inventory + dynamic store discovery)
+   - ✅ Multi-state store seeding: MI (53+API), NC (34+API), OR (30+API), NY (50)
    - ⏳ Walmart API — reach out to Walmart business unit once app is live on stores
    - *Strategy: Having a published app on stores strengthens partnership outreach*
 
@@ -383,7 +384,7 @@ All three channels are live:
 
 | Retailer | Status | Notes |
 |----------|--------|-------|
-| **Kroger** | 🔄 In Progress | API integration being built, developer account active |
+| **Kroger** | ✅ Live | OAuth2 integration, real-time inventory, dynamic store discovery (MI/NC/OR) |
 | **Walmart** | ⏳ Planned | Reach out to business unit once app is live on stores |
 
 **Strategy:** Having published apps on Apple/Google stores demonstrates legitimacy and user base, which strengthens outreach to retailer business development teams.

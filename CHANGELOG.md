@@ -4,6 +4,59 @@
 
 ---
 
+## 2026-02-12 — Kroger API Integration + Multi-State Store Coverage
+
+**Real-time Kroger inventory data live. All 4 states have store coverage.**
+
+### Done
+- ✅ Kroger API integration (OAuth2 auth, product search, store locator)
+- ✅ Live inventory enrichment in cross-store search (Step 3.5)
+- ✅ Dynamic store discovery — auto-discovers Kroger stores for unseen zip codes
+- ✅ 30-min product availability cache + 24h zip discovery cache (rate limit protection)
+- ✅ Kroger store sync script — populates MI, NC, OR from Kroger locations API
+- ✅ Kroger inventory sync script — batch formula inventory with stats/cleanup
+- ✅ NC store seed: 34 stores (Walmart, Food Lion, Target, ALDI, Publix, CVS, Walgreens)
+- ✅ OR store seed: 30 stores (Walmart, Safeway, WinCo, Target, Albertsons)
+- ✅ NY store seed: 50 stores (ShopRite, Wegmans, Stop & Shop, Price Chopper, Walmart, Target, ALDI)
+- ✅ State onboarding checklist documented (docs/guides/state-onboarding.md)
+- ✅ Graceful degradation when Kroger credentials not configured
+- ✅ Docker-compose env passthrough for Kroger credentials
+
+### Store Coverage Summary
+
+| State | Kroger-Family (API) | Non-Kroger (Seeded) | Total |
+|-------|-------------------|-------------------|-------|
+| MI | Kroger | 53 (Walmart, Meijer, Target, CVS, Walgreens) | 53+API |
+| NC | Kroger, Harris Teeter | 34 (Walmart, Food Lion, Target, ALDI, Publix) | 34+API |
+| OR | Fred Meyer, QFC | 30 (Walmart, Safeway, WinCo, Target, Albertsons) | 30+API |
+| NY | None | 50 (ShopRite, Wegmans, Stop & Shop, Price Chopper, etc.) | 50 |
+
+### Files Created
+- `backend/src/services/KrogerIntegration.ts`
+- `backend/src/scripts/sync-kroger-stores.ts`
+- `backend/src/scripts/sync-kroger-inventory.ts`
+- `backend/src/scripts/seed-nc-stores.ts`
+- `backend/src/scripts/seed-or-stores.ts`
+- `backend/src/scripts/seed-ny-stores.ts`
+- `docs/guides/state-onboarding.md`
+
+### Files Modified
+- `backend/src/routes/cross-store-search.ts` — Kroger enrichment + dynamic discovery
+- `backend/.env.example` — Kroger credentials
+- `backend/package.json` — 5 new npm scripts
+- `docker-compose.yml` — Kroger env passthrough
+
+### Commits
+```
+26fa512 feat: Add Kroger API integration for real-time store/inventory data
+eb81c0c fix: Pass Kroger API credentials through docker-compose environment
+88d1c86 feat: Dynamic Kroger store discovery + expanded seed coverage
+aa9a418 feat: State onboarding checklist + NC/OR non-Kroger store seeds
+c19b7b6 feat: Add NY store seed script (50 stores across 9 metros)
+```
+
+---
+
 ## 2026-02-10 — Multi-State APL Automation Complete
 
 **4 states syncing automatically with 62,027 products**
