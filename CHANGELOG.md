@@ -4,6 +4,31 @@
 
 ---
 
+## 2026-02-13 — Version 1.1.2 Build (iOS + Android)
+
+**Accessibility overhaul included in new builds.**
+
+### Done
+- ✅ Bumped version to 1.1.2 (buildNumber 2, versionCode 4)
+- ✅ iOS build created and uploaded
+- ✅ Android build created and uploaded
+- ✅ Includes full accessibility overhaul from 932a87c (i18n, touch targets, UI fixes across 30+ files)
+
+### Build History
+
+| Date | Version | versionCode | buildNumber | Platform |
+|------|---------|-------------|-------------|----------|
+| 2026-01-26 | ~1.0.x | 1 | "1" | Android |
+| 2026-02-11 | 1.1.1 | 3 | "1" | Android + iOS |
+| 2026-02-13 | 1.1.2 | 4 | "2" | Android + iOS |
+
+### Commits
+```
+2895bc8 chore: Bump version to 1.1.2 for accessibility overhaul build
+```
+
+---
+
 ## 2026-02-12 — Kroger API Integration + Multi-State Store Coverage
 
 **Real-time Kroger inventory data live. All 4 states have store coverage.**

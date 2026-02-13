@@ -1,7 +1,7 @@
 # Session State
 
-> **Last Updated:** 2026-02-12
-> **Session:** Kroger API integration, dynamic store discovery, multi-state store seeding
+> **Last Updated:** 2026-02-13
+> **Session:** Version bump + iOS/Android builds
 
 ---
 
@@ -66,6 +66,16 @@ Deploy workflow:
 | `88d1c86` | feat: Dynamic Kroger store discovery + expanded seed coverage |
 | `aa9a418` | feat: State onboarding checklist + NC/OR non-Kroger store seeds |
 | `c19b7b6` | feat: Add NY store seed script (50 stores across 9 metros) |
+| `2895bc8` | chore: Bump version to 1.1.2 for accessibility overhaul build |
+
+---
+
+## Builds
+
+| Date | Version | Platform | Notes |
+|------|---------|----------|-------|
+| 2026-02-11 | 1.1.1 | Android + iOS | Pre-accessibility overhaul |
+| 2026-02-13 | 1.1.2 | Android + iOS | Includes accessibility overhaul (i18n, touch targets, UI fixes) |
 
 ---
 
