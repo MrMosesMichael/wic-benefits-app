@@ -506,6 +506,6 @@ See `docs/guides/` for consolidated, actionable implementation patterns.
 
 ---
 
-**Current Version:** 1.1.1 (iOS buildNumber: 1, Android versionCode: 3)
+**Current Version:** 1.2.0 (iOS buildNumber: 1, Android versionCode: 5)
 
-*Last human review: February 12, 2026*
+*Last human review: February 14, 2026*
