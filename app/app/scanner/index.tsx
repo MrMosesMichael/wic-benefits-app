@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Modal, TextInput, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { checkEligibility } from '@/lib/services/api';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import { useLocation } from '@/lib/hooks/useLocation';
+import { lookupPlu, pluToResultParams, isValidPluFormat } from '@/lib/services/pluLookup';
 
 type ScanMode = 'check' | 'shopping';
 
@@ -16,6 +17,9 @@ export default function Scanner() {
   const [scanning, setScanning] = useState(false);
   const [lastScannedCode, setLastScannedCode] = useState<string | null>(null);
   const [scanMode, setScanMode] = useState<ScanMode>('check');
+  const [showPluModal, setShowPluModal] = useState(false);
+  const [pluInput, setPluInput] = useState('');
+  const [pluError, setPluError] = useState('');
   const { location } = useLocation();
   const detectedState = location?.state;
 
@@ -65,6 +69,33 @@ export default function Scanner() {
     }
   };
 
+  const handlePluCheck = () => {
+    const trimmed = pluInput.trim();
+    if (!isValidPluFormat(trimmed)) {
+      setPluError(t('scanner.pluInvalidFormat'));
+      return;
+    }
+
+    const result = lookupPlu(trimmed);
+    if (!result) {
+      setPluError(t('scanner.pluInvalidFormat'));
+      return;
+    }
+
+    Keyboard.dismiss();
+    setShowPluModal(false);
+    setPluInput('');
+    setPluError('');
+
+    router.replace({
+      pathname: '/scanner/result',
+      params: {
+        ...pluToResultParams(result),
+        scanMode,
+      },
+    });
+  };
+
   if (!permission) {
     return (
       <View style={styles.container}>
@@ -97,7 +128,85 @@ export default function Scanner() {
         accessible={false}
       />
 
-      {/* Mode toggle */}
+      {/* Scanning overlay */}
+      <View style={styles.overlay}>
+        <View style={styles.topOverlay} />
+        <View style={styles.middleRow}>
+          <View style={styles.sideOverlay} />
+          <View style={styles.scanArea}>
+            <View style={[styles.corner, styles.topLeft]} />
+            <View style={[styles.corner, styles.topRight]} />
+            <View style={[styles.corner, styles.bottomLeft]} />
+            <View style={[styles.corner, styles.bottomRight]} />
+          </View>
+          <View style={styles.sideOverlay} />
+        </View>
+        <View style={styles.bottomOverlay}>
+          <Text style={styles.instructions}>
+            {scanning ? t('scanner.checkingProduct') : t('scanner.positionBarcode')}
+          </Text>
+          {scanning && <ActivityIndicator color="#fff" size="large" />}
+          {!scanning && (
+            <TouchableOpacity
+              style={styles.pluButton}
+              onPress={() => { setShowPluModal(true); setPluError(''); }}
+              accessibilityRole="button"
+              hitSlop={{ top: 8, bottom: 8 }}
+            >
+              <Text style={styles.pluButtonText}>{t('scanner.enterPluCode')}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+
+      {/* PLU Entry Modal */}
+      <Modal
+        visible={showPluModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowPluModal(false)}
+      >
+        <View style={styles.pluModalOverlay}>
+          <View style={styles.pluModalContent} accessibilityViewIsModal={true}>
+            <Text style={styles.pluModalTitle}>{t('scanner.pluModalTitle')}</Text>
+            <Text style={styles.pluModalSubtitle}>{t('scanner.pluModalSubtitle')}</Text>
+
+            <TextInput
+              style={[styles.pluInput, pluError ? styles.pluInputError : null]}
+              placeholder={t('scanner.pluInputPlaceholder')}
+              placeholderTextColor="#999"
+              value={pluInput}
+              onChangeText={(text) => { setPluInput(text); setPluError(''); }}
+              keyboardType="number-pad"
+              maxLength={5}
+              autoFocus
+              returnKeyType="done"
+              onSubmitEditing={handlePluCheck}
+              accessibilityLabel="PLU code"
+            />
+            {pluError ? <Text style={styles.pluErrorText}>{pluError}</Text> : null}
+
+            <View style={styles.pluModalButtons}>
+              <TouchableOpacity
+                style={[styles.pluModalButton, styles.pluModalButtonCancel]}
+                onPress={() => { setShowPluModal(false); setPluInput(''); setPluError(''); }}
+                accessibilityRole="button"
+              >
+                <Text style={styles.pluModalButtonCancelText}>{t('common.cancel')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.pluModalButton, styles.pluModalButtonCheck]}
+                onPress={handlePluCheck}
+                accessibilityRole="button"
+              >
+                <Text style={styles.pluModalButtonCheckText}>{t('scanner.pluCheck')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Mode toggle — rendered after overlay so touches aren't intercepted */}
       <View style={styles.modeToggle} accessibilityRole="tablist">
         <TouchableOpacity
           style={[styles.modeButton, scanMode === 'check' && styles.modeButtonActive]}
@@ -121,27 +230,6 @@ export default function Scanner() {
             {t('scanner.shoppingMode')}
           </Text>
         </TouchableOpacity>
-      </View>
-
-      {/* Scanning overlay */}
-      <View style={styles.overlay}>
-        <View style={styles.topOverlay} />
-        <View style={styles.middleRow}>
-          <View style={styles.sideOverlay} />
-          <View style={styles.scanArea}>
-            <View style={[styles.corner, styles.topLeft]} />
-            <View style={[styles.corner, styles.topRight]} />
-            <View style={[styles.corner, styles.bottomLeft]} />
-            <View style={[styles.corner, styles.bottomRight]} />
-          </View>
-          <View style={styles.sideOverlay} />
-        </View>
-        <View style={styles.bottomOverlay}>
-          <Text style={styles.instructions}>
-            {scanning ? t('scanner.checkingProduct') : t('scanner.positionBarcode')}
-          </Text>
-          {scanning && <ActivityIndicator color="#fff" size="large" />}
-        </View>
       </View>
 
       {/* Cancel button */}
@@ -290,6 +378,93 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   modeButtonTextActive: {
+    color: '#fff',
+  },
+  pluButton: {
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginTop: 4,
+  },
+  pluButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  pluModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  pluModalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 24,
+    width: '100%',
+    maxWidth: 340,
+  },
+  pluModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  pluModalSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 20,
+  },
+  pluInput: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    padding: 14,
+    fontSize: 24,
+    textAlign: 'center',
+    letterSpacing: 4,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
+  },
+  pluInputError: {
+    borderColor: '#C62828',
+  },
+  pluErrorText: {
+    color: '#C62828',
+    fontSize: 13,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  pluModalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 8,
+  },
+  pluModalButton: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  pluModalButtonCancel: {
+    backgroundColor: '#F5F5F5',
+  },
+  pluModalButtonCheck: {
+    backgroundColor: '#2E7D32',
+  },
+  pluModalButtonCancelText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+  },
+  pluModalButtonCheckText: {
+    fontSize: 16,
+    fontWeight: '600',
     color: '#fff',
   },
 });

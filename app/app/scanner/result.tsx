@@ -19,6 +19,7 @@ export default function ScanResult() {
   const category = params.category as string;
   const reason = params.reason as string;
   const scanMode = (params.scanMode as string) || 'check';
+  const isPlu = params.isPlu === 'true';
 
   const [eligibleParticipants, setEligibleParticipants] = useState<Participant[]>([]);
   const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null);
@@ -34,10 +35,12 @@ export default function ScanResult() {
   const [reporting, setReporting] = useState(false);
 
   useEffect(() => {
-    if (isEligible && category) {
+    if (isEligible && category && !isPlu) {
       loadEligibleParticipants();
     }
-    loadSightings();
+    if (!isPlu) {
+      loadSightings();
+    }
   }, [isEligible, category]);
 
   const loadEligibleParticipants = async () => {
@@ -177,7 +180,7 @@ export default function ScanResult() {
       <View style={styles.detailsCard}>
         <Text style={styles.productName}>{name === 'Unknown Product' ? t('formulaReport.unknownProduct') : name}</Text>
         {brand && <Text style={styles.productBrand}>{brand}</Text>}
-        <Text style={styles.upcLabel}>{t('result.upc')}: {upc}</Text>
+        <Text style={styles.upcLabel}>{isPlu ? t('result.plu') : t('result.upc')}: {upc}</Text>
 
         {category && (
           <View style={styles.categoryBadge}>
@@ -190,10 +193,16 @@ export default function ScanResult() {
             <Text style={styles.reasonText}>{reason}</Text>
           </View>
         )}
+
+        {isPlu && (
+          <View style={styles.cvbNote}>
+            <Text style={styles.cvbNoteText}>{t('result.freshProduceNote')}</Text>
+          </View>
+        )}
       </View>
 
-      {/* Recent Sightings */}
-      <View style={styles.sightingsCard}>
+      {/* Recent Sightings (hidden for PLU/produce items) */}
+      {!isPlu && <View style={styles.sightingsCard}>
         <View style={styles.sightingsHeader}>
           <Text style={styles.sightingsTitle}>{t('result.communityReports')}</Text>
           <TouchableOpacity
@@ -249,10 +258,10 @@ export default function ScanResult() {
             {t('result.noReports')}
           </Text>
         )}
-      </View>
+      </View>}
 
-      {/* Participant Selector (for eligible products with add to cart) */}
-      {isEligible && category && eligibleParticipants.length > 0 && (
+      {/* Participant Selector (for eligible products with add to cart — hidden for PLU) */}
+      {!isPlu && isEligible && category && eligibleParticipants.length > 0 && (
         <View style={styles.participantSelector}>
           <Text style={styles.selectorTitle}>{t('result.selectParticipant')}:</Text>
           {eligibleParticipants.map(participant => {
@@ -286,7 +295,7 @@ export default function ScanResult() {
 
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
-        {isEligible && category && eligibleParticipants.length > 0 && (
+        {!isPlu && isEligible && category && eligibleParticipants.length > 0 && (
           <TouchableOpacity
             style={[styles.addToCartButton, adding && styles.addToCartButtonDisabled]}
             onPress={handleAddToCart}
@@ -525,6 +534,19 @@ const styles = StyleSheet.create({
   reasonText: {
     fontSize: 14,
     color: '#666',
+    lineHeight: 20,
+  },
+  cvbNote: {
+    backgroundColor: '#E8F5E9',
+    padding: 12,
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#2E7D32',
+    marginTop: 4,
+  },
+  cvbNoteText: {
+    fontSize: 14,
+    color: '#2E7D32',
     lineHeight: 20,
   },
   participantSelector: {

@@ -61,13 +61,22 @@
     "positionBarcode": "Coloque el código de barras en el marco",
     "cancel": "Cancelar",
     "errorTitle": "Error",
-    "errorMessage": "No se pudo verificar la elegibilidad del producto. Por favor, inténtelo de nuevo."
+    "errorMessage": "No se pudo verificar la elegibilidad del producto. Por favor, inténtelo de nuevo.",
+    "enterPluCode": "Ingresar Código PLU",
+    "pluModalTitle": "Ingresar Código PLU",
+    "pluModalSubtitle": "Número de 4-5 dígitos en la etiqueta",
+    "pluInputPlaceholder": "ej. 4011",
+    "pluCheck": "Verificar",
+    "pluInvalidFormat": "Ingrese un código PLU de 4 o 5 dígitos"
   },
   "result": {
     "wicApproved": "Aprobado por WIC",
     "notApproved": "No Aprobado por WIC",
     "michigan": "Michigan",
     "upc": "UPC",
+    "plu": "PLU",
+    "freshProduceNote": "Las frutas y verduras frescas están cubiertas por su Beneficio de Valor en Efectivo (CVB).",
+    "organic": "Orgánico",
     "selectParticipant": "Seleccionar Participante",
     "selectParticipantMessage": "Por favor seleccione un participante para agregar este artículo al carrito.",
     "available": "disponible",

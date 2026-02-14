@@ -61,13 +61,22 @@
     "positionBarcode": "Position barcode in the frame",
     "cancel": "Cancel",
     "errorTitle": "Error",
-    "errorMessage": "Failed to check product eligibility. Please try again."
+    "errorMessage": "Failed to check product eligibility. Please try again.",
+    "enterPluCode": "Enter PLU Code",
+    "pluModalTitle": "Enter PLU Code",
+    "pluModalSubtitle": "4-5 digit number on produce sticker",
+    "pluInputPlaceholder": "e.g. 4011",
+    "pluCheck": "Check",
+    "pluInvalidFormat": "Please enter a 4 or 5 digit PLU code"
   },
   "result": {
     "wicApproved": "WIC Approved",
     "notApproved": "Not WIC Approved",
     "michigan": "Michigan",
     "upc": "UPC",
+    "plu": "PLU",
+    "freshProduceNote": "Fresh fruits and vegetables are covered by your Cash Value Benefit (CVB).",
+    "organic": "Organic",
     "selectParticipant": "Select Participant",
     "selectParticipantMessage": "Please select a participant to add this item to cart.",
     "available": "available",
