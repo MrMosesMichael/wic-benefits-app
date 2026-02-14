@@ -4,6 +4,36 @@
 
 ---
 
+## 2026-02-14 — Manual PLU Code Entry + Scanner Fix
+
+**Fresh produce eligibility via manual PLU entry. iOS scanner mode toggle fix.**
+
+### Done
+- ✅ Manual PLU code entry — "Enter PLU Code" button on scanner screen opens number pad modal
+- ✅ Bundled 324 IFPS produce PLU codes (203 fruits, 121 vegetables) for offline lookup
+- ✅ PLU lookup service with organic detection (5-digit codes starting with 9)
+- ✅ Result screen shows PLU label, CVB info note, hides sightings/cart for produce
+- ✅ Unknown-but-valid PLU codes still show as eligible ("Fresh Produce")
+- ✅ EN + ES translations for all PLU UI strings
+- ✅ Fixed iOS bug: Check Eligibility / Shopping Mode toggle was untappable (overlay z-order)
+
+### Files Created
+- `app/assets/data/plu-codes.json` — bundled produce PLU lookup table
+- `app/lib/services/pluLookup.ts` — offline PLU lookup service
+
+### Files Modified
+- `app/app/scanner/index.tsx` — PLU button, modal, mode toggle z-order fix
+- `app/app/scanner/result.tsx` — isPlu param, CVB note, hide sightings/cart
+- `app/lib/i18n/translations/en.json` — 9 new PLU keys
+- `app/lib/i18n/translations/es.json` — 9 new PLU keys
+
+### Commits
+```
+ce86050 feat: Add manual PLU code entry for produce eligibility
+```
+
+---
+
 ## 2026-02-13 — Version 1.1.2 Build (iOS + Android)
 
 **Accessibility overhaul included in new builds.**
