@@ -1,0 +1,202 @@
+[
+  {
+    "id": "check-before-buy",
+    "title": "Scan Before You Buy",
+    "titleEs": "Escanee Antes de Comprar",
+    "content": "Use the app's barcode scanner to check if a product is WIC-approved before putting it in your cart. This prevents embarrassing checkout rejections and saves time.",
+    "contentEs": "Use el escáner de la aplicación para verificar si un producto está aprobado por WIC antes de ponerlo en su carrito. Esto evita rechazos vergonzosos en la caja y ahorra tiempo.",
+    "category": "shopping",
+    "tags": ["scan", "barcode", "checkout", "verify"],
+    "priority": 100
+  },
+  {
+    "id": "exact-sizes",
+    "title": "Size Matters — Check Exactly",
+    "titleEs": "El Tamaño Importa — Verifique Exactamente",
+    "content": "WIC approves specific package sizes. A 15 oz cereal box may be approved while a 14 oz box of the same brand is not. Always check the exact size on the package against your WIC list.",
+    "contentEs": "WIC aprueba tamaños específicos de paquetes. Una caja de cereal de 15 oz puede estar aprobada mientras una de 14 oz de la misma marca no. Siempre verifique el tamaño exacto.",
+    "category": "shopping",
+    "tags": ["size", "package", "rejected", "APL"],
+    "priority": 95
+  },
+  {
+    "id": "shop-early",
+    "title": "Shop Early in the Month",
+    "titleEs": "Compre Temprano en el Mes",
+    "content": "WIC-approved items are most available at the start of your benefit period. Shopping early ensures better selection and reduces the chance of finding empty shelves for popular items.",
+    "contentEs": "Los artículos aprobados por WIC están más disponibles al inicio de su período de beneficios. Comprar temprano asegura mejor selección.",
+    "category": "shopping",
+    "tags": ["timing", "stock", "availability", "period"],
+    "priority": 90
+  },
+  {
+    "id": "store-brands",
+    "title": "Store Brands Save Benefits",
+    "titleEs": "Las Marcas de Tienda Ahorran Beneficios",
+    "content": "Many store-brand items are WIC-approved and cost less. This means your cash value benefits for fruits and vegetables stretch further. Check store brands first!",
+    "contentEs": "Muchos artículos de marca de tienda están aprobados por WIC y cuestan menos. Esto significa que sus beneficios en efectivo para frutas y verduras rinden más.",
+    "category": "savings",
+    "tags": ["store brand", "savings", "budget", "generic"],
+    "priority": 85
+  },
+  {
+    "id": "cvb-flexibility",
+    "title": "Cash Value Benefits Are Flexible",
+    "titleEs": "Los Beneficios en Efectivo Son Flexibles",
+    "content": "Your Cash Value Benefit (CVB) for fruits and vegetables can be used for ANY fresh, frozen, or canned fruits and vegetables — no specific brands required. Mix and match as you like!",
+    "contentEs": "Su Beneficio de Valor en Efectivo (CVB) para frutas y verduras se puede usar para CUALQUIER fruta y verdura fresca, congelada o enlatada — no se requieren marcas específicas.",
+    "category": "savings",
+    "tags": ["CVB", "cash value", "fruits", "vegetables", "flexible"],
+    "priority": 80
+  },
+  {
+    "id": "separate-transactions",
+    "title": "Separate WIC and Non-WIC Items",
+    "titleEs": "Separe Artículos WIC y No-WIC",
+    "content": "Place WIC items together on the belt and tell the cashier you have WIC. Some stores prefer WIC items rung up first. This makes checkout smoother for everyone.",
+    "contentEs": "Coloque los artículos WIC juntos en la banda y diga al cajero que tiene WIC. Algunas tiendas prefieren que los artículos WIC se cobren primero.",
+    "category": "checkout",
+    "tags": ["checkout", "cashier", "transaction", "tips"],
+    "priority": 75
+  },
+  {
+    "id": "use-it-or-lose-it",
+    "title": "Benefits Don't Roll Over",
+    "titleEs": "Los Beneficios No Se Acumulan",
+    "content": "Unused WIC benefits expire at the end of each benefit period. Check your remaining benefits regularly and plan a trip before they expire to get the most from your benefits.",
+    "contentEs": "Los beneficios WIC no utilizados expiran al final de cada período. Revise sus beneficios restantes regularmente y planifique una compra antes de que expiren.",
+    "category": "savings",
+    "tags": ["expire", "rollover", "period", "use"],
+    "priority": 70
+  },
+  {
+    "id": "frozen-produce",
+    "title": "Frozen Fruits & Veggies Count",
+    "titleEs": "Frutas y Verduras Congeladas Cuentan",
+    "content": "Frozen fruits and vegetables are covered by your CVB just like fresh ones. They last longer, have great nutrition, and are often cheaper per serving. Stock up!",
+    "contentEs": "Las frutas y verduras congeladas están cubiertas por su CVB al igual que las frescas. Duran más, tienen gran nutrición y a menudo son más baratas por porción.",
+    "category": "savings",
+    "tags": ["frozen", "produce", "CVB", "nutrition"],
+    "priority": 65
+  },
+  {
+    "id": "check-receipt",
+    "title": "Check Your Receipt",
+    "titleEs": "Revise Su Recibo",
+    "content": "After checkout, review your receipt to see which items were covered by WIC and your remaining balances. This helps you plan your next trip and catch any errors.",
+    "contentEs": "Después de pagar, revise su recibo para ver qué artículos fueron cubiertos por WIC y sus saldos restantes. Esto le ayuda a planificar su próxima compra.",
+    "category": "checkout",
+    "tags": ["receipt", "balance", "remaining", "verify"],
+    "priority": 60
+  },
+  {
+    "id": "ask-for-help",
+    "title": "Store Staff Can Help",
+    "titleEs": "El Personal de la Tienda Puede Ayudar",
+    "content": "Don't be shy about asking store employees for help finding WIC-approved items. Many stores have dedicated WIC sections or shelf labels marking approved products.",
+    "contentEs": "No tenga vergüenza de pedir ayuda a los empleados para encontrar artículos aprobados por WIC. Muchas tiendas tienen secciones dedicadas o etiquetas en los estantes.",
+    "category": "shopping",
+    "tags": ["help", "staff", "labels", "sections"],
+    "priority": 55
+  },
+  {
+    "id": "keep-card-safe",
+    "title": "Protect Your eWIC Card",
+    "titleEs": "Proteja Su Tarjeta eWIC",
+    "content": "Treat your eWIC card like a debit card. Keep it in a safe place, memorize your PIN, and never share it with anyone. If lost, contact your WIC office immediately.",
+    "contentEs": "Trate su tarjeta eWIC como una tarjeta de débito. Guárdela en un lugar seguro, memorice su PIN y nunca la comparta. Si la pierde, contacte su oficina WIC inmediatamente.",
+    "category": "shopping",
+    "tags": ["card", "eWIC", "PIN", "security"],
+    "priority": 50
+  },
+  {
+    "id": "seasonal-produce",
+    "title": "Buy Seasonal Produce",
+    "titleEs": "Compre Frutas y Verduras de Temporada",
+    "content": "Seasonal fruits and vegetables are fresher, tastier, and often cheaper. Your CVB stretches further when you buy what's in season. Farmers markets that accept WIC are great for this!",
+    "contentEs": "Las frutas y verduras de temporada son más frescas, sabrosas y a menudo más baratas. Su CVB rinde más cuando compra lo que está en temporada.",
+    "category": "seasonal",
+    "tags": ["seasonal", "produce", "farmers market", "savings"],
+    "priority": 45
+  },
+  {
+    "id": "formula-shortage-tips",
+    "title": "During Formula Shortages",
+    "titleEs": "Durante Escasez de Fórmula",
+    "content": "If your formula is out of stock: 1) Check multiple stores using the app's formula finder, 2) Call your WIC office about approved alternatives, 3) Never water down formula. Your WIC office can update your benefits for substitutes.",
+    "contentEs": "Si su fórmula está agotada: 1) Revise múltiples tiendas usando el buscador de la app, 2) Llame a su oficina WIC sobre alternativas, 3) Nunca diluya la fórmula. Su oficina WIC puede actualizar sus beneficios.",
+    "category": "shopping",
+    "tags": ["formula", "shortage", "alternatives", "safety"],
+    "priority": 85
+  },
+  {
+    "id": "rights-at-checkout",
+    "title": "Know Your Rights at Checkout",
+    "titleEs": "Conozca Sus Derechos en la Caja",
+    "content": "Stores cannot refuse to accept WIC. If a cashier is rude or refuses service, ask for a manager. You have the right to use your WIC benefits without judgment or harassment.",
+    "contentEs": "Las tiendas no pueden negarse a aceptar WIC. Si un cajero es grosero o se niega a atenderle, pida hablar con un gerente. Tiene derecho a usar sus beneficios sin ser juzgado.",
+    "category": "rights",
+    "tags": ["rights", "checkout", "discrimination", "manager"],
+    "priority": 80
+  },
+  {
+    "id": "multi-store-shopping",
+    "title": "You Can Shop at Multiple Stores",
+    "titleEs": "Puede Comprar en Múltiples Tiendas",
+    "content": "You don't have to buy all your WIC items at one store. Split your shopping between stores to find the best selection and prices. Your eWIC card works at any authorized store.",
+    "contentEs": "No tiene que comprar todos sus artículos WIC en una sola tienda. Divida sus compras entre tiendas para encontrar mejor selección y precios. Su tarjeta eWIC funciona en cualquier tienda autorizada.",
+    "category": "shopping",
+    "tags": ["multiple stores", "flexibility", "eWIC", "authorized"],
+    "priority": 40
+  },
+  {
+    "id": "wic-and-coupons",
+    "title": "You Can Use Coupons with WIC",
+    "titleEs": "Puede Usar Cupones con WIC",
+    "content": "In most states, you can use manufacturer coupons on WIC items. The store keeps the coupon value, so they actually benefit too. Check your state's policy for details.",
+    "contentEs": "En la mayoría de los estados, puede usar cupones de fabricante en artículos WIC. La tienda se queda con el valor del cupón. Consulte la política de su estado para más detalles.",
+    "category": "savings",
+    "tags": ["coupons", "savings", "manufacturer", "discounts"],
+    "priority": 35
+  },
+  {
+    "id": "appointment-prep",
+    "title": "Prepare for WIC Appointments",
+    "titleEs": "Prepárese para las Citas WIC",
+    "content": "Bring your ID, proof of address, income documentation, and child's immunization records to WIC appointments. Being prepared helps appointments go smoothly and ensures no delays in benefits.",
+    "contentEs": "Lleve su identificación, comprobante de domicilio, documentación de ingresos y registros de vacunación del niño a las citas WIC. Estar preparado ayuda a que todo sea más fluido.",
+    "category": "shopping",
+    "tags": ["appointment", "documents", "preparation", "office"],
+    "priority": 30
+  },
+  {
+    "id": "check-expiration",
+    "title": "Check Product Expiration Dates",
+    "titleEs": "Revise Fechas de Vencimiento",
+    "content": "WIC-approved items must not be expired. Check dates before purchasing, especially formula. If you find expired WIC items on shelves, report it to the store manager.",
+    "contentEs": "Los artículos aprobados por WIC no deben estar vencidos. Revise las fechas antes de comprar, especialmente la fórmula. Si encuentra artículos vencidos, repórtelo al gerente.",
+    "category": "shopping",
+    "tags": ["expiration", "dates", "safety", "formula"],
+    "priority": 25
+  },
+  {
+    "id": "breakfast-planning",
+    "title": "Plan Nutritious Breakfasts with WIC",
+    "titleEs": "Planifique Desayunos Nutritivos con WIC",
+    "content": "WIC cereals, milk, eggs, juice, and whole grains make complete breakfasts. Plan weekly menus using WIC items as the foundation, then supplement with other foods as needed.",
+    "contentEs": "Los cereales, leche, huevos, jugo y granos integrales de WIC hacen desayunos completos. Planifique menús semanales usando artículos WIC como base.",
+    "category": "savings",
+    "tags": ["breakfast", "meal planning", "nutrition", "budget"],
+    "priority": 20
+  },
+  {
+    "id": "self-checkout",
+    "title": "Self-Checkout Works for WIC",
+    "titleEs": "La Caja de Autoservicio Funciona con WIC",
+    "content": "Most stores allow WIC at self-checkout. Insert your eWIC card at payment. If items are rejected, an attendant can help. Self-checkout can feel more private if you prefer that.",
+    "contentEs": "La mayoría de las tiendas permiten WIC en las cajas de autoservicio. Inserte su tarjeta eWIC al pagar. Si se rechazan artículos, un asistente puede ayudar.",
+    "category": "checkout",
+    "tags": ["self-checkout", "eWIC", "privacy", "payment"],
+    "priority": 15
+  }
+]

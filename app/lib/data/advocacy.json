@@ -1,0 +1,150 @@
+{
+  "offices": [
+    {
+      "state": "MI",
+      "name": "Michigan WIC Program",
+      "phone": "1-800-262-4784",
+      "website": "https://www.michigan.gov/mdhhs/keep-mi-healthy/maternal-and-infant-health/wic",
+      "hours": "Monday - Friday, 8:00 AM - 5:00 PM ET",
+      "address": "333 S Grand Ave, Lansing, MI 48933",
+      "email": "mdhhs-wic@michigan.gov"
+    },
+    {
+      "state": "NC",
+      "name": "North Carolina WIC Program",
+      "phone": "1-800-367-2229",
+      "website": "https://www.nutritionnc.com/wic/",
+      "hours": "Monday - Friday, 8:00 AM - 5:00 PM ET",
+      "address": "1914 Mail Service Center, Raleigh, NC 27699",
+      "email": ""
+    },
+    {
+      "state": "NY",
+      "name": "New York WIC Program",
+      "phone": "1-800-522-5006",
+      "website": "https://www.health.ny.gov/prevention/nutrition/wic/",
+      "hours": "Monday - Friday, 8:30 AM - 4:30 PM ET",
+      "address": "Riverview Center, 150 Broadway, Albany, NY 12204",
+      "email": ""
+    },
+    {
+      "state": "OR",
+      "name": "Oregon WIC Program",
+      "phone": "1-800-723-3638",
+      "website": "https://www.oregon.gov/oha/PH/HEALTHYPEOPLEFAMILIES/WIC",
+      "hours": "Monday - Friday, 8:00 AM - 5:00 PM PT",
+      "address": "800 NE Oregon St, Suite 865, Portland, OR 97232",
+      "email": ""
+    }
+  ],
+  "rights": [
+    {
+      "id": "right-to-service",
+      "title": "Right to Service",
+      "titleEs": "Derecho al Servicio",
+      "content": "WIC-authorized stores MUST accept your WIC benefits. They cannot refuse to serve you or treat you differently because you use WIC.",
+      "contentEs": "Las tiendas autorizadas por WIC DEBEN aceptar sus beneficios. No pueden negarse a atenderle ni tratarle diferente porque use WIC.",
+      "icon": "\u2705"
+    },
+    {
+      "id": "right-to-dignity",
+      "title": "Right to Respectful Treatment",
+      "titleEs": "Derecho a un Trato Respetuoso",
+      "content": "You have the right to be treated with dignity and respect. Cashiers and store employees should not make negative comments or draw attention to your use of WIC benefits.",
+      "contentEs": "Tiene derecho a ser tratado con dignidad y respeto. Los cajeros y empleados no deben hacer comentarios negativos ni llamar la atención sobre su uso de beneficios WIC.",
+      "icon": "\u{1F91D}"
+    },
+    {
+      "id": "right-to-confidentiality",
+      "title": "WIC is Confidential",
+      "titleEs": "WIC es Confidencial",
+      "content": "Your WIC information is confidential. Your participation, personal details, and benefit amounts cannot be shared without your written permission.",
+      "contentEs": "Su información de WIC es confidencial. Su participación, datos personales y montos de beneficios no pueden compartirse sin su permiso escrito.",
+      "icon": "\u{1F512}"
+    },
+    {
+      "id": "right-to-appeal",
+      "title": "Right to a Fair Hearing",
+      "titleEs": "Derecho a una Audiencia Justa",
+      "content": "If you disagree with a WIC decision (denial, termination, or reduction of benefits), you have the right to request a fair hearing within 60 days.",
+      "contentEs": "Si no está de acuerdo con una decisión de WIC (negación, terminación o reducción de beneficios), tiene derecho a solicitar una audiencia justa dentro de 60 días.",
+      "icon": "\u2696\uFE0F"
+    },
+    {
+      "id": "right-to-nondiscrimination",
+      "title": "No Discrimination",
+      "titleEs": "Sin Discriminación",
+      "content": "WIC does not discriminate based on race, color, national origin, sex, age, or disability. Services must be provided equally to all eligible participants.",
+      "contentEs": "WIC no discrimina por raza, color, origen nacional, sexo, edad o discapacidad. Los servicios deben proporcionarse por igual a todos los participantes elegibles.",
+      "icon": "\u{1F3F3}\uFE0F"
+    },
+    {
+      "id": "right-to-complaint",
+      "title": "Right to File a Complaint",
+      "titleEs": "Derecho a Presentar una Queja",
+      "content": "If you experience discrimination or mistreatment, you have the right to file a complaint with your state WIC agency or the USDA Office of Civil Rights.",
+      "contentEs": "Si experimenta discriminación o maltrato, tiene derecho a presentar una queja ante su agencia estatal de WIC o la Oficina de Derechos Civiles del USDA.",
+      "icon": "\u{1F4DD}"
+    },
+    {
+      "id": "right-to-breastfeeding",
+      "title": "Right to Breastfeed",
+      "titleEs": "Derecho a Amamantar",
+      "content": "You have the right to breastfeed anywhere you are legally allowed to be. WIC strongly supports breastfeeding and provides enhanced food packages for breastfeeding mothers.",
+      "contentEs": "Tiene derecho a amamantar en cualquier lugar donde legalmente pueda estar. WIC apoya fuertemente la lactancia y proporciona paquetes de alimentos mejorados para madres lactantes.",
+      "icon": "\u{1F930}"
+    },
+    {
+      "id": "right-to-information",
+      "title": "Right to Information",
+      "titleEs": "Derecho a la Información",
+      "content": "You have the right to receive clear information about your benefits, approved foods, and WIC services in a language you understand.",
+      "contentEs": "Tiene derecho a recibir información clara sobre sus beneficios, alimentos aprobados y servicios de WIC en un idioma que entienda.",
+      "icon": "\u{1F4DA}"
+    }
+  ],
+  "complaintTypes": [
+    {
+      "id": "store-refusal",
+      "label": "Store refused WIC",
+      "labelEs": "La tienda rechazó WIC",
+      "template": "I am writing to report that [Store Name] at [Address] refused to accept my WIC benefits on [Date]. [Describe what happened].",
+      "templateEs": "Escribo para reportar que [Nombre de Tienda] en [Dirección] se negó a aceptar mis beneficios WIC el [Fecha]. [Describa lo que pasó]."
+    },
+    {
+      "id": "discrimination",
+      "label": "Discrimination/Mistreatment",
+      "labelEs": "Discriminación/Maltrato",
+      "template": "I am writing to report discriminatory treatment at [Store Name/WIC Office] on [Date]. [Describe the discriminatory behavior or treatment you experienced].",
+      "templateEs": "Escribo para reportar un trato discriminatorio en [Nombre de Tienda/Oficina WIC] el [Fecha]. [Describa el comportamiento discriminatorio]."
+    },
+    {
+      "id": "benefits-issue",
+      "label": "Benefits not working correctly",
+      "labelEs": "Beneficios no funcionan correctamente",
+      "template": "I am writing about an issue with my WIC benefits. On [Date] at [Store Name], the following items were incorrectly rejected: [List items]. My benefit period runs from [Start] to [End].",
+      "templateEs": "Escribo sobre un problema con mis beneficios WIC. El [Fecha] en [Nombre de Tienda], los siguientes artículos fueron rechazados incorrectamente: [Lista]. Mi período de beneficios va del [Inicio] al [Fin]."
+    },
+    {
+      "id": "office-complaint",
+      "label": "WIC office complaint",
+      "labelEs": "Queja sobre oficina WIC",
+      "template": "I am writing to report a concern about my experience at the [WIC Office Name] located at [Address] on [Date]. [Describe the issue].",
+      "templateEs": "Escribo para reportar una preocupación sobre mi experiencia en la [Oficina WIC] ubicada en [Dirección] el [Fecha]. [Describa el problema]."
+    }
+  ],
+  "federalResources": [
+    {
+      "name": "USDA Food and Nutrition Service",
+      "nameEs": "Servicio de Alimentos y Nutrición del USDA",
+      "phone": "1-800-221-5689",
+      "website": "https://www.fns.usda.gov/wic"
+    },
+    {
+      "name": "USDA Office of Civil Rights",
+      "nameEs": "Oficina de Derechos Civiles del USDA",
+      "phone": "1-866-632-9992",
+      "website": "https://www.usda.gov/oascr/how-to-file-a-program-discrimination-complaint"
+    }
+  ]
+}

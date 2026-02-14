@@ -86,6 +86,17 @@ function Navigation() {
       <Stack.Screen name="settings/location" options={{ title: 'Location' }} />
       <Stack.Screen name="help/index" options={{ title: t('nav.help') }} />
       <Stack.Screen name="feedback/index" options={{ title: t('nav.feedback') }} />
+      <Stack.Screen name="catalog/index" options={{ title: t('nav.catalog') }} />
+      <Stack.Screen name="catalog/products" options={{ title: t('nav.catalogProducts') }} />
+      <Stack.Screen name="stores/index" options={{ title: t('nav.storeFinder') }} />
+      <Stack.Screen name="stores/detail" options={{ title: t('nav.storeDetail') }} />
+      <Stack.Screen name="community/index" options={{ title: t('nav.community') }} />
+      <Stack.Screen name="community/tips" options={{ title: t('nav.tips') }} />
+      <Stack.Screen name="community/rights" options={{ title: t('nav.rights') }} />
+      <Stack.Screen name="community/wic-offices" options={{ title: t('nav.wicOffices') }} />
+      <Stack.Screen name="community/complaint" options={{ title: t('nav.complaint') }} />
+      <Stack.Screen name="community/recipes" options={{ title: t('nav.recipes') }} />
+      <Stack.Screen name="community/recipe-detail" options={{ title: t('nav.recipeDetail') }} />
     </Stack>
   );
 }

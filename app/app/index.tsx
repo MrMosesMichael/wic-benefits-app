@@ -62,6 +62,39 @@ export default function Home() {
         </TouchableOpacity>
 
         <TouchableOpacity
+          style={styles.catalogButton}
+          onPress={() => router.push('/catalog')}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.home.catalogLabel')}
+          accessibilityHint={t('a11y.home.catalogHint')}
+        >
+          <Text style={styles.buttonText}>📋 {t('home.productCatalog')}</Text>
+          <Text style={styles.buttonSubtext}>{t('home.productCatalogSubtext')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.storeFinderButton}
+          onPress={() => router.push('/stores')}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.home.storeFinderLabel')}
+          accessibilityHint={t('a11y.home.storeFinderHint')}
+        >
+          <Text style={styles.buttonText}>🗺️ {t('home.storeFinder')}</Text>
+          <Text style={styles.buttonSubtext}>{t('home.storeFinderSubtext')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.communityButton}
+          onPress={() => router.push('/community')}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.home.communityLabel')}
+          accessibilityHint={t('a11y.home.communityHint')}
+        >
+          <Text style={styles.buttonText}>🤝 {t('home.communityHub')}</Text>
+          <Text style={styles.buttonSubtext}>{t('home.communityHubSubtext')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           style={styles.helpButton}
           onPress={() => router.push('/help')}
           accessibilityRole="button"
@@ -131,6 +164,24 @@ const styles = StyleSheet.create({
   },
   foodBankButton: {
     backgroundColor: '#4CAF50',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  catalogButton: {
+    backgroundColor: '#00897B',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  storeFinderButton: {
+    backgroundColor: '#546E7A',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  communityButton: {
+    backgroundColor: '#7B1FA2',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',

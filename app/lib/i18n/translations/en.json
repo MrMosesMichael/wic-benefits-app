@@ -18,7 +18,18 @@
     "foodBanks": "Food Banks",
     "privacy": "Privacy & Data",
     "help": "Help & FAQ",
-    "feedback": "Send Feedback"
+    "feedback": "Send Feedback",
+    "catalog": "Product Catalog",
+    "catalogProducts": "Products",
+    "storeFinder": "Store Finder",
+    "storeDetail": "Store Details",
+    "community": "Community Hub",
+    "tips": "Shopping Tips",
+    "rights": "Know Your Rights",
+    "wicOffices": "WIC Offices",
+    "complaint": "File a Complaint",
+    "recipes": "WIC Recipes",
+    "recipeDetail": "Recipe"
   },
   "home": {
     "findFormula": "Find Formula",
@@ -28,7 +39,13 @@
     "shoppingCart": "Shopping Cart",
     "findFoodBanks": "Find Food Banks",
     "findFoodBanksSubtext": "Local food assistance nearby",
-    "helpFaq": "Help & FAQ"
+    "helpFaq": "Help & FAQ",
+    "productCatalog": "Product Catalog",
+    "productCatalogSubtext": "Browse WIC-approved products",
+    "storeFinder": "Store Finder",
+    "storeFinderSubtext": "Find WIC stores near you",
+    "communityHub": "Community Hub",
+    "communityHubSubtext": "Tips, recipes & advocacy"
   },
   "help": {
     "needHelp": "Need Help?",
@@ -594,6 +611,133 @@
     "ready_to_feed": "Ready-to-Feed",
     "concentrate": "Concentrate"
   },
+  "catalog": {
+    "browsingState": "Browsing {{state}} WIC Products",
+    "loading": "Loading categories...",
+    "loadError": "Failed to load product categories. Please try again.",
+    "requiresInternet": "Internet Required",
+    "requiresInternetMessage": "Product catalog requires an internet connection to browse.",
+    "items": "items",
+    "wicApproved": "WIC Approved",
+    "searchPlaceholder": "Search products...",
+    "productCount": "{{count}} product(s)",
+    "noProducts": "No products found. Try a different search or category.",
+    "categories": {
+      "milk": "Milk",
+      "eggs": "Eggs",
+      "cereal": "Cereal",
+      "peanut_butter": "Peanut Butter",
+      "juice": "Juice",
+      "cheese": "Cheese",
+      "whole_grains": "Whole Grains",
+      "infant_formula": "Infant Formula",
+      "infant_food": "Infant Food",
+      "fruits_vegetables": "Fruits & Vegetables",
+      "uncategorized": "Other"
+    }
+  },
+  "storeFinder": {
+    "listView": "List",
+    "mapView": "Map",
+    "searchRadius": "Search Radius",
+    "wicOnly": "WIC Only",
+    "filterByChain": "Filter by Chain",
+    "allChains": "All Chains",
+    "search": "Search",
+    "searching": "Searching nearby stores...",
+    "mapNote": "Map view requires react-native-maps. Use list view for now.",
+    "noResults": "No Stores Found",
+    "noResultsMessage": "Try expanding your search radius or removing filters.",
+    "foundCount": "{{count}} store(s) found",
+    "call": "Call",
+    "directions": "Directions",
+    "wicAuthorized": "WIC Authorized",
+    "away": "away",
+    "address": "Address",
+    "phone": "Phone"
+  },
+  "community": {
+    "headerMessage": "You are not alone. Connect with resources, tips, and your rights as a WIC participant.",
+    "shoppingTips": "Shopping Tips",
+    "shoppingTipsDesc": "Save time and money at the store",
+    "recipes": "WIC Recipes",
+    "recipesDesc": "Easy meals with WIC-approved ingredients",
+    "knowYourRights": "Know Your Rights",
+    "knowYourRightsDesc": "Your rights as a WIC participant",
+    "wicOffices": "WIC Office Directory",
+    "wicOfficesDesc": "Find your state WIC office",
+    "fileComplaint": "File a Complaint",
+    "fileComplaintDesc": "Report issues with stores or services"
+  },
+  "tips": {
+    "searchPlaceholder": "Search tips...",
+    "allCategories": "All",
+    "resultsFor": "{{count}} result(s) for \"{{query}}\"",
+    "noSearchResults": "No tips match your search. Try different keywords.",
+    "noTipsInCategory": "No tips available in this category.",
+    "categories": {
+      "shopping": "Shopping",
+      "savings": "Savings",
+      "checkout": "Checkout",
+      "rights": "Rights",
+      "seasonal": "Seasonal"
+    }
+  },
+  "rights": {
+    "searchPlaceholder": "Search your rights...",
+    "infoMessage": "As a WIC participant, you have important rights. Knowing them helps you get the most from your benefits.",
+    "noResults": "No rights information matches your search.",
+    "federalResources": "Federal Resources"
+  },
+  "complaint": {
+    "privacyNotice": "This tool helps you compose a complaint. Nothing is sent from this app — you contact your WIC office directly.",
+    "step1": "Step 1: Select Complaint Type",
+    "step2": "Step 2: Describe What Happened",
+    "step3": "Step 3: Your Complaint Letter",
+    "detailsPlaceholder": "Describe what happened in detail...",
+    "copied": "Copied!",
+    "copyText": "Copy to Clipboard",
+    "contactTitle": "Your State WIC Office",
+    "contactNote": "Contact your state WIC office to file your complaint. You can call, email, or mail the letter above."
+  },
+  "wicOffices": {
+    "selectState": "Select Your State",
+    "phone": "Phone",
+    "hours": "Hours",
+    "address": "Address",
+    "email": "Email",
+    "call": "Call",
+    "visitWebsite": "Visit Website",
+    "aboutTitle": "About WIC Offices",
+    "aboutText": "Your state WIC office can help with questions about eligibility, benefits, complaints, and more. They are here to help you."
+  },
+  "recipes": {
+    "searchPlaceholder": "Search recipes...",
+    "noSearchResults": "No recipes match your search.",
+    "noRecipes": "No recipes available in this category.",
+    "notFound": "Recipe not found.",
+    "min": "min",
+    "minutes": "minutes",
+    "servingsLabel": "servings",
+    "servingsShort": "serv.",
+    "wicIngredientsTitle": "WIC-Covered Ingredients",
+    "otherIngredients": "Other Ingredients",
+    "instructions": "Instructions",
+    "wicIngredients": "WIC ingredients",
+    "difficulty": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
+    "categories": {
+      "all": "All",
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snacks": "Snacks",
+      "baby_food": "Baby Food"
+    }
+  },
   "a11y": {
     "needHelpLink": {
       "hint": "Opens help and FAQ screen"
@@ -659,7 +803,36 @@
       "foodBanksLabel": "Find Food Banks. Local food assistance nearby",
       "foodBanksHint": "Search for nearby food banks",
       "helpHint": "Get help and find answers",
-      "locationHint": "Change your location settings"
+      "locationHint": "Change your location settings",
+      "catalogLabel": "Product Catalog. Browse WIC-approved products",
+      "catalogHint": "Opens product catalog",
+      "storeFinderLabel": "Store Finder. Find WIC stores near you",
+      "storeFinderHint": "Opens store finder",
+      "communityLabel": "Community Hub. Tips, recipes and advocacy",
+      "communityHint": "Opens community resources"
+    },
+    "catalog": {
+      "searchLabel": "Search products",
+      "clearSearchLabel": "Clear search",
+      "categoryHint": "Opens product list for this category"
+    },
+    "storeFinder": {
+      "callLabel": "Call store",
+      "directionsLabel": "Get directions to store"
+    },
+    "tips": {
+      "searchLabel": "Search shopping tips"
+    },
+    "rights": {
+      "searchLabel": "Search your rights"
+    },
+    "complaint": {
+      "detailsLabel": "Describe your complaint",
+      "copyLabel": "Copy complaint text to clipboard"
+    },
+    "recipes": {
+      "searchLabel": "Search recipes",
+      "cardHint": "Opens recipe details"
     },
     "scanner": {
       "cancelLabel": "Cancel scanning"

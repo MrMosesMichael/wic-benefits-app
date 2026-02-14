@@ -18,7 +18,18 @@
     "foodBanks": "Bancos de Alimentos",
     "privacy": "Privacidad y Datos",
     "help": "Ayuda y Preguntas",
-    "feedback": "Enviar Comentarios"
+    "feedback": "Enviar Comentarios",
+    "catalog": "Catálogo de Productos",
+    "catalogProducts": "Productos",
+    "storeFinder": "Buscar Tiendas",
+    "storeDetail": "Detalles de Tienda",
+    "community": "Centro Comunitario",
+    "tips": "Consejos de Compras",
+    "rights": "Conozca Sus Derechos",
+    "wicOffices": "Oficinas de WIC",
+    "complaint": "Presentar una Queja",
+    "recipes": "Recetas WIC",
+    "recipeDetail": "Receta"
   },
   "home": {
     "findFormula": "Buscar Fórmula",
@@ -28,7 +39,13 @@
     "shoppingCart": "Carrito de Compras",
     "findFoodBanks": "Buscar Bancos de Alimentos",
     "findFoodBanksSubtext": "Asistencia alimentaria local cerca de usted",
-    "helpFaq": "Ayuda y Preguntas"
+    "helpFaq": "Ayuda y Preguntas",
+    "productCatalog": "Catálogo de Productos",
+    "productCatalogSubtext": "Explorar productos aprobados por WIC",
+    "storeFinder": "Buscar Tiendas",
+    "storeFinderSubtext": "Encontrar tiendas WIC cerca de usted",
+    "communityHub": "Centro Comunitario",
+    "communityHubSubtext": "Consejos, recetas y defensa"
   },
   "help": {
     "needHelp": "¿Necesita Ayuda?",
@@ -594,6 +611,133 @@
     "ready_to_feed": "Lista para Usar",
     "concentrate": "Concentrada"
   },
+  "catalog": {
+    "browsingState": "Explorando productos WIC de {{state}}",
+    "loading": "Cargando categorías...",
+    "loadError": "No se pudieron cargar las categorías. Intente de nuevo.",
+    "requiresInternet": "Se Requiere Internet",
+    "requiresInternetMessage": "El catálogo de productos requiere conexión a internet.",
+    "items": "artículos",
+    "wicApproved": "Aprobado por WIC",
+    "searchPlaceholder": "Buscar productos...",
+    "productCount": "{{count}} producto(s)",
+    "noProducts": "No se encontraron productos. Intente con otra búsqueda o categoría.",
+    "categories": {
+      "milk": "Leche",
+      "eggs": "Huevos",
+      "cereal": "Cereal",
+      "peanut_butter": "Mantequilla de Maní",
+      "juice": "Jugo",
+      "cheese": "Queso",
+      "whole_grains": "Granos Integrales",
+      "infant_formula": "Fórmula Infantil",
+      "infant_food": "Comida para Bebé",
+      "fruits_vegetables": "Frutas y Verduras",
+      "uncategorized": "Otros"
+    }
+  },
+  "storeFinder": {
+    "listView": "Lista",
+    "mapView": "Mapa",
+    "searchRadius": "Radio de Búsqueda",
+    "wicOnly": "Solo WIC",
+    "filterByChain": "Filtrar por Cadena",
+    "allChains": "Todas las Cadenas",
+    "search": "Buscar",
+    "searching": "Buscando tiendas cercanas...",
+    "mapNote": "Vista de mapa requiere react-native-maps. Use vista de lista por ahora.",
+    "noResults": "No Se Encontraron Tiendas",
+    "noResultsMessage": "Intente ampliar el radio de búsqueda o eliminar filtros.",
+    "foundCount": "{{count}} tienda(s) encontrada(s)",
+    "call": "Llamar",
+    "directions": "Direcciones",
+    "wicAuthorized": "Autorizado por WIC",
+    "away": "de distancia",
+    "address": "Dirección",
+    "phone": "Teléfono"
+  },
+  "community": {
+    "headerMessage": "No está solo/a. Conéctese con recursos, consejos y sus derechos como participante de WIC.",
+    "shoppingTips": "Consejos de Compras",
+    "shoppingTipsDesc": "Ahorre tiempo y dinero en la tienda",
+    "recipes": "Recetas WIC",
+    "recipesDesc": "Comidas fáciles con ingredientes aprobados por WIC",
+    "knowYourRights": "Conozca Sus Derechos",
+    "knowYourRightsDesc": "Sus derechos como participante de WIC",
+    "wicOffices": "Directorio de Oficinas WIC",
+    "wicOfficesDesc": "Encuentre su oficina estatal de WIC",
+    "fileComplaint": "Presentar una Queja",
+    "fileComplaintDesc": "Reportar problemas con tiendas o servicios"
+  },
+  "tips": {
+    "searchPlaceholder": "Buscar consejos...",
+    "allCategories": "Todos",
+    "resultsFor": "{{count}} resultado(s) para \"{{query}}\"",
+    "noSearchResults": "No se encontraron consejos. Intente con otras palabras.",
+    "noTipsInCategory": "No hay consejos en esta categoría.",
+    "categories": {
+      "shopping": "Compras",
+      "savings": "Ahorros",
+      "checkout": "Caja",
+      "rights": "Derechos",
+      "seasonal": "Temporada"
+    }
+  },
+  "rights": {
+    "searchPlaceholder": "Buscar sus derechos...",
+    "infoMessage": "Como participante de WIC, tiene derechos importantes. Conocerlos le ayuda a aprovechar al máximo sus beneficios.",
+    "noResults": "No se encontró información de derechos que coincida con su búsqueda.",
+    "federalResources": "Recursos Federales"
+  },
+  "complaint": {
+    "privacyNotice": "Esta herramienta le ayuda a redactar una queja. Nada se envía desde esta aplicación — usted contacta directamente a su oficina de WIC.",
+    "step1": "Paso 1: Seleccione el Tipo de Queja",
+    "step2": "Paso 2: Describa Lo Que Pasó",
+    "step3": "Paso 3: Su Carta de Queja",
+    "detailsPlaceholder": "Describa lo que pasó en detalle...",
+    "copied": "¡Copiado!",
+    "copyText": "Copiar al Portapapeles",
+    "contactTitle": "Su Oficina Estatal de WIC",
+    "contactNote": "Contacte su oficina estatal de WIC para presentar su queja. Puede llamar, enviar un correo electrónico o enviar la carta por correo."
+  },
+  "wicOffices": {
+    "selectState": "Seleccione Su Estado",
+    "phone": "Teléfono",
+    "hours": "Horario",
+    "address": "Dirección",
+    "email": "Correo Electrónico",
+    "call": "Llamar",
+    "visitWebsite": "Visitar Sitio Web",
+    "aboutTitle": "Sobre las Oficinas de WIC",
+    "aboutText": "Su oficina estatal de WIC puede ayudarle con preguntas sobre elegibilidad, beneficios, quejas y más. Están aquí para ayudarle."
+  },
+  "recipes": {
+    "searchPlaceholder": "Buscar recetas...",
+    "noSearchResults": "No se encontraron recetas que coincidan.",
+    "noRecipes": "No hay recetas disponibles en esta categoría.",
+    "notFound": "Receta no encontrada.",
+    "min": "min",
+    "minutes": "minutos",
+    "servingsLabel": "porciones",
+    "servingsShort": "porc.",
+    "wicIngredientsTitle": "Ingredientes Cubiertos por WIC",
+    "otherIngredients": "Otros Ingredientes",
+    "instructions": "Instrucciones",
+    "wicIngredients": "ingredientes WIC",
+    "difficulty": {
+      "easy": "Fácil",
+      "medium": "Medio",
+      "hard": "Difícil"
+    },
+    "categories": {
+      "all": "Todas",
+      "breakfast": "Desayuno",
+      "lunch": "Almuerzo",
+      "dinner": "Cena",
+      "snacks": "Meriendas",
+      "baby_food": "Comida para Bebé"
+    }
+  },
   "a11y": {
     "needHelpLink": {
       "hint": "Abre la pantalla de ayuda y preguntas frecuentes"
@@ -659,7 +803,36 @@
       "foodBanksLabel": "Buscar Bancos de Alimentos. Asistencia alimentaria local cerca de usted",
       "foodBanksHint": "Buscar bancos de alimentos cercanos",
       "helpHint": "Obtener ayuda y encontrar respuestas",
-      "locationHint": "Cambiar su configuración de ubicación"
+      "locationHint": "Cambiar su configuración de ubicación",
+      "catalogLabel": "Catálogo de Productos. Explorar productos aprobados por WIC",
+      "catalogHint": "Abre el catálogo de productos",
+      "storeFinderLabel": "Buscar Tiendas. Encontrar tiendas WIC cerca de usted",
+      "storeFinderHint": "Abre el buscador de tiendas",
+      "communityLabel": "Centro Comunitario. Consejos, recetas y defensa",
+      "communityHint": "Abre los recursos comunitarios"
+    },
+    "catalog": {
+      "searchLabel": "Buscar productos",
+      "clearSearchLabel": "Borrar búsqueda",
+      "categoryHint": "Abre la lista de productos de esta categoría"
+    },
+    "storeFinder": {
+      "callLabel": "Llamar a la tienda",
+      "directionsLabel": "Obtener indicaciones a la tienda"
+    },
+    "tips": {
+      "searchLabel": "Buscar consejos de compras"
+    },
+    "rights": {
+      "searchLabel": "Buscar sus derechos"
+    },
+    "complaint": {
+      "detailsLabel": "Describa su queja",
+      "copyLabel": "Copiar texto de queja al portapapeles"
+    },
+    "recipes": {
+      "searchLabel": "Buscar recetas",
+      "cardHint": "Abre los detalles de la receta"
     },
     "scanner": {
       "cancelLabel": "Cancelar escaneo"
