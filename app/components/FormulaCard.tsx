@@ -23,31 +23,28 @@ const getTypeColor = (type: FormulaType): string => {
   }
 };
 
-const getTypeLabel = (type: FormulaType): string => {
-  switch (type) {
-    case 'standard': return 'Standard';
-    case 'sensitive': return 'Sensitive';
-    case 'gentle': return 'Gentle';
-    case 'hypoallergenic': return 'Hypoallergenic';
-    case 'organic': return 'Organic';
-    case 'soy': return 'Soy';
-    case 'specialty': return 'Specialty';
-    case 'store_brand': return 'Store Brand';
-    default: return type;
-  }
+const TYPE_KEYS: Record<string, string> = {
+  standard: 'formulaTypes.standard',
+  sensitive: 'formulaTypes.sensitive',
+  gentle: 'formulaTypes.gentle',
+  hypoallergenic: 'formulaTypes.hypoallergenic',
+  organic: 'formulaTypes.organic',
+  soy: 'formulaTypes.soy',
+  specialty: 'formulaTypes.specialty',
+  store_brand: 'formulaTypes.store_brand',
 };
 
-const getFormLabel = (form: string): string => {
-  switch (form) {
-    case 'powder': return 'Powder';
-    case 'ready_to_feed': return 'Ready-to-Feed';
-    case 'concentrate': return 'Concentrate';
-    default: return form;
-  }
+const FORM_KEYS: Record<string, string> = {
+  powder: 'formulaForms.powder',
+  ready_to_feed: 'formulaForms.ready_to_feed',
+  concentrate: 'formulaForms.concentrate',
 };
 
 export default function FormulaCard({ formula, onPress, selected }: FormulaCardProps) {
   const t = useTranslation();
+
+  const typeLabel = TYPE_KEYS[formula.formulaType] ? t(TYPE_KEYS[formula.formulaType]) : formula.formulaType;
+  const formLabel = FORM_KEYS[formula.form] ? t(FORM_KEYS[formula.form]) : formula.form;
 
   return (
     <TouchableOpacity
@@ -59,7 +56,7 @@ export default function FormulaCard({ formula, onPress, selected }: FormulaCardP
       activeOpacity={0.7}
       accessibilityRole="radio"
       accessibilityState={{ selected: selected || false }}
-      accessibilityLabel={`${formula.brand} ${formula.productName}, ${getTypeLabel(formula.formulaType)}, ${getFormLabel(formula.form)}${formula.stateContractBrand ? ', ' + t('a11y.formulaCard.wicContractLabel') : ''}${selected ? ', ' + t('a11y.formulaCard.selectedLabel') : ''}`}
+      accessibilityLabel={`${formula.brand} ${formula.productName}, ${typeLabel}, ${formLabel}${formula.stateContractBrand ? ', ' + t('a11y.formulaCard.wicContractLabel') : ''}${selected ? ', ' + t('a11y.formulaCard.selectedLabel') : ''}`}
     >
       {/* Formula Image or Placeholder */}
       <View style={styles.imageContainer}>
@@ -88,9 +85,9 @@ export default function FormulaCard({ formula, onPress, selected }: FormulaCardP
 
         <View style={styles.badges}>
           <View style={[styles.typeBadge, { backgroundColor: getTypeColor(formula.formulaType) }]}>
-            <Text style={styles.typeBadgeText}>{getTypeLabel(formula.formulaType)}</Text>
+            <Text style={styles.typeBadgeText}>{typeLabel}</Text>
           </View>
-          <Text style={styles.formText}>{getFormLabel(formula.form)}</Text>
+          <Text style={styles.formText}>{formLabel}</Text>
         </View>
 
         {formula.size && (

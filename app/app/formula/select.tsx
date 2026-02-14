@@ -8,16 +8,16 @@ import { useLocation } from '@/lib/hooks/useLocation';
 import type { WicFormula, FormulaType } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 
-const FORMULA_TYPES: { value: FormulaType | 'all'; label: string }[] = [
-  { value: 'all', label: 'All' },
-  { value: 'standard', label: 'Standard' },
-  { value: 'sensitive', label: 'Sensitive' },
-  { value: 'gentle', label: 'Gentle' },
-  { value: 'hypoallergenic', label: 'Hypoallergenic' },
-  { value: 'organic', label: 'Organic' },
-  { value: 'soy', label: 'Soy' },
-  { value: 'specialty', label: 'Specialty' },
-  { value: 'store_brand', label: 'Store Brand' },
+const FORMULA_TYPE_KEYS: { value: FormulaType | 'all'; key: string }[] = [
+  { value: 'all', key: 'formulaTypes.all' },
+  { value: 'standard', key: 'formulaTypes.standard' },
+  { value: 'sensitive', key: 'formulaTypes.sensitive' },
+  { value: 'gentle', key: 'formulaTypes.gentle' },
+  { value: 'hypoallergenic', key: 'formulaTypes.hypoallergenic' },
+  { value: 'organic', key: 'formulaTypes.organic' },
+  { value: 'soy', key: 'formulaTypes.soy' },
+  { value: 'specialty', key: 'formulaTypes.specialty' },
+  { value: 'store_brand', key: 'formulaTypes.store_brand' },
 ];
 
 export default function FormulaSelect() {
@@ -51,7 +51,7 @@ export default function FormulaSelect() {
       setFormulas(results);
     } catch (error) {
       console.error('Failed to load formulas:', error);
-      Alert.alert('Error', 'Failed to load formulas. Please try again.');
+      Alert.alert(t('common.error'), t('formulaSelect.loadError'));
     } finally {
       setLoading(false);
     }
@@ -74,13 +74,13 @@ export default function FormulaSelect() {
           `${selectedFormula.brand} ${selectedFormula.productName}`
         );
         Alert.alert(
-          'Formula Selected',
-          `${selectedFormula.brand} ${selectedFormula.productName} has been set as the assigned formula.`,
-          [{ text: 'OK', onPress: () => router.back() }]
+          t('formulaSelect.formulaSelected'),
+          t('formulaSelect.formulaSelectedMsg', { brand: selectedFormula.brand, product: selectedFormula.productName }),
+          [{ text: t('common.ok'), onPress: () => router.back() }]
         );
       } catch (error) {
         console.error('Failed to save formula assignment:', error);
-        Alert.alert('Error', 'Failed to save formula selection. Please try again.');
+        Alert.alert(t('common.error'), t('formulaSelect.saveError'));
       } finally {
         setSaving(false);
       }
@@ -103,7 +103,7 @@ export default function FormulaSelect() {
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
-          placeholder="Search by brand or name..."
+          placeholder={t('formulaSelect.searchPlaceholder')}
           value={searchQuery}
           onChangeText={setSearchQuery}
           placeholderTextColor="#999"
@@ -119,42 +119,45 @@ export default function FormulaSelect() {
         style={styles.filterScroll}
         contentContainerStyle={styles.filterContainer}
       >
-        {FORMULA_TYPES.map((type) => (
-          <TouchableOpacity
-            key={type.value}
-            style={[
-              styles.filterChip,
-              selectedType === type.value && styles.filterChipActive
-            ]}
-            onPress={() => setSelectedType(type.value)}
-            accessibilityRole="tab"
-            accessibilityLabel={`Filter by ${type.label}`}
-            accessibilityState={{ selected: selectedType === type.value }}
-            hitSlop={{ top: 6, bottom: 6 }}
-          >
-            <Text style={[
-              styles.filterChipText,
-              selectedType === type.value && styles.filterChipTextActive
-            ]}>
-              {type.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        {FORMULA_TYPE_KEYS.map((type) => {
+          const label = t(type.key);
+          return (
+            <TouchableOpacity
+              key={type.value}
+              style={[
+                styles.filterChip,
+                selectedType === type.value && styles.filterChipActive
+              ]}
+              onPress={() => setSelectedType(type.value)}
+              accessibilityRole="tab"
+              accessibilityLabel={t('formulaSelect.filterBy', { type: label })}
+              accessibilityState={{ selected: selectedType === type.value }}
+              hitSlop={{ top: 6, bottom: 6 }}
+            >
+              <Text style={[
+                styles.filterChipText,
+                selectedType === type.value && styles.filterChipTextActive
+              ]}>
+                {label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
 
       {/* Formula List */}
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#1976D2" />
-          <Text style={styles.loadingText}>Loading formulas...</Text>
+          <Text style={styles.loadingText}>{t('formulaSelect.loading')}</Text>
         </View>
       ) : (
         <ScrollView style={styles.listContainer} contentContainerStyle={styles.listContent}>
           {formulas.length === 0 ? (
             <View style={styles.emptyState}>
               <Text style={styles.emptyIcon} accessible={false} importantForAccessibility="no">🍼</Text>
-              <Text style={styles.emptyText}>No formulas found</Text>
-              <Text style={styles.emptySubtext}>Try adjusting your search or filters</Text>
+              <Text style={styles.emptyText}>{t('formulaSelect.noFormulas')}</Text>
+              <Text style={styles.emptySubtext}>{t('formulaSelect.adjustSearch')}</Text>
             </View>
           ) : (
             formulas.map((formula) => (
@@ -174,7 +177,7 @@ export default function FormulaSelect() {
       {selectedFormula && (
         <View style={[styles.confirmContainer, { paddingBottom: Math.max(16, insets.bottom) }]}>
           <View style={styles.selectedInfo}>
-            <Text style={styles.selectedLabel}>Selected:</Text>
+            <Text style={styles.selectedLabel}>{t('formulaSelect.selected')}</Text>
             <Text style={styles.selectedName} numberOfLines={1}>
               {selectedFormula.brand} {selectedFormula.productName}
             </Text>
@@ -190,7 +193,7 @@ export default function FormulaSelect() {
             {saving ? (
               <ActivityIndicator color="#fff" size="small" />
             ) : (
-              <Text style={styles.confirmButtonText}>Confirm Selection</Text>
+              <Text style={styles.confirmButtonText}>{t('formulaSelect.confirmSelection')}</Text>
             )}
           </TouchableOpacity>
         </View>

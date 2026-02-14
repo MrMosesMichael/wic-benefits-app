@@ -35,7 +35,7 @@ export default function LocationSettingsScreen() {
   const handleSubmitZip = async () => {
     const zip = zipInput.trim();
     if (!/^\d{5}$/.test(zip)) {
-      setZipError('Please enter a valid 5-digit zip code');
+      setZipError(t('locationSettings.invalidZip'));
       return;
     }
     setZipError(null);
@@ -55,44 +55,50 @@ export default function LocationSettingsScreen() {
 
   const stateSupported = location ? SUPPORTED_STATES.includes(location.state) : true;
 
+  const prefOptions: { value: LocationPreference; labelKey: string; descKey: string }[] = [
+    { value: 'gps', labelKey: 'locationSettings.alwaysGps', descKey: 'locationSettings.alwaysGpsDesc' },
+    { value: 'manual', labelKey: 'locationSettings.alwaysZip', descKey: 'locationSettings.alwaysZipDesc' },
+    { value: 'ask', labelKey: 'locationSettings.askEachTime', descKey: 'locationSettings.askEachTimeDesc' },
+  ];
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
         {/* Current Location */}
         {location && (
           <View style={styles.card}>
-            <Text style={styles.cardTitle} accessibilityRole="header">Current Location</Text>
+            <Text style={styles.cardTitle} accessibilityRole="header">{t('locationSettings.currentLocation')}</Text>
             <View style={styles.locationInfo}>
               <Text style={styles.locationCity}>
                 {location.city ? `${location.city}, ` : ''}{location.state}
               </Text>
               {location.zipCode && (
-                <Text style={styles.locationDetail}>Zip: {location.zipCode}</Text>
+                <Text style={styles.locationDetail}>{t('locationSettings.zip')} {location.zipCode}</Text>
               )}
               <Text style={styles.locationDetail}>
-                Source: {location.source === 'gps' ? 'GPS' : 'Zip Code'}
+                {t('locationSettings.source')} {location.source === 'gps' ? t('locationSettings.sourceGps') : t('locationSettings.sourceZip')}
               </Text>
             </View>
 
             {!stateSupported && (
               <View style={styles.unsupportedBanner}>
                 <Text style={styles.unsupportedText}>
-                  WIC data not yet available for {location.state}. Currently supporting {SUPPORTED_STATES.join(', ')}.
+                  {t('locationSettings.unsupportedState', { state: location.state, states: SUPPORTED_STATES.join(', ') })}
                 </Text>
               </View>
             )}
 
             <TouchableOpacity style={styles.clearButton} onPress={handleClear} accessibilityRole="button" accessibilityLabel={t('a11y.location.clearLabel')} hitSlop={{ top: 4, bottom: 4 }}>
-              <Text style={styles.clearButtonText}>Clear Location</Text>
+              <Text style={styles.clearButtonText}>{t('locationSettings.clearLocation')}</Text>
             </TouchableOpacity>
           </View>
         )}
 
         {/* GPS Button */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle} accessibilityRole="header">Use GPS</Text>
+          <Text style={styles.cardTitle} accessibilityRole="header">{t('locationSettings.useGps')}</Text>
           <Text style={styles.cardDescription}>
-            Automatically detect your location and state.
+            {t('locationSettings.useGpsDesc')}
           </Text>
           <TouchableOpacity
             style={[styles.primaryButton, loading && styles.buttonDisabled]}
@@ -105,16 +111,16 @@ export default function LocationSettingsScreen() {
             {loading ? (
               <ActivityIndicator color="#fff" size="small" />
             ) : (
-              <Text style={styles.primaryButtonText}>Detect My Location</Text>
+              <Text style={styles.primaryButtonText}>{t('locationSettings.detectMyLocation')}</Text>
             )}
           </TouchableOpacity>
         </View>
 
         {/* Zip Code Entry */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle} accessibilityRole="header">Enter Zip Code</Text>
+          <Text style={styles.cardTitle} accessibilityRole="header">{t('locationSettings.enterZipCode')}</Text>
           <Text style={styles.cardDescription}>
-            Works without GPS permission. Enter your 5-digit zip code.
+            {t('locationSettings.enterZipDesc')}
           </Text>
           <View style={styles.zipRow}>
             <TextInput
@@ -124,7 +130,7 @@ export default function LocationSettingsScreen() {
                 setZipInput(text.replace(/\D/g, '').slice(0, 5));
                 setZipError(null);
               }}
-              placeholder="e.g. 48201"
+              placeholder={t('locationSettings.placeholder')}
               keyboardType="number-pad"
               maxLength={5}
               accessibilityLabel={t('a11y.location.zipInputLabel')}
@@ -137,7 +143,7 @@ export default function LocationSettingsScreen() {
               accessibilityLabel={t('a11y.location.setZipLabel')}
               accessibilityState={{ disabled: loading || zipInput.length !== 5 }}
             >
-              <Text style={styles.zipButtonText}>Set</Text>
+              <Text style={styles.zipButtonText}>{t('locationSettings.set')}</Text>
             </TouchableOpacity>
           </View>
           {zipError && <Text style={styles.errorText}>{zipError}</Text>}
@@ -152,11 +158,11 @@ export default function LocationSettingsScreen() {
 
         {/* Preference */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle} accessibilityRole="header">Default Behavior</Text>
+          <Text style={styles.cardTitle} accessibilityRole="header">{t('locationSettings.defaultBehavior')}</Text>
           <Text style={styles.cardDescription}>
-            How should location be determined when you open the app?
+            {t('locationSettings.defaultBehaviorDesc')}
           </Text>
-          {(['gps', 'manual', 'ask'] as LocationPreference[]).map((pref) => (
+          {prefOptions.map(({ value: pref, labelKey, descKey }) => (
             <TouchableOpacity
               key={pref}
               style={[styles.prefOption, preference === pref && styles.prefOptionActive]}
@@ -168,14 +174,10 @@ export default function LocationSettingsScreen() {
               <View style={[styles.prefRadio, preference === pref && styles.prefRadioActive]} />
               <View style={styles.prefTextContainer}>
                 <Text style={[styles.prefLabel, preference === pref && styles.prefLabelActive]}>
-                  {pref === 'gps' ? 'Always use GPS' : pref === 'manual' ? 'Always use zip code' : 'Ask each time'}
+                  {t(labelKey)}
                 </Text>
                 <Text style={styles.prefDescription}>
-                  {pref === 'gps'
-                    ? 'Automatically detect location via GPS'
-                    : pref === 'manual'
-                    ? 'Use your saved zip code'
-                    : 'Choose GPS or zip code each session'}
+                  {t(descKey)}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -184,12 +186,12 @@ export default function LocationSettingsScreen() {
 
         {/* Info */}
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle} accessibilityRole="header">Why Location Matters</Text>
+          <Text style={styles.infoTitle} accessibilityRole="header">{t('locationSettings.whyLocationMatters')}</Text>
           <Text style={styles.infoText}>
-            WIC-approved products vary by state. Your location helps us show the right product list, find nearby stores, and locate food banks in your area.
+            {t('locationSettings.whyLocationDesc')}
           </Text>
           <Text style={[styles.infoText, { marginTop: 8 }]}>
-            Currently supporting: {SUPPORTED_STATES.join(', ')}
+            {t('locationSettings.currentlySupporting')} {SUPPORTED_STATES.join(', ')}
           </Text>
         </View>
 

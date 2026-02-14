@@ -37,9 +37,9 @@ export default function LocationPrompt({ onGPS, onZipCode, loading, error }: Loc
   return (
     <View style={styles.container}>
       <Text style={styles.icon} accessible={false} importantForAccessibility="no">📍</Text>
-      <Text style={styles.title}>Location Needed</Text>
+      <Text style={styles.title}>{t('locationPrompt.title')}</Text>
       <Text style={styles.description}>
-        We need your location to show relevant WIC data and find nearby stores.
+        {t('locationPrompt.description')}
       </Text>
 
       {error && (
@@ -51,17 +51,17 @@ export default function LocationPrompt({ onGPS, onZipCode, loading, error }: Loc
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#2E7D32" />
-          <Text style={styles.loadingText}>Detecting location...</Text>
+          <Text style={styles.loadingText}>{t('locationPrompt.detecting')}</Text>
         </View>
       ) : showZipInput ? (
         <View style={styles.zipContainer}>
-          <Text style={styles.zipLabel}>Enter your 5-digit zip code:</Text>
+          <Text style={styles.zipLabel}>{t('locationPrompt.enterZipLabel')}</Text>
           <View style={styles.zipRow}>
             <TextInput
               style={styles.zipInput}
               value={zipInput}
               onChangeText={(text) => setZipInput(text.replace(/\D/g, '').slice(0, 5))}
-              placeholder="e.g. 48201"
+              placeholder={t('locationPrompt.placeholder')}
               keyboardType="number-pad"
               maxLength={5}
               autoFocus
@@ -76,7 +76,7 @@ export default function LocationPrompt({ onGPS, onZipCode, loading, error }: Loc
               accessibilityLabel={t('a11y.locationPrompt.submitZipLabel')}
               accessibilityState={{ disabled: zipInput.length !== 5 }}
             >
-              <Text style={styles.zipSubmitText}>Go</Text>
+              <Text style={styles.zipSubmitText}>{t('locationPrompt.go')}</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -85,7 +85,7 @@ export default function LocationPrompt({ onGPS, onZipCode, loading, error }: Loc
             accessibilityLabel={t('a11y.locationPrompt.switchToGpsLabel')}
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
           >
-            <Text style={styles.switchLink}>Use GPS instead</Text>
+            <Text style={styles.switchLink}>{t('locationPrompt.useGpsInstead')}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -97,7 +97,7 @@ export default function LocationPrompt({ onGPS, onZipCode, loading, error }: Loc
             accessibilityLabel={t('a11y.locationPrompt.gpsLabel')}
             accessibilityHint={t('a11y.locationPrompt.gpsHint')}
           >
-            <Text style={styles.gpsButtonText}>Use GPS</Text>
+            <Text style={styles.gpsButtonText}>{t('locationPrompt.useGps')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.zipButton}
@@ -106,7 +106,7 @@ export default function LocationPrompt({ onGPS, onZipCode, loading, error }: Loc
             accessibilityLabel={t('a11y.locationPrompt.zipLabel')}
             accessibilityHint={t('a11y.locationPrompt.zipHint')}
           >
-            <Text style={styles.zipButtonText}>Enter Zip Code</Text>
+            <Text style={styles.zipButtonText}>{t('locationPrompt.enterZipCode')}</Text>
           </TouchableOpacity>
         </View>
       )}

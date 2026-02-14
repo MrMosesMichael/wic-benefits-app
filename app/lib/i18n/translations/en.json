@@ -517,6 +517,74 @@
     "errorTitle": "Submission Failed",
     "errorMessage": "Could not send your feedback. Please check your internet connection and try again."
   },
+  "locationPrompt": {
+    "title": "Location Needed",
+    "description": "We need your location to show relevant WIC data and find nearby stores.",
+    "detecting": "Detecting location...",
+    "enterZipLabel": "Enter your 5-digit zip code:",
+    "go": "Go",
+    "useGpsInstead": "Use GPS instead",
+    "useGps": "Use GPS",
+    "enterZipCode": "Enter Zip Code",
+    "placeholder": "e.g. 48201"
+  },
+  "locationSettings": {
+    "currentLocation": "Current Location",
+    "zip": "Zip:",
+    "source": "Source:",
+    "sourceGps": "GPS",
+    "sourceZip": "Zip Code",
+    "unsupportedState": "WIC data not yet available for {{state}}. Currently supporting {{states}}.",
+    "clearLocation": "Clear Location",
+    "useGps": "Use GPS",
+    "useGpsDesc": "Automatically detect your location and state.",
+    "detectMyLocation": "Detect My Location",
+    "enterZipCode": "Enter Zip Code",
+    "enterZipDesc": "Works without GPS permission. Enter your 5-digit zip code.",
+    "set": "Set",
+    "invalidZip": "Please enter a valid 5-digit zip code",
+    "defaultBehavior": "Default Behavior",
+    "defaultBehaviorDesc": "How should location be determined when you open the app?",
+    "alwaysGps": "Always use GPS",
+    "alwaysGpsDesc": "Automatically detect location via GPS",
+    "alwaysZip": "Always use zip code",
+    "alwaysZipDesc": "Use your saved zip code",
+    "askEachTime": "Ask each time",
+    "askEachTimeDesc": "Choose GPS or zip code each session",
+    "whyLocationMatters": "Why Location Matters",
+    "whyLocationDesc": "WIC-approved products vary by state. Your location helps us show the right product list, find nearby stores, and locate food banks in your area.",
+    "currentlySupporting": "Currently supporting:",
+    "placeholder": "e.g. 48201"
+  },
+  "formulaSelect": {
+    "searchPlaceholder": "Search by brand or name...",
+    "loading": "Loading formulas...",
+    "noFormulas": "No formulas found",
+    "adjustSearch": "Try adjusting your search or filters",
+    "selected": "Selected:",
+    "confirmSelection": "Confirm Selection",
+    "loadError": "Failed to load formulas. Please try again.",
+    "formulaSelected": "Formula Selected",
+    "formulaSelectedMsg": "{{brand}} {{product}} has been set as the assigned formula.",
+    "saveError": "Failed to save formula selection. Please try again.",
+    "filterBy": "Filter by {{type}}"
+  },
+  "formulaTypes": {
+    "all": "All",
+    "standard": "Standard",
+    "sensitive": "Sensitive",
+    "gentle": "Gentle",
+    "hypoallergenic": "Hypoallergenic",
+    "organic": "Organic",
+    "soy": "Soy",
+    "specialty": "Specialty",
+    "store_brand": "Store Brand"
+  },
+  "formulaForms": {
+    "powder": "Powder",
+    "ready_to_feed": "Ready-to-Feed",
+    "concentrate": "Concentrate"
+  },
   "a11y": {
     "needHelpLink": {
       "hint": "Opens help and FAQ screen"

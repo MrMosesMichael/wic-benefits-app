@@ -11,7 +11,8 @@
 ### On Session Start
 1. Read `ROADMAP.md` — what's done, what's next
 2. Read `.claude/SESSION_STATE.md` — current work state
-3. For history: `CHANGELOG.md`
+3. **Triage GitHub feedback:** Run `scripts/triage-feedback.sh` or `gh issue list --repo MrMosesMichael/wic-benefits-feedback --state open` — review new issues, add labels, note actionable items
+4. For history: `CHANGELOG.md`
 
 ### On Session End
 1. Update `.claude/SESSION_STATE.md`
