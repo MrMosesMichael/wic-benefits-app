@@ -1,7 +1,7 @@
 # WIC Benefits App — Roadmap
 
-> **Last Updated:** February 12, 2026
-> **Current Phase:** Phase 1 Complete + Phase 2 Complete + Phase 7 In Progress
+> **Last Updated:** February 14, 2026
+> **Current Phase:** Phase 1-5 Complete + Phase 3 & 4 Complete + Phase 7 In Progress
 > **Production:** https://mdmichael.com/wic/
 
 ---
@@ -12,8 +12,8 @@
 |-------|--------|------------|
 | **Phase 1: Foundation** | ✅ Complete | 100% |
 | **Phase 2: Store Intelligence** | ✅ Complete | 100% |
-| **Phase 3: Discovery** | ⏳ Not Started | 0% |
-| **Phase 4: Community** | ⏳ Not Started | 0% |
+| **Phase 3: Discovery** | ✅ Complete | 100% |
+| **Phase 4: Community** | ✅ Complete | 100% |
 | **Phase 5: Manual Entry** | ✅ Complete | 100% |
 | **Phase 6: eWIC Integration** | 🚫 Blocked | 0% |
 | **Phase 7: Polish & Launch** | 🔄 In Progress | 75% |
@@ -42,6 +42,10 @@
 ✅ **Android APK** — Production build ready for sideloading
 ✅ **UI Polish** — Removed duplicate headers from all 17 screens, SafeAreaProvider for Android nav bar
 ✅ **iOS Build** — Submitted to TestFlight, awaiting review
+✅ **Product Catalog** — Category grid + search, 62K APL products via backend API
+✅ **Store Finder** — Map/list view with chain filters, radius search, WIC-only toggle
+✅ **Community Hub** — Shopping tips, WIC recipes, know-your-rights, WIC office directory, complaint filing
+✅ **Bilingual i18n** — 825 keys per locale (English + Spanish)
 
 ---
 
@@ -99,25 +103,25 @@ Know what's in stock, find supplemental food sources.
 | **J** | Food Bank Finder | ✅ Done | 10 MI food banks seeded, full UI |
 | **K** | Crowdsourced Inventory | ✅ Done | Sightings + confidence |
 
-### Phase 3: Discovery & Navigation (Not Started)
+### Phase 3: Discovery & Navigation (Complete)
 
 Product catalog, store finder, in-store navigation.
 
-| Track | Feature | Status |
-|-------|---------|--------|
-| **L** | Product Catalog | ❌ |
-| **M** | Store Finder | ❌ |
-| **N** | In-Store Navigation | ❌ (defer if needed) |
+| Track | Feature | Status | Notes |
+|-------|---------|--------|-------|
+| **L** | Product Catalog | ✅ Done | Category grid + search, backend API for 62K APL products |
+| **M** | Store Finder | ✅ Done | Map/list view, chain filters, radius search, WIC-only toggle |
+| **N** | In-Store Navigation | ⏸️ Deferred | Requires retailer partnerships for aisle data |
 
-### Phase 4: Community & Advocacy (Not Started)
+### Phase 4: Community & Advocacy (Complete)
 
 Tips, community features, advocacy tools.
 
-| Track | Feature | Status |
-|-------|---------|--------|
-| **O** | Tips & Community | ❌ |
-| **P** | Advocacy Tools | ❌ |
-| **Q** | Recipes | ❌ (defer if needed) |
+| Track | Feature | Status | Notes |
+|-------|---------|--------|-------|
+| **O** | Tips & Community | ✅ Done | 20 shopping tips (bundled offline), community hub |
+| **P** | Advocacy Tools | ✅ Done | Know-your-rights (8 cards), WIC offices (4 states), complaint filing |
+| **Q** | Recipes | ✅ Done | 25 bilingual recipes with WIC ingredient tagging |
 
 ### Phase 5: Manual Benefits Entry (Complete)
 
@@ -506,6 +510,6 @@ See `docs/guides/` for consolidated, actionable implementation patterns.
 
 ---
 
-**Current Version:** 1.2.0 (iOS buildNumber: 1, Android versionCode: 5)
+**Current Version:** 1.3.0 (iOS buildNumber: 1, Android versionCode: 6)
 
 *Last human review: February 14, 2026*
