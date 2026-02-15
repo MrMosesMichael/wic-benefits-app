@@ -279,9 +279,9 @@ router.post('/', async (req: Request, res: Response) => {
         }
       }
 
-      // Enrich Kroger stores with live product availability
+      // Enrich Kroger stores with live product availability (capped at 5 to conserve API quota)
       if (krogerStores.length > 0) {
-        const storesToEnrich = krogerStores.slice(0, 10);
+        const storesToEnrich = krogerStores.slice(0, 5);
 
         for (const store of storesToEnrich) {
           const krogerLocationId = store.store_id.replace(/^kroger-/, '');

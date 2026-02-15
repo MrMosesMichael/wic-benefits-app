@@ -199,6 +199,8 @@ Based on impact, effort, and what's unblocked:
 3. **Retailer API Partnerships**
    - ✅ Kroger API integration live (MI/NC/OR — real-time inventory + dynamic store discovery)
    - ✅ Multi-state store seeding: MI (53+API), NC (34+API), OR (30+API), NY (50)
+   - ⏳ **Kroger Background Batch Sync (TBD)** — Lean on cron-based inventory sync instead of per-request API calls as user base grows; `sync-kroger-inventory.ts` exists, needs scheduling + DB-first query path
+   - ⏳ **Kroger Approved Partner Status** — Apply for higher API rate limits (post-LLC registration + app store listings)
    - ⏳ Walmart API — reach out to Walmart business unit once app is live on stores
    - *Strategy: Having a published app on stores strengthens partnership outreach*
 

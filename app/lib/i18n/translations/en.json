@@ -79,9 +79,9 @@
     "cancel": "Cancel",
     "errorTitle": "Error",
     "errorMessage": "Failed to check product eligibility. Please try again.",
-    "enterPluCode": "Enter PLU Code",
-    "pluModalTitle": "Enter PLU Code",
-    "pluModalSubtitle": "4-5 digit number on produce sticker",
+    "enterPluCode": "Produce? Enter PLU Code",
+    "pluModalTitle": "Check Produce Eligibility",
+    "pluModalSubtitle": "Enter the PLU — the 4-5 digit number on the produce sticker",
     "pluInputPlaceholder": "e.g. 4011",
     "pluCheck": "Check",
     "pluInvalidFormat": "Please enter a 4 or 5 digit PLU code"

@@ -79,9 +79,9 @@
     "cancel": "Cancelar",
     "errorTitle": "Error",
     "errorMessage": "No se pudo verificar la elegibilidad del producto. Por favor, inténtelo de nuevo.",
-    "enterPluCode": "Ingresar Código PLU",
-    "pluModalTitle": "Ingresar Código PLU",
-    "pluModalSubtitle": "Número de 4-5 dígitos en la etiqueta",
+    "enterPluCode": "¿Frutas/Verduras? Ingrese Código PLU",
+    "pluModalTitle": "Verificar Elegibilidad de Productos",
+    "pluModalSubtitle": "Ingrese el PLU — el número de 4-5 dígitos en la etiqueta del producto",
     "pluInputPlaceholder": "ej. 4011",
     "pluCheck": "Verificar",
     "pluInvalidFormat": "Ingrese un código PLU de 4 o 5 dígitos"
