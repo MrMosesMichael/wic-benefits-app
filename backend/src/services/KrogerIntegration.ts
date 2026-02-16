@@ -362,26 +362,34 @@ export class KrogerIntegration {
       const krogerLocationId = storeId.replace(/^kroger-/, '').padStart(8, '0');
 
       for (const upc of upcs) {
-        // Debug: log first API call details
+        // Debug: isolate whether the problem is locationId, UPC, or both
         if (storeId === storeIds[0] && upc === upcs[0]) {
           console.log(`[DEBUG] Calling checkFormulaAvailability(${upc}, ${krogerLocationId}, ${storeId})`);
           try {
-            const debugProducts = await this.searchProducts(upc, krogerLocationId, 5);
-            console.log(`[DEBUG] searchProducts(${upc}) returned ${debugProducts.length} products`);
-            if (debugProducts.length > 0) {
-              console.log(`[DEBUG] First product: ${JSON.stringify(debugProducts[0]).substring(0, 200)}`);
+            // Test 1: UPC search WITHOUT locationId — does the product exist at all?
+            const noLocProducts = await this.searchProducts(upc, undefined, 5);
+            console.log(`[DEBUG] Test 1 - UPC "${upc}" without locationId: ${noLocProducts.length} products`);
+            if (noLocProducts.length > 0) {
+              console.log(`[DEBUG]   First: upc=${noLocProducts[0].upc} desc="${noLocProducts[0].description}"`);
             }
-            // Also try 12-digit
-            if (debugProducts.length === 0 && upc.length === 13 && upc.startsWith('0')) {
-              const upc12 = upc.substring(1);
-              const retry = await this.searchProducts(upc12, krogerLocationId, 5);
-              console.log(`[DEBUG] searchProducts(${upc12}) retry returned ${retry.length} products`);
-              if (retry.length > 0) {
-                console.log(`[DEBUG] Retry first product: ${JSON.stringify(retry[0]).substring(0, 200)}`);
-              }
+            // Test 1b: 12-digit retry without locationId
+            if (noLocProducts.length === 0 && upc.startsWith('0')) {
+              const noLoc12 = await this.searchProducts(upc.substring(1), undefined, 5);
+              console.log(`[DEBUG] Test 1b - UPC "${upc.substring(1)}" without locationId: ${noLoc12.length} products`);
             }
+
+            // Test 2: generic term WITH locationId — is the locationId valid?
+            const genericProducts = await this.searchProducts('baby formula', krogerLocationId, 3);
+            console.log(`[DEBUG] Test 2 - "baby formula" at locationId ${krogerLocationId}: ${genericProducts.length} products`);
+            if (genericProducts.length > 0) {
+              console.log(`[DEBUG]   First: upc=${genericProducts[0].upc} desc="${genericProducts[0].description}"`);
+            }
+
+            // Test 3: UPC WITH locationId (original call)
+            const withLoc = await this.searchProducts(upc, krogerLocationId, 5);
+            console.log(`[DEBUG] Test 3 - UPC "${upc}" at locationId ${krogerLocationId}: ${withLoc.length} products`);
           } catch (debugErr) {
-            console.log(`[DEBUG] searchProducts error: ${debugErr}`);
+            console.log(`[DEBUG] Error: ${debugErr}`);
           }
         }
 
