@@ -350,12 +350,41 @@ export class KrogerIntegration {
 
     const inventories: InventoryData[] = [];
 
+    // Log first store/UPC for debugging
+    const firstStoreId = storeIds[0];
+    const rawLocationId = firstStoreId.replace(/^kroger-/, '');
+    console.log(`[DEBUG] First store: ${firstStoreId}, raw locationId: ${rawLocationId}, padded: ${rawLocationId.padStart(8, '0')}`);
+    console.log(`[DEBUG] First 3 UPCs: ${upcs.slice(0, 3).join(', ')}`);
+
     for (const storeId of storeIds) {
       // Extract Kroger location ID from our store_id format (kroger-XXXXX)
       // Kroger API requires 8-character zero-padded location IDs
       const krogerLocationId = storeId.replace(/^kroger-/, '').padStart(8, '0');
 
       for (const upc of upcs) {
+        // Debug: log first API call details
+        if (storeId === storeIds[0] && upc === upcs[0]) {
+          console.log(`[DEBUG] Calling checkFormulaAvailability(${upc}, ${krogerLocationId}, ${storeId})`);
+          try {
+            const debugProducts = await this.searchProducts(upc, krogerLocationId, 5);
+            console.log(`[DEBUG] searchProducts(${upc}) returned ${debugProducts.length} products`);
+            if (debugProducts.length > 0) {
+              console.log(`[DEBUG] First product: ${JSON.stringify(debugProducts[0]).substring(0, 200)}`);
+            }
+            // Also try 12-digit
+            if (debugProducts.length === 0 && upc.length === 13 && upc.startsWith('0')) {
+              const upc12 = upc.substring(1);
+              const retry = await this.searchProducts(upc12, krogerLocationId, 5);
+              console.log(`[DEBUG] searchProducts(${upc12}) retry returned ${retry.length} products`);
+              if (retry.length > 0) {
+                console.log(`[DEBUG] Retry first product: ${JSON.stringify(retry[0]).substring(0, 200)}`);
+              }
+            }
+          } catch (debugErr) {
+            console.log(`[DEBUG] searchProducts error: ${debugErr}`);
+          }
+        }
+
         const inventory = await this.checkFormulaAvailability(upc, krogerLocationId, storeId);
         if (inventory) {
           inventories.push(inventory);
