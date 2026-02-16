@@ -285,10 +285,17 @@ export class KrogerIntegration {
     }
 
     try {
-      const products = await this.searchProducts(upc, krogerLocationId, 5);
+      let products = await this.searchProducts(upc, krogerLocationId, 5);
+
+      // Retry with 12-digit UPC-A if 13-digit GTIN returned no results
+      if (products.length === 0 && upc.length === 13 && upc.startsWith('0')) {
+        products = await this.searchProducts(upc.substring(1), krogerLocationId, 5);
+      }
 
       // Find exact or close UPC match
-      const match = products.find(p => p.upc === upc) || products[0];
+      const match = products.find(p =>
+        p.upc === upc || p.upc === upc.substring(1) || p.upc === '0' + upc
+      ) || products[0];
       if (!match || match.items.length === 0) {
         return null;
       }
