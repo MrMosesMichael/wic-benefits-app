@@ -118,10 +118,11 @@ export class KrogerIntegration {
   /**
    * Make authenticated API request
    */
-  private async makeRequest<T>(endpoint: string): Promise<T> {
+  private async makeRequest<T>(endpoint: string, debug: boolean = false): Promise<T> {
     const token = await this.authenticate();
 
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    const url = `${this.baseUrl}${endpoint}`;
+    const response = await fetch(url, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/json',
@@ -137,7 +138,11 @@ export class KrogerIntegration {
       throw new Error(`Kroger API ${response.status}: ${text}`);
     }
 
-    return await response.json() as T;
+    const json = await response.json() as T;
+    if (debug) {
+      console.log(`[DEBUG] Raw API response for ${url.substring(0, 120)}: ${JSON.stringify(json).substring(0, 300)}`);
+    }
+    return json;
   }
 
   /**
@@ -379,6 +384,9 @@ export class KrogerIntegration {
             }
 
             // Test 2: generic term WITH locationId — is the locationId valid?
+            // Also dump raw API response to see what Kroger actually returns
+            const rawResponse = await this.makeRequest<any>(`/v1/products?filter.term=formula&filter.limit=3`, true);
+            console.log(`[DEBUG] Test 2a - raw "formula" search (no location): meta=${JSON.stringify(rawResponse?.meta || 'none')}`);
             const genericProducts = await this.searchProducts('baby formula', krogerLocationId, 3);
             console.log(`[DEBUG] Test 2 - "baby formula" at locationId ${krogerLocationId}: ${genericProducts.length} products`);
             if (genericProducts.length > 0) {
