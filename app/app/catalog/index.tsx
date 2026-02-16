@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 import { useI18n } from '@/lib/i18n/I18nContext';
 import { useLocation } from '@/lib/hooks/useLocation';
 import { getCategories, CatalogCategory } from '@/lib/services/catalogService';
-import { WIC_CATEGORIES, getCategoryMeta } from '@/lib/data/wic-categories';
+import { WIC_CATEGORIES, getCategoryMeta, normalizeCategoryId } from '@/lib/data/wic-categories';
 import CategoryCard from '@/components/CategoryCard';
 import LocationPrompt from '@/components/LocationPrompt';
 
@@ -60,13 +60,14 @@ export default function CatalogScreen() {
   };
 
   const renderCategory = ({ item }: { item: CatalogCategory }) => {
+    const normalizedId = normalizeCategoryId(item.category);
     const meta = getCategoryMeta(item.category);
     return (
       <CategoryCard
         categoryId={item.category}
         icon={meta?.icon || '\u{1F4E6}'}
         color={meta?.color || '#78909C'}
-        labelKey={meta?.labelKey || `catalog.categories.${item.category}`}
+        labelKey={meta?.labelKey || `catalog.categories.${normalizedId}`}
         count={item.count}
         onPress={() => handleCategoryPress(item.category)}
       />

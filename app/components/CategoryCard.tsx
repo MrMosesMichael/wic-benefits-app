@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { formatCategoryName } from '@/lib/data/wic-categories';
 
 interface CategoryCardProps {
   categoryId: string;
@@ -14,17 +15,21 @@ interface CategoryCardProps {
 export default function CategoryCard({ categoryId, icon, color, labelKey, count, onPress }: CategoryCardProps) {
   const t = useTranslation();
 
+  // Use i18n key if it resolves, otherwise format the raw category name
+  const translated = t(labelKey);
+  const label = translated.startsWith('[missing') ? formatCategoryName(categoryId) : translated;
+
   return (
     <TouchableOpacity
       style={[styles.card, { borderTopColor: color }]}
       onPress={onPress}
       activeOpacity={0.7}
       accessibilityRole="button"
-      accessibilityLabel={`${t(labelKey)}, ${count} ${t('catalog.items')}`}
+      accessibilityLabel={`${label}, ${count} ${t('catalog.items')}`}
       accessibilityHint={t('a11y.catalog.categoryHint')}
     >
       <Text style={styles.icon} accessible={false} importantForAccessibility="no">{icon}</Text>
-      <Text style={styles.name} numberOfLines={2}>{t(labelKey)}</Text>
+      <Text style={styles.name} numberOfLines={2}>{label}</Text>
       <Text style={styles.count}>{count} {t('catalog.items')}</Text>
     </TouchableOpacity>
   );

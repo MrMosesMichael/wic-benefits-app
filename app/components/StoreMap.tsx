@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
-import type { Store } from '@/lib/types';
+import type { StoreFinderStore } from '@/lib/services/storeFinderService';
 
 interface StoreMapProps {
-  stores: Store[];
+  stores: StoreFinderStore[];
   userLocation: { lat: number; lng: number } | null;
-  onStorePress?: (store: Store) => void;
+  onStorePress?: (store: StoreFinderStore) => void;
   style?: any;
 }
 

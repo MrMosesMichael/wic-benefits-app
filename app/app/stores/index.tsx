@@ -12,8 +12,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useI18n } from '@/lib/i18n/I18nContext';
 import { useLocation } from '@/lib/hooks/useLocation';
-import { searchStores, getChains } from '@/lib/services/storeFinderService';
-import type { Store } from '@/lib/types';
+import { searchStores, getChains, StoreFinderStore } from '@/lib/services/storeFinderService';
 import LocationPrompt from '@/components/LocationPrompt';
 
 export default function StoreFinderScreen() {
@@ -21,7 +20,7 @@ export default function StoreFinderScreen() {
   const { t } = useI18n();
   const { location, loading: locationLoading, error: locationError, refresh: refreshLocation, setZipCode } = useLocation();
 
-  const [stores, setStores] = useState<Store[]>([]);
+  const [stores, setStores] = useState<StoreFinderStore[]>([]);
   const [chains, setChains] = useState<{ id: string; displayName: string; storeCount: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
@@ -71,7 +70,7 @@ export default function StoreFinderScreen() {
     Linking.openURL(`tel:${phone.replace(/[^\d]/g, '')}`);
   };
 
-  const handleDirections = (store: Store) => {
+  const handleDirections = (store: StoreFinderStore) => {
     const address = `${store.address.street}, ${store.address.city}, ${store.address.state} ${store.address.zip}`;
     const url = Platform.select({
       ios: `maps://app?daddr=${encodeURIComponent(address)}`,
@@ -80,7 +79,7 @@ export default function StoreFinderScreen() {
     if (url) Linking.openURL(url);
   };
 
-  const handleStorePress = (store: Store) => {
+  const handleStorePress = (store: StoreFinderStore) => {
     router.push({
       pathname: '/stores/detail',
       params: {
