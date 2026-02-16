@@ -8,14 +8,17 @@ const router = express.Router();
  * Must stay in sync with app/lib/data/wic-categories.ts
  */
 const CATEGORY_ALIASES: Record<string, string> = {
-  // Michigan numeric codes
+  // Numeric codes (zero-padded — MI, OR)
   '02': 'cheese', '03': 'eggs', '04': 'juice', '05': 'yogurt',
   '06': 'peanut_butter', '08': 'fish', '09': 'cereal',
   '11': 'infant_formula', '12': 'fruits_vegetables', '13': 'infant_meats',
-  '15': 'milk', '18': 'whole_grains', '19': 'fruits_vegetables',
+  '15': 'milk', '16': 'whole_grains', '18': 'whole_grains', '19': 'fruits_vegetables',
   '21': 'infant_formula', '31': 'infant_formula', '41': 'infant_formula',
   '50': 'yogurt', '51': 'milk', '52': 'milk', '53': 'milk',
   '54': 'juice', '94': 'infant_formula', '97': 'infant_food',
+  // Numeric codes (non-padded — NC)
+  '2': 'cheese', '3': 'eggs', '4': 'juice', '5': 'yogurt',
+  '6': 'peanut_butter', '8': 'fish', '9': 'cereal',
   // Text categories
   'milk': 'milk', 'milk, whole': 'milk', 'milk, reduced fat': 'milk',
   'milk, fat free': 'milk', 'milk, lowfat': 'milk', 'milk, skim': 'milk',
