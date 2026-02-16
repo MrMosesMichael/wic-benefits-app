@@ -421,10 +421,14 @@ export class KrogerIntegration {
    * Get Kroger-family stores from database
    */
   async getKrogerStores(limit: number = 50): Promise<string[]> {
+    // Only return stores with valid 8-digit Kroger location IDs (API-discovered).
+    // Manually-seeded stores with short IDs (e.g., kroger-628) can't be used
+    // with the Kroger Products API — they need re-discovery to get the real ID.
     const result = await pool.query(
       `SELECT store_id FROM stores
        WHERE store_id LIKE 'kroger-%'
          AND active = TRUE
+         AND LENGTH(REPLACE(store_id, 'kroger-', '')) >= 8
        LIMIT $1`,
       [limit]
     );
