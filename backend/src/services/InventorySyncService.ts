@@ -83,13 +83,13 @@ export class InventorySyncService {
   /**
    * Sync a batch of inventory data to database
    */
-  async syncInventoryBatch(inventories: InventoryData[]): Promise<SyncJobResult> {
+  async syncInventoryBatch(inventories: InventoryData[], retailer: string = 'walmart'): Promise<SyncJobResult> {
     let processed = 0;
     let succeeded = 0;
     let failed = 0;
     const errors: string[] = [];
 
-    const jobId = await this.createSyncJob('walmart', ['batch'], []);
+    const jobId = await this.createSyncJob(retailer, ['batch'], []);
     await this.startSyncJob(jobId);
 
     for (const inv of inventories) {

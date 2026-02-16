@@ -35,6 +35,7 @@ services:
       GITHUB_FEEDBACK_REPO: ${GITHUB_FEEDBACK_REPO}
       KROGER_CLIENT_ID: ${KROGER_CLIENT_ID}
       KROGER_CLIENT_SECRET: ${KROGER_CLIENT_SECRET}
+      KROGER_INVENTORY_STALE_HOURS: ${KROGER_INVENTORY_STALE_HOURS:-4}
     depends_on:
       postgres:
         condition: service_healthy

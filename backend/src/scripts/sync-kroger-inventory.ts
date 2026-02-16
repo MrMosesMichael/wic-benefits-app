@@ -20,9 +20,17 @@ import pool from '../config/database';
  * Sync all Kroger stores' formula inventory
  */
 async function syncAll(kroger: KrogerIntegration) {
-  console.log('Syncing formula inventory for all Kroger stores...\n');
+  // Parse optional CLI flags
+  const args = process.argv.slice(3);
+  const maxStoresIdx = args.indexOf('--max-stores');
+  const maxStores = maxStoresIdx !== -1 ? parseInt(args[maxStoresIdx + 1]) || 50 : 50;
+  const maxUpcsIdx = args.indexOf('--max-upcs');
+  const maxUpcs = maxUpcsIdx !== -1 ? parseInt(args[maxUpcsIdx + 1]) || 50 : undefined;
 
-  const storeIds = await kroger.getKrogerStores(50);
+  console.log('Syncing formula inventory for all Kroger stores...');
+  console.log(`  Max stores: ${maxStores}, Max UPCs: ${maxUpcs || 'all (up to 50)'}\n`);
+
+  const storeIds = await kroger.getKrogerStores(maxStores);
 
   if (storeIds.length === 0) {
     console.log('No Kroger stores found in database.');
@@ -32,7 +40,7 @@ async function syncAll(kroger: KrogerIntegration) {
 
   console.log(`Found ${storeIds.length} Kroger stores`);
 
-  const result = await kroger.syncFormulaInventory(storeIds);
+  const result = await kroger.syncFormulaInventory(storeIds, maxUpcs);
 
   console.log('\nSync complete!');
   console.log(`  Job ID: ${result.jobId}`);
@@ -174,12 +182,15 @@ async function main() {
         break;
 
       default:
-        console.log('Usage: npm run sync-kroger-inventory [command]');
+        console.log('Usage: npm run sync-kroger-inventory [command] [options]');
         console.log('\nCommands:');
         console.log('  sync    - Sync all Kroger stores\' formula inventory (default)');
         console.log('  store   - Sync a specific store: --store kroger-12345');
         console.log('  stats   - Show Kroger sync job stats');
         console.log('  cleanup - Remove stale Kroger inventory data');
+        console.log('\nOptions (for sync command):');
+        console.log('  --max-stores N  - Limit number of stores to sync (default: 50)');
+        console.log('  --max-upcs N    - Limit number of formula UPCs per store (default: all)');
         process.exit(1);
     }
 

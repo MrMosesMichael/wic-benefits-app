@@ -320,15 +320,17 @@ export class KrogerIntegration {
    * Batch sync formula inventory across Kroger stores.
    * Reads formula UPCs from wic_formulas and writes results via inventorySyncService.
    */
-  async syncFormulaInventory(storeIds: string[]): Promise<{
+  async syncFormulaInventory(storeIds: string[], maxUpcs?: number): Promise<{
     jobId: number;
     processed: number;
     succeeded: number;
     failed: number;
   }> {
     // Get formula UPCs from database
+    const upcLimit = maxUpcs || 50;
     const formulaResult = await pool.query(
-      `SELECT DISTINCT upc FROM wic_formulas WHERE active = true LIMIT 50`
+      `SELECT DISTINCT upc FROM wic_formulas WHERE active = true LIMIT $1`,
+      [upcLimit]
     );
     const upcs = formulaResult.rows.map((row: any) => row.upc);
 
@@ -358,7 +360,7 @@ export class KrogerIntegration {
 
     console.log(`Fetched ${inventories.length} inventory records`);
 
-    const result = await inventorySyncService.syncInventoryBatch(inventories);
+    const result = await inventorySyncService.syncInventoryBatch(inventories, 'kroger');
     return result;
   }
 

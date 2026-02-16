@@ -279,14 +279,101 @@ router.post('/', async (req: Request, res: Response) => {
         }
       }
 
-      // Enrich Kroger stores with live product availability (capped at 5 to conserve API quota)
+      // DB-first: Read pre-synced inventory for Kroger stores before live API calls
+      const staleHours = parseInt(process.env.KROGER_INVENTORY_STALE_HOURS || '4', 10);
+      const storesNeedingLive = new Set<string>(); // store_ids that need live API fallback
+
       if (krogerStores.length > 0) {
-        const storesToEnrich = krogerStores.slice(0, 5);
+        const krogerStoreIds = krogerStores.map((s: any) => s.store_id);
+
+        try {
+          const dbInventoryResult = await pool.query(
+            `SELECT store_id, upc, status, quantity_range, last_updated, confidence
+             FROM inventory
+             WHERE store_id = ANY($1)
+               AND upc = ANY($2)
+               AND data_source = 'api'
+               AND last_updated >= NOW() - INTERVAL '${staleHours} hours'`,
+            [krogerStoreIds, searchUpcs]
+          );
+
+          // Track which (store, upc) combos we got fresh DB data for
+          const freshDbKeys = new Set<string>();
+
+          for (const row of dbInventoryResult.rows) {
+            freshDbKeys.add(`${row.store_id}:${row.upc}`);
+
+            if (row.status === 'unknown') continue;
+
+            // Find the store object to get its name for the availability map
+            const store = krogerStores.find((s: any) => s.store_id === row.store_id);
+            if (!store) continue;
+
+            const storeNameKey = store.name.toLowerCase().trim();
+            if (!availabilityByStore.has(storeNameKey)) {
+              availabilityByStore.set(storeNameKey, []);
+            }
+            availabilityByStore.get(storeNameKey)!.push({
+              upc: row.upc,
+              status: row.status,
+              quantityRange: row.quantity_range,
+              lastUpdated: row.last_updated,
+              confidence: row.confidence,
+              reportCount: 1,
+              source: 'inventory_db',
+              latitude: store.latitude,
+              longitude: store.longitude,
+            });
+          }
+
+          // Determine which stores still need live API (missing or stale data for any UPC)
+          for (const store of krogerStores) {
+            const hasAllFresh = searchUpcs.every(
+              (u: string) => freshDbKeys.has(`${store.store_id}:${u}`)
+            );
+            if (!hasAllFresh) {
+              storesNeedingLive.add(store.store_id);
+            }
+          }
+        } catch (dbError) {
+          console.error('DB inventory lookup failed, falling back to live API:', dbError);
+          // Fall back: mark all Kroger stores as needing live
+          for (const store of krogerStores) {
+            storesNeedingLive.add(store.store_id);
+          }
+        }
+      }
+
+      // Live API fallback: only for stores with stale/missing DB data (capped at 5)
+      if (storesNeedingLive.size > 0) {
+        const storesToEnrich = krogerStores
+          .filter((s: any) => storesNeedingLive.has(s.store_id))
+          .slice(0, 5);
+
+        // Track which UPCs already have fresh DB data per store to skip redundant calls
+        const freshDbKeysForSkip = new Set<string>();
+        // Re-check what we have from DB for these stores
+        for (const [, entries] of availabilityByStore) {
+          for (const entry of entries) {
+            if (entry.source === 'inventory_db') {
+              // Find store_id from lat/lng match
+              const store = krogerStores.find(
+                (s: any) => s.latitude === entry.latitude && s.longitude === entry.longitude
+              );
+              if (store) {
+                freshDbKeysForSkip.add(`${store.store_id}:${entry.upc}`);
+              }
+            }
+          }
+        }
 
         for (const store of storesToEnrich) {
           const krogerLocationId = store.store_id.replace(/^kroger-/, '');
 
           for (const formulaUpc of searchUpcs.slice(0, 5)) {
+            // Skip UPCs that already have fresh DB data for this store
+            if (freshDbKeysForSkip.has(`${store.store_id}:${formulaUpc}`)) continue;
+
             try {
               const apiResult = await krogerIntegration.checkFormulaAvailability(
                 formulaUpc, krogerLocationId, store.store_id

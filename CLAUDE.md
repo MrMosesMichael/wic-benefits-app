@@ -107,6 +107,22 @@ docker compose exec -T backend npm run apl-sync -- --all --force   # Force sync 
 
 # Shortage detection
 docker compose exec -T backend npm run detect-shortages
+
+# Kroger inventory sync (manual run)
+docker compose exec -T backend npm run sync-kroger-inventory -- sync --max-stores 30
+docker compose exec -T backend npm run sync-kroger-inventory -- stats
+docker compose exec -T backend npm run sync-kroger-inventory -- cleanup
+```
+
+**Kroger Sync Crontab (VPS):**
+```cron
+# Kroger inventory sync every 8h (30 stores max)
+0 1 * * * cd ~/projects/wic-app && docker compose exec -T backend npm run sync-kroger-inventory -- sync --max-stores 30 >> /var/log/kroger-sync.log 2>&1
+0 9 * * * cd ~/projects/wic-app && docker compose exec -T backend npm run sync-kroger-inventory -- sync --max-stores 30 >> /var/log/kroger-sync.log 2>&1
+0 17 * * * cd ~/projects/wic-app && docker compose exec -T backend npm run sync-kroger-inventory -- sync --max-stores 30 >> /var/log/kroger-sync.log 2>&1
+
+# Weekly cleanup (Sunday 3am UTC)
+0 3 * * 0 cd ~/projects/wic-app && docker compose exec -T backend npm run sync-kroger-inventory -- cleanup >> /var/log/kroger-sync.log 2>&1
 ```
 
 ### Deploy Scripts (from local machine)

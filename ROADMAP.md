@@ -1,6 +1,6 @@
 # WIC Benefits App — Roadmap
 
-> **Last Updated:** February 14, 2026
+> **Last Updated:** February 15, 2026
 > **Current Phase:** Phase 1-5 Complete + Phase 3 & 4 Complete + Phase 7 In Progress
 > **Production:** https://mdmichael.com/wic/
 
@@ -199,7 +199,7 @@ Based on impact, effort, and what's unblocked:
 3. **Retailer API Partnerships**
    - ✅ Kroger API integration live (MI/NC/OR — real-time inventory + dynamic store discovery)
    - ✅ Multi-state store seeding: MI (53+API), NC (34+API), OR (30+API), NY (50)
-   - ⏳ **Kroger Background Batch Sync (TBD)** — Lean on cron-based inventory sync instead of per-request API calls as user base grows; `sync-kroger-inventory.ts` exists, needs scheduling + DB-first query path
+   - ✅ **Kroger Background Batch Sync** — Cron-based inventory sync (3×/day, 30 stores), DB-first query in cross-store search with live API fallback for stale/missing data
    - ⏳ **Kroger Approved Partner Status** — Apply for higher API rate limits (post-LLC registration + app store listings)
    - ⏳ Walmart API — reach out to Walmart business unit once app is live on stores
    - *Strategy: Having a published app on stores strengthens partnership outreach*
