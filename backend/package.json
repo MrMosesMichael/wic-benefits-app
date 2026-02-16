@@ -22,6 +22,7 @@
     "sync-kroger-stores": "node dist/scripts/sync-kroger-stores.js",
     "sync-kroger-inventory": "node dist/scripts/sync-kroger-inventory.js",
     "apl-sync": "node dist/scripts/run-apl-sync.js",
+    "reimport-apl": "node dist/scripts/reimport-apl.js",
     "scrape-food-banks": "ts-node src/scripts/scrape-food-banks.ts",
     "scrape-wic-clinics": "ts-node src/scripts/scrape-wic-clinics.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
