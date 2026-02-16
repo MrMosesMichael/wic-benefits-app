@@ -635,6 +635,10 @@
       "infant_formula": "Infant Formula",
       "infant_food": "Infant Food",
       "fruits_vegetables": "Fruits & Vegetables",
+      "yogurt": "Yogurt",
+      "legumes": "Beans & Legumes",
+      "fish": "Fish",
+      "infant_meats": "Infant Meats",
       "uncategorized": "Other"
     }
   },

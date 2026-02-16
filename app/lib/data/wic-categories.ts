@@ -16,6 +16,10 @@ export const WIC_CATEGORIES: WicCategory[] = [
   { id: 'infant_formula', icon: '\u{1F37C}', color: '#EC407A', labelKey: 'catalog.categories.infant_formula' },
   { id: 'infant_food', icon: '\u{1F476}', color: '#AB47BC', labelKey: 'catalog.categories.infant_food' },
   { id: 'fruits_vegetables', icon: '\u{1F34E}', color: '#66BB6A', labelKey: 'catalog.categories.fruits_vegetables' },
+  { id: 'yogurt', icon: '\u{1F95B}', color: '#CE93D8', labelKey: 'catalog.categories.yogurt' },
+  { id: 'legumes', icon: '\u{1FAD8}', color: '#8D6E63', labelKey: 'catalog.categories.legumes' },
+  { id: 'fish', icon: '\u{1F41F}', color: '#4FC3F7', labelKey: 'catalog.categories.fish' },
+  { id: 'infant_meats', icon: '\u{1F356}', color: '#E57373', labelKey: 'catalog.categories.infant_meats' },
   { id: 'uncategorized', icon: '\u{1F4E6}', color: '#78909C', labelKey: 'catalog.categories.uncategorized' },
 ];
 
@@ -25,10 +29,20 @@ export const WIC_CATEGORIES: WicCategory[] = [
  * which need to be mapped to our IDs like "milk".
  */
 const CATEGORY_ALIASES: Record<string, string> = {
+  // Michigan numeric category codes
+  '02': 'cheese', '03': 'eggs', '04': 'juice', '05': 'yogurt',
+  '06': 'peanut_butter', '08': 'fish', '09': 'cereal',
+  '11': 'infant_formula', '12': 'fruits_vegetables', '13': 'infant_meats',
+  '15': 'milk', '18': 'whole_grains', '19': 'fruits_vegetables',
+  '21': 'infant_formula', '31': 'infant_formula', '41': 'infant_formula',
+  '50': 'yogurt', '51': 'milk', '52': 'milk', '53': 'milk',
+  '54': 'juice', '94': 'infant_formula', '97': 'infant_food',
   // Milk variants
   'milk': 'milk', 'milk, whole': 'milk', 'milk, reduced fat': 'milk', 'milk, fat free': 'milk',
   'milk, lowfat': 'milk', 'milk, skim': 'milk', 'milk, 1%': 'milk', 'milk, 2%': 'milk',
   'fluid milk': 'milk', 'dairy': 'milk', 'soy milk': 'milk', 'lactose free milk': 'milk',
+  'milk whole': 'milk', 'milk fat reduced': 'milk', 'milk fat free': 'milk',
+  'milk lowfat': 'milk',
   // Eggs
   'eggs': 'eggs', 'egg': 'eggs', 'eggs, large': 'eggs',
   // Cereal
@@ -40,22 +54,35 @@ const CATEGORY_ALIASES: Record<string, string> = {
   'juice': 'juice', 'juice, frozen': 'juice', 'juice, shelf stable': 'juice',
   'juice, frozen conc.': 'juice', 'juice, frozen concentrate': 'juice',
   '100% juice': 'juice', 'fruit juice': 'juice',
+  'juice 64oz': 'juice', 'juice 48oz': 'juice',
   // Cheese
   'cheese': 'cheese', 'cheese, domestic': 'cheese', 'cheese, block': 'cheese',
+  'cheese or tofu': 'cheese',
+  // Yogurt
+  'yogurt': 'yogurt',
   // Whole grains
   'whole grains': 'whole_grains', 'whole_grains': 'whole_grains',
   'bread': 'whole_grains', 'whole wheat bread': 'whole_grains',
   'tortillas': 'whole_grains', 'brown rice': 'whole_grains', 'pasta': 'whole_grains',
+  'bread and  whole grains': 'whole_grains', 'bread and whole grains': 'whole_grains',
+  // Legumes (beans, lentils, etc.)
+  'legumes': 'legumes', 'beans': 'legumes', 'dried beans': 'legumes',
+  'canned beans': 'legumes', 'lentils': 'legumes',
+  // Fish
+  'fish': 'fish', 'canned fish': 'fish', 'tuna': 'fish', 'salmon': 'fish',
   // Infant formula
   'infant formula': 'infant_formula', 'infant_formula': 'infant_formula',
   'formula': 'infant_formula', 'baby formula': 'infant_formula',
   // Infant food
   'infant food': 'infant_food', 'infant_food': 'infant_food',
   'baby food': 'infant_food', 'infant fruits & vegetables': 'infant_food',
-  'infant meats': 'infant_food',
+  'infant fruits and vegetables': 'infant_food',
+  // Infant meats
+  'infant meats': 'infant_meats', 'infant_meats': 'infant_meats',
   // Fruits & vegetables
   'fruits & vegetables': 'fruits_vegetables', 'fruits_vegetables': 'fruits_vegetables',
   'fruits and vegetables': 'fruits_vegetables', 'fresh fruits & vegetables': 'fruits_vegetables',
+  'fruits and vegetables cash value benefit': 'fruits_vegetables',
   'cvv': 'fruits_vegetables', 'cash value voucher': 'fruits_vegetables',
   'cash value benefit': 'fruits_vegetables', 'cvb': 'fruits_vegetables',
   'produce': 'fruits_vegetables',
