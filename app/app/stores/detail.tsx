@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Platform, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useI18n } from '@/lib/i18n/I18nContext';
+import StoreProductList from '@/components/StoreProductList';
 
 export default function StoreDetailScreen() {
   const { t } = useI18n();
@@ -17,6 +18,7 @@ export default function StoreDetailScreen() {
     lat: string;
     lng: string;
     distance: string;
+    storeId: string;
   }>();
 
   const isWic = params.wicAuthorized === '1';
@@ -89,6 +91,14 @@ export default function StoreDetailScreen() {
           <Text style={styles.actionButtonPrimaryText}>🗺️ {t('storeFinder.directions')}</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Products at This Store */}
+      {params.storeId && (
+        <View style={styles.productsSection}>
+          <Text style={styles.sectionTitle}>{t('storeProducts.title')}</Text>
+          <StoreProductList storeId={params.storeId} chain={params.chain || ''} />
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -189,5 +199,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#fff',
+  },
+  productsSection: {
+    marginTop: 20,
   },
 });

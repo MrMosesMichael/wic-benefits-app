@@ -347,5 +347,31 @@ export interface FormulaBrand {
   formulaCount: number;
 }
 
+// ==================== WIC Clinic Types ====================
+
+export interface WicClinic {
+  id: number;
+  name: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    county: string | null;
+  };
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+  phone: string | null;
+  website: string | null;
+  appointmentUrl: string | null;
+  hours: Array<{ day: string; hours: string }>;
+  hoursNotes: string | null;
+  services: string[];
+  languages: string[];
+  distanceMiles: number;
+}
+
 // Re-export FAQ types
 export * from './faq';

@@ -11,7 +11,7 @@ export interface Tip {
   priority: number;
 }
 
-export type TipCategory = 'shopping' | 'savings' | 'seasonal' | 'checkout' | 'rights';
+export type TipCategory = 'shopping' | 'savings' | 'seasonal' | 'checkout' | 'rights' | 'guidelines';
 
 export const TIP_CATEGORIES: { id: TipCategory; labelKey: string; icon: string; color: string }[] = [
   { id: 'shopping', labelKey: 'tips.categories.shopping', icon: '\u{1F6D2}', color: '#2196F3' },
@@ -19,6 +19,7 @@ export const TIP_CATEGORIES: { id: TipCategory; labelKey: string; icon: string; 
   { id: 'checkout', labelKey: 'tips.categories.checkout', icon: '\u{1F4B3}', color: '#FF9800' },
   { id: 'rights', labelKey: 'tips.categories.rights', icon: '\u2696\uFE0F', color: '#9C27B0' },
   { id: 'seasonal', labelKey: 'tips.categories.seasonal', icon: '\u{1F33F}', color: '#00897B' },
+  { id: 'guidelines', labelKey: 'tips.categories.guidelines', icon: '\u{1F4CB}', color: '#1976D2' },
 ];
 
 const tips: Tip[] = tipsData as Tip[];

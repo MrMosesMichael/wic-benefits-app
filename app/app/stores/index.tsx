@@ -94,6 +94,7 @@ export default function StoreFinderScreen() {
         lat: store.location.latitude.toString(),
         lng: store.location.longitude.toString(),
         distance: store.distanceMiles?.toString() || '',
+        storeId: store.storeId || '',
       },
     });
   };

@@ -198,5 +198,55 @@
     "category": "checkout",
     "tags": ["self-checkout", "eWIC", "privacy", "payment"],
     "priority": 15
+  },
+  {
+    "id": "guidelines-overview",
+    "title": "What Foods Does WIC Cover?",
+    "titleEs": "¿Qué Alimentos Cubre WIC?",
+    "content": "WIC covers milk, cheese, eggs, cereal, juice, peanut butter, whole grains, fruits, vegetables, infant formula, and baby food. The exact brands and sizes vary by state — always check with your state's Approved Product List (APL).",
+    "contentEs": "WIC cubre leche, queso, huevos, cereal, jugo, mantequilla de maní, granos integrales, frutas, verduras, fórmula infantil y comida para bebé. Las marcas y tamaños exactos varían por estado — siempre consulte la Lista de Productos Aprobados (APL) de su estado.",
+    "category": "guidelines",
+    "tags": ["guidelines", "food list", "APL", "covered", "overview"],
+    "priority": 92
+  },
+  {
+    "id": "guidelines-michigan",
+    "title": "Michigan WIC Food Guide",
+    "titleEs": "Guía de Alimentos WIC de Michigan",
+    "content": "Michigan's WIC program provides a detailed food guide listing all approved brands, sizes, and types. Key highlights: store-brand milk and eggs are always covered, most whole wheat breads are approved, and CVB is $25/month for children. View the full guide at michigan.gov/mdhhs (search 'WIC food list').",
+    "contentEs": "El programa WIC de Michigan ofrece una guía detallada de alimentos con todas las marcas, tamaños y tipos aprobados. Puntos clave: la leche y huevos de marca de tienda siempre están cubiertos, la mayoría de los panes integrales están aprobados, y el CVB es $25/mes para niños. Vea la guía completa en michigan.gov/mdhhs (busque 'WIC food list').",
+    "category": "guidelines",
+    "tags": ["michigan", "MI", "food guide", "APL", "state"],
+    "priority": 88
+  },
+  {
+    "id": "guidelines-north-carolina",
+    "title": "North Carolina WIC Food Guide",
+    "titleEs": "Guía de Alimentos WIC de Carolina del Norte",
+    "content": "North Carolina WIC participants can find their approved food list at nutritionnc.com. NC offers a wide selection of store-brand items. Key tip: NC allows both 1% and fat-free milk for most participants. Check the NC WIC Shopping Guide for exact brands and sizes.",
+    "contentEs": "Los participantes de WIC de Carolina del Norte pueden encontrar su lista de alimentos aprobados en nutritionnc.com. NC ofrece una amplia selección de artículos de marca de tienda. Consejo clave: NC permite leche 1% y descremada para la mayoría de los participantes.",
+    "category": "guidelines",
+    "tags": ["north carolina", "NC", "food guide", "APL", "state"],
+    "priority": 86
+  },
+  {
+    "id": "guidelines-new-york",
+    "title": "New York WIC Food Guide",
+    "titleEs": "Guía de Alimentos WIC de Nueva York",
+    "content": "New York has one of the largest WIC-approved product lists in the country with over 21,000 items. Visit health.ny.gov (search 'WIC foods') for the complete list. NY WIC also provides a mobile-friendly shopping guide. Tip: NY allows a wider variety of whole grain options than many states.",
+    "contentEs": "Nueva York tiene una de las listas de productos aprobados por WIC más grandes del país con más de 21,000 artículos. Visite health.ny.gov (busque 'WIC foods') para la lista completa. NY WIC también ofrece una guía de compras para dispositivos móviles.",
+    "category": "guidelines",
+    "tags": ["new york", "NY", "food guide", "APL", "state"],
+    "priority": 84
+  },
+  {
+    "id": "guidelines-oregon",
+    "title": "Oregon WIC Food Guide",
+    "titleEs": "Guía de Alimentos WIC de Oregón",
+    "content": "Oregon's WIC food list is available at oregon.gov (search 'WIC approved foods'). Oregon offers organic options for several WIC categories. Key feature: OR allows brown eggs as well as white. Check the Oregon WIC Shopping Guide for farmers market benefits too.",
+    "contentEs": "La lista de alimentos WIC de Oregón está disponible en oregon.gov (busque 'WIC approved foods'). Oregón ofrece opciones orgánicas para varias categorías de WIC. Característica clave: OR permite huevos marrones y blancos. Consulte también los beneficios para mercados de agricultores.",
+    "category": "guidelines",
+    "tags": ["oregon", "OR", "food guide", "APL", "state"],
+    "priority": 82
   }
 ]

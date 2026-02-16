@@ -302,7 +302,9 @@
     "searchFailedMessage": "Unable to search for formula. Please try again.",
     "locationError": "Location permission required to search nearby stores.",
     "locationErrorRetry": "Could not get your location. Please try again.",
-    "retry": "Retry"
+    "retry": "Retry",
+    "listView": "List",
+    "mapView": "Map"
   },
   "crossStoreResults": {
     "storesWithStock": "{{count}} store(s) with recent stock reports",
@@ -656,6 +658,15 @@
     "address": "Address",
     "phone": "Phone"
   },
+  "storeProducts": {
+    "title": "Products at This Store",
+    "loading": "Loading inventory...",
+    "noInventory": "No Inventory Data",
+    "noInventoryKroger": "Inventory data for this Kroger store is being synced. Check back soon!",
+    "noInventoryGeneral": "Product inventory is not yet available for this store. Browse the product catalog for general WIC-approved items.",
+    "allProducts": "All",
+    "noProductsCategory": "No products found in this category."
+  },
   "community": {
     "headerMessage": "You are not alone. Connect with resources, tips, and your rights as a WIC participant.",
     "shoppingTips": "Shopping Tips",
@@ -680,7 +691,8 @@
       "savings": "Savings",
       "checkout": "Checkout",
       "rights": "Rights",
-      "seasonal": "Seasonal"
+      "seasonal": "Seasonal",
+      "guidelines": "State Guidelines"
     }
   },
   "rights": {
@@ -709,7 +721,15 @@
     "call": "Call",
     "visitWebsite": "Visit Website",
     "aboutTitle": "About WIC Offices",
-    "aboutText": "Your state WIC office can help with questions about eligibility, benefits, complaints, and more. They are here to help you."
+    "aboutText": "Your state WIC office can help with questions about eligibility, benefits, complaints, and more. They are here to help you.",
+    "nearbyClinics": "Nearby WIC Clinics",
+    "searchingClinics": "Searching for nearby clinics...",
+    "noClinicsFound": "No WIC clinics found nearby. Try the state office below for assistance.",
+    "clinicsFound": "{{count}} clinic(s) found nearby",
+    "stateHQ": "State WIC Office",
+    "directions": "Directions",
+    "tapToExpand": "Tap for details",
+    "tapToCollapse": "Tap to collapse"
   },
   "recipes": {
     "searchPlaceholder": "Search recipes...",
@@ -736,6 +756,33 @@
       "dinner": "Dinner",
       "snacks": "Snacks",
       "baby_food": "Baby Food"
+    },
+    "addRecipe": "Add Recipe"
+  },
+  "addRecipe": {
+    "recipeTitle": "Recipe Title",
+    "titlePlaceholder": "e.g., WIC Veggie Stir-Fry",
+    "category": "Category",
+    "prepTime": "Prep Time (min)",
+    "servings": "Servings",
+    "difficulty": "Difficulty",
+    "ingredientPlaceholder": "e.g., 2 cups milk",
+    "stepPlaceholder": "e.g., Preheat oven to 350°F",
+    "addAnother": "Add another",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit Recipe",
+    "submitting": "Submitting...",
+    "successTitle": "Recipe Submitted!",
+    "successMessage": "Your recipe has been shared with the community. Thank you!",
+    "errorTitle": "Submission Failed",
+    "errorMessage": "Could not submit your recipe. Please try again.",
+    "steps": {
+      "info": "Recipe Details",
+      "wicIngredients": "WIC Ingredients",
+      "otherIngredients": "Other Ingredients",
+      "instructions": "Instructions",
+      "review": "Review & Submit"
     }
   },
   "a11y": {

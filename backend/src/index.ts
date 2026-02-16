@@ -21,6 +21,8 @@ import aplSyncRoutes from './routes/apl-sync';
 import feedbackRoutes from './routes/feedback';
 import locationRoutes from './routes/location';
 import productCatalogRoutes from './routes/product-catalog';
+import wicClinicsRoutes from './routes/wic-clinics';
+import recipesRoutes from './routes/recipes';
 // Temporarily disabled due to path resolution issues
 // import productsRoutes from './routes/products';
 // import productImagesRoutes from './routes/product-images';
@@ -71,6 +73,8 @@ app.use('/api/v1/apl-sync', aplSyncRoutes);
 app.use('/api/v1/feedback', feedbackRoutes);
 app.use('/api/v1/location', locationRoutes);
 app.use('/api/v1/product-catalog', productCatalogRoutes);
+app.use('/api/v1/wic-clinics', wicClinicsRoutes);
+app.use('/api/v1/recipes', recipesRoutes);
 // Temporarily disabled due to path resolution issues
 // app.use('/api/v1/products', productsRoutes);
 // app.use('/api/v1/product-images', productImagesRoutes);

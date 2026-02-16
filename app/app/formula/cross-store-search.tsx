@@ -14,11 +14,14 @@ import {
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { crossStoreSearch, getFormulaBrands, getWicFormulas } from '@/lib/services/api';
 import CrossStoreSearchResults from '@/components/CrossStoreSearchResults';
+import FormulaStoreMap from '@/components/FormulaStoreMap';
 import FormulaSightingModal from '@/components/FormulaSightingModal';
 import LocationPrompt from '@/components/LocationPrompt';
 import { useLocation } from '@/lib/hooks/useLocation';
 import type { CrossStoreResult, CrossStoreSearchRequest, WicFormula, FormulaBrand, FormulaType } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+
+type ViewMode = 'list' | 'map';
 
 type SearchMode = 'text' | 'brand' | 'type';
 
@@ -65,6 +68,9 @@ export default function CrossStoreSearchScreen() {
   // Brands for autocomplete
   const [brands, setBrands] = useState<FormulaBrand[]>([]);
   const [loadingBrands, setLoadingBrands] = useState(true);
+
+  // View mode
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
 
   // Sighting modal
   const [sightingModalVisible, setSightingModalVisible] = useState(false);
@@ -378,6 +384,32 @@ export default function CrossStoreSearchScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* View Toggle (only show after search) */}
+      {searchPerformed && results.length > 0 && (
+        <View style={styles.viewToggle}>
+          <TouchableOpacity
+            style={[styles.viewToggleButton, viewMode === 'list' && styles.viewToggleButtonActive]}
+            onPress={() => setViewMode('list')}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: viewMode === 'list' }}
+          >
+            <Text style={[styles.viewToggleText, viewMode === 'list' && styles.viewToggleTextActive]}>
+              {t('crossStoreSearch.listView')}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.viewToggleButton, viewMode === 'map' && styles.viewToggleButtonActive]}
+            onPress={() => setViewMode('map')}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: viewMode === 'map' }}
+          >
+            <Text style={[styles.viewToggleText, viewMode === 'map' && styles.viewToggleTextActive]}>
+              {t('crossStoreSearch.mapView')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       {/* Results */}
       <View style={styles.resultsContainer}>
         {loading ? (
@@ -386,15 +418,23 @@ export default function CrossStoreSearchScreen() {
             <Text style={styles.loadingText}>{t('crossStoreSearch.searchingStores')}</Text>
           </View>
         ) : searchPerformed ? (
-          <CrossStoreSearchResults
-            results={results}
-            onStorePress={handleStorePress}
-            emptyMessage={
-              inStockOnly
-                ? t('crossStoreSearch.noStoresInStock')
-                : t('crossStoreSearch.noStoresFound')
-            }
-          />
+          viewMode === 'map' && results.length > 0 ? (
+            <FormulaStoreMap
+              results={results}
+              userLocation={location}
+              onStorePress={handleStorePress}
+            />
+          ) : (
+            <CrossStoreSearchResults
+              results={results}
+              onStorePress={handleStorePress}
+              emptyMessage={
+                inStockOnly
+                  ? t('crossStoreSearch.noStoresInStock')
+                  : t('crossStoreSearch.noStoresFound')
+              }
+            />
+          )
         ) : (
           <View style={styles.initialState}>
             <Text style={styles.initialIcon} accessible={false} importantForAccessibility="no">🍼</Text>
@@ -650,6 +690,31 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#2E7D32',
+  },
+  viewToggle: {
+    flexDirection: 'row',
+    marginHorizontal: 16,
+    marginBottom: 8,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    padding: 2,
+  },
+  viewToggleButton: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+    borderRadius: 6,
+  },
+  viewToggleButtonActive: {
+    backgroundColor: '#1976D2',
+  },
+  viewToggleText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#757575',
+  },
+  viewToggleTextActive: {
+    color: '#fff',
   },
   resultsContainer: {
     flex: 1,

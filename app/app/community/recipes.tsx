@@ -43,9 +43,13 @@ export default function RecipesScreen() {
     });
   };
 
+  const handleAddRecipe = () => {
+    router.push('/community/add-recipe');
+  };
+
   return (
     <View style={styles.container}>
-      {/* Search */}
+      {/* Search + Add Button */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -109,6 +113,16 @@ export default function RecipesScreen() {
             onPress={() => handleRecipePress(recipe.id)}
           />
         ))}
+
+        {/* Add Recipe FAB */}
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={handleAddRecipe}
+          accessibilityRole="button"
+          accessibilityLabel={t('recipes.addRecipe')}
+        >
+          <Text style={styles.fabText}>+</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -130,4 +144,25 @@ const styles = StyleSheet.create({
   scrollContent: { padding: 16, paddingBottom: 32 },
   emptyContainer: { padding: 20, alignItems: 'center' },
   emptyText: { fontSize: 16, color: '#666', fontStyle: 'italic' },
+  fab: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#FF9800',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  fabText: {
+    fontSize: 28,
+    fontWeight: '300',
+    color: '#fff',
+    marginTop: -2,
+  },
 });

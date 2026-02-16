@@ -36,6 +36,7 @@ services:
       KROGER_CLIENT_ID: ${KROGER_CLIENT_ID}
       KROGER_CLIENT_SECRET: ${KROGER_CLIENT_SECRET}
       KROGER_INVENTORY_STALE_HOURS: ${KROGER_INVENTORY_STALE_HOURS:-4}
+      RECIPE_AUTH_REQUIRED: ${RECIPE_AUTH_REQUIRED:-false}
     depends_on:
       postgres:
         condition: service_healthy

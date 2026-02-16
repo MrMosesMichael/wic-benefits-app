@@ -69,28 +69,43 @@ router.get('/store/:storeId/product/:upc', async (req: Request, res: Response) =
 
 /**
  * GET /api/v1/inventory/store/:storeId
- * Get all inventory for a store (optionally filter by UPCs)
+ * Get all inventory for a store with product details
+ * Query params:
+ *   - upcs: comma-separated UPC filter
+ *   - category: product category filter
+ *   - status: inventory status filter
+ *   - limit: pagination limit (default 50)
+ *   - offset: pagination offset (default 0)
  */
 router.get('/store/:storeId', async (req: Request, res: Response) => {
   try {
     const { storeId } = req.params;
     const { upcs, category, status } = req.query;
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let query = `
       SELECT
-        inventory_id,
-        store_id,
-        upc,
-        status,
-        quantity,
-        quantity_range,
-        aisle,
-        last_updated,
-        data_source,
-        confidence,
-        report_count
-      FROM inventory
-      WHERE store_id = $1
+        i.inventory_id,
+        i.store_id,
+        i.upc,
+        i.status,
+        i.quantity,
+        i.quantity_range,
+        i.aisle,
+        i.last_updated,
+        i.data_source,
+        i.confidence,
+        i.report_count,
+        p.product_name,
+        p.brand,
+        p.category as product_category,
+        p.subcategory,
+        p.size,
+        p.unit
+      FROM inventory i
+      LEFT JOIN apl_products p ON i.upc = p.upc
+      WHERE i.store_id = $1
     `;
 
     const params: any[] = [storeId];
@@ -99,23 +114,36 @@ router.get('/store/:storeId', async (req: Request, res: Response) => {
     // Filter by UPCs if provided
     if (upcs && typeof upcs === 'string') {
       const upcList = upcs.split(',').map(u => u.trim());
-      query += ` AND upc = ANY($${paramIndex})`;
+      query += ` AND i.upc = ANY($${paramIndex})`;
       params.push(upcList);
+      paramIndex++;
+    }
+
+    // Filter by category if provided
+    if (category && typeof category === 'string') {
+      query += ` AND p.category = $${paramIndex}`;
+      params.push(category);
       paramIndex++;
     }
 
     // Filter by status if provided
     if (status && typeof status === 'string') {
-      query += ` AND status = $${paramIndex}`;
+      query += ` AND i.status = $${paramIndex}`;
       params.push(status);
       paramIndex++;
     }
 
-    query += ` ORDER BY last_updated DESC`;
+    // Count total before pagination
+    const countQuery = query.replace(/SELECT[\s\S]*?FROM/, 'SELECT COUNT(*) as total FROM');
+    const countResult = await pool.query(countQuery, params);
+    const total = parseInt(countResult.rows[0]?.total || '0');
+
+    query += ` ORDER BY i.last_updated DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+    params.push(limit, offset);
 
     const result = await pool.query(query, params);
 
-    const inventories = result.rows.map(row => ({
+    const products = result.rows.map(row => ({
       storeId: row.store_id,
       upc: row.upc,
       status: row.status,
@@ -126,16 +154,27 @@ router.get('/store/:storeId', async (req: Request, res: Response) => {
       source: row.data_source,
       confidence: row.confidence,
       reportCount: row.report_count,
+      productName: row.product_name || null,
+      brand: row.brand || null,
+      category: row.product_category || null,
+      subcategory: row.subcategory || null,
+      size: row.size || null,
+      unit: row.unit || null,
     }));
 
     res.json({
+      success: true,
       storeId,
-      count: inventories.length,
-      inventories,
+      products,
+      total,
+      limit,
+      offset,
+      hasMore: offset + limit < total,
     });
   } catch (error) {
     console.error('Error fetching store inventory:', error);
     res.status(500).json({
+      success: false,
       error: 'Internal server error',
       message: 'Failed to fetch store inventory data',
     });

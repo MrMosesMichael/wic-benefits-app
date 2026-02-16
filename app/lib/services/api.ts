@@ -1176,4 +1176,126 @@ export async function submitFeedback(request: FeedbackRequest): Promise<{ issueU
   }
 }
 
+// ==================== Store Products API ====================
+
+/**
+ * Get products at a specific store
+ */
+export async function getStoreProducts(
+  storeId: string,
+  options?: { category?: string; limit?: number; offset?: number }
+): Promise<{
+  products: any[];
+  total: number;
+  hasMore: boolean;
+}> {
+  try {
+    const params = new URLSearchParams();
+    if (options?.category) params.append('category', options.category);
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.offset) params.append('offset', options.offset.toString());
+
+    const response = await api.get(`/inventory/store/${storeId}?${params.toString()}`);
+    if (response.data.success) {
+      return {
+        products: response.data.products,
+        total: response.data.total,
+        hasMore: response.data.hasMore,
+      };
+    }
+    return { products: [], total: 0, hasMore: false };
+  } catch (error) {
+    console.error('Failed to fetch store products:', error);
+    return { products: [], total: 0, hasMore: false };
+  }
+}
+
+// ==================== WIC Clinics API ====================
+
+/**
+ * Get nearby WIC clinics
+ */
+export async function getNearbyWicClinics(
+  lat: number,
+  lng: number,
+  radiusMiles?: number,
+  state?: string
+): Promise<any[]> {
+  try {
+    const params = new URLSearchParams();
+    params.append('lat', lat.toString());
+    params.append('lng', lng.toString());
+    if (radiusMiles) params.append('radius', radiusMiles.toString());
+    if (state) params.append('state', state);
+
+    const response = await api.get(`/wic-clinics?${params.toString()}`);
+    if (response.data.success) {
+      return response.data.clinics;
+    }
+    return [];
+  } catch (error) {
+    console.error('Failed to fetch WIC clinics:', error);
+    return [];
+  }
+}
+
+// ==================== Recipes API (Community) ====================
+
+/**
+ * Get community recipes from backend
+ */
+export async function getCommunityRecipes(
+  options?: { category?: string; search?: string; sort?: string; limit?: number; offset?: number }
+): Promise<{ recipes: any[]; total: number }> {
+  try {
+    const params = new URLSearchParams();
+    if (options?.category) params.append('category', options.category);
+    if (options?.search) params.append('search', options.search);
+    if (options?.sort) params.append('sort', options.sort);
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.offset) params.append('offset', options.offset.toString());
+
+    const response = await api.get(`/recipes?${params.toString()}`);
+    if (response.data.success) {
+      return { recipes: response.data.recipes, total: response.data.total };
+    }
+    return { recipes: [], total: 0 };
+  } catch (error) {
+    console.error('Failed to fetch community recipes:', error);
+    return { recipes: [], total: 0 };
+  }
+}
+
+/**
+ * Submit a new recipe
+ */
+export async function submitRecipe(recipe: any): Promise<{ id: number }> {
+  const response = await api.post('/recipes', recipe);
+  if (response.data.success) {
+    return { id: response.data.recipe.id };
+  }
+  throw new Error(response.data.error || 'Failed to submit recipe');
+}
+
+/**
+ * Vote on a recipe
+ */
+export async function voteOnRecipe(recipeId: number, voteType: 'up' | 'down'): Promise<{ netScore: number }> {
+  const response = await api.post(`/recipes/${recipeId}/vote`, { voteType });
+  if (response.data.success) {
+    return { netScore: response.data.netScore };
+  }
+  throw new Error(response.data.error || 'Failed to vote');
+}
+
+/**
+ * Flag a recipe
+ */
+export async function flagRecipe(recipeId: number, reason: string): Promise<void> {
+  const response = await api.post(`/recipes/${recipeId}/flag`, { reason });
+  if (!response.data.success) {
+    throw new Error(response.data.error || 'Failed to flag recipe');
+  }
+}
+
 export default api;
