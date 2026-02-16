@@ -206,6 +206,17 @@ export default function Scanner() {
         </View>
       </Modal>
 
+      {/* Cancel button — above mode toggle */}
+      <TouchableOpacity
+        style={styles.cancelButton}
+        onPress={() => router.back()}
+        accessibilityRole="button"
+        accessibilityLabel={t('a11y.scanner.cancelLabel')}
+        hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
+      >
+        <Text style={styles.cancelText}>{t('scanner.cancel')}</Text>
+      </TouchableOpacity>
+
       {/* Mode toggle — rendered after overlay so touches aren't intercepted */}
       <View style={styles.modeToggle} accessibilityRole="tablist">
         <TouchableOpacity
@@ -231,17 +242,6 @@ export default function Scanner() {
           </Text>
         </TouchableOpacity>
       </View>
-
-      {/* Cancel button */}
-      <TouchableOpacity
-        style={styles.cancelButton}
-        onPress={() => router.back()}
-        accessibilityRole="button"
-        accessibilityLabel={t('a11y.scanner.cancelLabel')}
-        hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
-      >
-        <Text style={styles.cancelText}>{t('scanner.cancel')}</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -339,23 +339,24 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     position: 'absolute',
-    top: 64,
+    top: 55,
     right: 16,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
     borderRadius: 14,
+    zIndex: 10,
   },
   cancelText: {
     color: '#fff',
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
   },
   modeToggle: {
     position: 'absolute',
-    top: 60,
+    top: 95,
     left: 16,
-    right: 80,
+    right: 16,
     flexDirection: 'row',
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     borderRadius: 8,

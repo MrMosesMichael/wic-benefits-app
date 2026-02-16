@@ -23,56 +23,52 @@ router.get('/nearby', async (req: Request, res: Response) => {
   }
 
   try {
-    let query = `
-      SELECT
-        id,
-        store_id,
-        chain,
-        name,
-        street_address,
-        city,
-        state,
-        zip,
-        latitude,
-        longitude,
-        phone,
-        wic_authorized,
-        -- Calculate distance in miles using Haversine formula
-        3959 * acos(
-          cos(radians($1)) * cos(radians(latitude)) *
-          cos(radians(longitude) - radians($2)) +
-          sin(radians($1)) * sin(radians(latitude))
-        ) as distance_miles
-      FROM stores
-      WHERE active = TRUE
-    `;
+    let innerWhere = `WHERE active = TRUE`;
 
     const params: any[] = [lat, lng];
     let paramIndex = 3;
 
     // Filter by chain
     if (chain) {
-      query += ` AND LOWER(chain) = LOWER($${paramIndex})`;
+      innerWhere += ` AND LOWER(chain) = LOWER($${paramIndex})`;
       params.push(chain);
       paramIndex++;
     }
 
     // Filter WIC-authorized only
     if (wicOnly) {
-      query += ` AND wic_authorized = TRUE`;
+      innerWhere += ` AND wic_authorized = TRUE`;
     }
 
-    // Filter by radius
-    query += `
-      HAVING 3959 * acos(
-        cos(radians($1)) * cos(radians(latitude)) *
-        cos(radians(longitude) - radians($2)) +
-        sin(radians($1)) * sin(radians(latitude))
-      ) <= $${paramIndex}
-    `;
     params.push(radiusMiles);
 
-    query += ` ORDER BY distance_miles ASC LIMIT 50`;
+    const query = `
+      SELECT * FROM (
+        SELECT
+          id,
+          store_id,
+          chain,
+          name,
+          street_address,
+          city,
+          state,
+          zip,
+          latitude,
+          longitude,
+          phone,
+          wic_authorized,
+          3959 * acos(
+            LEAST(1.0, cos(radians($1)) * cos(radians(latitude)) *
+            cos(radians(longitude) - radians($2)) +
+            sin(radians($1)) * sin(radians(latitude)))
+          ) as distance_miles
+        FROM stores
+        ${innerWhere}
+      ) sub
+      WHERE distance_miles <= $${paramIndex}
+      ORDER BY distance_miles ASC
+      LIMIT 50
+    `;
 
     const result = await pool.query(query, params);
 
