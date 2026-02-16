@@ -4,6 +4,50 @@
 
 ---
 
+## 2026-02-15 — Kroger Background Batch Sync
+
+**Cron-based inventory sync pipeline with DB-first cross-store search. Reduces per-request Kroger API calls from ~25 to near-zero when data is fresh.**
+
+### Done
+- ✅ Fixed `syncInventoryBatch()` retailer bug — was hardcoded `'walmart'`, now parameterized
+- ✅ Cross-store search reads pre-synced inventory from DB before live API calls
+- ✅ Live API fallback only for stores with stale/missing data (capped at 5 stores)
+- ✅ `KROGER_INVENTORY_STALE_HOURS` env var (default: 4h) controls freshness threshold
+- ✅ `--max-stores` and `--max-upcs` CLI flags for sync script
+- ✅ Crontab configured on VPS: 3×/day sync (01:00, 09:00, 17:00 UTC) + weekly cleanup
+- ✅ Zero-padded Kroger location IDs to 8 characters (API requirement)
+- ✅ 12-digit UPC-A retry when 13-digit GTIN search returns no results
+- ✅ Filtered out stores with invalid short location IDs from sync queries
+- ✅ Deleted 4 manually-seeded stores with bad IDs (all had API-discovered replacements)
+- ✅ `.claude/settings.local.json` gitignored (was blocking deploy script)
+
+### Files Modified
+- `backend/src/services/InventorySyncService.ts` — retailer param on `syncInventoryBatch()`
+- `backend/src/services/KrogerIntegration.ts` — maxUpcs param, UPC-A retry, store ID filter, kroger retailer
+- `backend/src/scripts/sync-kroger-inventory.ts` — `--max-stores`/`--max-upcs` flags, help text
+- `backend/src/routes/cross-store-search.ts` — DB-first inventory lookup with live fallback
+- `docker-compose.yml` — `KROGER_INVENTORY_STALE_HOURS` env var
+- `ROADMAP.md` — Marked Kroger batch sync as done
+- `CLAUDE.md` — Added Kroger sync commands and crontab to Production section
+- `.gitignore` — Added `.claude/settings.local.json`
+
+### Verification
+- 29/29 inventory records synced (5 stores × 10 UPCs), 0 failures
+- 32 total records: 11 in stock, 13 low stock, 8 out of stock
+- Stats command correctly shows `retailer = 'kroger'`
+
+### Commits
+```
+c87eef3 feat: Add Kroger background batch sync with DB-first cross-store search
+fa0be8b chore: Gitignore .claude/settings.local.json
+2fca5dc fix: Zero-pad Kroger location IDs to 8 characters
+6b113c2 fix: Retry Kroger product search with 12-digit UPC-A format
+6ffe3e0 fix: Filter out Kroger stores with invalid short location IDs
+9e0db6f chore: Remove Kroger sync debug logging
+```
+
+---
+
 ## 2026-02-14 — Manual PLU Code Entry + Scanner Fix
 
 **Fresh produce eligibility via manual PLU entry. iOS scanner mode toggle fix.**
