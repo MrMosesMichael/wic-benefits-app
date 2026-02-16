@@ -345,7 +345,8 @@ export class KrogerIntegration {
 
     for (const storeId of storeIds) {
       // Extract Kroger location ID from our store_id format (kroger-XXXXX)
-      const krogerLocationId = storeId.replace(/^kroger-/, '');
+      // Kroger API requires 8-character zero-padded location IDs
+      const krogerLocationId = storeId.replace(/^kroger-/, '').padStart(8, '0');
 
       for (const upc of upcs) {
         const inventory = await this.checkFormulaAvailability(upc, krogerLocationId, storeId);

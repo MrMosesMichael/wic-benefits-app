@@ -368,7 +368,7 @@ router.post('/', async (req: Request, res: Response) => {
         }
 
         for (const store of storesToEnrich) {
-          const krogerLocationId = store.store_id.replace(/^kroger-/, '');
+          const krogerLocationId = store.store_id.replace(/^kroger-/, '').padStart(8, '0');
 
           for (const formulaUpc of searchUpcs.slice(0, 5)) {
             // Skip UPCs that already have fresh DB data for this store
