@@ -109,7 +109,7 @@ export default function Home() {
           accessibilityRole="button"
           accessibilityHint={t('a11y.home.locationHint')}
         >
-          <Text style={styles.settingsButtonText}>📍 Location Settings</Text>
+          <Text style={styles.settingsButtonText}>{t('home.locationSettings')}</Text>
         </TouchableOpacity>
       </View>
 

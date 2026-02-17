@@ -135,7 +135,7 @@ export default function HelpScreen() {
                   selectedCategory === cat.id && styles.categoryChipTextSelected,
                 ]}
               >
-                {cat.icon} {cat.label} ({cat.count})
+                {cat.icon} {t(`faqCategories.${cat.id}`) || cat.label} ({cat.count})
               </Text>
             </TouchableOpacity>
           ))}

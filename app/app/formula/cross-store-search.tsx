@@ -25,14 +25,14 @@ type ViewMode = 'list' | 'map';
 
 type SearchMode = 'text' | 'brand' | 'type';
 
-const FORMULA_TYPES: { value: FormulaType; label: string; icon: string }[] = [
-  { value: 'standard', label: 'Standard', icon: '🍼' },
-  { value: 'sensitive', label: 'Sensitive', icon: '💚' },
-  { value: 'gentle', label: 'Gentle', icon: '🌸' },
-  { value: 'hypoallergenic', label: 'Hypoallergenic', icon: '🏥' },
-  { value: 'soy', label: 'Soy-Based', icon: '🌱' },
-  { value: 'organic', label: 'Organic', icon: '🌿' },
-  { value: 'specialty', label: 'Specialty', icon: '⭐' },
+const FORMULA_TYPE_VALUES: { value: FormulaType; icon: string }[] = [
+  { value: 'standard', icon: '🍼' },
+  { value: 'sensitive', icon: '💚' },
+  { value: 'gentle', icon: '🌸' },
+  { value: 'hypoallergenic', icon: '🏥' },
+  { value: 'soy', icon: '🌱' },
+  { value: 'organic', icon: '🌿' },
+  { value: 'specialty', icon: '⭐' },
 ];
 
 export default function CrossStoreSearchScreen() {
@@ -256,7 +256,7 @@ export default function CrossStoreSearchScreen() {
           style={styles.chipScroll}
           contentContainerStyle={styles.chipContainer}
         >
-          {FORMULA_TYPES.map((type) => (
+          {FORMULA_TYPE_VALUES.map((type) => (
             <TouchableOpacity
               key={type.value}
               style={[
@@ -265,7 +265,7 @@ export default function CrossStoreSearchScreen() {
               ]}
               onPress={() => setSelectedType(type.value)}
               accessibilityRole="radio"
-              accessibilityLabel={type.label}
+              accessibilityLabel={t(`formulaTypes.${type.value}`)}
               accessibilityState={{ selected: selectedType === type.value }}
             >
               <Text style={styles.chipIcon} accessible={false} importantForAccessibility="no">{type.icon}</Text>
@@ -273,7 +273,7 @@ export default function CrossStoreSearchScreen() {
                 styles.chipText,
                 selectedType === type.value && styles.chipTextActive
               ]}>
-                {type.label}
+                {t(`formulaTypes.${type.value}`)}
               </Text>
             </TouchableOpacity>
           ))}

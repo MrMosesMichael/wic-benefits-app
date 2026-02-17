@@ -19,29 +19,25 @@ import { useTranslation } from '@/lib/i18n/I18nContext';
 
 type ParticipantType = 'pregnant' | 'postpartum' | 'breastfeeding' | 'infant' | 'child';
 
-const PARTICIPANT_TYPES: { value: ParticipantType; label: string }[] = [
-  { value: 'pregnant', label: 'Pregnant Woman' },
-  { value: 'postpartum', label: 'Postpartum Woman' },
-  { value: 'breastfeeding', label: 'Breastfeeding Woman' },
-  { value: 'infant', label: 'Infant (0-12 months)' },
-  { value: 'child', label: 'Child (1-5 years)' },
+const PARTICIPANT_TYPE_VALUES: ParticipantType[] = [
+  'pregnant', 'postpartum', 'breastfeeding', 'infant', 'child',
 ];
 
 const BENEFIT_CATEGORIES = [
-  { category: 'milk', label: 'Milk', unit: 'qt', common: true },
-  { category: 'cheese', label: 'Cheese', unit: 'oz', common: true },
-  { category: 'eggs', label: 'Eggs', unit: 'count', common: true },
-  { category: 'cereal', label: 'Cereal', unit: 'oz', common: true },
-  { category: 'juice', label: '100% Juice', unit: 'oz', common: true },
-  { category: 'peanut_butter', label: 'Peanut Butter (or Beans)', unit: 'jar', common: true },
-  { category: 'beans', label: 'Dried Beans/Peas', unit: 'lb', common: true },
-  { category: 'whole_grains', label: 'Whole Grains (Bread/Rice/Pasta)', unit: 'oz', common: true },
-  { category: 'fruits_vegetables', label: 'Fruits & Vegetables (CVV)', unit: 'dollars', common: true },
-  { category: 'yogurt', label: 'Low-Fat or Non-Fat Yogurt', unit: 'oz', common: true },
-  { category: 'formula', label: 'Infant Formula', unit: 'oz', common: false },
-  { category: 'baby_food_fruits_vegetables', label: 'Baby Food (Fruits & Vegetables)', unit: 'oz', common: false },
-  { category: 'baby_food_meat', label: 'Baby Food (Meat)', unit: 'oz', common: false },
-  { category: 'fish', label: 'Fish (canned)', unit: 'oz', common: false },
+  { category: 'milk', unit: 'qt', common: true },
+  { category: 'cheese', unit: 'oz', common: true },
+  { category: 'eggs', unit: 'count', common: true },
+  { category: 'cereal', unit: 'oz', common: true },
+  { category: 'juice', unit: 'oz', common: true },
+  { category: 'peanut_butter', unit: 'jar', common: true },
+  { category: 'beans', unit: 'lb', common: true },
+  { category: 'whole_grains', unit: 'oz', common: true },
+  { category: 'fruits_vegetables', unit: 'dollars', common: true },
+  { category: 'yogurt', unit: 'oz', common: true },
+  { category: 'formula', unit: 'oz', common: false },
+  { category: 'baby_food_fruits_vegetables', unit: 'oz', common: false },
+  { category: 'baby_food_meat', unit: 'oz', common: false },
+  { category: 'fish', unit: 'oz', common: false },
 ];
 
 interface BenefitInput {
@@ -54,6 +50,18 @@ interface BenefitInput {
 export default function HouseholdSetup() {
   const router = useRouter();
   const t = useTranslation();
+
+  const getParticipantTypeLabel = (value: ParticipantType) =>
+    t(`household.participantTypes.${value}`);
+
+  const getBenefitCategoryLabel = (category: string) =>
+    t(`household.benefitCategories.${category}`) || category;
+
+  const PARTICIPANT_TYPES = PARTICIPANT_TYPE_VALUES.map(value => ({
+    value,
+    label: getParticipantTypeLabel(value),
+  }));
+
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [showAddParticipant, setShowAddParticipant] = useState(false);
   const [newParticipantName, setNewParticipantName] = useState('');
@@ -76,11 +84,11 @@ export default function HouseholdSetup() {
 
   const handleAddParticipant = () => {
     if (!newParticipantName.trim()) {
-      Alert.alert('Error', 'Please enter a name');
+      Alert.alert(t('household.alerts.errorTitle'), t('household.errors.nameRequired'));
       return;
     }
     if (!newParticipantType) {
-      Alert.alert('Error', 'Please select a participant type');
+      Alert.alert(t('household.alerts.errorTitle'), t('household.errors.typeRequired'));
       return;
     }
 
@@ -99,12 +107,12 @@ export default function HouseholdSetup() {
 
   const handleRemoveParticipant = (id: string) => {
     Alert.alert(
-      'Remove Participant',
-      'Are you sure you want to remove this participant and all their benefits?',
+      t('household.alerts.removeParticipantTitle'),
+      t('household.alerts.removeParticipantMessage'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Remove',
+          text: t('household.alerts.remove'),
           style: 'destructive',
           onPress: () => {
             setParticipants(participants.filter(p => p.id !== id));
@@ -144,7 +152,7 @@ export default function HouseholdSetup() {
     if (field === 'category') {
       const categoryInfo = BENEFIT_CATEGORIES.find(c => c.category === value);
       if (categoryInfo) {
-        updated[index].categoryLabel = categoryInfo.label;
+        updated[index].categoryLabel = getBenefitCategoryLabel(categoryInfo.category);
         updated[index].unit = categoryInfo.unit;
       }
     }
@@ -162,7 +170,7 @@ export default function HouseholdSetup() {
     // Validate all benefits have required fields
     const hasErrors = editingBenefits.some(b => !b.category || !b.total || parseFloat(b.total) <= 0);
     if (hasErrors) {
-      Alert.alert('Error', 'Please fill in all benefit fields with valid amounts');
+      Alert.alert(t('household.alerts.errorTitle'), t('household.errors.benefitFields'));
       return;
     }
 
@@ -193,12 +201,12 @@ export default function HouseholdSetup() {
 
     setEditingParticipantId(null);
     setEditingBenefits([]);
-    Alert.alert('Success', 'Benefits saved!');
+    Alert.alert(t('household.alerts.successTitle'), t('household.alerts.benefitsSaved'));
   };
 
   const handleSaveHousehold = async () => {
     if (participants.length === 0) {
-      Alert.alert('Error', 'Please add at least one participant');
+      Alert.alert(t('household.alerts.errorTitle'), t('household.errors.participantRequired'));
       return;
     }
 
@@ -206,11 +214,11 @@ export default function HouseholdSetup() {
     const participantsWithoutBenefits = participants.filter(p => p.benefits.length === 0);
     if (participantsWithoutBenefits.length > 0) {
       Alert.alert(
-        'Warning',
-        `${participantsWithoutBenefits.length} participant(s) have no benefits. Add benefits for all participants?`,
+        t('household.alerts.warningTitle'),
+        t('household.warnings.noBenefits',{ count: participantsWithoutBenefits.length }),
         [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Save Anyway', onPress: saveToStorage },
+          { text: t('common.cancel'), style: 'cancel' },
+          { text: t('household.warnings.saveAnyway'), onPress: saveToStorage },
         ]
       );
       return;
@@ -227,27 +235,27 @@ export default function HouseholdSetup() {
         participants,
       };
       await saveHousehold(household);
-      Alert.alert('Success', 'Household benefits saved!', [
-        { text: 'OK', onPress: () => router.back() },
+      Alert.alert(t('household.alerts.successTitle'), t('household.alerts.householdSaved'), [
+        { text: t('common.ok'), onPress: () => router.back() },
       ]);
     } catch (error) {
-      Alert.alert('Error', 'Failed to save household data');
+      Alert.alert(t('household.alerts.errorTitle'), t('household.errors.saveFailed'));
     }
   };
 
   const handleClearAll = () => {
     Alert.alert(
-      'Clear All Data',
-      'Are you sure you want to clear all household data? This cannot be undone.',
+      t('household.alerts.clearAllTitle'),
+      t('household.alerts.clearAllMessage'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Clear All',
+          text: t('household.alerts.clearAll'),
           style: 'destructive',
           onPress: async () => {
             await clearHousehold();
             setParticipants([]);
-            Alert.alert('Success', 'All household data cleared');
+            Alert.alert(t('household.alerts.successTitle'), t('household.alerts.allDataCleared'));
           },
         },
       ]
@@ -265,14 +273,14 @@ export default function HouseholdSetup() {
           {editingBenefits.map((benefit, index) => (
             <View key={index} style={styles.benefitCard}>
               <View style={styles.benefitHeader}>
-                <Text style={styles.benefitTitle}>Benefit {index + 1}</Text>
+                <Text style={styles.benefitTitle}>{t('household.benefitN',{ n: index + 1 })}</Text>
                 <TouchableOpacity onPress={() => handleRemoveBenefit(index)} accessibilityRole="button" accessibilityLabel={t('a11y.householdSetup.removeBenefitLabel', { index: index + 1 })} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-                  <Text style={styles.removeButton}>Remove</Text>
+                  <Text style={styles.removeButton}>{t('common.delete')}</Text>
                 </TouchableOpacity>
               </View>
 
               {/* Category Picker */}
-              <Text style={styles.label}>Category (scroll right for more)</Text>
+              <Text style={styles.label}>{t('household.categoryLabel')}</Text>
               <View style={styles.pickerContainer}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={true}>
                   {BENEFIT_CATEGORIES.map(cat => (
@@ -294,7 +302,7 @@ export default function HouseholdSetup() {
                           benefit.category === cat.category && styles.categoryChipTextSelected,
                         ]}
                       >
-                        {cat.label}
+                        {getBenefitCategoryLabel(cat.category)}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -302,7 +310,7 @@ export default function HouseholdSetup() {
               </View>
 
               {/* Amount Input */}
-              <Text style={styles.label}>Total Amount</Text>
+              <Text style={styles.label}>{t('household.totalAmount')}</Text>
               <View style={styles.amountRow}>
                 <TextInput
                   style={styles.amountInput}
@@ -318,7 +326,7 @@ export default function HouseholdSetup() {
           ))}
 
           <TouchableOpacity style={styles.addBenefitButton} onPress={handleAddBenefit} accessibilityRole="button" accessibilityLabel={t('a11y.householdSetup.addBenefitLabel')}>
-            <Text style={styles.addBenefitButtonText}>+ Add Benefit</Text>
+            <Text style={styles.addBenefitButtonText}>{t('household.addBenefit')}</Text>
           </TouchableOpacity>
 
           <View style={styles.buttonRow}>
@@ -328,7 +336,7 @@ export default function HouseholdSetup() {
               accessibilityRole="button"
               accessibilityLabel={t('a11y.householdSetup.saveBenefitsLabel')}
             >
-              <Text style={styles.saveButtonText}>Save Benefits</Text>
+              <Text style={styles.saveButtonText}>{t('household.saveBenefits')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.cancelButton}
@@ -339,7 +347,7 @@ export default function HouseholdSetup() {
               accessibilityRole="button"
               accessibilityLabel={t('a11y.householdSetup.cancelEditLabel')}
             >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -358,7 +366,7 @@ export default function HouseholdSetup() {
               <View>
                 <Text style={styles.participantName}>{participant.name}</Text>
                 <Text style={styles.participantType}>
-                  {PARTICIPANT_TYPES.find(t => t.value === participant.type)?.label}
+                  {getParticipantTypeLabel(participant.type)}
                 </Text>
               </View>
               <TouchableOpacity onPress={() => handleRemoveParticipant(participant.id)} accessibilityRole="button" accessibilityLabel={t('a11y.householdSetup.removeParticipantLabel', { name: participant.name })} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
@@ -367,7 +375,7 @@ export default function HouseholdSetup() {
             </View>
             <View style={styles.participantBenefits}>
               <Text style={styles.benefitCount}>
-                {participant.benefits.length} benefit(s)
+                {t('household.benefitCount',{ count: participant.benefits.length })}
               </Text>
               <TouchableOpacity
                 style={styles.editBenefitsButton}
@@ -377,7 +385,7 @@ export default function HouseholdSetup() {
                 hitSlop={{ top: 6, bottom: 6 }}
               >
                 <Text style={styles.editBenefitsButtonText}>
-                  {participant.benefits.length === 0 ? 'Add Benefits' : 'Edit Benefits'}
+                  {participant.benefits.length === 0 ? t('household.addBenefitsButton') : t('household.editBenefitsButton')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -392,31 +400,31 @@ export default function HouseholdSetup() {
             accessibilityRole="button"
             accessibilityLabel={t('a11y.householdSetup.addParticipantLabel')}
           >
-            <Text style={styles.addParticipantButtonText}>+ Add Participant</Text>
+            <Text style={styles.addParticipantButtonText}>{t('household.addParticipant')}</Text>
           </TouchableOpacity>
         ) : (
           <View style={styles.addParticipantForm}>
-            <Text style={styles.label}>Participant Name</Text>
+            <Text style={styles.label}>{t('household.participantName')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter name"
+              placeholder={t('household.participantNamePlaceholder')}
               value={newParticipantName}
               onChangeText={setNewParticipantName}
               accessibilityLabel={t('a11y.householdSetup.nameInputLabel')}
             />
 
-            <Text style={styles.label}>Participant Type</Text>
+            <Text style={styles.label}>{t('household.participantType')}</Text>
             <TouchableOpacity
               style={styles.pickerButton}
               onPress={() => setShowTypePicker(!showTypePicker)}
               accessibilityRole="button"
-              accessibilityLabel={newParticipantType ? t('a11y.householdSetup.typeSelectedLabel', { type: PARTICIPANT_TYPES.find(pt => pt.value === newParticipantType)?.label }) : t('a11y.householdSetup.selectTypeLabel')}
+              accessibilityLabel={newParticipantType ? t('a11y.householdSetup.typeSelectedLabel', { type: getParticipantTypeLabel(newParticipantType) }) : t('a11y.householdSetup.selectTypeLabel')}
               accessibilityState={{ expanded: showTypePicker }}
             >
               <Text style={[styles.pickerButtonText, !newParticipantType && styles.placeholderText]}>
                 {newParticipantType
-                  ? PARTICIPANT_TYPES.find(t => t.value === newParticipantType)?.label
-                  : 'Select type'}
+                  ? getParticipantTypeLabel(newParticipantType)
+                  : t('household.selectType')}
               </Text>
               <Text style={styles.chevron}>{showTypePicker ? '▲' : '▼'}</Text>
             </TouchableOpacity>
@@ -443,7 +451,7 @@ export default function HouseholdSetup() {
 
             <View style={styles.buttonRow}>
               <TouchableOpacity style={styles.saveButton} onPress={handleAddParticipant} accessibilityRole="button" accessibilityLabel={t('a11y.householdSetup.addParticipantLabel')}>
-                <Text style={styles.saveButtonText}>Add</Text>
+                <Text style={styles.saveButtonText}>{t('household.addButton')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.cancelButton}
@@ -455,7 +463,7 @@ export default function HouseholdSetup() {
                 accessibilityRole="button"
                 accessibilityLabel={t('a11y.householdSetup.cancelAddLabel')}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -465,10 +473,10 @@ export default function HouseholdSetup() {
         {participants.length > 0 && (
           <View style={styles.actionButtons}>
             <TouchableOpacity style={styles.primaryButton} onPress={handleSaveHousehold} accessibilityRole="button" accessibilityLabel={t('a11y.householdSetup.saveHouseholdLabel')}>
-              <Text style={styles.primaryButtonText}>Save & Apply</Text>
+              <Text style={styles.primaryButtonText}>{t('household.saveAndApply')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.clearButton} onPress={handleClearAll} accessibilityRole="button" accessibilityLabel={t('a11y.householdSetup.clearAllLabel')}>
-              <Text style={styles.clearButtonText}>Clear All Data</Text>
+              <Text style={styles.clearButtonText}>{t('household.clearAllData')}</Text>
             </TouchableOpacity>
           </View>
         )}

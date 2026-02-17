@@ -45,7 +45,8 @@
     "storeFinder": "Store Finder",
     "storeFinderSubtext": "Find WIC stores near you",
     "communityHub": "Community Hub",
-    "communityHubSubtext": "Tips, recipes & advocacy"
+    "communityHubSubtext": "Tips, recipes & advocacy",
+    "locationSettings": "📍 Location Settings"
   },
   "help": {
     "needHelp": "Need Help?",
@@ -1036,6 +1037,80 @@
       "flipCameraLabel": "Flip camera",
       "takePhotoLabel": "Take photo of benefit statement",
       "enterManuallyLabel": "Enter benefits manually"
+    }
+  },
+  "faqCategories": {
+    "eligibility": "Eligibility",
+    "shopping": "Shopping",
+    "formula": "Formula",
+    "benefits": "Benefits",
+    "stores": "Stores",
+    "app": "Using the App"
+  },
+  "household": {
+    "participantTypes": {
+      "pregnant": "Pregnant Woman",
+      "postpartum": "Postpartum Woman",
+      "breastfeeding": "Breastfeeding Woman",
+      "infant": "Infant (0-12 months)",
+      "child": "Child (1-5 years)"
+    },
+    "benefitCategories": {
+      "milk": "Milk",
+      "cheese": "Cheese",
+      "eggs": "Eggs",
+      "cereal": "Cereal",
+      "juice": "100% Juice",
+      "peanut_butter": "Peanut Butter (or Beans)",
+      "beans": "Dried Beans/Peas",
+      "whole_grains": "Whole Grains (Bread/Rice/Pasta)",
+      "fruits_vegetables": "Fruits & Vegetables (CVV)",
+      "yogurt": "Low-Fat or Non-Fat Yogurt",
+      "formula": "Infant Formula",
+      "baby_food_fruits_vegetables": "Baby Food (Fruits & Vegetables)",
+      "baby_food_meat": "Baby Food (Meat)",
+      "fish": "Fish (canned)"
+    },
+    "addParticipant": "+ Add Participant",
+    "participantName": "Participant Name",
+    "participantNamePlaceholder": "Enter name",
+    "participantType": "Participant Type",
+    "selectType": "Select type",
+    "addButton": "Add",
+    "saveAndApply": "Save & Apply",
+    "clearAllData": "Clear All Data",
+    "benefitN": "Benefit {{n}}",
+    "categoryLabel": "Category (scroll right for more)",
+    "totalAmount": "Total Amount",
+    "addBenefit": "+ Add Benefit",
+    "saveBenefits": "Save Benefits",
+    "addBenefitsButton": "Add Benefits",
+    "editBenefitsButton": "Edit Benefits",
+    "benefitCount": "{{count}} benefit(s)",
+    "errors": {
+      "nameRequired": "Please enter a name",
+      "typeRequired": "Please select a participant type",
+      "benefitFields": "Please fill in all benefit fields with valid amounts",
+      "participantRequired": "Please add at least one participant",
+      "saveFailed": "Failed to save household data"
+    },
+    "warnings": {
+      "noBenefits": "{{count}} participant(s) have no benefits. Add benefits for all participants?",
+      "saveAnyway": "Save Anyway"
+    },
+    "alerts": {
+      "removeParticipantTitle": "Remove Participant",
+      "removeParticipantMessage": "Are you sure you want to remove this participant and all their benefits?",
+      "remove": "Remove",
+      "benefitsSaved": "Benefits saved!",
+      "householdSaved": "Household benefits saved!",
+      "clearAllTitle": "Clear All Data",
+      "clearAllMessage": "Are you sure you want to clear all household data? This cannot be undone.",
+      "clearAll": "Clear All",
+      "allDataCleared": "All household data cleared",
+      "successTitle": "Success",
+      "errorTitle": "Error",
+      "warningTitle": "Warning"
     }
   }
 }
