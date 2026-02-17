@@ -129,7 +129,8 @@ router.get('/brands', async (req: Request, res: Response) => {
 
     const whereClause = conditions.join(' AND ');
 
-    // Group by lowercase brand, pick most-frequent casing, return top 30 by count
+    // Group by punctuation-stripped lowercase brand (handles Mott's vs Motts),
+    // pick most-frequent spelling via FIRST_VALUE, return top 30 by count
     const result = await pool.query(
       `WITH brand_counts AS (
          SELECT brand, COUNT(*) AS exact_count
@@ -139,9 +140,17 @@ router.get('/brands', async (req: Request, res: Response) => {
        ),
        normalized AS (
          SELECT
-           FIRST_VALUE(brand) OVER (PARTITION BY LOWER(brand) ORDER BY exact_count DESC) AS brand,
-           SUM(exact_count) OVER (PARTITION BY LOWER(brand)) AS count,
-           ROW_NUMBER() OVER (PARTITION BY LOWER(brand) ORDER BY exact_count DESC) AS rn
+           FIRST_VALUE(brand) OVER (
+             PARTITION BY REGEXP_REPLACE(LOWER(TRIM(brand)), '[^a-z0-9 ]', '', 'g')
+             ORDER BY exact_count DESC
+           ) AS brand,
+           SUM(exact_count) OVER (
+             PARTITION BY REGEXP_REPLACE(LOWER(TRIM(brand)), '[^a-z0-9 ]', '', 'g')
+           ) AS count,
+           ROW_NUMBER() OVER (
+             PARTITION BY REGEXP_REPLACE(LOWER(TRIM(brand)), '[^a-z0-9 ]', '', 'g')
+             ORDER BY exact_count DESC
+           ) AS rn
          FROM brand_counts
        )
        SELECT brand, count
@@ -206,7 +215,10 @@ router.get('/products', async (req: Request, res: Response) => {
     }
 
     if (brand) {
-      conditions.push(`LOWER(brand) = LOWER($${paramIndex})`);
+      // Match on punctuation-stripped lowercase so Mott's filter catches Motts rows too
+      conditions.push(
+        `REGEXP_REPLACE(LOWER(TRIM(brand)), '[^a-z0-9 ]', '', 'g') = REGEXP_REPLACE(LOWER(TRIM($${paramIndex})), '[^a-z0-9 ]', '', 'g')`
+      );
       params.push(brand);
       paramIndex++;
     }
