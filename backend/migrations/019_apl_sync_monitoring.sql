@@ -141,7 +141,7 @@ VALUES
 ('MI', 'state_website', 'url',
  'https://www.michigan.gov/mdhhs/-/media/Project/Websites/mdhhs/Assistance-Programs/WIC-Media/APL-Excel.xlsx',
  'xlsx',
- '{"sheet": 0, "headerRow": 1, "columns": {"upc": "UPC/PLU", "product_name": "Food Description", "brand": "Brand", "category": "Category", "subcategory": "SubCat", "size": "Package Size"}}',
+ '{"sheet": 0, "headerRow": 1, "columns": {"upc": "UPC/PLU", "product_name": "Food Description", "brand": "Brand Name", "category": "Category", "subcategory": "SubCat", "size": "Package Size"}}',
  '0 6 * * *', -- Daily at 6am
  9000
 ),
