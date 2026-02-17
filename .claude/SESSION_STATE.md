@@ -88,6 +88,13 @@ The Michigan APL Excel file uses `"Brand Name"` (with space), not `"Brand"`. The
 3. ~~Build + submit v1.5.0~~ ✅ Done (iOS TestFlight + Android Play Console)
 4. **Verify in app** — Product Catalog → MI → Milk → confirm branded toggle, UPC search, brand names show
 
+### Next Session — Spanish Bugs
+Work through all open Spanish issues using native speaker feedback:
+- **#6** Main screen — "cerca de usted" grammar, Location Settings not translated
+- **#7** Find Formula screen — Location/GPS section in English, grammar/formality fixes, formula search view untranslated
+- **#9** (partial) — Add participant in English, carrito→carro, cart back-out missing, metadata (bottle/ounce/quart) untranslated, Help screen in English
+- Cross-reference with existing `es.json` — fill gaps, fix formality/grammar per native speaker notes
+
 ### Short Term (from ROADMAP)
 1. **iOS & Android App Store Submissions** — Screenshots, metadata, store listings
 2. **Register LLC** — Required for professional store presence
