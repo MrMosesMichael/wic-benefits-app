@@ -20,6 +20,7 @@ export interface ProductsResponse {
   products: CatalogProduct[];
   subcategories: string[];
   total: number;
+  totalUnfiltered: number;
   page: number;
   limit: number;
   hasMore: boolean;
@@ -43,6 +44,7 @@ export async function getProducts(params: {
   category?: string;
   subcategory?: string;
   q?: string;
+  branded?: number;
   page?: number;
   limit?: number;
 }): Promise<ProductsResponse> {
@@ -52,6 +54,7 @@ export async function getProducts(params: {
     if (params.category) searchParams.append('category', params.category);
     if (params.subcategory) searchParams.append('subcategory', params.subcategory);
     if (params.q) searchParams.append('q', params.q);
+    if (params.branded) searchParams.append('branded', params.branded.toString());
     if (params.page) searchParams.append('page', params.page.toString());
     if (params.limit) searchParams.append('limit', params.limit.toString());
 
@@ -61,6 +64,7 @@ export async function getProducts(params: {
         products: response.data.products,
         subcategories: response.data.subcategories,
         total: response.data.total,
+        totalUnfiltered: response.data.totalUnfiltered,
         page: response.data.page,
         limit: response.data.limit,
         hasMore: response.data.hasMore,
@@ -69,6 +73,19 @@ export async function getProducts(params: {
     throw new Error('Failed to fetch products');
   } catch (error) {
     console.error('Failed to fetch products:', error);
+    throw error;
+  }
+}
+
+export async function lookupUPC(upc: string): Promise<{ found: boolean; product?: CatalogProduct }> {
+  try {
+    const response = await api.get(`/product-catalog/lookup/${encodeURIComponent(upc)}`);
+    if (response.data.success) {
+      return { found: response.data.found, product: response.data.product };
+    }
+    throw new Error('Failed to lookup UPC');
+  } catch (error) {
+    console.error('Failed to lookup UPC:', error);
     throw error;
   }
 }

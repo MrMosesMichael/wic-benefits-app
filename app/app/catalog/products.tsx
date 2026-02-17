@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useI18n } from '@/lib/i18n/I18nContext';
-import { getProducts, CatalogProduct } from '@/lib/services/catalogService';
+import { getProducts, lookupUPC, CatalogProduct } from '@/lib/services/catalogService';
 import { getCategoryMeta } from '@/lib/data/wic-categories';
 import ProductListItem from '@/components/ProductListItem';
 
@@ -28,20 +28,52 @@ export default function ProductsScreen() {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [total, setTotal] = useState(0);
+  const [totalUnfiltered, setTotalUnfiltered] = useState(0);
+  const [brandedOnly, setBrandedOnly] = useState(true);
+  const [upcResult, setUpcResult] = useState<{ found: boolean; product?: CatalogProduct } | null>(null);
 
   const meta = getCategoryMeta(category || '');
 
+  // Detect if search query looks like a UPC (all digits, >= 8 chars)
+  const isUpcQuery = /^\d{8,}$/.test(searchQuery.trim());
+
   useEffect(() => {
     loadProducts(1, true);
-  }, [category, state, selectedSub]);
+  }, [category, state, selectedSub, brandedOnly]);
 
-  // Debounce search
+  // Debounce search — either UPC lookup or regular search
   useEffect(() => {
     const timer = setTimeout(() => {
-      loadProducts(1, true);
+      if (isUpcQuery) {
+        handleUpcLookup(searchQuery.trim());
+      } else {
+        setUpcResult(null);
+        loadProducts(1, true);
+      }
     }, 300);
     return () => clearTimeout(timer);
   }, [searchQuery]);
+
+  const handleUpcLookup = async (upc: string) => {
+    setLoading(true);
+    setProducts([]);
+    try {
+      const result = await lookupUPC(upc);
+      setUpcResult(result);
+      if (result.found && result.product) {
+        setProducts([result.product]);
+        setTotal(1);
+      } else {
+        setProducts([]);
+        setTotal(0);
+      }
+    } catch (err) {
+      console.error('Failed to lookup UPC:', err);
+      setUpcResult({ found: false });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const loadProducts = async (pageNum: number, reset: boolean) => {
     if (reset) {
@@ -56,6 +88,7 @@ export default function ProductsScreen() {
         category: category || undefined,
         subcategory: selectedSub || undefined,
         q: searchQuery || undefined,
+        branded: brandedOnly ? 1 : undefined,
         page: pageNum,
         limit: 20,
       });
@@ -68,6 +101,7 @@ export default function ProductsScreen() {
       }
 
       setTotal(result.total);
+      setTotalUnfiltered(result.totalUnfiltered);
       setHasMore(result.hasMore);
       setPage(pageNum);
     } catch (err) {
@@ -166,11 +200,50 @@ export default function ProductsScreen() {
         </ScrollView>
       )}
 
+      {/* Branded filter toggle */}
+      {!loading && !isUpcQuery && !searchQuery && (
+        <View style={styles.brandedToggleRow}>
+          <TouchableOpacity
+            style={[styles.chip, brandedOnly && styles.chipSelected]}
+            onPress={() => setBrandedOnly(true)}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: brandedOnly }}
+          >
+            <Text style={[styles.chipText, brandedOnly && styles.chipTextSelected]}>
+              {t('catalog.showBranded')}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.chip, !brandedOnly && styles.chipSelected]}
+            onPress={() => setBrandedOnly(false)}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: !brandedOnly }}
+          >
+            <Text style={[styles.chipText, !brandedOnly && styles.chipTextSelected]}>
+              {t('catalog.showAll')} ({totalUnfiltered})
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* UPC result banner */}
+      {!loading && isUpcQuery && upcResult && (
+        <View style={[styles.upcBanner, upcResult.found ? styles.upcBannerFound : styles.upcBannerNotFound]}>
+          <Text style={styles.upcBannerText}>
+            {upcResult.found
+              ? t('catalog.upcFound')
+              : t('catalog.upcNotFound', { state: state || 'MI' })}
+          </Text>
+        </View>
+      )}
+
       {/* Results count */}
       {!loading && (
         <View style={styles.resultsHeader}>
           <Text style={styles.resultsCount}>
-            {t('catalog.productCount', { count: total })}
+            {brandedOnly && !searchQuery
+              ? t('catalog.showingBranded', { count: total, total: totalUnfiltered })
+              : t('catalog.productCount', { count: total })}
           </Text>
         </View>
       )}
@@ -267,6 +340,34 @@ const styles = StyleSheet.create({
   },
   chipTextSelected: {
     color: '#fff',
+  },
+  brandedToggleRow: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    gap: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  upcBanner: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    marginHorizontal: 16,
+    marginTop: 8,
+    borderRadius: 8,
+  },
+  upcBannerFound: {
+    backgroundColor: '#E8F5E9',
+  },
+  upcBannerNotFound: {
+    backgroundColor: '#FFF3E0',
+  },
+  upcBannerText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    textAlign: 'center',
   },
   resultsHeader: {
     paddingHorizontal: 16,

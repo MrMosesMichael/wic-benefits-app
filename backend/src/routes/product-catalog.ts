@@ -113,6 +113,7 @@ router.get('/products', async (req: Request, res: Response) => {
   const category = req.query.category as string;
   const subcategory = req.query.subcategory as string;
   const search = req.query.q as string;
+  const branded = req.query.branded as string;
   const page = parseInt(req.query.page as string) || 1;
   const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
   const offset = (page - 1) * limit;
@@ -147,14 +148,30 @@ router.get('/products', async (req: Request, res: Response) => {
       paramIndex++;
     }
 
+    if (branded === '1') {
+      conditions.push(`brand IS NOT NULL AND brand != ''`);
+    }
+
     const whereClause = conditions.join(' AND ');
 
-    // Get total count
+    // Get total count (with current filters including branded)
     const countResult = await pool.query(
       `SELECT COUNT(*) FROM apl_products WHERE ${whereClause}`,
       params
     );
     const total = parseInt(countResult.rows[0].count, 10);
+
+    // Get unfiltered total (same filters minus branded) for "Show all (N)" display
+    let totalUnfiltered = total;
+    if (branded === '1') {
+      const unfilteredConditions = conditions.filter(c => c !== `brand IS NOT NULL AND brand != ''`);
+      const unfilteredWhere = unfilteredConditions.join(' AND ');
+      const unfilteredResult = await pool.query(
+        `SELECT COUNT(*) FROM apl_products WHERE ${unfilteredWhere}`,
+        params
+      );
+      totalUnfiltered = parseInt(unfilteredResult.rows[0].count, 10);
+    }
 
     // Get products
     const productsResult = await pool.query(
@@ -188,6 +205,7 @@ router.get('/products', async (req: Request, res: Response) => {
       products: productsResult.rows,
       subcategories,
       total,
+      totalUnfiltered,
       page,
       limit,
       hasMore: offset + limit < total,
@@ -195,6 +213,43 @@ router.get('/products', async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Failed to fetch products:', error);
     res.status(500).json({ success: false, error: 'Failed to fetch products' });
+  }
+});
+
+/**
+ * GET /api/v1/product-catalog/lookup/:upc
+ * Look up a single product by UPC to check WIC eligibility
+ */
+router.get('/lookup/:upc', async (req: Request, res: Response) => {
+  const upc = (req.params.upc as string).trim();
+
+  try {
+    // Try exact match, then with leading-zero padding to 13 digits
+    const candidates = [upc];
+    if (upc.length < 13) {
+      candidates.push(upc.padStart(13, '0'));
+    }
+    if (upc.length < 12) {
+      candidates.push(upc.padStart(12, '0'));
+    }
+
+    const placeholders = candidates.map((_, i) => `$${i + 1}`).join(', ');
+    const result = await pool.query(
+      `SELECT id, upc, product_name AS name, brand, size, category, subcategory, state
+       FROM apl_products
+       WHERE active = true AND upc IN (${placeholders})
+       LIMIT 1`,
+      candidates
+    );
+
+    if (result.rows.length > 0) {
+      res.json({ success: true, found: true, product: result.rows[0] });
+    } else {
+      res.json({ success: true, found: false });
+    }
+  } catch (error) {
+    console.error('Failed to lookup UPC:', error);
+    res.status(500).json({ success: false, error: 'Failed to lookup UPC' });
   }
 });
 
