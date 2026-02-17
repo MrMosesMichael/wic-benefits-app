@@ -1,6 +1,6 @@
 # WIC Benefits App — Roadmap
 
-> **Last Updated:** February 17, 2026
+> **Last Updated:** February 17, 2026 (v1.6.0)
 > **Current Phase:** Phase 1-5 Complete + Phase 3 & 4 Complete + Phase 7 In Progress
 > **Production:** https://mdmichael.com/wic/
 
@@ -42,10 +42,10 @@
 ✅ **Android APK** — Production build ready for sideloading
 ✅ **UI Polish** — Removed duplicate headers from all 17 screens, SafeAreaProvider for Android nav bar
 ✅ **iOS Build** — Submitted to TestFlight, awaiting review
-✅ **Product Catalog** — Category grid + search, 62K APL products, branded-first filtering, UPC eligibility lookup
+✅ **Product Catalog** — Category grid + search, 62K APL products, branded-first filtering, UPC eligibility lookup, brand filter chips with punctuation normalization
 ✅ **Store Finder** — Map/list view with chain filters, radius search, WIC-only toggle
 ✅ **Community Hub** — Shopping tips, WIC recipes, know-your-rights, WIC office directory, complaint filing
-✅ **Bilingual i18n** — 825 keys per locale (English + Spanish)
+✅ **Bilingual i18n** — English + Spanish; household setup, formula types, FAQ categories, cart, home all translated
 
 ---
 

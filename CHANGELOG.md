@@ -4,6 +4,44 @@
 
 ---
 
+## 2026-02-17 — Spanish i18n Fixes + Brand Filter Chips (v1.6.0)
+
+**Fixed all native-speaker-reported Spanish bugs. Added brand filter chips to Product Catalog with punctuation-normalized brand deduplication.**
+
+### Done
+- ✅ Spanish i18n — `household-setup.tsx` fully wired (was 100% hardcoded English)
+- ✅ Spanish i18n — formula type chips translated (`cross-store-search.tsx`)
+- ✅ Spanish i18n — FAQ category chips translated (`help/index.tsx`)
+- ✅ Spanish i18n — "📍 Location Settings" button translated (`index.tsx`)
+- ✅ es.json — carrito→carro throughout, `cart.startScanning`→"Escanea productos", `formulaAlerts.alertSetMessage` esté→está
+- ✅ Brand filter chips in Product Catalog — top 30 brands per category, auto-fetch on category change
+- ✅ Brand normalization — `REGEXP_REPLACE` strips apostrophes/punctuation (Mott's = Motts = MOTT'S)
+- ✅ Brand filter hides during search/UPC lookup
+- ✅ Bilingual: "All Brands" / "Todas las Marcas"
+- ✅ Closed GitHub issues #6, #7, #9, #10
+- ✅ Bumped to v1.6.0 (versionCode 11)
+
+### Files Modified
+- `app/app/benefits/household-setup.tsx` — full i18n wiring
+- `app/app/formula/cross-store-search.tsx` — formula type chips translated
+- `app/app/help/index.tsx` — FAQ category chips translated
+- `app/app/index.tsx` — Location Settings button translated
+- `app/lib/i18n/translations/en.json` — new household/faqCategories/home/catalog keys
+- `app/lib/i18n/translations/es.json` — all fixes + new sections
+- `app/app/catalog/products.tsx` — brand filter chip row
+- `app/lib/services/catalogService.ts` — CatalogBrand type, getBrands(), brand param
+- `backend/src/routes/product-catalog.ts` — /brands endpoint, brand filter, punctuation normalization
+- `app/app.json` — v1.5.0 → v1.6.0, versionCode 10 → 11
+
+### Commits
+```
+352478a fix: Spanish i18n — household setup, cart, home, FAQ categories, formula types
+3ac93a8 feat: Add brand filter chips to Product Catalog (issue #10)
+49d52e3 fix: Normalize brand apostrophes/punctuation in catalog filter
+```
+
+---
+
 ## 2026-02-17 — MI APL Recovery + v1.5.0 Builds Shipped
 
 **Diagnosed and resolved mass deactivation of 9,396 MI products (since Feb 10). Fixed parser_config brand column bug. v1.5.0 iOS + Android builds submitted.**
