@@ -23,7 +23,7 @@
 ## What's Working Today
 
 ✅ **Core MVP** — Barcode scanner, eligibility checking, benefits tracking, shopping cart
-✅ **Multi-State APL** — 62,027 products across 4 states (MI, NC, NY, OR)
+✅ **Multi-State APL** — 62,938 products across 4 states (MI 9,851 / NC 16,949 / NY 21,125 / OR 14,013)
 ✅ **APL Automation** — Daily sync via cron, web scraping, change detection
 ✅ **Store Detection** — GPS + WiFi + manual selection
 ✅ **Crowdsourced Inventory** — "I found this" reporting with confidence decay
@@ -69,7 +69,7 @@ Core functionality for scanning, benefits, and formula support.
 | Track | Feature | Status | Notes |
 |-------|---------|--------|-------|
 | **A1** | Michigan APL Database | ✅ Done | 9,940 products |
-| **A1** | Multi-State APL | ✅ Done | MI (9,940) + NC (16,949) + NY (21,125) + OR (14,013) = 62,027 |
+| **A1** | Multi-State APL | ✅ Done | MI (9,851) + NC (16,949) + NY (21,125) + OR (14,013) = 62,938 |
 | **A1** | APL Automation | ✅ Done | Daily cron sync, web scraping, change detection |
 | **A2** | Product Database | ✅ Done | UPC lookup working |
 | **A3** | Store Database | ⚠️ Partial | Manual stores only |
@@ -184,6 +184,8 @@ Based on impact, effort, and what's unblocked:
    - ✅ v1.1.1 ready (header fixes, feedback form, privacy email)
    - ✅ Google Play data safety form completed
    - ✅ Data deletion page published (https://mdmichael.com/wic/delete-data.html)
+   - ✅ v1.5.0 iOS build submitted to TestFlight
+   - ✅ v1.5.0 Android build submitted to Google Play Console
    - 🔄 TestFlight beta testing (awaiting review)
    - 🔄 Google Play Console setup in progress
    - ⏳ Generate store listing screenshots/images (Apple + Android)
@@ -512,6 +514,6 @@ See `docs/guides/` for consolidated, actionable implementation patterns.
 
 ---
 
-**Current Version:** 1.5.0 (iOS buildNumber: 1, Android versionCode: 10)
+**Current Version:** 1.5.0 (iOS buildNumber: 1, Android versionCode: 10) — submitted to TestFlight + Google Play
 
 *Last human review: February 17, 2026*

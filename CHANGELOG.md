@@ -4,6 +4,31 @@
 
 ---
 
+## 2026-02-17 — MI APL Recovery + v1.5.0 Builds Shipped
+
+**Diagnosed and resolved mass deactivation of 9,396 MI products (since Feb 10). Fixed parser_config brand column bug. v1.5.0 iOS + Android builds submitted.**
+
+### Done
+- ✅ Diagnosed: 9,396 MI products wrongly deactivated since Feb 10 — APL sync job ran with partial file, safeguard bypassed
+- ✅ Confirmed scanner affected — `eligibility.ts` filters `active = true`; deactivated products returned "not eligible"
+- ✅ Discovered MI APL now includes official "Brand Name" column — `enrich-upc.ts` no longer needed for MI
+- ✅ Fixed `apl_source_config` parser_config: `"brand": "Brand"` → `"brand": "Brand Name"` (silent NULL mismatch)
+- ✅ Fixed in `backend/migrations/019_apl_sync_monitoring.sql` to prevent regression on DB recreate
+- ✅ Ran MI APL sync (force) × 2: first to restore 9,396 deactivated products, second to populate brand names
+- ✅ Final state: 9,851 active MI products (up from 7,647), 9,851/9,851 branded from official source
+- ✅ v1.5.0 iOS build submitted to TestFlight
+- ✅ v1.5.0 Android build submitted to Google Play Console
+
+### Files Modified
+- `backend/migrations/019_apl_sync_monitoring.sql` — fix MI brand column name
+
+### Commits
+```
+809af4a fix: MI APL parser_config brand column "Brand" → "Brand Name"
+```
+
+---
+
 ## 2026-02-17 — Product Catalog Smart Filtering + UPC Search
 
 **Branded-first product browsing + UPC eligibility lookup. Hides ~55% low-quality entries by default, adds instant WIC eligibility check via UPC.**

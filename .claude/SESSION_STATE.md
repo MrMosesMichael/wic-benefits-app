@@ -83,9 +83,10 @@ The Michigan APL Excel file uses `"Brand Name"` (with space), not `"Brand"`. The
 ## What's Next
 
 ### Immediate
-1. **Commit migration fix** — `backend/migrations/019_apl_sync_monitoring.sql` (brand column name)
-2. **Verify in app** — Product Catalog → MI → Milk → confirm branded toggle works, UPC search, brand names show
-3. **Build new app version** — iOS/Android builds for v1.5.0 (backend already deployed)
+1. ~~Commit migration fix~~ ✅ Done (`809af4a`)
+2. ~~Deploy backend~~ ✅ Done
+3. ~~Build + submit v1.5.0~~ ✅ Done (iOS TestFlight + Android Play Console)
+4. **Verify in app** — Product Catalog → MI → Milk → confirm branded toggle, UPC search, brand names show
 
 ### Short Term (from ROADMAP)
 1. **iOS & Android App Store Submissions** — Screenshots, metadata, store listings
