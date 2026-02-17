@@ -97,3 +97,29 @@ The Michigan APL Excel file uses `"Brand Name"` (with space), not `"Brand"`. The
 ---
 
 *Previous session: NC & OR APL Enrichment (2026-02-16)*
+
+---
+
+## Feedback Inbox
+
+> Last synced: 2026-02-17 20:10 UTC · [4 open issues](https://github.com/MrMosesMichael/wic-benefits-feedback/issues)
+
+### 🚨 High Priority (2)
+
+**#7** [[Bug] Spanish, Find Formula screen  - Location Needed section is in en…](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/7)  
+`bug, translation, priority:high, native-speaker-review` · 2026-02-13  
+> Spanish, Find Formula screen
+
+**#6** [[Bug] Spanish version - Main screen, after switching to spanish.  - "E…](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/6)  
+`bug, translation, priority:high, native-speaker-review` · 2026-02-13  
+> Spanish version - Main screen, after switching to spanish.
+### Bugs (1)
+
+**#9** [[Bug] Wall ‘o text, sorry. Should be like 5 bugs.  Eacanear producto -…](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/9)  
+`bug` · 2026-02-17  
+> Wall ‘o text, sorry. Should be like 5 bugs.
+### Feature Requests (1)
+
+**#10** [[Feature] - In Product Catalog, create filters users can apply](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/10)  
+`enhancement` · 2026-02-17  
+> In the Product Catalog, it would be useful if a user could sort by the "Brand" once they've gone into a sub-category like "Juice". There are
