@@ -94,6 +94,7 @@ export default function ProductsScreen() {
       brand={item.brand}
       size={item.size}
       category={item.category}
+      upc={item.upc}
     />
   );
 
@@ -133,15 +134,15 @@ export default function ProductsScreen() {
         )}
       </View>
 
-      {/* Subcategory Chips */}
-      {subcategories.length > 0 && !searchQuery && (
+      {/* Subcategory Chips — hide if all subcategories are numeric codes */}
+      {subcategories.filter(s => !/^\d+$/.test(s)).length > 0 && !searchQuery && (
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.chipScrollView}
           contentContainerStyle={styles.chipContainer}
         >
-          {subcategories.map(sub => (
+          {subcategories.filter(s => !/^\d+$/.test(s)).map(sub => (
             <TouchableOpacity
               key={sub}
               style={[
@@ -239,11 +240,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+    maxHeight: 56,
   },
   chipContainer: {
     paddingHorizontal: 12,
     paddingVertical: 10,
     gap: 8,
+    alignItems: 'center',
   },
   chip: {
     paddingHorizontal: 14,
@@ -251,6 +254,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#f0f0f0',
     marginHorizontal: 4,
+    height: 36,
+    justifyContent: 'center',
   },
   chipSelected: {
     backgroundColor: '#00897B',

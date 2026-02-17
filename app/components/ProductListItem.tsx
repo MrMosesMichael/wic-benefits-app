@@ -7,9 +7,10 @@ interface ProductListItemProps {
   brand: string;
   size: string;
   category: string;
+  upc?: string;
 }
 
-export default function ProductListItem({ name, brand, size, category }: ProductListItemProps) {
+export default function ProductListItem({ name, brand, size, category, upc }: ProductListItemProps) {
   const t = useTranslation();
 
   return (
@@ -20,7 +21,9 @@ export default function ProductListItem({ name, brand, size, category }: Product
       <View style={styles.content}>
         <Text style={styles.name} numberOfLines={2}>{name}</Text>
         {brand ? <Text style={styles.brand}>{brand}</Text> : null}
-        {size ? <Text style={styles.size}>{size}</Text> : null}
+        <Text style={styles.size}>
+          {[size, upc].filter(Boolean).join(' · ')}
+        </Text>
       </View>
       <View style={styles.badge}>
         <Text style={styles.badgeText}>{t('catalog.wicApproved')}</Text>
