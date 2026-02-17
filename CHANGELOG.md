@@ -4,6 +4,132 @@
 
 ---
 
+## 2026-02-17 — Product Catalog Smart Filtering + UPC Search
+
+**Branded-first product browsing + UPC eligibility lookup. Hides ~55% low-quality entries by default, adds instant WIC eligibility check via UPC.**
+
+### Done
+- ✅ Backend: `branded=1` query param filters to products with non-empty brand
+- ✅ Backend: `totalUnfiltered` count in response for "Show all (N)" display
+- ✅ Backend: New `GET /lookup/:upc` endpoint with leading-zero padding fallback
+- ✅ Frontend: Default `brandedOnly = true` — hides entries like "Skim", "2%", "Grade A"
+- ✅ Frontend: Two-chip toggle ("Branded products" / "Show all")
+- ✅ Frontend: UPC detection in search bar (all digits, >= 8 chars → auto-lookup)
+- ✅ Frontend: Green "WIC Approved!" / orange "Not found" result banners
+- ✅ Frontend: `lookupUPC()` service function
+- ✅ i18n: 5 new keys in English + Spanish (showBranded, showAll, showingBranded, upcNotFound, upcFound)
+- ✅ Version bumped to 1.5.0 (buildNumber "1", versionCode 10)
+
+### Files Modified
+- `backend/src/routes/product-catalog.ts` — branded filter + `/lookup/:upc` endpoint
+- `app/app/catalog/products.tsx` — branded toggle UI + UPC detection
+- `app/lib/services/catalogService.ts` — `lookupUPC()` + branded param
+- `app/lib/i18n/translations/en.json` — 5 new catalog keys
+- `app/lib/i18n/translations/es.json` — 5 new catalog keys (Spanish)
+- `app/app.json` — version bump to 1.5.0
+
+### Commits
+```
+5194a8d feat: Product catalog smart filtering + UPC search
+```
+
+---
+
+## 2026-02-17 — UPC Enrichment via Open Food Facts
+
+**Bulk UPC enrichment using Open Food Facts API. Adds product names, brands, and sizes to MI APL products that only had UPC codes.**
+
+### Done
+- ✅ Created `backend/src/scripts/enrich-upc.ts` — queries Open Food Facts API for product metadata
+- ✅ ~45% of MI products enriched with brand/name/size data
+
+### Commits
+```
+7eba581 feat: Add UPC enrichment script via Open Food Facts API
+```
+
+---
+
+## 2026-02-16 — NC & OR APL Product Data Enrichment
+
+**Both states went from UPC-only entries to full product names, brands, categories, and subcategories.**
+
+### Done
+- ✅ Created `backend/src/scripts/reimport-apl.ts` — standalone APL reimport script
+- ✅ NC: 16,952 products enriched from state APL Excel file
+- ✅ OR: 14,013 products enriched from state APL Excel file
+- ✅ Fixed missing category codes (`'16'` → whole_grains, non-padded NC codes)
+- ✅ Fixed APL source config (NC/OR URLs and column mappings) for future automated syncs
+- ✅ 0 uncategorized products remaining for both states
+
+### Files Created
+- `backend/src/scripts/reimport-apl.ts`
+- `backend/migrations/fix_nc_or_source_config.sql`
+
+### Files Modified
+- `backend/package.json` — added `reimport-apl` script
+- `backend/src/routes/product-catalog.ts` — added missing CATEGORY_ALIASES
+
+### Commits
+```
+926aecb feat: Add APL reimport script to enrich NC/OR product data
+463db5d fix: Add missing category codes to CATEGORY_ALIASES
+```
+
+---
+
+## 2026-02-16 — Product Catalog Bug Fixes + v1.4.2
+
+**Multiple rounds of catalog polish: numeric subcategory hiding, chip sizing, UPC display, benefits screen fix, category chip icons.**
+
+### Done
+- ✅ Hide numeric subcategory chips (codes like "02", "15" not useful to users)
+- ✅ Fix chip sizing overflow on small screens
+- ✅ Show UPC in product list items
+- ✅ Benefits screen reads from local storage instead of backend demo data
+- ✅ Fix product catalog query referencing wrong column name
+- ✅ Constrain oversized category chip icons on Shopping Tips screen
+- ✅ Bumped to v1.4.2 (versionCode 9)
+
+### Commits
+```
+c842405 fix: Product catalog — hide numeric subcategories, fix chip sizing, show UPC
+3dfefd2 fix: Benefits screen now reads from local storage instead of backend demo data
+75a7494 fix: Product catalog query referenced wrong column name
+9583f59 fix: Constrain oversized category chip icons on Shopping Tips screen
+22f4065 chore: Bump version to 1.4.2 (versionCode 9) for bug fix release
+```
+
+---
+
+## 2026-02-16 — v1.4.0 Feature Expansion + Bug Fixes
+
+**7 new features: map view, WIC guidelines, store products, food bank enhancements, WIC clinics, recipes, plus iOS/catalog bug fixes.**
+
+### Done
+- ✅ Map view for stores
+- ✅ WIC guidelines integration
+- ✅ Store products display
+- ✅ Food bank finder enhancements
+- ✅ WIC clinics directory
+- ✅ Recipe features
+- ✅ Fixed iOS recipes chips, scanner overlap, catalog i18n, store finder SQL
+- ✅ Fixed map numeric category codes display
+- ✅ Merged duplicate catalog categories server-side
+- ✅ Bumped to v1.4.1 (versionCode 8)
+
+### Commits
+```
+ac5db25 feat: v1.4.0 — 7 new features
+09269c8 fix: Resolve 4 iOS UI bugs — recipes chips, scanner overlap, catalog i18n, store finder
+6660621 fix: Map numeric category codes to human-readable names in product catalog
+ae9b3f7 fix: Scanner cancel button overlap and store finder SQL error
+6b971bb chore: Bump version to 1.4.1 (versionCode 8) for bug fix release
+556d5a6 fix: Merge duplicate catalog categories server-side
+```
+
+---
+
 ## 2026-02-15 — Kroger Background Batch Sync
 
 **Cron-based inventory sync pipeline with DB-first cross-store search. Reduces per-request Kroger API calls from ~25 to near-zero when data is fresh.**
