@@ -630,6 +630,7 @@
     "upcNotFound": "Not found — this UPC may not be WIC-approved in {{state}}",
     "upcFound": "This product is WIC-approved!",
     "noProducts": "No products found. Try a different search or category.",
+    "allBrands": "All Brands",
     "categories": {
       "milk": "Milk",
       "eggs": "Eggs",

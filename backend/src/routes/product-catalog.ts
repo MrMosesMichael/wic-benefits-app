@@ -104,14 +104,71 @@ router.get('/categories', async (req: Request, res: Response) => {
 });
 
 /**
+ * GET /api/v1/product-catalog/brands
+ * Get top brands for a given state + optional category, normalized by lowercase.
+ * Query params: state (required), category (optional)
+ */
+router.get('/brands', async (req: Request, res: Response) => {
+  const state = (req.query.state as string || 'MI').toUpperCase();
+  const category = req.query.category as string;
+
+  try {
+    const conditions: string[] = ['active = true', 'state = $1', "brand IS NOT NULL AND brand != ''"];
+    const params: any[] = [state];
+    let paramIndex = 2;
+
+    if (category) {
+      const rawCategories = Object.entries(CATEGORY_ALIASES)
+        .filter(([, norm]) => norm === category)
+        .map(([raw]) => raw);
+      rawCategories.push(category);
+      const placeholders = rawCategories.map((_, i) => `$${paramIndex + i}`).join(', ');
+      conditions.push(`LOWER(category) IN (${placeholders})`);
+      params.push(...rawCategories);
+    }
+
+    const whereClause = conditions.join(' AND ');
+
+    // Group by lowercase brand, pick most-frequent casing, return top 30 by count
+    const result = await pool.query(
+      `WITH brand_counts AS (
+         SELECT brand, COUNT(*) AS exact_count
+         FROM apl_products
+         WHERE ${whereClause}
+         GROUP BY brand
+       ),
+       normalized AS (
+         SELECT
+           FIRST_VALUE(brand) OVER (PARTITION BY LOWER(brand) ORDER BY exact_count DESC) AS brand,
+           SUM(exact_count) OVER (PARTITION BY LOWER(brand)) AS count,
+           ROW_NUMBER() OVER (PARTITION BY LOWER(brand) ORDER BY exact_count DESC) AS rn
+         FROM brand_counts
+       )
+       SELECT brand, count
+       FROM normalized
+       WHERE rn = 1
+       ORDER BY count DESC
+       LIMIT 30`,
+      params
+    );
+
+    res.json({ success: true, brands: result.rows });
+  } catch (error) {
+    console.error('Failed to fetch brands:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch brands' });
+  }
+});
+
+/**
  * GET /api/v1/product-catalog/products
  * Get paginated products with optional filters
- * Query params: state, category, subcategory, q (search), page, limit
+ * Query params: state, category, subcategory, brand, q (search), page, limit
  */
 router.get('/products', async (req: Request, res: Response) => {
   const state = (req.query.state as string || 'MI').toUpperCase();
   const category = req.query.category as string;
   const subcategory = req.query.subcategory as string;
+  const brand = req.query.brand as string;
   const search = req.query.q as string;
   const branded = req.query.branded as string;
   const page = parseInt(req.query.page as string) || 1;
@@ -145,6 +202,12 @@ router.get('/products', async (req: Request, res: Response) => {
     if (search) {
       conditions.push(`(product_name ILIKE $${paramIndex} OR brand ILIKE $${paramIndex})`);
       params.push(`%${search}%`);
+      paramIndex++;
+    }
+
+    if (brand) {
+      conditions.push(`LOWER(brand) = LOWER($${paramIndex})`);
+      params.push(brand);
       paramIndex++;
     }
 

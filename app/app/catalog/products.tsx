@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useI18n } from '@/lib/i18n/I18nContext';
-import { getProducts, lookupUPC, CatalogProduct } from '@/lib/services/catalogService';
+import { getProducts, getBrands, lookupUPC, CatalogProduct, CatalogBrand } from '@/lib/services/catalogService';
 import { getCategoryMeta } from '@/lib/data/wic-categories';
 import ProductListItem from '@/components/ProductListItem';
 
@@ -30,6 +30,8 @@ export default function ProductsScreen() {
   const [total, setTotal] = useState(0);
   const [totalUnfiltered, setTotalUnfiltered] = useState(0);
   const [brandedOnly, setBrandedOnly] = useState(true);
+  const [brands, setBrands] = useState<CatalogBrand[]>([]);
+  const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
   const [upcResult, setUpcResult] = useState<{ found: boolean; product?: CatalogProduct } | null>(null);
 
   const meta = getCategoryMeta(category || '');
@@ -37,9 +39,19 @@ export default function ProductsScreen() {
   // Detect if search query looks like a UPC (all digits, >= 8 chars)
   const isUpcQuery = /^\d{8,}$/.test(searchQuery.trim());
 
+  // Fetch available brands when category changes
+  useEffect(() => {
+    if (category) {
+      getBrands(state || 'MI', category).then(setBrands);
+    } else {
+      setBrands([]);
+    }
+    setSelectedBrand(null);
+  }, [category, state]);
+
   useEffect(() => {
     loadProducts(1, true);
-  }, [category, state, selectedSub, brandedOnly]);
+  }, [category, state, selectedSub, selectedBrand, brandedOnly]);
 
   // Debounce search — either UPC lookup or regular search
   useEffect(() => {
@@ -87,6 +99,7 @@ export default function ProductsScreen() {
         state: state || 'MI',
         category: category || undefined,
         subcategory: selectedSub || undefined,
+        brand: selectedBrand || undefined,
         q: searchQuery || undefined,
         branded: brandedOnly ? 1 : undefined,
         page: pageNum,
@@ -194,6 +207,40 @@ export default function ProductsScreen() {
                 ]}
               >
                 {sub}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
+
+      {/* Brand filter chips */}
+      {brands.length > 0 && !isUpcQuery && !searchQuery && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.chipScrollView}
+          contentContainerStyle={styles.chipContainer}
+        >
+          <TouchableOpacity
+            style={[styles.chip, selectedBrand === null && styles.chipSelected]}
+            onPress={() => setSelectedBrand(null)}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: selectedBrand === null }}
+          >
+            <Text style={[styles.chipText, selectedBrand === null && styles.chipTextSelected]}>
+              {t('catalog.allBrands')}
+            </Text>
+          </TouchableOpacity>
+          {brands.map(({ brand }) => (
+            <TouchableOpacity
+              key={brand}
+              style={[styles.chip, selectedBrand === brand && styles.chipSelected]}
+              onPress={() => setSelectedBrand(selectedBrand === brand ? null : brand)}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: selectedBrand === brand }}
+            >
+              <Text style={[styles.chipText, selectedBrand === brand && styles.chipTextSelected]}>
+                {brand}
               </Text>
             </TouchableOpacity>
           ))}

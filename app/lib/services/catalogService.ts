@@ -16,6 +16,11 @@ export interface CatalogProduct {
   state: string;
 }
 
+export interface CatalogBrand {
+  brand: string;
+  count: number;
+}
+
 export interface ProductsResponse {
   products: CatalogProduct[];
   subcategories: string[];
@@ -39,10 +44,24 @@ export async function getCategories(state: string = 'MI'): Promise<CatalogCatego
   }
 }
 
+export async function getBrands(state: string, category: string): Promise<CatalogBrand[]> {
+  try {
+    const response = await api.get(`/product-catalog/brands?state=${state}&category=${category}`);
+    if (response.data.success) {
+      return response.data.brands;
+    }
+    return [];
+  } catch (error) {
+    console.error('Failed to fetch brands:', error);
+    return [];
+  }
+}
+
 export async function getProducts(params: {
   state?: string;
   category?: string;
   subcategory?: string;
+  brand?: string;
   q?: string;
   branded?: number;
   page?: number;
@@ -53,6 +72,7 @@ export async function getProducts(params: {
     if (params.state) searchParams.append('state', params.state);
     if (params.category) searchParams.append('category', params.category);
     if (params.subcategory) searchParams.append('subcategory', params.subcategory);
+    if (params.brand) searchParams.append('brand', params.brand);
     if (params.q) searchParams.append('q', params.q);
     if (params.branded) searchParams.append('branded', params.branded.toString());
     if (params.page) searchParams.append('page', params.page.toString());

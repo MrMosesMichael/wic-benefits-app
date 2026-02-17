@@ -630,6 +630,7 @@
     "upcNotFound": "No encontrado — este UPC puede no estar aprobado por WIC en {{state}}",
     "upcFound": "¡Este producto está aprobado por WIC!",
     "noProducts": "No se encontraron productos. Intente con otra búsqueda o categoría.",
+    "allBrands": "Todas las Marcas",
     "categories": {
       "milk": "Leche",
       "eggs": "Huevos",
