@@ -141,170 +141,22 @@ export async function checkEligibility(upc: string, state?: string): Promise<Eli
 
 /**
  * Get household benefits
- * Priority: 1) Local AsyncStorage, 2) Empty household, 3) Backend API
+ * Priority: 1) Local AsyncStorage (user-entered), 2) Empty household
+ * The backend DB household is legacy demo data and should not be used.
  */
 export async function getBenefits(householdId: string = '1'): Promise<Household> {
-  // Use offline mode
-  if (OFFLINE_MODE) {
-    // Load from local storage (manually entered data)
-    const localData = await loadHousehold();
-    if (localData) {
-      return localData;
-    }
-
-    // Return empty household if no manual data - user should set up household
-    return {
-      id: '1',
-      state: 'MI',
-      participants: [],
-    };
-
-    /* REMOVED MOCK DATA - User should use household setup instead
-    // Fall back to mock household with sample benefits for offline testing
-    return {
-      id: '1',
-      state: 'MI',
-      participants: [
-        {
-          id: '1',
-          name: 'Sarah Thompson',
-          type: 'pregnant',
-          benefits: [
-            {
-              category: 'milk',
-              categoryLabel: 'Milk',
-              total: '24.00',
-              consumed: '8.00',
-              inCart: '4.00',
-              available: '12.00',
-              unit: 'qt',
-              periodStart: '2026-01-01',
-              periodEnd: '2026-01-31',
-            },
-            {
-              category: 'cheese',
-              categoryLabel: 'Cheese',
-              total: '16.00',
-              consumed: '4.00',
-              inCart: '0.00',
-              available: '12.00',
-              unit: 'oz',
-              periodStart: '2026-01-01',
-              periodEnd: '2026-01-31',
-            },
-            {
-              category: 'eggs',
-              categoryLabel: 'Eggs',
-              total: '24.00',
-              consumed: '12.00',
-              inCart: '0.00',
-              available: '12.00',
-              unit: 'count',
-              periodStart: '2026-01-01',
-              periodEnd: '2026-01-31',
-            },
-            {
-              category: 'cereal',
-              categoryLabel: 'Cereal',
-              total: '36.00',
-              consumed: '12.00',
-              inCart: '0.00',
-              available: '24.00',
-              unit: 'oz',
-              periodStart: '2026-01-01',
-              periodEnd: '2026-01-31',
-            },
-            {
-              category: 'juice',
-              categoryLabel: '100% Juice',
-              total: '144.00',
-              consumed: '48.00',
-              inCart: '0.00',
-              available: '96.00',
-              unit: 'oz',
-              periodStart: '2026-01-01',
-              periodEnd: '2026-01-31',
-            },
-            {
-              category: 'peanut_butter',
-              categoryLabel: 'Peanut Butter',
-              total: '18.00',
-              consumed: '0.00',
-              inCart: '0.00',
-              available: '18.00',
-              unit: 'oz',
-              periodStart: '2026-01-01',
-              periodEnd: '2026-01-31',
-            },
-            {
-              category: 'beans',
-              categoryLabel: 'Dried Beans/Peas',
-              total: '16.00',
-              consumed: '0.00',
-              inCart: '0.00',
-              available: '16.00',
-              unit: 'oz',
-              periodStart: '2026-01-01',
-              periodEnd: '2026-01-31',
-            },
-          ],
-        },
-        {
-          id: '2',
-          name: 'Emma Thompson',
-          type: 'infant',
-          benefits: [
-            {
-              category: 'formula',
-              categoryLabel: 'Infant Formula',
-              total: '806.00',
-              consumed: '268.00',
-              inCart: '104.00',
-              available: '434.00',
-              unit: 'oz',
-              periodStart: '2026-01-01',
-              periodEnd: '2026-01-31',
-            },
-            {
-              category: 'baby_food_fruits_vegetables',
-              categoryLabel: 'Baby Food (Fruits & Vegetables)',
-              total: '128.00',
-              consumed: '32.00',
-              inCart: '0.00',
-              available: '96.00',
-              unit: 'oz',
-              periodStart: '2026-01-01',
-              periodEnd: '2026-01-31',
-            },
-            {
-              category: 'baby_food_meat',
-              categoryLabel: 'Baby Food (Meat)',
-              total: '77.50',
-              consumed: '15.50',
-              inCart: '0.00',
-              available: '62.00',
-              unit: 'oz',
-              periodStart: '2026-01-01',
-              periodEnd: '2026-01-31',
-            },
-          ],
-        },
-      ],
-    };
-    */
+  // Always check local storage first — this is where household-setup saves data
+  const localData = await loadHousehold();
+  if (localData) {
+    return localData;
   }
 
-  // Online mode - requires backend server
-  try {
-    const response = await api.get(`/benefits?household_id=${householdId}`);
-    if (response.data.success) {
-      return response.data.data.household;
-    }
-    throw new Error('Invalid API response');
-  } catch (error) {
-    console.error('Failed to fetch benefits:', error);
-    throw error;
-  }
+  // No local data — user needs to set up their household
+  return {
+    id: '1',
+    state: 'MI',
+    participants: [],
+  };
 }
 
 /**
