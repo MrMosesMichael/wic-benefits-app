@@ -142,7 +142,7 @@ router.get('/products', async (req: Request, res: Response) => {
     }
 
     if (search) {
-      conditions.push(`(name ILIKE $${paramIndex} OR brand ILIKE $${paramIndex})`);
+      conditions.push(`(product_name ILIKE $${paramIndex} OR brand ILIKE $${paramIndex})`);
       params.push(`%${search}%`);
       paramIndex++;
     }
@@ -158,10 +158,10 @@ router.get('/products', async (req: Request, res: Response) => {
 
     // Get products
     const productsResult = await pool.query(
-      `SELECT id, upc, name, brand, size, category, subcategory, state
+      `SELECT id, upc, product_name AS name, brand, size, category, subcategory, state
        FROM apl_products
        WHERE ${whereClause}
-       ORDER BY name ASC
+       ORDER BY product_name ASC
        LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
       [...params, limit, offset]
     );
