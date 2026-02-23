@@ -33,11 +33,11 @@ async function example1_CompleteSystem() {
 
   // Create database pool
   const pool = new Pool({
-    host: 'localhost',
-    port: 5432,
-    database: 'wic_benefits',
-    user: 'wic_user',
-    password: 'wic_password',
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT || '5432'),
+    database: process.env.DB_NAME || 'wic_benefits',
+    user: process.env.DB_USER || 'wic_user',
+    password: process.env.DB_PASSWORD,
   });
 
   try {

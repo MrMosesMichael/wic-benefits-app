@@ -34,7 +34,7 @@ const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-  origin: process.env.CORS_ORIGIN?.split(',') || '*',
+  origin: process.env.CORS_ORIGIN?.split(',') || false,
 }));
 app.use(express.json());
 
