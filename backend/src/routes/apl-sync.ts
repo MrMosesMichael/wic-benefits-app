@@ -3,10 +3,29 @@
  * Admin endpoints for managing and monitoring APL data sync
  */
 
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { aplSyncService } from '../services/APLSyncService';
 
 const router = Router();
+
+/**
+ * Middleware: require ADMIN_API_KEY header for mutating endpoints.
+ * Set ADMIN_API_KEY in the server environment; pass as
+ * Authorization: Bearer <key>  or  x-api-key: <key>
+ */
+function requireAdminKey(req: Request, res: Response, next: NextFunction) {
+  const adminKey = process.env.ADMIN_API_KEY;
+  if (!adminKey) {
+    return res.status(503).json({ success: false, error: 'Admin key not configured on server' });
+  }
+  const provided =
+    req.headers['x-api-key'] ||
+    req.headers['authorization']?.replace(/^Bearer\s+/i, '');
+  if (!provided || provided !== adminKey) {
+    return res.status(401).json({ success: false, error: 'Unauthorized' });
+  }
+  next();
+}
 
 /**
  * GET /api/v1/apl-sync/health
@@ -145,7 +164,7 @@ router.get('/due', async (req: Request, res: Response) => {
  * POST /api/v1/apl-sync/trigger
  * Manually trigger a sync for a state
  */
-router.post('/trigger', async (req: Request, res: Response) => {
+router.post('/trigger', requireAdminKey, async (req: Request, res: Response) => {
   try {
     const { state, dataSource, force } = req.body;
 
@@ -183,7 +202,7 @@ router.post('/trigger', async (req: Request, res: Response) => {
  * POST /api/v1/apl-sync/trigger-all
  * Trigger sync for all states that are due
  */
-router.post('/trigger-all', async (req: Request, res: Response) => {
+router.post('/trigger-all', requireAdminKey, async (req: Request, res: Response) => {
   try {
     console.log('Scheduled sync triggered for all due states');
 
