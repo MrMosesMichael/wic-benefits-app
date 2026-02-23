@@ -100,7 +100,7 @@
 
 | ID | Score | Finding | Status |
 |----|-------|---------|--------|
-| S-1030 | 8.8 | Command Injection — Node.js runtime | ✅ Fixed (Node 22 bump, `c04cd55`) — **needs VPS redeploy** |
+| S-1030 | 8.8 | Command Injection — Node.js runtime | ✅ Fixed & deployed (Node 22, `c04cd55`) |
 | S-1032 | 7.8 | xlsx Prototype Pollution | No fix available; not exposed (offline scripts only) — mute in Dynatrace |
 | S-1033 | 6.5 | xlsx ReDoS | No fix available; not exposed (offline scripts only) — mute in Dynatrace |
 | S-1037 | 2.3 | qs arrayLimit DoS | qs 6.15.0 is latest; no fix exists — mute in Dynatrace |
@@ -112,9 +112,8 @@ All four show `exposureStatus: Not detected` in Dynatrace. S-1032/S-1033/S-1037 
 ## What's Next
 
 ### Immediate
-1. **Redeploy backend on VPS** — `docker compose up -d --build backend` (activates Node 22 + /brands endpoint)
-2. **Mute S-1032, S-1033, S-1037 in Dynatrace** — all unexposed, no fixes available
-3. **Build v1.6.0** — TestFlight + Google Play Console
+1. **Mute S-1032, S-1033, S-1037 in Dynatrace** — all unexposed, no fixes available
+2. **Build v1.6.0** — TestFlight + Google Play Console
 
 ### Short Term
 1. **UX bugs** — Scanner permission deny back-out; cart scan back navigation
