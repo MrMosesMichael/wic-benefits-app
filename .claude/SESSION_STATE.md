@@ -1,13 +1,13 @@
 # Session State
 
 > **Last Updated:** 2026-02-23
-> **Session:** APL Sync Auth Fix + Docker Compose Hardening
+> **Session:** APL Sync Auth Fix + Docker Compose Hardening + Spanish i18n Polish
 
 ---
 
 ## Current Status
 
-**Security hardening complete.** APL sync trigger endpoints now require `ADMIN_API_KEY` auth (returns 401 on missing/bad key). Docker Compose updated and env var confirmed working on VPS. v1.6.0 still needs build/deploy.
+**Security hardening + Spanish polish complete.** APL sync trigger endpoints now require `ADMIN_API_KEY` auth (confirmed 401 on VPS). Docker Compose updated. Spanish i18n: 12 strings fixed (carro/carrito standardized, verb forms normalized). v1.6.0 still needs build/deploy.
 
 ---
 
@@ -20,6 +20,14 @@
 - Added `ADMIN_API_KEY: ${ADMIN_API_KEY}` to backend `environment:` block in `docker-compose.yml`
 - Confirmed fix: unauthenticated POST now returns `401 Unauthorized`
 - Committed and pushed (`3f3db60`)
+
+### Spanish i18n Polish (this session)
+
+- Audited all 937 keys — no missing keys, all "same value" entries legitimately identical
+- Fixed 8 `carrito` → `carro` (standardizes the established convention across all screens)
+- Fixed 4 verb forms to infinitive: `Cambiar`, `Seleccionar`, `Buscar`, `Configurar`
+- Remaining known gap: 6 strings hardcode "Michigan" — also hardcoded in EN, deferred (architecture issue)
+- Status: **Translation quality gaps closed. Native speaker review still recommended.**
 
 ---
 
@@ -67,6 +75,7 @@
 - `app/app.json` — v1.6.0, versionCode 11
 
 ## Commits
+- `cfe8dcc` — `fix: Spanish i18n — standardize carro/carrito, fix verb forms`
 - `448d599` — `security: guard APL sync trigger endpoints with admin key auth`
 - `3f3db60` — `fix: pass ADMIN_API_KEY into backend container via docker-compose`
 - `352478a` — `fix: Spanish i18n — household setup, cart, home, FAQ categories, formula types`
