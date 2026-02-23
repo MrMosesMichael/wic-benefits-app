@@ -37,6 +37,7 @@ services:
       KROGER_CLIENT_SECRET: ${KROGER_CLIENT_SECRET}
       KROGER_INVENTORY_STALE_HOURS: ${KROGER_INVENTORY_STALE_HOURS:-4}
       RECIPE_AUTH_REQUIRED: ${RECIPE_AUTH_REQUIRED:-false}
+      ADMIN_API_KEY: ${ADMIN_API_KEY}
     depends_on:
       postgres:
         condition: service_healthy
