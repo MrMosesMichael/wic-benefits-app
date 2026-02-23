@@ -1,19 +1,29 @@
 # Session State
 
-> **Last Updated:** 2026-02-17
-> **Session:** Spanish i18n Fixes + Brand Filter Chips (v1.6.0)
+> **Last Updated:** 2026-02-23
+> **Session:** APL Sync Auth Fix + Docker Compose Hardening
 
 ---
 
 ## Current Status
 
-**v1.6.0 ready to build and deploy.** Spanish i18n fixes committed (issues #6, #7, #9). Brand filter chips added to Product Catalog (issue #10). Backend needs to be deployed; app needs new TestFlight/Play Console build.
+**Security hardening complete.** APL sync trigger endpoints now require `ADMIN_API_KEY` auth (returns 401 on missing/bad key). Docker Compose updated and env var confirmed working on VPS. v1.6.0 still needs build/deploy.
 
 ---
 
 ## Work Completed This Session
 
-### Spanish i18n Fixes (issues #6, #7, #9 — closed)
+### APL Sync Auth + Docker Compose Fix
+
+- Verified `requireAdminKey` middleware on `POST /api/v1/apl-sync/trigger` and `/trigger-all`
+- Diagnosed `ADMIN_API_KEY` not reaching container: it was in `.env` but not wired into `docker-compose.yml` backend service
+- Added `ADMIN_API_KEY: ${ADMIN_API_KEY}` to backend `environment:` block in `docker-compose.yml`
+- Confirmed fix: unauthenticated POST now returns `401 Unauthorized`
+- Committed and pushed (`3f3db60`)
+
+---
+
+### Spanish i18n Fixes (issues #6, #7, #9 — closed, previous session)
 
 **`household-setup.tsx`** — Full i18n wiring (was 100% hardcoded English):
 - PARTICIPANT_TYPES → `household.participantTypes.*` keys
@@ -57,6 +67,8 @@
 - `app/app.json` — v1.6.0, versionCode 11
 
 ## Commits
+- `448d599` — `security: guard APL sync trigger endpoints with admin key auth`
+- `3f3db60` — `fix: pass ADMIN_API_KEY into backend container via docker-compose`
 - `352478a` — `fix: Spanish i18n — household setup, cart, home, FAQ categories, formula types`
 - `3ac93a8` — `feat: Add brand filter chips to Product Catalog (issue #10)`
 - `49d52e3` — `fix: Normalize brand apostrophes/punctuation in catalog filter`
