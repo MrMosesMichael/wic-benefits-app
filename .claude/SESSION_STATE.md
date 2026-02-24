@@ -1,13 +1,15 @@
 # Session State
 
 > **Last Updated:** 2026-02-24
-> **Session:** iOS Defect Fixes + Home Screen Redesign (v1.7.0)
+> **Session:** iOS Defect Fixes + Home Screen Redesign + Polish (v1.7.0)
 
 ---
 
 ## Current Status
 
-**10 iOS defects fixed. 5 UI/UX changes applied. KAV extended + WIC Balance restyled. Version bumped to 1.7.0.** All changes committed (50b22a7 + follow-up).
+**All work complete and pushed.** 10 iOS defects fixed, 5 UI/UX changes, KAV extended to all editing screens, WIC Balance restyled + truncation logic + full Spanish i18n. Version 1.7.0.
+
+**Next action: Build v1.7.0** — TestFlight + Google Play Console.
 
 ---
 
@@ -28,16 +30,33 @@
 
 ### UI/UX Changes (UI1–UI5)
 
-- **UI1: WIC Balance card** — `index.tsx`: replaced title+subtitle with a live green WIC Balance card. Loads from `loadHousehold()` on focus. Shows "You have X, Y, and N more remaining. Use by [date]." Tappable → /benefits. Shows "Tap to set up your benefits →" when empty.
+- **UI1: WIC Balance section** — `index.tsx`: live balance at top of home screen. Loads from `loadHousehold()` on focus. Shows "You have X, Y, and N more remaining. Use by [date]." Tappable → /benefits. Shows "Tap to set up your benefits →" when empty. Text-based (no card), separated from buttons by bottom border.
 - **UI2: Home card reorder** — Order: WIC Balance → Scan Product → Find Formula → Shopping Cart → Food Banks → Catalog → Store Finder → Community → Help → Location.
 - **UI3: Camera icon on Scan Product** — "📷 Scan Product"
-- **UI4: View Benefits card removed** — WIC Balance card at top replaces it.
+- **UI4: View Benefits card removed** — WIC Balance section at top replaces it.
 - **UI5: Remaining cards in original order** — Food Banks, Catalog, Store Finder, Community, Help, Location unchanged.
+
+### Polish (Post-Commit Follow-ups)
+
+- **KAV extended** — `KeyboardAvoidingView` applied to `manual-entry.tsx`, `log-purchase.tsx`, `feedback/index.tsx`, `complaint.tsx`, `location.tsx`. All form screens now push content above keyboard on iOS.
+- **WIC Balance summary capped** — `buildBalanceSummary`: deduplicates categories across participants; shows max 3 named items; "and N other items" pattern for the rest.
+- **WIC Balance i18n** — All balance section strings use `t()`. `en.json` + `es.json` updated with `home.balance.*` (title, youHave, useBy, setup, andOthers, 13 category names) and `a11y.home.balance*` keys. Category names looked up by `b.category` key at display time, not stored English label.
 
 ### Version Bump
 - `1.6.0` → `1.7.0` (minor: new features + significant UX)
-- iOS buildNumber: `1` (unchanged — new version resets to 1)
+- iOS buildNumber: `1` (resets on version bump)
 - Android versionCode: `11` → `12`
+
+---
+
+## Commits This Session
+
+| Hash | Description |
+|------|-------------|
+| `50b22a7` | feat: 10 iOS defect fixes + home screen redesign (v1.7.0) |
+| `b921da6` | fix: extend KAV to all editing screens + restyle WIC Balance as text |
+| `82214b7` | fix: WIC Balance summary — deduplicate categories, cap at 3 named items |
+| `04f6c57` | i18n: Spanish translations for WIC Balance section |
 
 ---
 
@@ -45,17 +64,18 @@
 
 - `app/app/scanner/index.tsx` — D1: remove scan mode toggle
 - `app/app/scanner/result.tsx` — D2: always show Add to Cart + household prompt
-- `app/app/benefits/manual-entry.tsx` — D3+D4+D5: save + unit filtering + scrollable dropdowns
+- `app/app/benefits/manual-entry.tsx` — D3+D4+D5+KAV: save + unit filtering + scrollable dropdowns + keyboard avoiding
 - `app/app/benefits/household-setup.tsx` — D6+D8+D10: KAV + auto-save + empty benefit removal
 - `app/app/benefits/period-settings.tsx` — D7: fix local storage update
 - `app/app/benefits/index.tsx` — D9: tappable participant headers
-- `app/app/index.tsx` — UI1-5: home screen redesign
+- `app/app/benefits/log-purchase.tsx` — KAV wrapping
+- `app/app/feedback/index.tsx` — KAV wrapping
+- `app/app/community/complaint.tsx` — KAV wrapping
+- `app/app/settings/location.tsx` — KAV wrapping
+- `app/app/index.tsx` — UI1-5 + balance restyling + summary deduplication/capping + i18n
+- `app/lib/i18n/translations/en.json` — home.balance.* + a11y.home.balance* keys
+- `app/lib/i18n/translations/es.json` — same keys in Spanish
 - `app/app.json` — version 1.7.0, versionCode 12
-- `app/app/benefits/log-purchase.tsx` — KAV wrapping applied
-- `app/app/feedback/index.tsx` — KAV import + wrapping applied
-- `app/app/community/complaint.tsx` — KAV wrapping applied
-- `app/app/settings/location.tsx` — KAV wrapping applied
-- `app/app/index.tsx` — WIC Balance restyled: removed green card, text-based with bottom divider
 
 ---
 
@@ -85,8 +105,7 @@
 ## What's Next
 
 ### Immediate
-1. **Commit this session's work** — defect fixes + home screen redesign
-2. **Build v1.7.0** — TestFlight + Google Play Console
+1. **Build v1.7.0** — TestFlight + Google Play Console
 
 ### Short Term
 1. **iOS & Android App Store Submissions** — Screenshots, metadata, store listings
@@ -98,4 +117,4 @@
 
 ## Feedback Inbox
 
-> Last synced: 2026-02-17 20:10 UTC · [0 open issues](https://github.com/MrMosesMichael/wic-benefits-feedback/issues) (all closed this session)
+> Last synced: 2026-02-17 20:10 UTC · [0 open issues](https://github.com/MrMosesMichael/wic-benefits-feedback/issues) (all closed last session)

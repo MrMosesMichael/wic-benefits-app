@@ -4,6 +4,55 @@
 
 ---
 
+## 2026-02-24 — iOS Defect Fixes + Home Screen Redesign + Polish (v1.7.0)
+
+**Fixed 10 iOS defects from device testing, redesigned home screen with live WIC Balance section, extended KeyboardAvoidingView to all editing screens, and completed Spanish i18n for the balance section.**
+
+### Done
+- ✅ D1: Scan mode toggle removed — hardcoded to 'check' mode
+- ✅ D2: Add to Cart always shown for eligible items; one-time household setup prompt with remembered preference (`@wic_cart_preference`)
+- ✅ D3: Manual entry save implemented — real `loadHousehold`/`saveHousehold` flow with participant selector
+- ✅ D4: Unit dropdown filters by category — `CATEGORY_UNITS` map, auto-selects default unit
+- ✅ D5: All dropdowns scrollable — `ScrollView` wrappers with maxHeight
+- ✅ D6: `KeyboardAvoidingView` in `household-setup.tsx` benefits editing view
+- ✅ D7: Period settings now updates AsyncStorage directly (not backend-only API)
+- ✅ D8: Auto-save on participant add and benefit save in `household-setup.tsx`
+- ✅ D9: Participant header rows tappable → navigate to household setup
+- ✅ D10: Empty benefit cards silently filtered on save (no error)
+- ✅ UI1: Live WIC Balance section at top of home screen — loads on focus, shows "You have X, Y, and N other items remaining. Use by [date]."
+- ✅ UI2–5: Reordered home cards, camera emoji on Scan, View Benefits card removed
+- ✅ KAV extended to `manual-entry`, `log-purchase`, `feedback`, `complaint`, `location` screens
+- ✅ WIC Balance restyled — text-based with bottom divider, not a card element
+- ✅ Balance summary: deduplicates categories across participants, caps at 3 named + "and N other items"
+- ✅ WIC Balance section fully translated — `home.balance.*` + all 13 category names + a11y keys in EN + ES
+- ✅ Bumped to v1.7.0 (versionCode 12)
+
+### Files Modified
+- `app/app/scanner/index.tsx` — D1
+- `app/app/scanner/result.tsx` — D2
+- `app/app/benefits/manual-entry.tsx` — D3+D4+D5+KAV
+- `app/app/benefits/household-setup.tsx` — D6+D8+D10
+- `app/app/benefits/period-settings.tsx` — D7
+- `app/app/benefits/index.tsx` — D9
+- `app/app/benefits/log-purchase.tsx` — KAV
+- `app/app/feedback/index.tsx` — KAV
+- `app/app/community/complaint.tsx` — KAV
+- `app/app/settings/location.tsx` — KAV
+- `app/app/index.tsx` — UI1-5, balance restyling, summary logic, i18n
+- `app/lib/i18n/translations/en.json` — home.balance.* + a11y.home.balance*
+- `app/lib/i18n/translations/es.json` — same keys in Spanish
+- `app/app.json` — v1.6.0 → v1.7.0, versionCode 11 → 12
+
+### Commits
+```
+50b22a7 feat: 10 iOS defect fixes + home screen redesign (v1.7.0)
+b921da6 fix: extend KAV to all editing screens + restyle WIC Balance as text
+82214b7 fix: WIC Balance summary — deduplicate categories, cap at 3 named items
+04f6c57 i18n: Spanish translations for WIC Balance section
+```
+
+---
+
 ## 2026-02-17 — Spanish i18n Fixes + Brand Filter Chips (v1.6.0)
 
 **Fixed all native-speaker-reported Spanish bugs. Added brand filter chips to Product Catalog with punctuation-normalized brand deduplication.**

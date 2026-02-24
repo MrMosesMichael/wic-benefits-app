@@ -1,7 +1,7 @@
 # WIC Benefits App — Roadmap
 
-> **Last Updated:** February 17, 2026 (v1.6.0)
-> **Current Phase:** Phase 1-5 Complete + Phase 3 & 4 Complete + Phase 7 In Progress
+> **Last Updated:** February 24, 2026 (v1.7.0)
+> **Current Phase:** Phase 1-5 Complete + Phase 7 In Progress
 > **Production:** https://mdmichael.com/wic/
 
 ---
@@ -16,7 +16,7 @@
 | **Phase 4: Community** | ✅ Complete | 100% |
 | **Phase 5: Manual Entry** | ✅ Complete | 100% |
 | **Phase 6: eWIC Integration** | 🚫 Blocked | 0% |
-| **Phase 7: Polish & Launch** | 🔄 In Progress | 75% |
+| **Phase 7: Polish & Launch** | 🔄 In Progress | 85% |
 
 ---
 
@@ -40,12 +40,13 @@
 ✅ **Accessibility** — Full a11y implementation: roles, labels, hints, states across all components/screens; 153 i18n a11y keys; touch target fixes on 38 elements
 ✅ **Production Backend** — Deployed at https://mdmichael.com/wic/
 ✅ **Android APK** — Production build ready for sideloading
-✅ **UI Polish** — Removed duplicate headers from all 17 screens, SafeAreaProvider for Android nav bar
-✅ **iOS Build** — Submitted to TestFlight, awaiting review
+✅ **UI Polish** — Removed duplicate headers, SafeAreaProvider, KeyboardAvoidingView on all editing screens, home screen redesign with live WIC Balance section
+✅ **iOS Build** — v1.5.0 submitted to TestFlight; v1.7.0 ready to build
 ✅ **Product Catalog** — Category grid + search, 62K APL products, branded-first filtering, UPC eligibility lookup, brand filter chips with punctuation normalization
 ✅ **Store Finder** — Map/list view with chain filters, radius search, WIC-only toggle
 ✅ **Community Hub** — Shopping tips, WIC recipes, know-your-rights, WIC office directory, complaint filing
-✅ **Bilingual i18n** — English + Spanish; household setup, formula types, FAQ categories, cart, home all translated
+✅ **Bilingual i18n** — English + Spanish; household setup, formula types, FAQ categories, cart, home, WIC Balance section (all 13 category names) translated
+✅ **iOS Defect Fixes (v1.7.0)** — Scan mode removed, Add to Cart always visible, manual entry save, unit filtering, scrollable dropdowns, period settings local sync, auto-save, tappable benefit rows, empty card filtering
 
 ---
 
@@ -150,7 +151,7 @@ Accessibility, testing, app store submission.
 | Track | Feature | Status |
 |-------|---------|--------|
 | **T** | Accessibility (VoiceOver, TalkBack) | ✅ Done |
-| **U** | Additional Languages | ⚠️ Partial (Spanish i18n in progress) |
+| **U** | Additional Languages | ⚠️ Partial (Spanish ~90% complete; minor gaps remain) |
 | **V** | Beta Testing | 🔄 In Progress (iOS TestFlight submitted) |
 | **V** | App Store Submission | 🔄 In Progress (assets needed - see [iOS Release Checklist](#ios-app-store-release-checklist)) |
 | **V2** | Google Play Submission | 🔄 In Progress (data safety done, screenshots needed) |
@@ -186,6 +187,7 @@ Based on impact, effort, and what's unblocked:
    - ✅ Data deletion page published (https://mdmichael.com/wic/delete-data.html)
    - ✅ v1.5.0 iOS build submitted to TestFlight
    - ✅ v1.5.0 Android build submitted to Google Play Console
+   - ✅ v1.7.0 ready to build (all defects fixed, home redesign, i18n complete)
    - 🔄 TestFlight beta testing (awaiting review)
    - 🔄 Google Play Console setup in progress
    - ⏳ Generate store listing screenshots/images (Apple + Android)
