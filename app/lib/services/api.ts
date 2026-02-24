@@ -23,6 +23,7 @@ import type {
 } from '../types';
 import { checkEligibilityOffline, getTotalProductCount } from './offlineEligibility';
 import { loadHousehold } from './householdStorage';
+import { getLocalCart, addToLocalCart, removeFromLocalCart, clearLocalCart } from './cartStorage';
 
 // Set to true to use offline data (no server needed)
 // For production with backend: set to false
@@ -160,36 +161,16 @@ export async function getBenefits(householdId: string = '1'): Promise<Household>
 }
 
 /**
- * Get shopping cart
- * Uses offline mock data when OFFLINE_MODE is true
+ * Get shopping cart — reads from local AsyncStorage.
+ * The backend cart uses integer participant PKs which don't match local
+ * timestamp-based IDs, so we always use local storage.
  */
 export async function getCart(householdId: string = '1'): Promise<Cart> {
-  // Use offline mode - return mock empty cart
-  if (OFFLINE_MODE) {
-    return {
-      household_id: householdId,
-      items: [],
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-  }
-
-  // Online mode - requires backend server
-  try {
-    const response = await api.get(`/cart?household_id=${householdId}`);
-    if (response.data.success) {
-      return response.data.cart;
-    }
-    throw new Error('Invalid API response');
-  } catch (error) {
-    console.error('Failed to fetch cart:', error);
-    throw error;
-  }
+  return getLocalCart();
 }
 
 /**
- * Add item to cart
- * In offline mode, this is a no-op (returns success without persisting)
+ * Add item to cart — saves to local AsyncStorage.
  */
 export async function addToCart(
   participantId: string,
@@ -202,85 +183,34 @@ export async function addToCart(
   size?: string,
   householdId: string = '1'
 ): Promise<void> {
-  // Offline mode - simulate success (cart feature not fully functional offline)
-  if (OFFLINE_MODE) {
-    console.log('OFFLINE MODE: Add to cart simulated', { productName, category, quantity, unit });
-    return Promise.resolve();
-  }
-
-  // Online mode - call backend API
-  try {
-    const response = await api.post('/cart/items', {
-      householdId,
-      participantId,
-      upc,
-      productName,
-      category,
-      quantity,
-      unit,
-      brand,
-      size,
-    });
-    if (!response.data.success) {
-      throw new Error(response.data.error || 'Failed to add item to cart');
-    }
-  } catch (error: any) {
-    console.error('Failed to add to cart:', error);
-    // Re-throw with more details if available
-    if (error.response?.data?.error) {
-      throw new Error(error.response.data.error);
-    }
-    throw error;
-  }
+  await addToLocalCart(participantId, upc, productName, category, quantity, unit, brand, size);
 }
 
 /**
  * Remove item from cart
  */
 export async function removeFromCart(itemId: string): Promise<void> {
-  try {
-    const response = await api.delete(`/cart/items/${itemId}`);
-    if (!response.data.success) {
-      throw new Error(response.data.error || 'Failed to remove item from cart');
-    }
-  } catch (error) {
-    console.error('Failed to remove from cart:', error);
-    throw error;
-  }
+  await removeFromLocalCart(itemId);
 }
 
 /**
  * Clear entire cart
  */
 export async function clearCart(householdId: string = '1'): Promise<void> {
-  try {
-    const response = await api.delete(`/cart?household_id=${householdId}`);
-    if (!response.data.success) {
-      throw new Error(response.data.error || 'Failed to clear cart');
-    }
-  } catch (error) {
-    console.error('Failed to clear cart:', error);
-    throw error;
-  }
+  await clearLocalCart();
 }
 
 /**
- * Checkout cart
+ * Checkout cart — clears local cart and returns item count.
  */
 export async function checkout(householdId: string = '1'): Promise<{ transactionId: string; itemsProcessed: number }> {
-  try {
-    const response = await api.post('/cart/checkout', { householdId });
-    if (response.data.success) {
-      return {
-        transactionId: response.data.transactionId,
-        itemsProcessed: response.data.itemsProcessed,
-      };
-    }
-    throw new Error(response.data.error || 'Failed to checkout');
-  } catch (error) {
-    console.error('Failed to checkout:', error);
-    throw error;
-  }
+  const cart = await getLocalCart();
+  const itemsProcessed = cart.items.length;
+  await clearLocalCart();
+  return {
+    transactionId: Date.now().toString(),
+    itemsProcessed,
+  };
 }
 
 /**

@@ -14,7 +14,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { saveHousehold, loadHousehold, clearHousehold } from '@/lib/services/householdStorage';
 import { Household, Participant, BenefitAmount } from '@/lib/services/api';
 import { useTranslation } from '@/lib/i18n/I18nContext';
@@ -52,6 +52,8 @@ interface BenefitInput {
 export default function HouseholdSetup() {
   const router = useRouter();
   const t = useTranslation();
+  const params = useLocalSearchParams();
+  const deepLinkParticipantId = params.participantId as string | undefined;
 
   const getParticipantTypeLabel = (value: ParticipantType) =>
     t(`household.participantTypes.${value}`);
@@ -81,6 +83,20 @@ export default function HouseholdSetup() {
     const household = await loadHousehold();
     if (household && household.participants.length > 0) {
       setParticipants(household.participants);
+      // Deep-link: auto-open edit benefits for a specific participant
+      if (deepLinkParticipantId) {
+        const target = household.participants.find(p => p.id === deepLinkParticipantId);
+        if (target) {
+          const inputs = target.benefits.map(b => ({
+            category: b.category,
+            categoryLabel: b.categoryLabel,
+            total: b.total,
+            unit: b.unit,
+          }));
+          setEditingBenefits(inputs);
+          setEditingParticipantId(deepLinkParticipantId);
+        }
+      }
     }
   };
 

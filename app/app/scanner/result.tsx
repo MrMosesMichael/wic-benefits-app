@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { getBenefits, addToCart, Participant, getSightings, reportSighting } from '@/lib/services/api';
+import { getBenefits, addToCart, getCart, Participant, getSightings, reportSighting } from '@/lib/services/api';
 import type { ProductSighting, StockLevel } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import NeedHelpLink from '@/components/NeedHelpLink';
@@ -31,6 +31,7 @@ export default function ScanResult() {
   // Whether the user has any household set up at all (separate from eligible participants)
   const [hasHousehold, setHasHousehold] = useState(false);
   const [fallbackParticipantId, setFallbackParticipantId] = useState<string>('1');
+  const [cartItemCount, setCartItemCount] = useState(0);
 
   // Sightings state
   const [sightings, setSightings] = useState<ProductSighting[]>([]);
@@ -51,6 +52,8 @@ export default function ScanResult() {
     AsyncStorage.getItem('@wic_cart_preference').then(v => {
       if (v === 'household') setCartPreferenceDismissed(true);
     });
+    // Load cart count for View Cart card
+    getCart().then(c => setCartItemCount(c.items.length)).catch(() => {});
   }, [isEligible, category]);
 
   const loadEligibleParticipants = async () => {
@@ -124,6 +127,7 @@ export default function ScanResult() {
       try {
         setAdding(true);
         await addToCart(fallbackParticipantId, upc, name, category, 1, 'unit', brand, size);
+        getCart().then(c => setCartItemCount(c.items.length)).catch(() => {});
         const fullProductName = brand ? `${brand} ${name}` : name;
         Alert.alert(
           t('result.addedToCart'),
@@ -169,6 +173,7 @@ export default function ScanResult() {
       );
 
       const fullProductName = brand ? `${brand} ${name}` : name;
+      getCart().then(c => setCartItemCount(c.items.length)).catch(() => {});
       Alert.alert(
         t('result.addedToCart'),
         t('result.addedToCartMessage', { product: fullProductName }),
@@ -364,6 +369,18 @@ export default function ScanResult() {
             );
           })}
         </View>
+      )}
+
+      {/* View Cart card — shown whenever cart has items */}
+      {cartItemCount > 0 && (
+        <TouchableOpacity
+          style={styles.viewCartCard}
+          onPress={() => router.replace('/cart')}
+          accessibilityRole="button"
+          accessibilityLabel={`View cart, ${cartItemCount} item${cartItemCount !== 1 ? 's' : ''}`}
+        >
+          <Text style={styles.viewCartText}>🛒 {t('result.viewCart')} ({cartItemCount})</Text>
+        </TouchableOpacity>
       )}
 
       {/* Action Buttons */}
@@ -669,6 +686,21 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#2E7D32',
     fontWeight: '500',
+  },
+  viewCartCard: {
+    backgroundColor: '#E8F5E9',
+    marginHorizontal: 20,
+    marginBottom: 12,
+    padding: 14,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#2E7D32',
+    alignItems: 'center',
+  },
+  viewCartText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#2E7D32',
   },
   buttonContainer: {
     marginHorizontal: 20,

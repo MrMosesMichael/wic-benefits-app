@@ -121,7 +121,7 @@ export default function Home() {
           accessibilityRole="button"
           accessibilityHint={t('a11y.home.cartHint')}
         >
-          <Text style={styles.buttonText}>{t('home.shoppingCart')}</Text>
+          <Text style={styles.buttonText}>🛒 {t('home.shoppingCart')}</Text>
         </TouchableOpacity>
 
         {/* UI4: View Benefits removed — WIC Balance card at top replaces it */}

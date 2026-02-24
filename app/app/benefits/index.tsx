@@ -103,7 +103,7 @@ export default function Benefits() {
         <View key={participant.id} style={styles.participantSection}>
           <TouchableOpacity
             style={styles.participantHeader}
-            onPress={() => router.push('/benefits/household-setup')}
+            onPress={() => router.push(`/benefits/household-setup?participantId=${participant.id}`)}
             accessibilityRole="button"
             accessibilityLabel={`${participant.name} — tap to edit`}
             hitSlop={{ top: 4, bottom: 4 }}
@@ -128,11 +128,13 @@ export default function Benefits() {
                 const total = parseFloat(benefit.total);
 
                 return (
-                  <View
+                  <TouchableOpacity
                     key={index}
                     style={styles.benefitCard}
-                    accessible={true}
+                    onPress={() => router.push(`/benefits/household-setup?participantId=${participant.id}`)}
+                    accessibilityRole="button"
                     accessibilityLabel={t('a11y.benefits.benefitLabel', { category: benefit.categoryLabel, available: benefit.available, unit: benefit.unit, inCart: benefit.inCart, consumed: benefit.consumed, total: benefit.total })}
+                    accessibilityHint="Tap to edit benefits"
                   >
                     <Text style={styles.categoryName}>{benefit.categoryLabel}</Text>
 
@@ -176,7 +178,7 @@ export default function Benefits() {
                         {t('benefits.expires')}: {new Date(benefit.periodEnd).toLocaleDateString()}
                       </Text>
                     )}
-                  </View>
+                  </TouchableOpacity>
                 );
               })
             )}

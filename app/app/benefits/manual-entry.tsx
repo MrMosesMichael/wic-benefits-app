@@ -431,6 +431,17 @@ export default function ManualEntry() {
                 >
                   <Text style={styles.datePresetButtonText}>Today</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.datePresetButton}
+                  onPress={() => {
+                    setEntry({ ...entry, periodStart: new Date(now.getFullYear(), now.getMonth() + 1, 1) });
+                    setShowStartDatePicker(false);
+                  }}
+                  accessibilityRole="button"
+                  hitSlop={{ top: 4, bottom: 4 }}
+                >
+                  <Text style={styles.datePresetButtonText}>Next Month (1st)</Text>
+                </TouchableOpacity>
               </View>
               <Text style={styles.datePickerNote}>Current: {formatDate(entry.periodStart)}</Text>
             </View>
