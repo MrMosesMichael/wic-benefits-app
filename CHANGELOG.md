@@ -4,6 +4,40 @@
 
 ---
 
+## 2026-02-24 — Cart Fix + Scan Result Polish + Benefit Card Drill-Down (v1.7.1)
+
+**Fixed the root-cause empty cart bug (backend cart bypassed in favour of AsyncStorage), added View Cart card to Scan Result screen, made benefit cards tappable with deep-link to Edit Benefits, added Next Month period preset, and added 🛒 emoji to home screen cart button.**
+
+### Done
+- ✅ **Bug: Cart always empty** — Created `cartStorage.ts`; all cart API functions (`getCart`, `addToCart`, `removeFromCart`, `clearCart`, `checkout`) now use AsyncStorage `@wic_cart`. Backend cart was unusable because it JOINs on integer participant PKs while local IDs are timestamp strings.
+- ✅ **View Cart card on Scan Result** — `scanner/result.tsx` shows a green `🛒 View Cart (N items)` card whenever cart has items (checked on mount and after each add).
+- ✅ **Tappable benefit cards** — `benefits/index.tsx`: individual benefit cards changed from `<View>` to `<TouchableOpacity>` → navigate to `/benefits/household-setup?participantId=<id>`. Participant header row also passes `participantId`.
+- ✅ **Edit Benefits deep-link** — `household-setup.tsx` reads `participantId` param via `useLocalSearchParams`; auto-opens Edit Benefits view for that participant on mount.
+- ✅ **"Next Month (1st)" period preset** — `manual-entry.tsx` period start date picker gains a third preset button.
+- ✅ **🛒 emoji on home cart button** — `app/index.tsx` Shopping Cart card now shows `🛒`.
+- ✅ Bumped to v1.7.1 (versionCode 13)
+
+### Files Modified
+- `app/lib/services/cartStorage.ts` — NEW: local cart storage service
+- `app/lib/services/api.ts` — cart functions delegate to cartStorage
+- `app/app/scanner/result.tsx` — View Cart card, cart count state
+- `app/app/benefits/index.tsx` — tappable benefit cards with participantId param
+- `app/app/benefits/household-setup.tsx` — deep-link participantId support
+- `app/app/benefits/manual-entry.tsx` — Next Month (1st) preset
+- `app/app/index.tsx` — 🛒 emoji on cart button
+- `app/app.json` — v1.7.0 → v1.7.1, versionCode 12 → 13
+
+### Commits
+```
+6b1397a feat: fix empty cart, View Cart card, tappable benefit cards, Next Month preset, cart emoji
+f3f3cb2 chore: bump version 1.7.0 → 1.7.1, versionCode 12 → 13
+ea5732a fix: scanner race condition + stale @wic_cart_preference flag
+69b2cd6 fix: Add to Cart shows household prompt even when household exists
+05ee527 fix: WIC Balance heading restyle — mixed-case green title, smaller gray summary
+```
+
+---
+
 ## 2026-02-24 — iOS Defect Fixes + Home Screen Redesign + Polish (v1.7.0)
 
 **Fixed 10 iOS defects from device testing, redesigned home screen with live WIC Balance section, extended KeyboardAvoidingView to all editing screens, and completed Spanish i18n for the balance section.**

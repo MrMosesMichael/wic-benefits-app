@@ -1,19 +1,31 @@
 # Session State
 
 > **Last Updated:** 2026-02-24
-> **Session:** iOS Defect Fixes + Home Screen Redesign + Polish (v1.7.0)
+> **Session:** Cart Fix + Scan Result View Cart + Tappable Benefit Cards + Polish (v1.7.1)
 
 ---
 
 ## Current Status
 
-**All work complete and pushed.** 10 iOS defects fixed, 5 UI/UX changes, KAV extended to all editing screens, WIC Balance restyled + truncation logic + full Spanish i18n. Version 1.7.0.
+**All work complete and pushed.** Cart bug fixed (backend cart bypassed in favour of AsyncStorage), View Cart card on Scan Result, benefit cards tappable with deep-link to Edit Benefits, Next Month preset in manual entry, cart emoji on home screen. Version 1.7.1.
 
-**Next action: Build v1.7.0** — TestFlight + Google Play Console.
+**Next action: Build v1.7.1** — TestFlight + Google Play Console.
 
 ---
 
 ## Work Completed This Session
+
+### Session 2 — Cart Fix + Polish (v1.7.1)
+
+- **Bug: Empty cart after add** — Created `app/lib/services/cartStorage.ts` (AsyncStorage-based). Backend `POST /cart/items` joins `benefits` on integer participant PKs but local IDs are timestamp strings → silent failure. All cart functions (`getCart`, `addToCart`, `removeFromCart`, `clearCart`, `checkout`) now bypass backend and use `cartStorage` directly.
+- **Feature: View Cart card on Scan Result** — After any add (or if cart already has items on load), a green `🛒 View Cart (N items)` card appears on `scanner/result.tsx` above the action buttons.
+- **Feature: Tappable benefit cards** — In `benefits/index.tsx`, individual benefit cards are now `<TouchableOpacity>` → navigate to `/benefits/household-setup?participantId=<id>`. Participant name header also passes `participantId` param.
+- **Feature: Deep-link into Edit Benefits** — `household-setup.tsx` now reads `participantId` from `useLocalSearchParams`. On mount, if param present, auto-opens the Edit Benefits view for that participant.
+- **Feature: "Next Month (1st)" period preset** — Added third preset button in `manual-entry.tsx` start date picker alongside "This Month (1st)" and "Today".
+- **Feature: 🛒 emoji on Shopping Cart button** — Home screen cart button now shows `🛒`.
+- **Version bump** — `1.7.0` → `1.7.1` (patch), versionCode `12` → `13`.
+
+### Session 1 — iOS Defect Fixes + Home Screen Redesign (v1.7.0)
 
 ### Defect Fixes (D1–D10)
 
@@ -53,6 +65,11 @@
 
 | Hash | Description |
 |------|-------------|
+| `6b1397a` | feat: fix empty cart, View Cart card, tappable benefit cards, Next Month preset, cart emoji |
+| `05ee527` | fix: WIC Balance heading restyle — mixed-case green title, smaller gray summary |
+| `f3f3cb2` | chore: bump version 1.7.0 → 1.7.1, versionCode 12 → 13 |
+| `ea5732a` | fix: scanner race condition + stale @wic_cart_preference flag |
+| `69b2cd6` | fix: Add to Cart shows household prompt even when household exists |
 | `50b22a7` | feat: 10 iOS defect fixes + home screen redesign (v1.7.0) |
 | `b921da6` | fix: extend KAV to all editing screens + restyle WIC Balance as text |
 | `82214b7` | fix: WIC Balance summary — deduplicate categories, cap at 3 named items |
@@ -62,6 +79,16 @@
 
 ## Files Modified This Session
 
+**Session 2 (v1.7.1):**
+- `app/lib/services/cartStorage.ts` — NEW: AsyncStorage-based cart (getLocalCart, addToLocalCart, removeFromLocalCart, clearLocalCart)
+- `app/lib/services/api.ts` — getCart/addToCart/removeFromCart/clearCart/checkout all delegate to cartStorage
+- `app/app/scanner/result.tsx` — View Cart card; cart count state; getCart imported
+- `app/app/benefits/index.tsx` — benefit cards tappable with participantId param; participant header also passes participantId
+- `app/app/benefits/household-setup.tsx` — useLocalSearchParams; auto-opens Edit Benefits on deep-link
+- `app/app/benefits/manual-entry.tsx` — "Next Month (1st)" preset in period start picker
+- `app/app/index.tsx` — 🛒 emoji on Shopping Cart button
+
+**Session 1 (v1.7.0):**
 - `app/app/scanner/index.tsx` — D1: remove scan mode toggle
 - `app/app/scanner/result.tsx` — D2: always show Add to Cart + household prompt
 - `app/app/benefits/manual-entry.tsx` — D3+D4+D5+KAV: save + unit filtering + scrollable dropdowns + keyboard avoiding
@@ -75,7 +102,7 @@
 - `app/app/index.tsx` — UI1-5 + balance restyling + summary deduplication/capping + i18n
 - `app/lib/i18n/translations/en.json` — home.balance.* + a11y.home.balance* keys
 - `app/lib/i18n/translations/es.json` — same keys in Spanish
-- `app/app.json` — version 1.7.0, versionCode 12
+- `app/app.json` — version 1.7.1, versionCode 13
 
 ---
 
@@ -84,6 +111,7 @@
 ### Not Fixed This Session
 - **D8 partial**: `handleRemoveParticipant` still only updates in-memory state (user must press "Save & Apply" after removing a participant)
 - **Participant selector in manual-entry**: "Household (general)" option creates a participant with type cast `'household' as any` — acceptable but not clean
+- **Checkout doesn't decrement benefits**: `checkout()` now clears the local cart but doesn't update `consumed` amounts in householdStorage — benefit counts stay the same after checkout. Low priority: users manually track via manual entry.
 
 ### Spanish gaps (low priority)
 - Product `size` field (e.g., "32 oz") comes from APL as raw English — complex to translate, deferred
@@ -105,7 +133,7 @@
 ## What's Next
 
 ### Immediate
-1. **Build v1.7.0** — TestFlight + Google Play Console
+1. **Build v1.7.1** — TestFlight + Google Play Console
 
 ### Short Term
 1. **iOS & Android App Store Submissions** — Screenshots, metadata, store listings

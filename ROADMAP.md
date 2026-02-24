@@ -1,6 +1,6 @@
 # WIC Benefits App — Roadmap
 
-> **Last Updated:** February 24, 2026 (v1.7.0)
+> **Last Updated:** February 24, 2026 (v1.7.1)
 > **Current Phase:** Phase 1-5 Complete + Phase 7 In Progress
 > **Production:** https://mdmichael.com/wic/
 
@@ -22,7 +22,7 @@
 
 ## What's Working Today
 
-✅ **Core MVP** — Barcode scanner, eligibility checking, benefits tracking, shopping cart
+✅ **Core MVP** — Barcode scanner, eligibility checking, benefits tracking, shopping cart (AsyncStorage-based; View Cart card on scan result)
 ✅ **Multi-State APL** — 62,938 products across 4 states (MI 9,851 / NC 16,949 / NY 21,125 / OR 14,013)
 ✅ **APL Automation** — Daily sync via cron, web scraping, change detection
 ✅ **Store Detection** — GPS + WiFi + manual selection
@@ -47,6 +47,7 @@
 ✅ **Community Hub** — Shopping tips, WIC recipes, know-your-rights, WIC office directory, complaint filing
 ✅ **Bilingual i18n** — English + Spanish; household setup, formula types, FAQ categories, cart, home, WIC Balance section (all 13 category names) translated
 ✅ **iOS Defect Fixes (v1.7.0)** — Scan mode removed, Add to Cart always visible, manual entry save, unit filtering, scrollable dropdowns, period settings local sync, auto-save, tappable benefit rows, empty card filtering
+✅ **Cart & Scan Result Polish (v1.7.1)** — Cart fixed (AsyncStorage), View Cart card on scan result, benefit cards drill into Edit Benefits, Next Month period preset
 
 ---
 
