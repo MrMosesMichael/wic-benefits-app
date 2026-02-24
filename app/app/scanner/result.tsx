@@ -68,6 +68,9 @@ export default function ScanResult() {
       setHasHousehold(household.participants.length > 0);
       if (household.participants.length > 0) {
         setFallbackParticipantId(household.participants[0].id);
+        // Clear stale "no household" preference flag set by a previous "Continue Anyway"
+        AsyncStorage.removeItem('@wic_cart_preference');
+        setCartPreferenceDismissed(false);
       }
 
       // Auto-select if only one participant
@@ -370,9 +373,9 @@ export default function ScanResult() {
           <TouchableOpacity
             style={[styles.addToCartButton, adding && styles.addToCartButtonDisabled]}
             onPress={handleAddToCart}
-            disabled={adding || (eligibleParticipants.length > 0 && !selectedParticipantId)}
+            disabled={loading || adding || (eligibleParticipants.length > 0 && !selectedParticipantId)}
             accessibilityRole="button"
-            accessibilityState={{ disabled: adding || (eligibleParticipants.length > 0 && !selectedParticipantId) }}
+            accessibilityState={{ disabled: loading || adding || (eligibleParticipants.length > 0 && !selectedParticipantId) }}
           >
             {adding ? (
               <ActivityIndicator color="#fff" />
