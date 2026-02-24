@@ -5,17 +5,27 @@ import { useTranslation } from '@/lib/i18n/I18nContext';
 import { loadHousehold } from '@/lib/services/householdStorage';
 import type { Household } from '@/lib/services/householdStorage';
 
-/** Build a short benefit summary string, e.g. "Eggs, Milk, and 3 more" */
+/** Build a short benefit summary string, e.g. "Eggs, Cereal, Milk, and 9 other items" */
 function buildBalanceSummary(household: Household): string {
-  const available = household.participants
+  // Deduplicate by category so the same item type isn't listed twice
+  const seen = new Set<string>();
+  const unique = household.participants
     .flatMap(p => p.benefits)
-    .filter(b => parseFloat(b.available) > 0);
-  if (available.length === 0) return '';
-  const shown = available.slice(0, 2).map(b => b.categoryLabel);
-  const more = available.length - shown.length;
-  if (more > 0) return shown.join(', ') + `, and ${more} more`;
-  if (shown.length === 1) return shown[0];
-  return shown[0] + ' and ' + shown[1];
+    .filter(b => {
+      if (parseFloat(b.available) <= 0) return false;
+      if (seen.has(b.category)) return false;
+      seen.add(b.category);
+      return true;
+    });
+  if (unique.length === 0) return '';
+  const MAX_NAMED = 3;
+  const named = unique.slice(0, MAX_NAMED).map(b => b.categoryLabel);
+  const rest = unique.length - named.length;
+  if (rest === 0) {
+    if (named.length === 1) return named[0];
+    return named.slice(0, -1).join(', ') + ' and ' + named[named.length - 1];
+  }
+  return named.join(', ') + `, and ${rest} other item${rest === 1 ? '' : 's'}`;
 }
 
 /** Get earliest expiry date string */
