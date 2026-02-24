@@ -215,18 +215,16 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E0E0E0',
   },
   balanceTitle: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#999',
-    letterSpacing: 1.2,
-    marginBottom: 6,
-    textTransform: 'uppercase',
-  },
-  balanceSummary: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '700',
     color: '#2E7D32',
-    lineHeight: 26,
+    marginBottom: 4,
+  },
+  balanceSummary: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#999',
+    lineHeight: 22,
   },
   balanceExpiry: {
     fontSize: 13,

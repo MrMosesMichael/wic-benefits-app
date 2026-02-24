@@ -48,7 +48,7 @@
     "communityHubSubtext": "Consejos, recetas y defensa",
     "locationSettings": "📍 Configuración de Ubicación",
     "balance": {
-      "title": "Balance WIC",
+      "title": "Balance WIC:",
       "youHave": "Tiene {{items}} disponibles.",
       "useBy": "Úselo antes del {{date}}",
       "setup": "Toque para configurar sus beneficios →",

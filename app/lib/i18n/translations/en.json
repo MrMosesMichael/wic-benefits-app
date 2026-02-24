@@ -48,7 +48,7 @@
     "communityHubSubtext": "Tips, recipes & advocacy",
     "locationSettings": "📍 Location Settings",
     "balance": {
-      "title": "WIC Balance",
+      "title": "WIC Balance:",
       "youHave": "You have {{items}} remaining.",
       "useBy": "Use by {{date}}",
       "setup": "Tap to set up your benefits →",
