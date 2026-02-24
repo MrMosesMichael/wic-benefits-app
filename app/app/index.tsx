@@ -6,7 +6,10 @@ import { loadHousehold } from '@/lib/services/householdStorage';
 import type { Household } from '@/lib/services/householdStorage';
 
 /** Build a short benefit summary string, e.g. "Eggs, Cereal, Milk, and 9 other items" */
-function buildBalanceSummary(household: Household): string {
+function buildBalanceSummary(
+  household: Household,
+  t: (key: string, options?: Record<string, unknown>) => string
+): string {
   // Deduplicate by category so the same item type isn't listed twice
   const seen = new Set<string>();
   const unique = household.participants
@@ -19,13 +22,18 @@ function buildBalanceSummary(household: Household): string {
     });
   if (unique.length === 0) return '';
   const MAX_NAMED = 3;
-  const named = unique.slice(0, MAX_NAMED).map(b => b.categoryLabel);
+  // Use translation key for category name; fall back to stored categoryLabel if key missing
+  const named = unique.slice(0, MAX_NAMED).map(b => {
+    const key = `home.balance.categories.${b.category}`;
+    const translated = t(key);
+    return translated.startsWith('[missing') ? b.categoryLabel : translated;
+  });
   const rest = unique.length - named.length;
   if (rest === 0) {
     if (named.length === 1) return named[0];
     return named.slice(0, -1).join(', ') + ' and ' + named[named.length - 1];
   }
-  return named.join(', ') + `, and ${rest} other item${rest === 1 ? '' : 's'}`;
+  return named.join(', ') + ', ' + t('home.balance.andOthers', { count: rest });
 }
 
 /** Get earliest expiry date string */
@@ -52,7 +60,7 @@ export default function Home() {
   );
 
   const hasHousehold = household && household.participants.some(p => p.benefits.length > 0);
-  const balanceSummary = household ? buildBalanceSummary(household) : '';
+  const balanceSummary = household ? buildBalanceSummary(household, t) : '';
   const expiryDate = household ? getEarliestExpiry(household) : null;
 
   return (
@@ -63,22 +71,22 @@ export default function Home() {
         style={styles.balanceCard}
         onPress={() => router.push('/benefits')}
         accessibilityRole="button"
-        accessibilityLabel={hasHousehold ? `WIC Balance: ${balanceSummary}` : 'Set up WIC benefits'}
-        accessibilityHint="Tap to view benefit details"
+        accessibilityLabel={hasHousehold ? t('a11y.home.balanceLabel', { items: balanceSummary }) : t('a11y.home.balanceSetupLabel')}
+        accessibilityHint={t('a11y.home.balanceHint')}
       >
-        <Text style={styles.balanceTitle}>WIC Balance</Text>
+        <Text style={styles.balanceTitle}>{t('home.balance.title')}</Text>
         {hasHousehold ? (
           <>
             <Text style={styles.balanceSummary} numberOfLines={2}>
-              You have {balanceSummary} remaining.
+              {t('home.balance.youHave', { items: balanceSummary })}
             </Text>
             {expiryDate && (
-              <Text style={styles.balanceExpiry}>Use by {expiryDate}</Text>
+              <Text style={styles.balanceExpiry}>{t('home.balance.useBy', { date: expiryDate })}</Text>
             )}
           </>
         ) : (
           <Text style={styles.balanceSetup}>
-            Tap to set up your benefits →
+            {t('home.balance.setup')}
           </Text>
         )}
       </TouchableOpacity>

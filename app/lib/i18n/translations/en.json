@@ -46,7 +46,32 @@
     "storeFinderSubtext": "Find WIC stores near you",
     "communityHub": "Community Hub",
     "communityHubSubtext": "Tips, recipes & advocacy",
-    "locationSettings": "📍 Location Settings"
+    "locationSettings": "📍 Location Settings",
+    "balance": {
+      "title": "WIC Balance",
+      "youHave": "You have {{items}} remaining.",
+      "useBy": "Use by {{date}}",
+      "setup": "Tap to set up your benefits →",
+      "andOthers": {
+        "one": "and {{count}} other item",
+        "other": "and {{count}} other items"
+      },
+      "categories": {
+        "milk": "Milk",
+        "cheese": "Cheese",
+        "eggs": "Eggs",
+        "fruits_vegetables": "Fruits & Vegetables",
+        "whole_grains": "Whole Grains",
+        "juice": "Juice",
+        "peanut_butter": "Peanut Butter",
+        "infant_formula": "Infant Formula",
+        "cereal": "Infant Cereal",
+        "infant_food": "Infant Fruits & Vegetables",
+        "baby_food_meat": "Baby Food Meat",
+        "yogurt": "Yogurt",
+        "fish": "Fish"
+      }
+    }
   },
   "help": {
     "needHelp": "Need Help?",
@@ -870,7 +895,10 @@
       "storeFinderLabel": "Store Finder. Find WIC stores near you",
       "storeFinderHint": "Opens store finder",
       "communityLabel": "Community Hub. Tips, recipes and advocacy",
-      "communityHint": "Opens community resources"
+      "communityHint": "Opens community resources",
+      "balanceLabel": "WIC Balance: {{items}}",
+      "balanceSetupLabel": "Set up WIC benefits",
+      "balanceHint": "Tap to view benefit details"
     },
     "catalog": {
       "searchLabel": "Search products",

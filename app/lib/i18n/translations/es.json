@@ -46,7 +46,32 @@
     "storeFinderSubtext": "Encontrar tiendas WIC cerca de usted",
     "communityHub": "Centro Comunitario",
     "communityHubSubtext": "Consejos, recetas y defensa",
-    "locationSettings": "📍 Configuración de Ubicación"
+    "locationSettings": "📍 Configuración de Ubicación",
+    "balance": {
+      "title": "Balance WIC",
+      "youHave": "Tiene {{items}} disponibles.",
+      "useBy": "Úselo antes del {{date}}",
+      "setup": "Toque para configurar sus beneficios →",
+      "andOthers": {
+        "one": "y {{count}} artículo más",
+        "other": "y {{count}} artículos más"
+      },
+      "categories": {
+        "milk": "Leche",
+        "cheese": "Queso",
+        "eggs": "Huevos",
+        "fruits_vegetables": "Frutas y Verduras",
+        "whole_grains": "Granos Integrales",
+        "juice": "Jugo",
+        "peanut_butter": "Mantequilla de Maní",
+        "infant_formula": "Fórmula Infantil",
+        "cereal": "Cereal Infantil",
+        "infant_food": "Frutas y Verduras para Bebé",
+        "baby_food_meat": "Carne para Bebé",
+        "yogurt": "Yogurt",
+        "fish": "Pescado"
+      }
+    }
   },
   "help": {
     "needHelp": "¿Necesita Ayuda?",
@@ -870,7 +895,10 @@
       "storeFinderLabel": "Buscar Tiendas. Encontrar tiendas WIC cerca de usted",
       "storeFinderHint": "Abre el buscador de tiendas",
       "communityLabel": "Centro Comunitario. Consejos, recetas y defensa",
-      "communityHint": "Abre los recursos comunitarios"
+      "communityHint": "Abre los recursos comunitarios",
+      "balanceLabel": "Balance WIC: {{items}}",
+      "balanceSetupLabel": "Configurar beneficios WIC",
+      "balanceHint": "Toque para ver detalles de beneficios"
     },
     "catalog": {
       "searchLabel": "Buscar productos",
