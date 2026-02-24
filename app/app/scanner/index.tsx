@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Modal, TextInput, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Modal, TextInput, Keyboard, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { checkEligibility } from '@/lib/services/api';
@@ -106,11 +106,24 @@ export default function Scanner() {
   }
 
   if (!permission.granted) {
+    const canAskAgain = permission.canAskAgain !== false;
     return (
       <View style={styles.container}>
         <Text style={styles.message}>{t('scanner.permissionRequired')}</Text>
-        <TouchableOpacity style={styles.permissionButton} onPress={requestPermission} accessibilityRole="button">
-          <Text style={styles.permissionButtonText}>{t('scanner.grantPermission')}</Text>
+        {!canAskAgain && (
+          <Text style={styles.permissionSettingsHint}>{t('scanner.permissionSettingsHint')}</Text>
+        )}
+        {canAskAgain ? (
+          <TouchableOpacity style={styles.permissionButton} onPress={requestPermission} accessibilityRole="button">
+            <Text style={styles.permissionButtonText}>{t('scanner.grantPermission')}</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.permissionButton} onPress={() => Linking.openSettings()} accessibilityRole="button">
+            <Text style={styles.permissionButtonText}>{t('scanner.openSettings')}</Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity style={styles.permissionBackButton} onPress={() => router.back()} accessibilityRole="button">
+          <Text style={styles.permissionBackButtonText}>{t('scanner.goBack')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -209,7 +222,7 @@ export default function Scanner() {
       {/* Cancel button — above mode toggle */}
       <TouchableOpacity
         style={styles.cancelButton}
-        onPress={() => router.back()}
+        onPress={() => router.canGoBack() ? router.back() : router.replace('/')}
         accessibilityRole="button"
         accessibilityLabel={t('a11y.scanner.cancelLabel')}
         hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
@@ -265,10 +278,33 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     marginHorizontal: 40,
+    marginBottom: 12,
   },
   permissionButtonText: {
     color: '#fff',
     fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  permissionSettingsHint: {
+    color: '#aaa',
+    fontSize: 14,
+    textAlign: 'center',
+    marginHorizontal: 40,
+    marginBottom: 20,
+    lineHeight: 20,
+  },
+  permissionBackButton: {
+    marginTop: 8,
+    padding: 14,
+    marginHorizontal: 40,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  permissionBackButtonText: {
+    color: '#ccc',
+    fontSize: 15,
     fontWeight: '600',
     textAlign: 'center',
   },

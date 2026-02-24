@@ -85,7 +85,10 @@
     "pluModalSubtitle": "Enter the PLU — the 4-5 digit number on the produce sticker",
     "pluInputPlaceholder": "e.g. 4011",
     "pluCheck": "Check",
-    "pluInvalidFormat": "Please enter a 4 or 5 digit PLU code"
+    "pluInvalidFormat": "Please enter a 4 or 5 digit PLU code",
+    "openSettings": "Open Settings",
+    "goBack": "← Go Back",
+    "permissionSettingsHint": "Camera access was denied. Enable it in your device Settings to use the scanner."
   },
   "result": {
     "wicApproved": "WIC Approved",
@@ -1112,6 +1115,48 @@
       "successTitle": "Success",
       "errorTitle": "Error",
       "warningTitle": "Warning"
+    }
+  },
+  "faq": {
+    "package-sizes": {
+      "question": "What package sizes are WIC-approved?",
+      "answer": "WIC approves specific package sizes for each food category. This is one of the most common reasons items get rejected at checkout.\n\n**General Rules:**\n• Each state's Approved Product List (APL) specifies exact sizes\n• Size must match EXACTLY — close isn't good enough\n• Multi-packs may have different rules than single items\n\n**Michigan Examples:**\n• Milk: 1/2 gallon or gallon (not quarts)\n• Eggs: 1 dozen only (not 18-count)\n• Cheese: 8 oz or 16 oz blocks (varies by type)\n• Cereal: 12-36 oz boxes (varies by brand)\n• Juice: 64 oz bottles (frozen may differ)\n\n**Pro Tip:** Use this app's scanner to verify! It checks both the product AND the size against your state's current APL."
+    },
+    "checkout-rejected": {
+      "question": "Why was my item rejected at checkout?",
+      "answer": "Items can be rejected at checkout for several reasons, even if they seem like they should be WIC-approved:\n\n**Most Common Reasons:**\n\n1. **Wrong Size** — The exact package size isn't on the APL\n   • Example: 24 oz cereal when only 18 oz is approved\n\n2. **Wrong Brand** — Store brand vs name brand matters\n   • Some items require specific brands\n   • Formula is especially strict about brands\n\n3. **Wrong Variety** — Same brand, different product\n   • Example: Cheerios ✓ but Honey Nut Cheerios ✗\n   • Example: 2% milk ✓ but chocolate milk ✗\n\n4. **Benefits Exhausted** — Already used your allowance\n   • Check your remaining benefits in the app\n\n5. **Benefits Expired** — Past your benefit period end date\n\n6. **Store System Error** — Rare, but happens\n   • Ask the cashier to re-scan or try another register\n\n**What to Do:**\n• Don't argue at checkout — it's stressful and rarely helps\n• Note the item and check it in this app later\n• Ask for a manager if you believe it's a store error\n• Contact your WIC office if it keeps happening"
+    },
+    "formula-stock": {
+      "question": "How do I know if formula is in stock?",
+      "answer": "Finding formula in stock can be challenging, especially during shortages. Here's how to check:\n\n**Using This App:**\n1. Go to the Formula Finder from the home screen\n2. Select your formula type\n3. See stores with recent stock reports\n4. Check confidence scores (higher = more recent/reliable reports)\n\n**Other Methods:**\n• Call the store before going\n• Check store websites/apps (Walmart, Target, etc.)\n• Ask your WIC office — they sometimes get shortage updates\n\n**Understanding Stock Reports:**\n• 🟢 \"Plenty\" — Multiple units available\n• 🟡 \"Some\" — A few units spotted\n• 🟠 \"Few\" — Very limited, go soon\n• 🔴 \"Out\" — None seen\n\n**Report What You See:**\nHelp other parents! When you shop, report formula stock in the app. Your report helps build a community picture of what's available.\n\n**Formula Shortage Tips:**\n• Check multiple stores in your area\n• Go early in the morning when shelves are restocked\n• Ask about delivery schedules\n• Consider equivalent formulas (ask your WIC office first)"
+    },
+    "benefit-states": {
+      "question": "What do Available, In Cart, and Consumed mean?",
+      "answer": "Your benefits have three states that help you track usage:\n\n**🟢 Available (Green)**\nBenefits you can still use. This is your spending power.\n\n**🟠 In Cart (Amber)**\nItems you've added to your cart but haven't purchased yet. This helps you plan your trip without over-buying.\n\n**⬜ Consumed (Gray)**\nBenefits you've already used this period. These are spent.\n\n**How It Works:**\n1. Start of month: All benefits are Available\n2. Add items to cart: Moves from Available → In Cart\n3. Log a purchase: Moves from In Cart → Consumed\n4. Remove from cart: Moves back from In Cart → Available\n\n**Why This Matters:**\n• Prevents embarrassment at checkout from over-shopping\n• Helps plan shopping trips\n• Shows at a glance what you have left"
+    },
+    "benefit-period": {
+      "question": "When do my benefits expire?",
+      "answer": "WIC benefits expire at the end of each benefit period:\n\n**Key Facts:**\n• Benefits are typically monthly\n• Unused benefits do NOT roll over\n• Your period dates are set by your WIC office\n\n**Check Your Dates:**\nGo to Benefits → look at the expiration date under each category\n\n**Don't Lose Benefits:**\n• Shop before the end date\n• Check remaining amounts regularly\n• Plan your trips to use everything\n\n**Tip:** Set a reminder a few days before your period ends to use remaining benefits."
+    },
+    "scan-products": {
+      "question": "How do I scan products to check eligibility?",
+      "answer": "Use the scanner to verify products BEFORE checkout:\n\n**How to Scan:**\n1. Tap \"Scan Product\" on the home screen\n2. Point your camera at the barcode\n3. Hold steady until it beeps\n4. See instant eligibility results\n\n**What You'll See:**\n• ✅ Eligible — Good to buy with WIC\n• ❌ Not Eligible — Won't work with WIC benefits\n• ⚠️ Check Size — Product is WIC-approved but verify the size\n\n**Tips:**\n• Scan in the store while shopping\n• Check items you're unsure about\n• Works offline with Michigan products"
+    },
+    "formula-alternatives": {
+      "question": "Can I get a different formula if mine is out of stock?",
+      "answer": "You may be able to substitute formula, but there are rules:\n\n**Important:** Always contact your WIC office before switching formulas, especially for medical formulas.\n\n**General Guidelines:**\n• Same brand, different size: Usually OK\n• Different brand, same type: May need approval\n• Different formula type: Requires WIC office approval\n• Medical/specialty formulas: ALWAYS need approval\n\n**Contract Brand:**\nYour state has a \"contract brand\" that's the default. Switching between contract brand products is usually easier than switching to other brands.\n\n**Michigan Contract Brand:** Currently Similac (as of 2024)\n\n**How to Request a Change:**\n1. Call your local WIC office\n2. Explain the shortage situation\n3. They can update your benefits for approved alternatives\n\n**In the App:**\nThe Formula Finder shows alternative formulas that may work for your situation."
+    },
+    "manual-entry": {
+      "question": "How do I enter my benefits manually?",
+      "answer": "If automatic benefit loading isn't available, you can enter benefits from your WIC printout:\n\n**Steps:**\n1. Go to Benefits screen\n2. Tap \"Add Benefits Manually\"\n3. Select the participant\n4. Choose the benefit category\n5. Enter the amount from your printout\n6. Set your benefit period dates\n\n**Where to Find Your Amounts:**\n• Your WIC benefits printout (given at appointments)\n• Your eWIC card receipt\n• Your state's WIC app or website\n\n**Tip:** Enter benefits right after your WIC appointment when you have the printout handy."
+    },
+    "household-setup": {
+      "question": "How do I set up my household?",
+      "answer": "Set up your household to track benefits for everyone:\n\n**Steps:**\n1. Go to Benefits screen\n2. Tap \"Setup\" or \"Set Up Household\"\n3. Add each participant (pregnant, infant, child, etc.)\n4. Enter their name and type\n5. Add their benefits\n\n**Participant Types:**\n• Pregnant\n• Postpartum (not breastfeeding)\n• Breastfeeding\n• Infant (0-12 months)\n• Child (1-5 years)\n\n**Why It Matters:**\nDifferent participants get different benefits. Setting this up correctly ensures accurate tracking."
+    },
+    "report-sighting": {
+      "question": "How do I report product availability?",
+      "answer": "Help other WIC families by reporting what you see in stores:\n\n**How to Report:**\n1. Scan a product\n2. Tap \"Report Stock\"\n3. Select your store\n4. Choose stock level (Plenty, Some, Few, Out)\n5. Submit\n\n**Stock Levels:**\n• 🟢 Plenty — Good supply, multiple units\n• 🟡 Some — Moderate amount\n• 🟠 Few — Very limited\n• 🔴 Out — None available\n\n**Why Report:**\n• Helps other parents find products\n• Builds community knowledge\n• Reduces wasted trips\n• Especially valuable for formula!\n\n**Your reports are anonymous** and help families across your area."
     }
   }
 }

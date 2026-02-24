@@ -1,100 +1,56 @@
 # Session State
 
-> **Last Updated:** 2026-02-23
-> **Session:** APL Sync Auth Fix + Docker Compose Hardening + Spanish i18n Polish + Node 22 Security Bump
+> **Last Updated:** 2026-02-24
+> **Session:** UX Bug Fixes + FAQ i18n + Spanish Translations
 
 ---
 
 ## Current Status
 
-**Security hardening + Spanish polish complete.** APL sync trigger endpoints now require `ADMIN_API_KEY` auth (confirmed 401 on VPS). Docker Compose updated. Spanish i18n: 12 strings fixed. Node runtime bumped to 22 LTS (addresses S-1030). **Pending VPS redeploy** (`docker compose up -d --build backend`) to activate Node 22. v1.6.0 still needs build/deploy.
+**Scanner UX bugs fixed. FAQ content externalized to i18n. Spanish FAQ translations complete (via Claude Opus).** All changes uncommitted — ready for commit + v1.6.0 build.
 
 ---
 
 ## Work Completed This Session
 
-### APL Sync Auth + Docker Compose Fix
+### Scanner UX Fixes
 
-- Verified `requireAdminKey` middleware on `POST /api/v1/apl-sync/trigger` and `/trigger-all`
-- Diagnosed `ADMIN_API_KEY` not reaching container: it was in `.env` but not wired into `docker-compose.yml` backend service
-- Added `ADMIN_API_KEY: ${ADMIN_API_KEY}` to backend `environment:` block in `docker-compose.yml`
-- Confirmed fix: unauthenticated POST now returns `401 Unauthorized`
-- Committed and pushed (`3f3db60`)
+- **Permission denied**: Added `← Go Back` button (`router.back()`) and conditional `Open Settings` button (when `canAskAgain === false` — iOS after denial). `Linking.openSettings()` opens app settings. Added hint text explaining user needs to enable in settings.
+- **Cancel button fallback**: Changed from `router.back()` to `router.canGoBack() ? router.back() : router.replace('/')` to handle edge case where scanner is opened cold with no history.
+- **New i18n keys**: `scanner.openSettings`, `scanner.goBack`, `scanner.permissionSettingsHint` (EN + ES)
 
-### Spanish i18n Polish (this session)
+### FAQ i18n — Body Content Externalized
 
-- Audited all 937 keys — no missing keys, all "same value" entries legitimately identical
-- Fixed 8 `carrito` → `carro` (standardizes the established convention across all screens)
-- Fixed 4 verb forms to infinitive: `Cambiar`, `Seleccionar`, `Buscar`, `Configurar`
-- Remaining known gap: 6 strings hardcode "Michigan" — also hardcoded in EN, deferred (architecture issue)
-- Status: **Translation quality gaps closed. Native speaker review still recommended.**
+- Added `faq.*` section to `en.json` — 10 FAQ items × {question, answer} = 20 keys
+- Added `faq.*` section to `es.json` — Claude Opus 4.6 translated all 10 items to Latin American (Chilean) Spanish
+- Updated `help/index.tsx`: `displayedFAQs` now maps items through `t('faq.${item.id}.question')` / `t('faq.${item.id}.answer')` — falls back to English via `enableFallback` if key missing
+- Search still uses English text from `faqService.ts` (acceptable — deferred)
 
----
+### Previous Sessions (unchanged)
 
-### Spanish i18n Fixes (issues #6, #7, #9 — closed, previous session)
-
-**`household-setup.tsx`** — Full i18n wiring (was 100% hardcoded English):
-- PARTICIPANT_TYPES → `household.participantTypes.*` keys
-- BENEFIT_CATEGORIES → `household.benefitCategories.*` keys
-- All Alert messages → `household.alerts.*` keys
-- All UI labels → `household.*` keys
-
-**`cross-store-search.tsx`** — Formula type chips now use `formulaTypes.*`
-
-**`help/index.tsx`** — FAQ category chips now use `faqCategories.*`
-
-**`index.tsx`** — "📍 Location Settings" → `t('home.locationSettings')`
-
-**`es.json` changes:**
-- `nav.cart`, `cart.title`, `home.shoppingCart` → "Carro de Compras" (carrito→carro)
-- `cart.startScanning` → "Escanea productos"
-- `formulaAlerts.alertSetMessage` → "está" (was "esté")
-- New sections: `household.*`, `faqCategories.*`, `home.locationSettings`
-
-### Brand Filter Chips (issue #10 — closed)
-
-- Backend: `/brands` endpoint — top 30 brands per state+category
-- Backend: Brand normalization via `REGEXP_REPLACE(LOWER(TRIM(brand)), '[^a-z0-9 ]', '', 'g')` — merges Mott's / Motts / MOTT'S
-- Backend: Brand param in `/products` with same punctuation-stripped matching
-- Frontend: Brand chip row in `products.tsx`, hidden during search/UPC scan
-- i18n: `catalog.allBrands` — "All Brands" / "Todas las Marcas"
+- APL Sync Auth + Docker Compose hardening
+- Node 22 bump (S-1030)
+- Spanish i18n polish (carro/carrito, verb forms)
+- Brand filter chips (Product Catalog)
+- Household setup / FAQ categories / cross-store-search i18n
 
 ---
 
-## Files Modified
+## Files Modified This Session
 
-- `app/app/benefits/household-setup.tsx` — full i18n wiring
-- `app/app/formula/cross-store-search.tsx` — formula type chips translated
-- `app/app/help/index.tsx` — FAQ category chips translated
-- `app/app/index.tsx` — Location Settings button translated
-- `app/lib/i18n/translations/en.json` — new household/faqCategories/home/catalog keys
-- `app/lib/i18n/translations/es.json` — all fixes + new sections + catalog.allBrands
-- `app/app/catalog/products.tsx` — brand filter chip row
-- `app/lib/services/catalogService.ts` — CatalogBrand, getBrands(), brand param
-- `backend/src/routes/product-catalog.ts` — /brands endpoint, brand filter, normalization
-- `app/app.json` — v1.6.0, versionCode 11
-
-## Commits
-- `c04cd55` — `security: bump Node runtime from 20 to 22 LTS (S-1030)`
-- `cfe8dcc` — `fix: Spanish i18n — standardize carro/carrito, fix verb forms`
-- `448d599` — `security: guard APL sync trigger endpoints with admin key auth`
-- `3f3db60` — `fix: pass ADMIN_API_KEY into backend container via docker-compose`
-- `352478a` — `fix: Spanish i18n — household setup, cart, home, FAQ categories, formula types`
-- `3ac93a8` — `feat: Add brand filter chips to Product Catalog (issue #10)`
-- `49d52e3` — `fix: Normalize brand apostrophes/punctuation in catalog filter`
+- `app/app/scanner/index.tsx` — permission denied UI, cancel button fallback, `Linking` import
+- `app/app/help/index.tsx` — FAQ items localized via `t('faq.${item.id}.*')`
+- `app/lib/i18n/translations/en.json` — `scanner.openSettings/goBack/permissionSettingsHint` + `faq.*` section
+- `app/lib/i18n/translations/es.json` — same scanner keys in Spanish + `faq.*` section
 
 ---
 
 ## Known Issues / Remaining Work
 
-### UX bugs (issue #9, not translation)
-- Scanner: no way to back out after camera permission denied
-- Cart → "Escanea productos": no navigation back button
-
 ### Spanish gaps (low priority)
 - Product `size` field (e.g., "32 oz") comes from APL as raw English — complex to translate, deferred
-- FAQ body content hardcoded English — large effort, deferred
 - 6 strings hardcode "Michigan" in both EN and ES — architecture issue, deferred
+- FAQ search still runs against English text — acceptable for now
 
 ### Open Security Vulnerabilities (Dynatrace)
 
@@ -105,20 +61,19 @@
 | S-1033 | 6.5 | xlsx ReDoS | No fix available; not exposed (offline scripts only) — mute in Dynatrace |
 | S-1037 | 2.3 | qs arrayLimit DoS | qs 6.15.0 is latest; no fix exists — mute in Dynatrace |
 
-All four show `exposureStatus: Not detected` in Dynatrace. S-1032/S-1033/S-1037 are safe to mute.
-
 ---
 
 ## What's Next
 
 ### Immediate
-1. **Mute S-1032, S-1033, S-1037 in Dynatrace** — all unexposed, no fixes available
+1. **Commit this session's work** — scanner UX + FAQ i18n
 2. **Build v1.6.0** — TestFlight + Google Play Console
 
 ### Short Term
-1. **UX bugs** — Scanner permission deny back-out; cart scan back navigation
-2. **iOS & Android App Store Submissions** — Screenshots, metadata, store listings
-3. **Register LLC** — Required for professional store presence
+1. **iOS & Android App Store Submissions** — Screenshots, metadata, store listings
+2. **Register LLC** — Required for professional store presence
+3. **Kroger Approved Partner Status** — Apply after LLC + app store listings
+4. **Walmart API outreach** — Once app is live on stores
 
 ---
 

@@ -85,7 +85,10 @@
     "pluModalSubtitle": "Ingrese el PLU — el número de 4-5 dígitos en la etiqueta del producto",
     "pluInputPlaceholder": "ej. 4011",
     "pluCheck": "Verificar",
-    "pluInvalidFormat": "Ingrese un código PLU de 4 o 5 dígitos"
+    "pluInvalidFormat": "Ingrese un código PLU de 4 o 5 dígitos",
+    "openSettings": "Abrir Configuración",
+    "goBack": "← Volver",
+    "permissionSettingsHint": "Se denegó el acceso a la cámara. Actívalo en la Configuración de tu dispositivo para usar el escáner."
   },
   "result": {
     "wicApproved": "Aprobado por WIC",
@@ -1112,6 +1115,48 @@
       "successTitle": "Éxito",
       "errorTitle": "Error",
       "warningTitle": "Advertencia"
+    }
+  },
+  "faq": {
+    "package-sizes": {
+      "question": "¿Qué tamaños de paquete están aprobados por WIC?",
+      "answer": "WIC aprueba tamaños de paquete específicos para cada categoría de alimentos. Esta es una de las razones más comunes por las que los artículos son rechazados en la caja.\n\n**Reglas Generales:**\n• La Lista de Productos Aprobados (APL) de cada estado especifica los tamaños exactos\n• El tamaño debe coincidir EXACTAMENTE — estar cerca no es suficiente\n• Los multi-packs pueden tener reglas diferentes a los artículos individuales\n\n**Ejemplos de Michigan:**\n• Leche: 1/2 galón o galón (no cuartos)\n• Huevos: solo 1 docena (no paquetes de 18)\n• Queso: bloques de 8 oz o 16 oz (varía según el tipo)\n• Cereal: cajas de 12-36 oz (varía según la marca)\n• Jugo: botellas de 64 oz (el congelado puede variar)\n\n**Consejo:** ¡Usa el escáner de esta app para verificar! Revisa tanto el producto COMO el tamaño contra la APL actual de tu estado."
+    },
+    "checkout-rejected": {
+      "question": "¿Por qué rechazaron mi artículo en la caja?",
+      "answer": "Los artículos pueden ser rechazados en la caja por varias razones, incluso si parece que deberían estar aprobados por WIC:\n\n**Razones Más Comunes:**\n\n1. **Tamaño Incorrecto** — El tamaño exacto del paquete no está en la APL\n   • Ejemplo: cereal de 24 oz cuando solo el de 18 oz está aprobado\n\n2. **Marca Incorrecta** — La marca de tienda vs la marca de nombre importa\n   • Algunos artículos requieren marcas específicas\n   • La fórmula es especialmente estricta con las marcas\n\n3. **Variedad Incorrecta** — Misma marca, producto diferente\n   • Ejemplo: Cheerios ✓ pero Honey Nut Cheerios ✗\n   • Ejemplo: leche 2% ✓ pero leche con chocolate ✗\n\n4. **Beneficios Agotados** — Ya usaste tu asignación\n   • Revisa tus beneficios restantes en la app\n\n5. **Beneficios Vencidos** — Pasó la fecha de fin de tu período de beneficios\n\n6. **Error del Sistema de la Tienda** — Raro, pero pasa\n   • Pide al cajero que vuelva a escanear o prueba en otra caja\n\n**Qué Hacer:**\n• No discutas en la caja — es estresante y rara vez ayuda\n• Anota el artículo y revísalo en esta app después\n• Pide hablar con un gerente si crees que es un error de la tienda\n• Contacta tu oficina de WIC si sigue pasando"
+    },
+    "formula-stock": {
+      "question": "¿Cómo sé si la fórmula está disponible?",
+      "answer": "Encontrar fórmula disponible puede ser difícil, especialmente durante escasez. Así puedes verificar:\n\n**Usando Esta App:**\n1. Ve al Buscador de Fórmula desde la pantalla de inicio\n2. Selecciona tu tipo de fórmula\n3. Ve las tiendas con reportes recientes de stock\n4. Revisa los puntajes de confianza (más alto = reportes más recientes/confiables)\n\n**Otros Métodos:**\n• Llama a la tienda antes de ir\n• Revisa los sitios web/apps de las tiendas (Walmart, Target, etc.)\n• Pregunta en tu oficina de WIC — a veces reciben actualizaciones sobre escasez\n\n**Entendiendo los Reportes de Stock:**\n• 🟢 \"Bastante\" — Varias unidades disponibles\n• 🟡 \"Algo\" — Algunas unidades vistas\n• 🟠 \"Poco\" — Muy limitado, ve pronto\n• 🔴 \"Agotado\" — No se vio ninguna\n\n**Reporta Lo Que Ves:**\n¡Ayuda a otros padres! Cuando vayas de compras, reporta el stock de fórmula en la app. Tu reporte ayuda a construir una imagen comunitaria de lo que está disponible.\n\n**Consejos para Escasez de Fórmula:**\n• Revisa varias tiendas en tu zona\n• Ve temprano en la mañana cuando se reponen los estantes\n• Pregunta sobre los horarios de entrega\n• Considera fórmulas equivalentes (pregunta primero en tu oficina de WIC)"
+    },
+    "benefit-states": {
+      "question": "¿Qué significan Disponible, En el Carro y Consumido?",
+      "answer": "Tus beneficios tienen tres estados que te ayudan a rastrear el uso:\n\n**🟢 Disponible (Verde)**\nBeneficios que aún puedes usar. Este es tu poder de compra.\n\n**🟠 En el Carro (Ámbar)**\nArtículos que agregaste a tu carro pero que aún no has comprado. Esto te ayuda a planificar tu compra sin pasarte.\n\n**⬜ Consumido (Gris)**\nBeneficios que ya usaste en este período. Estos ya están gastados.\n\n**Cómo Funciona:**\n1. Inicio del mes: Todos los beneficios están Disponibles\n2. Agregar artículos al carro: Pasan de Disponible → En el Carro\n3. Registrar una compra: Pasan de En el Carro → Consumido\n4. Eliminar del carro: Vuelven de En el Carro → Disponible\n\n**Por Qué Importa:**\n• Evita la vergüenza en la caja por comprar de más\n• Ayuda a planificar las compras\n• Muestra de un vistazo lo que te queda"
+    },
+    "benefit-period": {
+      "question": "¿Cuándo vencen mis beneficios?",
+      "answer": "Los beneficios de WIC vencen al final de cada período de beneficios:\n\n**Datos Clave:**\n• Los beneficios son típicamente mensuales\n• Los beneficios no usados NO se transfieren al siguiente mes\n• Las fechas de tu período las establece tu oficina de WIC\n\n**Revisa Tus Fechas:**\nVe a Beneficios → busca la fecha de vencimiento debajo de cada categoría\n\n**No Pierdas Beneficios:**\n• Compra antes de la fecha de vencimiento\n• Revisa las cantidades restantes regularmente\n• Planifica tus compras para usar todo\n\n**Consejo:** Pon un recordatorio unos días antes de que termine tu período para usar los beneficios restantes."
+    },
+    "scan-products": {
+      "question": "¿Cómo escaneo productos para verificar elegibilidad?",
+      "answer": "Usa el escáner para verificar productos ANTES de la caja:\n\n**Cómo Escanear:**\n1. Toca \"Escanear Producto\" en la pantalla de inicio\n2. Apunta tu cámara al código de barras\n3. Mantén firme hasta que suene\n4. Ve los resultados de elegibilidad al instante\n\n**Lo Que Verás:**\n• ✅ Elegible — Puedes comprarlo con WIC\n• ❌ No Elegible — No funcionará con beneficios de WIC\n• ⚠️ Verifica el Tamaño — El producto está aprobado por WIC pero verifica el tamaño\n\n**Consejos:**\n• Escanea en la tienda mientras compras\n• Revisa los artículos de los que no estés seguro/a\n• Funciona sin conexión con productos de Michigan"
+    },
+    "formula-alternatives": {
+      "question": "¿Puedo obtener una fórmula diferente si la mía está agotada?",
+      "answer": "Es posible que puedas sustituir la fórmula, pero hay reglas:\n\n**Importante:** Siempre contacta tu oficina de WIC antes de cambiar de fórmula, especialmente para fórmulas médicas.\n\n**Pautas Generales:**\n• Misma marca, tamaño diferente: Generalmente OK\n• Marca diferente, mismo tipo: Puede necesitar aprobación\n• Tipo de fórmula diferente: Requiere aprobación de la oficina de WIC\n• Fórmulas médicas/especializadas: SIEMPRE necesitan aprobación\n\n**Marca Contrato:**\nTu estado tiene una \"marca contrato\" que es la predeterminada. Cambiar entre productos de la marca contrato es generalmente más fácil que cambiar a otras marcas.\n\n**Marca Contrato de Michigan:** Actualmente Similac (a partir de 2024)\n\n**Cómo Solicitar un Cambio:**\n1. Llama a tu oficina de WIC local\n2. Explica la situación de escasez\n3. Ellos pueden actualizar tus beneficios para alternativas aprobadas\n\n**En la App:**\nEl Buscador de Fórmula muestra fórmulas alternativas que pueden funcionar para tu situación."
+    },
+    "manual-entry": {
+      "question": "¿Cómo ingreso mis beneficios manualmente?",
+      "answer": "Si la carga automática de beneficios no está disponible, puedes ingresar los beneficios desde tu impreso de WIC:\n\n**Pasos:**\n1. Ve a la pantalla de Beneficios\n2. Toca \"Agregar Beneficios Manualmente\"\n3. Selecciona el participante\n4. Elige la categoría de beneficio\n5. Ingresa la cantidad de tu impreso\n6. Establece las fechas de tu período de beneficios\n\n**Dónde Encontrar Tus Cantidades:**\n• Tu impreso de beneficios de WIC (entregado en las citas)\n• Tu recibo de la tarjeta eWIC\n• La app o sitio web de WIC de tu estado\n\n**Consejo:** Ingresa los beneficios justo después de tu cita de WIC cuando tengas el impreso a mano."
+    },
+    "household-setup": {
+      "question": "¿Cómo configuro mi hogar?",
+      "answer": "Configura tu hogar para rastrear los beneficios de todos:\n\n**Pasos:**\n1. Ve a la pantalla de Beneficios\n2. Toca \"Configurar\" o \"Configurar Hogar\"\n3. Agrega cada participante (embarazada, bebé, niño/a, etc.)\n4. Ingresa su nombre y tipo\n5. Agrega sus beneficios\n\n**Tipos de Participante:**\n• Embarazada\n• Postparto (no lactando)\n• Lactando\n• Bebé (0-12 meses)\n• Niño/a (1-5 años)\n\n**Por Qué Importa:**\nDiferentes participantes reciben diferentes beneficios. Configurar esto correctamente asegura un seguimiento preciso."
+    },
+    "report-sighting": {
+      "question": "¿Cómo reporto la disponibilidad de un producto?",
+      "answer": "Ayuda a otras familias de WIC reportando lo que ves en las tiendas:\n\n**Cómo Reportar:**\n1. Escanea un producto\n2. Toca \"Reportar Stock\"\n3. Selecciona tu tienda\n4. Elige el nivel de stock (Bastante, Algo, Poco, Agotado)\n5. Enviar\n\n**Niveles de Stock:**\n• 🟢 Bastante — Buen suministro, varias unidades\n• 🟡 Algo — Cantidad moderada\n• 🟠 Poco — Muy limitado\n• 🔴 Agotado — No hay disponible\n\n**Por Qué Reportar:**\n• Ayuda a otros padres a encontrar productos\n• Construye conocimiento comunitario\n• Reduce viajes en vano\n• ¡Especialmente valioso para fórmula!\n\n**Tus reportes son anónimos** y ayudan a familias en toda tu zona."
     }
   }
 }

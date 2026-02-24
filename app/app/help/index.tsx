@@ -47,14 +47,21 @@ export default function HelpScreen() {
   const categories = useMemo(() => getCategoriesWithCounts(), []);
 
   const displayedFAQs = useMemo(() => {
+    let items;
     if (searchQuery.trim()) {
-      return searchFAQs(searchQuery).map((r) => r.item);
+      items = searchFAQs(searchQuery).map((r) => r.item);
+    } else if (selectedCategory !== 'all') {
+      items = getFAQsByCategory(selectedCategory);
+    } else {
+      items = getAllFAQs();
     }
-    if (selectedCategory !== 'all') {
-      return getFAQsByCategory(selectedCategory);
-    }
-    return getAllFAQs();
-  }, [searchQuery, selectedCategory]);
+    // Apply i18n localization — falls back to English if translation missing
+    return items.map((item) => ({
+      ...item,
+      question: t(`faq.${item.id}.question`),
+      answer: t(`faq.${item.id}.answer`),
+    }));
+  }, [searchQuery, selectedCategory, t]);
 
   const handleCategoryPress = (category: FAQCategory | 'all') => {
     setSelectedCategory(category);
