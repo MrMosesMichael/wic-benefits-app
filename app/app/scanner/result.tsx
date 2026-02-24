@@ -28,6 +28,9 @@ export default function ScanResult() {
   const [adding, setAdding] = useState(false);
   // D2: Track whether household prompt has been dismissed
   const [cartPreferenceDismissed, setCartPreferenceDismissed] = useState(false);
+  // Whether the user has any household set up at all (separate from eligible participants)
+  const [hasHousehold, setHasHousehold] = useState(false);
+  const [fallbackParticipantId, setFallbackParticipantId] = useState<string>('1');
 
   // Sightings state
   const [sightings, setSightings] = useState<ProductSighting[]>([]);
@@ -62,6 +65,10 @@ export default function ScanResult() {
       });
 
       setEligibleParticipants(eligible);
+      setHasHousehold(household.participants.length > 0);
+      if (household.participants.length > 0) {
+        setFallbackParticipantId(household.participants[0].id);
+      }
 
       // Auto-select if only one participant
       if (eligible.length === 1) {
@@ -75,43 +82,63 @@ export default function ScanResult() {
   };
 
   const handleAddToCart = async () => {
-    // D2: If no eligible participants, show household setup prompt
     if (eligibleParticipants.length === 0) {
-      if (cartPreferenceDismissed) {
-        // Already chose "Continue Anyway" before — just confirm
+      if (!hasHousehold) {
+        // No household set up at all — show setup prompt (D2)
+        if (cartPreferenceDismissed) {
+          Alert.alert(
+            t('result.addedToCart'),
+            'Item noted. Set up your household to track benefits.',
+            [
+              { text: 'Set Up Now', onPress: () => router.push('/benefits/household-setup') },
+              { text: 'OK' },
+            ]
+          );
+        } else {
+          Alert.alert(
+            'Track Your Benefits',
+            'Set up your household to see which benefits this item uses and track what you have left.',
+            [
+              {
+                text: 'Set Up Household',
+                onPress: () => router.push('/benefits/household-setup'),
+              },
+              {
+                text: 'Continue Anyway',
+                onPress: async () => {
+                  await AsyncStorage.setItem('@wic_cart_preference', 'household');
+                  setCartPreferenceDismissed(true);
+                  Alert.alert(t('result.addedToCart'), 'Item added to your shopping list.');
+                },
+              },
+            ]
+          );
+        }
+        return;
+      }
+
+      // Household exists but no available benefits for this category — add generically
+      try {
+        setAdding(true);
+        await addToCart(fallbackParticipantId, upc, name, category, 1, 'unit', brand, size);
+        const fullProductName = brand ? `${brand} ${name}` : name;
         Alert.alert(
           t('result.addedToCart'),
-          'Item noted. Set up your household to track benefits.',
+          t('result.addedToCartMessage', { product: fullProductName }),
           [
-            { text: 'Set Up Now', onPress: () => router.push('/benefits/household-setup') },
-            { text: 'OK' },
+            { text: t('result.viewCart'), onPress: () => router.replace('/cart') },
+            { text: t('result.continueShopping'), onPress: () => router.replace('/') },
           ]
         );
-      } else {
-        // First time — show the one-time prompt
-        Alert.alert(
-          'Track Your Benefits',
-          'Set up your household to see which benefits this item uses and track what you have left.',
-          [
-            {
-              text: 'Set Up Household',
-              onPress: () => router.push('/benefits/household-setup'),
-            },
-            {
-              text: 'Continue Anyway',
-              onPress: async () => {
-                await AsyncStorage.setItem('@wic_cart_preference', 'household');
-                setCartPreferenceDismissed(true);
-                Alert.alert(t('result.addedToCart'), 'Item added to your shopping list.');
-              },
-            },
-          ]
-        );
+      } catch (err: any) {
+        Alert.alert(t('common.error'), err.message || 'Failed to add item to cart');
+      } finally {
+        setAdding(false);
       }
       return;
     }
 
-    // Existing flow: has eligible participants
+    // Normal flow: has eligible participants
     if (!selectedParticipantId) {
       Alert.alert(t('result.selectParticipant'), t('result.selectParticipantMessage'));
       return;
