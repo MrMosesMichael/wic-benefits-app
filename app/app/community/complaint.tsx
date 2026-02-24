@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { useI18n } from '@/lib/i18n/I18nContext';
@@ -48,6 +50,11 @@ export default function ComplaintScreen() {
   };
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={80}
+    >
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Privacy Notice */}
       <View style={styles.privacyBanner}>
@@ -118,6 +125,7 @@ export default function ComplaintScreen() {
 
       <View style={{ height: 40 }} />
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

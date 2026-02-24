@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useLocation } from '@/lib/hooks/useLocation';
@@ -62,6 +64,11 @@ export default function LocationSettingsScreen() {
   ];
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={80}
+    >
     <ScrollView style={styles.container}>
       <View style={styles.content}>
         {/* Current Location */}
@@ -198,6 +205,7 @@ export default function LocationSettingsScreen() {
         <View style={{ height: 40 }} />
       </View>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

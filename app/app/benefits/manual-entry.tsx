@@ -7,6 +7,8 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BenefitCategory, BenefitUnit } from '@/lib/types';
@@ -232,6 +234,11 @@ export default function ManualEntry() {
   const validUnits = getValidUnits(entry.category);
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={80}
+    >
     <ScrollView style={styles.container}>
       <View style={styles.form}>
 
@@ -503,6 +510,7 @@ export default function ManualEntry() {
         </TouchableOpacity>
       </View>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

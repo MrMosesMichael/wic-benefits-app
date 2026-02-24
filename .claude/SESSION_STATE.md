@@ -7,7 +7,7 @@
 
 ## Current Status
 
-**10 iOS defects fixed. 5 UI/UX changes applied. Version bumped to 1.7.0.** All changes uncommitted — ready for commit + build.
+**10 iOS defects fixed. 5 UI/UX changes applied. KAV extended + WIC Balance restyled. Version bumped to 1.7.0.** All changes committed (50b22a7 + follow-up).
 
 ---
 
@@ -51,6 +51,11 @@
 - `app/app/benefits/index.tsx` — D9: tappable participant headers
 - `app/app/index.tsx` — UI1-5: home screen redesign
 - `app/app.json` — version 1.7.0, versionCode 12
+- `app/app/benefits/log-purchase.tsx` — KAV wrapping applied
+- `app/app/feedback/index.tsx` — KAV import + wrapping applied
+- `app/app/community/complaint.tsx` — KAV wrapping applied
+- `app/app/settings/location.tsx` — KAV wrapping applied
+- `app/app/index.tsx` — WIC Balance restyled: removed green card, text-based with bottom divider
 
 ---
 
