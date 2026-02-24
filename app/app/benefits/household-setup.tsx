@@ -11,6 +11,8 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { saveHousehold, loadHousehold, clearHousehold } from '@/lib/services/householdStorage';
@@ -82,7 +84,7 @@ export default function HouseholdSetup() {
     }
   };
 
-  const handleAddParticipant = () => {
+  const handleAddParticipant = async () => {
     if (!newParticipantName.trim()) {
       Alert.alert(t('household.alerts.errorTitle'), t('household.errors.nameRequired'));
       return;
@@ -99,10 +101,18 @@ export default function HouseholdSetup() {
       benefits: [],
     };
 
-    setParticipants([...participants, newParticipant]);
+    const newParticipants = [...participants, newParticipant];
+    setParticipants(newParticipants);
     setNewParticipantName('');
     setNewParticipantType(null);
     setShowAddParticipant(false);
+
+    // D8: Auto-save so the participant persists even without "Save & Apply"
+    try {
+      await saveHousehold({ id: '1', state: 'MI', participants: newParticipants });
+    } catch {
+      // Non-fatal: will be saved when user presses Save & Apply
+    }
   };
 
   const handleRemoveParticipant = (id: string) => {
@@ -164,15 +174,11 @@ export default function HouseholdSetup() {
     setEditingBenefits(editingBenefits.filter((_, i) => i !== index));
   };
 
-  const handleSaveBenefits = () => {
+  const handleSaveBenefits = async () => {
     if (!editingParticipantId) return;
 
-    // Validate all benefits have required fields
-    const hasErrors = editingBenefits.some(b => !b.category || !b.total || parseFloat(b.total) <= 0);
-    if (hasErrors) {
-      Alert.alert(t('household.alerts.errorTitle'), t('household.errors.benefitFields'));
-      return;
-    }
+    // D10: Silently drop empty benefit cards instead of erroring
+    const validInputs = editingBenefits.filter(b => b.category && b.total && parseFloat(b.total) > 0);
 
     // Calculate default period (current month)
     const now = new Date();
@@ -180,7 +186,7 @@ export default function HouseholdSetup() {
     const periodEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString();
 
     // Convert to BenefitAmount format
-    const benefits: BenefitAmount[] = editingBenefits.map(b => ({
+    const benefits: BenefitAmount[] = validInputs.map(b => ({
       category: b.category,
       categoryLabel: b.categoryLabel,
       total: b.total,
@@ -192,16 +198,22 @@ export default function HouseholdSetup() {
       periodEnd,
     }));
 
-    // Update participant
-    setParticipants(
-      participants.map(p =>
-        p.id === editingParticipantId ? { ...p, benefits } : p
-      )
+    // Update participant in state
+    const newParticipants = participants.map(p =>
+      p.id === editingParticipantId ? { ...p, benefits } : p
     );
+    setParticipants(newParticipants);
 
     setEditingParticipantId(null);
     setEditingBenefits([]);
-    Alert.alert(t('household.alerts.successTitle'), t('household.alerts.benefitsSaved'));
+
+    // D8: Auto-save to storage so changes persist without requiring "Save & Apply"
+    try {
+      await saveHousehold({ id: '1', state: 'MI', participants: newParticipants });
+      Alert.alert(t('household.alerts.successTitle'), t('household.alerts.benefitsSaved'));
+    } catch {
+      Alert.alert(t('household.alerts.errorTitle'), t('household.errors.saveFailed'));
+    }
   };
 
   const handleSaveHousehold = async () => {
@@ -268,6 +280,11 @@ export default function HouseholdSetup() {
     if (!participant) return null;
 
     return (
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={80}
+      >
       <ScrollView style={styles.container}>
         <View style={styles.content}>
           {editingBenefits.map((benefit, index) => (
@@ -352,6 +369,7 @@ export default function HouseholdSetup() {
           </View>
         </View>
       </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
 

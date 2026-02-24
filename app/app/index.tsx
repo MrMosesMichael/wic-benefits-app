@@ -1,17 +1,90 @@
+import { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { loadHousehold } from '@/lib/services/householdStorage';
+import type { Household } from '@/lib/services/householdStorage';
+
+/** Build a short benefit summary string, e.g. "Eggs, Milk, and 3 more" */
+function buildBalanceSummary(household: Household): string {
+  const available = household.participants
+    .flatMap(p => p.benefits)
+    .filter(b => parseFloat(b.available) > 0);
+  if (available.length === 0) return '';
+  const shown = available.slice(0, 2).map(b => b.categoryLabel);
+  const more = available.length - shown.length;
+  if (more > 0) return shown.join(', ') + `, and ${more} more`;
+  if (shown.length === 1) return shown[0];
+  return shown[0] + ' and ' + shown[1];
+}
+
+/** Get earliest expiry date string */
+function getEarliestExpiry(household: Household): string | null {
+  const dates = household.participants
+    .flatMap(p => p.benefits)
+    .filter(b => b.periodEnd)
+    .map(b => b.periodEnd!);
+  if (dates.length === 0) return null;
+  dates.sort();
+  return new Date(dates[0]).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
 
 export default function Home() {
   const router = useRouter();
   const t = useTranslation();
+  const [household, setHousehold] = useState<Household | null>(null);
+
+  // Reload WIC balance whenever screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      loadHousehold().then(h => setHousehold(h));
+    }, [])
+  );
+
+  const hasHousehold = household && household.participants.some(p => p.benefits.length > 0);
+  const balanceSummary = household ? buildBalanceSummary(household) : '';
+  const expiryDate = household ? getEarliestExpiry(household) : null;
 
   return (
     <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.container}>
-      <Text style={styles.title} accessibilityRole="header">{t('app.title')}</Text>
-      <Text style={styles.subtitle}>{t('app.subtitle')}</Text>
+
+      {/* UI1: WIC Balance Summary (replaces title + subtitle) */}
+      <TouchableOpacity
+        style={styles.balanceCard}
+        onPress={() => router.push('/benefits')}
+        accessibilityRole="button"
+        accessibilityLabel={hasHousehold ? `WIC Balance: ${balanceSummary}` : 'Set up WIC benefits'}
+        accessibilityHint="Tap to view benefit details"
+      >
+        <Text style={styles.balanceTitle}>WIC Balance</Text>
+        {hasHousehold ? (
+          <>
+            <Text style={styles.balanceSummary} numberOfLines={2}>
+              You have {balanceSummary} remaining.
+            </Text>
+            {expiryDate && (
+              <Text style={styles.balanceExpiry}>Use by {expiryDate}</Text>
+            )}
+          </>
+        ) : (
+          <Text style={styles.balanceSetup}>
+            Tap to set up your benefits →
+          </Text>
+        )}
+      </TouchableOpacity>
 
       <View style={styles.buttonContainer}>
+        {/* UI2+UI3: Scan Product first, with camera icon */}
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => router.push('/scanner')}
+          accessibilityRole="button"
+          accessibilityHint={t('a11y.home.scanHint')}
+        >
+          <Text style={styles.buttonText}>📷 {t('home.scanProduct')}</Text>
+        </TouchableOpacity>
+
+        {/* UI2: Find Formula second */}
         <TouchableOpacity
           style={styles.formulaButton}
           onPress={() => router.push('/formula')}
@@ -23,24 +96,7 @@ export default function Home() {
           <Text style={styles.buttonSubtext}>{t('home.findFormulaSubtext')}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.primaryButton}
-          onPress={() => router.push('/scanner')}
-          accessibilityRole="button"
-          accessibilityHint={t('a11y.home.scanHint')}
-        >
-          <Text style={styles.buttonText}>{t('home.scanProduct')}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.secondaryButton}
-          onPress={() => router.push('/benefits')}
-          accessibilityRole="button"
-          accessibilityHint={t('a11y.home.benefitsHint')}
-        >
-          <Text style={styles.buttonText}>{t('home.viewBenefits')}</Text>
-        </TouchableOpacity>
-
+        {/* UI2: Shopping Cart third */}
         <TouchableOpacity
           style={styles.cartButton}
           onPress={() => router.push('/cart')}
@@ -50,6 +106,9 @@ export default function Home() {
           <Text style={styles.buttonText}>{t('home.shoppingCart')}</Text>
         </TouchableOpacity>
 
+        {/* UI4: View Benefits removed — WIC Balance card at top replaces it */}
+
+        {/* Remaining cards in original order */}
         <TouchableOpacity
           style={styles.foodBankButton}
           onPress={() => router.push('/foodbanks')}
@@ -128,17 +187,37 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 24,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#2E7D32',
-    marginBottom: 8,
-    textAlign: 'center',
+  // UI1: WIC Balance card
+  balanceCard: {
+    width: '100%',
+    backgroundColor: '#2E7D32',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 24,
   },
-  subtitle: {
+  balanceTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: 'rgba(255,255,255,0.8)',
+    letterSpacing: 1,
+    marginBottom: 6,
+    textTransform: 'uppercase',
+  },
+  balanceSummary: {
     fontSize: 18,
-    color: '#666',
-    marginBottom: 40,
+    fontWeight: '600',
+    color: '#fff',
+    lineHeight: 24,
+  },
+  balanceExpiry: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.75)',
+    marginTop: 6,
+  },
+  balanceSetup: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.9)',
+    fontWeight: '500',
   },
   buttonContainer: {
     width: '100%',
@@ -146,12 +225,6 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     backgroundColor: '#2E7D32',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  secondaryButton: {
-    backgroundColor: '#1976D2',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',

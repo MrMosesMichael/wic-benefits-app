@@ -13,9 +13,8 @@ import { useRouter } from 'expo-router';
 import {
   getBenefits,
   Household,
-  updateBenefitPeriod,
-  rolloverBenefitPeriod,
 } from '@/lib/services/api';
+import { loadHousehold, saveHousehold } from '@/lib/services/householdStorage';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 
 interface PeriodSettings {
@@ -132,7 +131,17 @@ export default function PeriodSettings() {
           onPress: async () => {
             setSaving(true);
             try {
-              await updateBenefitPeriod(household!.id, periodStart, periodEnd);
+              // Update local AsyncStorage (source of truth for benefits)
+              const localHousehold = await loadHousehold();
+              if (localHousehold) {
+                localHousehold.participants.forEach(p => {
+                  p.benefits.forEach(b => {
+                    b.periodStart = periodStart.toISOString();
+                    b.periodEnd = periodEnd.toISOString();
+                  });
+                });
+                await saveHousehold(localHousehold);
+              }
 
               Alert.alert(
                 'Period Updated',
@@ -171,15 +180,29 @@ export default function PeriodSettings() {
               const newStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
               const newEnd = new Date(now.getFullYear(), now.getMonth() + 2, 0);
 
-              await rolloverBenefitPeriod(household!.id, newStart, newEnd);
+              // Update local AsyncStorage — reset available amounts, update period dates
+              const localHousehold = await loadHousehold();
+              if (localHousehold) {
+                localHousehold.participants.forEach(p => {
+                  p.benefits.forEach(b => {
+                    b.periodStart = newStart.toISOString();
+                    b.periodEnd = newEnd.toISOString();
+                    // Reset to full amount for new period
+                    b.available = b.total;
+                    b.inCart = '0';
+                    b.consumed = '0';
+                  });
+                });
+                await saveHousehold(localHousehold);
+              }
 
               setPeriodStart(newStart);
               setPeriodEnd(newEnd);
 
               Alert.alert(
                 'New Period Started',
-                `New benefit period: ${formatDate(newStart)} - ${formatDate(newEnd)}\n\nPlease enter new benefit amounts.`,
-                [{ text: 'OK', onPress: () => router.push('/benefits/manual-entry') }]
+                `New benefit period: ${formatDate(newStart)} - ${formatDate(newEnd)}\n\nPlease update benefit amounts if needed.`,
+                [{ text: 'OK', onPress: () => router.push('/benefits/household-setup') }]
               );
             } catch (err) {
               console.error('Failed to rollover period:', err);

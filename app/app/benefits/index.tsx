@@ -101,12 +101,21 @@ export default function Benefits() {
 
       {household.participants.map((participant) => (
         <View key={participant.id} style={styles.participantSection}>
-          <View style={styles.participantHeader}>
+          <TouchableOpacity
+            style={styles.participantHeader}
+            onPress={() => router.push('/benefits/household-setup')}
+            accessibilityRole="button"
+            accessibilityLabel={`${participant.name} — tap to edit`}
+            hitSlop={{ top: 4, bottom: 4 }}
+          >
             <Text style={styles.participantName} accessibilityRole="header">{participant.name}</Text>
-            <View style={styles.typeBadge}>
-              <Text style={styles.typeText}>{participant.type}</Text>
+            <View style={styles.typeBadgeRow}>
+              <View style={styles.typeBadge}>
+                <Text style={styles.typeText}>{participant.type}</Text>
+              </View>
+              <Text style={styles.editHint}>Edit ›</Text>
             </View>
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.benefitsList}>
             {participant.benefits.length === 0 ? (
@@ -324,11 +333,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
+  typeBadgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   typeBadge: {
     backgroundColor: '#E3F2FD',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
+  },
+  editHint: {
+    fontSize: 13,
+    color: '#2E7D32',
+    fontWeight: '500',
   },
   typeText: {
     fontSize: 12,

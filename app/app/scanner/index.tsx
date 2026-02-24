@@ -7,8 +7,6 @@ import { useTranslation } from '@/lib/i18n/I18nContext';
 import { useLocation } from '@/lib/hooks/useLocation';
 import { lookupPlu, pluToResultParams, isValidPluFormat } from '@/lib/services/pluLookup';
 
-type ScanMode = 'check' | 'shopping';
-
 export default function Scanner() {
   const router = useRouter();
   const t = useTranslation();
@@ -16,7 +14,6 @@ export default function Scanner() {
   const [isActive, setIsActive] = useState(true);
   const [scanning, setScanning] = useState(false);
   const [lastScannedCode, setLastScannedCode] = useState<string | null>(null);
-  const [scanMode, setScanMode] = useState<ScanMode>('check');
   const [showPluModal, setShowPluModal] = useState(false);
   const [pluInput, setPluInput] = useState('');
   const [pluError, setPluError] = useState('');
@@ -54,7 +51,7 @@ export default function Scanner() {
           eligible: result.eligible ? 'true' : 'false',
           category: result.category || '',
           reason: result.reason || '',
-          scanMode: scanMode,
+          scanMode: 'check',
         },
       });
     } catch (error) {
@@ -91,7 +88,7 @@ export default function Scanner() {
       pathname: '/scanner/result',
       params: {
         ...pluToResultParams(result),
-        scanMode,
+        scanMode: 'check',
       },
     });
   };
@@ -230,31 +227,6 @@ export default function Scanner() {
         <Text style={styles.cancelText}>{t('scanner.cancel')}</Text>
       </TouchableOpacity>
 
-      {/* Mode toggle — rendered after overlay so touches aren't intercepted */}
-      <View style={styles.modeToggle} accessibilityRole="tablist">
-        <TouchableOpacity
-          style={[styles.modeButton, scanMode === 'check' && styles.modeButtonActive]}
-          onPress={() => setScanMode('check')}
-          accessibilityRole="tab"
-          accessibilityState={{ selected: scanMode === 'check' }}
-          hitSlop={{ top: 6, bottom: 6 }}
-        >
-          <Text style={[styles.modeButtonText, scanMode === 'check' && styles.modeButtonTextActive]}>
-            {t('scanner.checkEligibility')}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.modeButton, scanMode === 'shopping' && styles.modeButtonActive]}
-          onPress={() => setScanMode('shopping')}
-          accessibilityRole="tab"
-          accessibilityState={{ selected: scanMode === 'shopping' }}
-          hitSlop={{ top: 6, bottom: 6 }}
-        >
-          <Text style={[styles.modeButtonText, scanMode === 'shopping' && styles.modeButtonTextActive]}>
-            {t('scanner.shoppingMode')}
-          </Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -387,35 +359,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: '600',
-  },
-  modeToggle: {
-    position: 'absolute',
-    top: 95,
-    left: 16,
-    right: 16,
-    flexDirection: 'row',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    borderRadius: 8,
-    padding: 4,
-    gap: 4,
-  },
-  modeButton: {
-    flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  modeButtonActive: {
-    backgroundColor: '#2E7D32',
-  },
-  modeButtonText: {
-    color: '#999',
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  modeButtonTextActive: {
-    color: '#fff',
   },
   pluButton: {
     borderWidth: 1.5,

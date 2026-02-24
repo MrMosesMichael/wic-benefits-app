@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Modal, TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { getBenefits, addToCart, Participant, getSightings, reportSighting } from '@/lib/services/api';
 import type { ProductSighting, StockLevel } from '@/lib/types';
@@ -25,6 +26,8 @@ export default function ScanResult() {
   const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [adding, setAdding] = useState(false);
+  // D2: Track whether household prompt has been dismissed
+  const [cartPreferenceDismissed, setCartPreferenceDismissed] = useState(false);
 
   // Sightings state
   const [sightings, setSightings] = useState<ProductSighting[]>([]);
@@ -41,6 +44,10 @@ export default function ScanResult() {
     if (!isPlu) {
       loadSightings();
     }
+    // D2: Load cart preference
+    AsyncStorage.getItem('@wic_cart_preference').then(v => {
+      if (v === 'household') setCartPreferenceDismissed(true);
+    });
   }, [isEligible, category]);
 
   const loadEligibleParticipants = async () => {
@@ -68,6 +75,43 @@ export default function ScanResult() {
   };
 
   const handleAddToCart = async () => {
+    // D2: If no eligible participants, show household setup prompt
+    if (eligibleParticipants.length === 0) {
+      if (cartPreferenceDismissed) {
+        // Already chose "Continue Anyway" before — just confirm
+        Alert.alert(
+          t('result.addedToCart'),
+          'Item noted. Set up your household to track benefits.',
+          [
+            { text: 'Set Up Now', onPress: () => router.push('/benefits/household-setup') },
+            { text: 'OK' },
+          ]
+        );
+      } else {
+        // First time — show the one-time prompt
+        Alert.alert(
+          'Track Your Benefits',
+          'Set up your household to see which benefits this item uses and track what you have left.',
+          [
+            {
+              text: 'Set Up Household',
+              onPress: () => router.push('/benefits/household-setup'),
+            },
+            {
+              text: 'Continue Anyway',
+              onPress: async () => {
+                await AsyncStorage.setItem('@wic_cart_preference', 'household');
+                setCartPreferenceDismissed(true);
+                Alert.alert(t('result.addedToCart'), 'Item added to your shopping list.');
+              },
+            },
+          ]
+        );
+      }
+      return;
+    }
+
+    // Existing flow: has eligible participants
     if (!selectedParticipantId) {
       Alert.alert(t('result.selectParticipant'), t('result.selectParticipantMessage'));
       return;
@@ -79,7 +123,6 @@ export default function ScanResult() {
     const benefit = participant.benefits.find(b => b.category === category);
     if (!benefit) return;
 
-    // Default quantity to 1 for simplicity
     const quantity = 1;
 
     try {
@@ -295,13 +338,14 @@ export default function ScanResult() {
 
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
-        {!isPlu && isEligible && category && eligibleParticipants.length > 0 && (
+        {/* D2: Always show Add to Cart for eligible items (not PLU) */}
+        {!isPlu && isEligible && category && (
           <TouchableOpacity
             style={[styles.addToCartButton, adding && styles.addToCartButtonDisabled]}
             onPress={handleAddToCart}
-            disabled={adding || !selectedParticipantId}
+            disabled={adding || (eligibleParticipants.length > 0 && !selectedParticipantId)}
             accessibilityRole="button"
-            accessibilityState={{ disabled: adding || !selectedParticipantId }}
+            accessibilityState={{ disabled: adding || (eligibleParticipants.length > 0 && !selectedParticipantId) }}
           >
             {adding ? (
               <ActivityIndicator color="#fff" />

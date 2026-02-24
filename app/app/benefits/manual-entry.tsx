@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,14 +6,14 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
-  Platform,
   Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BenefitCategory, BenefitUnit } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { loadHousehold, saveHousehold } from '@/lib/services/householdStorage';
 
-// Category options for dropdown - based on specs/wic-benefits-app/specs/benefits/spec.md
+// Category options for dropdown
 const CATEGORY_OPTIONS: { value: BenefitCategory; label: string }[] = [
   { value: 'milk', label: 'Milk' },
   { value: 'cheese', label: 'Cheese' },
@@ -30,8 +30,8 @@ const CATEGORY_OPTIONS: { value: BenefitCategory; label: string }[] = [
   { value: 'fish', label: 'Fish (canned)' },
 ];
 
-// Unit options for dropdown - based on design.md BenefitUnit type
-const UNIT_OPTIONS: { value: BenefitUnit; label: string }[] = [
+// All unit options
+const ALL_UNIT_OPTIONS: { value: BenefitUnit; label: string }[] = [
   { value: 'gal', label: 'Gallons (gal)' },
   { value: 'oz', label: 'Ounces (oz)' },
   { value: 'lb', label: 'Pounds (lb)' },
@@ -41,6 +41,35 @@ const UNIT_OPTIONS: { value: BenefitUnit; label: string }[] = [
   { value: 'count', label: 'Count' },
   { value: 'dollars', label: 'Dollars ($)' },
 ];
+
+// D4: Valid units per category
+const CATEGORY_UNITS: Record<string, BenefitUnit[]> = {
+  milk: ['gal', 'oz'],
+  cheese: ['oz', 'lb'],
+  eggs: ['count', 'doz'],
+  fruits_vegetables: ['dollars'],
+  whole_grains: ['oz', 'lb', 'box'],
+  juice: ['oz', 'gal'],
+  peanut_butter: ['oz', 'lb'],
+  infant_formula: ['can', 'oz'],
+  cereal: ['oz', 'box'],
+  infant_food: ['oz', 'can'],
+  baby_food_meat: ['oz', 'can'],
+  yogurt: ['oz', 'lb'],
+  fish: ['can', 'oz'],
+};
+
+const getValidUnits = (category: BenefitCategory | null) => {
+  if (!category) return ALL_UNIT_OPTIONS;
+  const valid = CATEGORY_UNITS[category];
+  if (!valid || valid.length === 0) return ALL_UNIT_OPTIONS;
+  return ALL_UNIT_OPTIONS.filter(o => valid.includes(o.value));
+};
+
+const getDefaultUnit = (category: BenefitCategory): BenefitUnit => {
+  const units = CATEGORY_UNITS[category];
+  return (units && units.length > 0) ? units[0] : 'oz';
+};
 
 interface BenefitEntry {
   category: BenefitCategory | null;
@@ -54,7 +83,6 @@ export default function ManualEntry() {
   const router = useRouter();
   const t = useTranslation();
 
-  // Calculate default period (current month)
   const now = new Date();
   const defaultStart = new Date(now.getFullYear(), now.getMonth(), 1);
   const defaultEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -62,30 +90,41 @@ export default function ManualEntry() {
   const [entry, setEntry] = useState<BenefitEntry>({
     category: null,
     amount: '',
-    unit: 'gal',
+    unit: 'oz',
     periodStart: defaultStart,
     periodEnd: defaultEnd,
   });
+
+  // D3: Participant selector state
+  const [participants, setParticipants] = useState<{ id: string; name: string }[]>([]);
+  const [selectedParticipantId, setSelectedParticipantId] = useState<string>('household');
 
   const [showCategoryPicker, setShowCategoryPicker] = useState(false);
   const [showUnitPicker, setShowUnitPicker] = useState(false);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [showParticipantPicker, setShowParticipantPicker] = useState(false);
 
   const [errors, setErrors] = useState<{
     category?: string;
     amount?: string;
-    periodStart?: string;
     periodEnd?: string;
   }>({});
 
+  // Load household participants on mount
+  useEffect(() => {
+    loadHousehold().then(h => {
+      if (h && h.participants.length > 0) {
+        const ps = h.participants.map(p => ({ id: p.id, name: p.name }));
+        setParticipants(ps);
+        setSelectedParticipantId(ps[0].id);
+      }
+    });
+  }, []);
+
   const validateForm = (): boolean => {
     const newErrors: typeof errors = {};
-
-    if (!entry.category) {
-      newErrors.category = 'Please select a category';
-    }
-
+    if (!entry.category) newErrors.category = 'Please select a category';
     if (!entry.amount || entry.amount.trim() === '') {
       newErrors.amount = 'Please enter an amount';
     } else if (isNaN(parseFloat(entry.amount))) {
@@ -93,63 +132,154 @@ export default function ManualEntry() {
     } else if (parseFloat(entry.amount) <= 0) {
       newErrors.amount = 'Amount must be greater than 0';
     }
-
     if (entry.periodEnd <= entry.periodStart) {
       newErrors.periodEnd = 'End date must be after start date';
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
+  // D3: Implement actual save to householdStorage
+  const handleSave = async () => {
     if (!validateForm()) {
       Alert.alert('Validation Error', 'Please fix the errors before saving.');
       return;
     }
 
-    // TODO: Save benefit entry to backend/storage
-    // For now, just show success message
-    Alert.alert(
-      'Success',
-      `Benefit entry saved:\n${getCategoryLabel(entry.category!)} - ${entry.amount} ${entry.unit}`,
-      [
-        {
-          text: 'Add Another',
-          onPress: () => {
-            setEntry({
-              category: null,
-              amount: '',
-              unit: 'gal',
-              periodStart: entry.periodStart,
-              periodEnd: entry.periodEnd,
-            });
-            setErrors({});
+    const newBenefit = {
+      category: entry.category!,
+      categoryLabel: getCategoryLabel(entry.category!),
+      total: entry.amount,
+      available: entry.amount,
+      inCart: '0',
+      consumed: '0',
+      unit: entry.unit,
+      periodStart: entry.periodStart.toISOString(),
+      periodEnd: entry.periodEnd.toISOString(),
+    };
+
+    try {
+      const household = await loadHousehold() || { id: '1', state: 'MI', participants: [] };
+
+      if (selectedParticipantId === 'household') {
+        // Create or update a generic household-level participant
+        let hhParticipant = household.participants.find(p => p.id === 'household');
+        if (!hhParticipant) {
+          hhParticipant = { id: 'household', name: 'Household', type: 'household' as any, benefits: [] };
+          household.participants.push(hhParticipant);
+        }
+        const idx = hhParticipant.benefits.findIndex(b => b.category === entry.category);
+        if (idx >= 0) {
+          hhParticipant.benefits[idx] = newBenefit as any;
+        } else {
+          hhParticipant.benefits.push(newBenefit as any);
+        }
+      } else {
+        const participant = household.participants.find(p => p.id === selectedParticipantId);
+        if (participant) {
+          const idx = participant.benefits.findIndex(b => b.category === entry.category);
+          if (idx >= 0) {
+            participant.benefits[idx] = newBenefit as any;
+          } else {
+            participant.benefits.push(newBenefit as any);
+          }
+        }
+      }
+
+      await saveHousehold(household);
+
+      Alert.alert(
+        'Saved',
+        `${getCategoryLabel(entry.category!)} — ${entry.amount} ${entry.unit}`,
+        [
+          {
+            text: 'Add Another',
+            onPress: () => {
+              setEntry({
+                category: null,
+                amount: '',
+                unit: 'oz',
+                periodStart: entry.periodStart,
+                periodEnd: entry.periodEnd,
+              });
+              setErrors({});
+            },
           },
-        },
-        {
-          text: 'Done',
-          onPress: () => router.back(),
-        },
-      ]
-    );
+          {
+            text: 'Done',
+            onPress: () => router.back(),
+          },
+        ]
+      );
+    } catch (err) {
+      Alert.alert('Error', 'Failed to save benefit. Please try again.');
+    }
   };
 
-  const getCategoryLabel = (category: BenefitCategory): string => {
-    return CATEGORY_OPTIONS.find(opt => opt.value === category)?.label || category;
-  };
+  const getCategoryLabel = (category: BenefitCategory): string =>
+    CATEGORY_OPTIONS.find(opt => opt.value === category)?.label || category;
 
-  const getUnitLabel = (unit: string): string => {
-    return UNIT_OPTIONS.find(opt => opt.value === unit)?.label || unit;
-  };
+  const getUnitLabel = (unit: string): string =>
+    ALL_UNIT_OPTIONS.find(opt => opt.value === unit)?.label || unit;
 
-  const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
+  const formatDate = (date: Date): string =>
+    date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+  const participantLabel = selectedParticipantId === 'household'
+    ? 'Household (general)'
+    : participants.find(p => p.id === selectedParticipantId)?.name || 'Select participant';
+
+  const validUnits = getValidUnits(entry.category);
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.form}>
+
+        {/* D3: Participant Selector (shown when participants exist) */}
+        {participants.length > 0 && (
+          <View style={styles.fieldGroup}>
+            <Text style={styles.label}>For Participant</Text>
+            <TouchableOpacity
+              style={styles.pickerButton}
+              onPress={() => setShowParticipantPicker(!showParticipantPicker)}
+              accessibilityRole="button"
+              accessibilityState={{ expanded: showParticipantPicker }}
+            >
+              <Text style={styles.pickerButtonText}>{participantLabel}</Text>
+              <Text style={styles.chevron}>{showParticipantPicker ? '▲' : '▼'}</Text>
+            </TouchableOpacity>
+            {showParticipantPicker && (
+              <View style={styles.pickerOptions}>
+                <ScrollView style={{ maxHeight: 200 }} nestedScrollEnabled>
+                  {participants.map(p => (
+                    <TouchableOpacity
+                      key={p.id}
+                      style={[styles.pickerOption, selectedParticipantId === p.id && styles.pickerOptionSelected]}
+                      onPress={() => { setSelectedParticipantId(p.id); setShowParticipantPicker(false); }}
+                      accessibilityRole="radio"
+                      accessibilityState={{ selected: selectedParticipantId === p.id }}
+                    >
+                      <Text style={[styles.pickerOptionText, selectedParticipantId === p.id && styles.pickerOptionTextSelected]}>
+                        {p.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                  <TouchableOpacity
+                    style={[styles.pickerOption, selectedParticipantId === 'household' && styles.pickerOptionSelected]}
+                    onPress={() => { setSelectedParticipantId('household'); setShowParticipantPicker(false); }}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: selectedParticipantId === 'household' }}
+                  >
+                    <Text style={[styles.pickerOptionText, selectedParticipantId === 'household' && styles.pickerOptionTextSelected]}>
+                      Household (general)
+                    </Text>
+                  </TouchableOpacity>
+                </ScrollView>
+              </View>
+            )}
+          </View>
+        )}
+
         {/* Category Selector */}
         <View style={styles.fieldGroup}>
           <Text style={styles.label}>
@@ -159,7 +289,7 @@ export default function ManualEntry() {
             style={[styles.pickerButton, errors.category && styles.inputError]}
             onPress={() => setShowCategoryPicker(!showCategoryPicker)}
             accessibilityRole="button"
-            accessibilityLabel={entry.category ? t('a11y.manualEntry.categorySelectedLabel', { category: getCategoryLabel(entry.category) }) : t('a11y.manualEntry.selectCategoryLabel')}
+            accessibilityLabel={entry.category ? getCategoryLabel(entry.category) : 'Select category'}
             accessibilityState={{ expanded: showCategoryPicker }}
           >
             <Text style={[styles.pickerButtonText, !entry.category && styles.placeholderText]}>
@@ -169,34 +299,30 @@ export default function ManualEntry() {
           </TouchableOpacity>
           {errors.category && <Text style={styles.errorText}>{errors.category}</Text>}
 
+          {/* D5: ScrollView wrapper for scrollable dropdown */}
           {showCategoryPicker && (
             <View style={styles.pickerOptions}>
-              {CATEGORY_OPTIONS.map(option => (
-                <TouchableOpacity
-                  key={option.value}
-                  style={[
-                    styles.pickerOption,
-                    entry.category === option.value && styles.pickerOptionSelected,
-                  ]}
-                  onPress={() => {
-                    setEntry({ ...entry, category: option.value });
-                    setShowCategoryPicker(false);
-                    setErrors({ ...errors, category: undefined });
-                  }}
-                  accessibilityRole="radio"
-                  accessibilityLabel={option.label}
-                  accessibilityState={{ selected: entry.category === option.value }}
-                >
-                  <Text
-                    style={[
-                      styles.pickerOptionText,
-                      entry.category === option.value && styles.pickerOptionTextSelected,
-                    ]}
+              <ScrollView style={{ maxHeight: 240 }} nestedScrollEnabled>
+                {CATEGORY_OPTIONS.map(option => (
+                  <TouchableOpacity
+                    key={option.value}
+                    style={[styles.pickerOption, entry.category === option.value && styles.pickerOptionSelected]}
+                    onPress={() => {
+                      // D4: Auto-set default unit for category
+                      const defaultUnit = getDefaultUnit(option.value);
+                      setEntry({ ...entry, category: option.value, unit: defaultUnit });
+                      setShowCategoryPicker(false);
+                      setErrors({ ...errors, category: undefined });
+                    }}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: entry.category === option.value }}
                   >
-                    {option.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                    <Text style={[styles.pickerOptionText, entry.category === option.value && styles.pickerOptionTextSelected]}>
+                      {option.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             </View>
           )}
         </View>
@@ -220,47 +346,37 @@ export default function ManualEntry() {
           {errors.amount && <Text style={styles.errorText}>{errors.amount}</Text>}
         </View>
 
-        {/* Unit Selector */}
+        {/* Unit Selector — filtered by category (D4) */}
         <View style={styles.fieldGroup}>
           <Text style={styles.label}>Unit</Text>
           <TouchableOpacity
             style={styles.pickerButton}
             onPress={() => setShowUnitPicker(!showUnitPicker)}
             accessibilityRole="button"
-            accessibilityLabel={t('a11y.manualEntry.unitLabel', { unit: getUnitLabel(entry.unit) })}
             accessibilityState={{ expanded: showUnitPicker }}
           >
             <Text style={styles.pickerButtonText}>{getUnitLabel(entry.unit)}</Text>
             <Text style={styles.chevron}>{showUnitPicker ? '▲' : '▼'}</Text>
           </TouchableOpacity>
 
+          {/* D5: ScrollView wrapper */}
           {showUnitPicker && (
             <View style={styles.pickerOptions}>
-              {UNIT_OPTIONS.map(option => (
-                <TouchableOpacity
-                  key={option.value}
-                  style={[
-                    styles.pickerOption,
-                    entry.unit === option.value && styles.pickerOptionSelected,
-                  ]}
-                  onPress={() => {
-                    setEntry({ ...entry, unit: option.value });
-                    setShowUnitPicker(false);
-                  }}
-                  accessibilityRole="radio"
-                  accessibilityLabel={option.label}
-                  accessibilityState={{ selected: entry.unit === option.value }}
-                >
-                  <Text
-                    style={[
-                      styles.pickerOptionText,
-                      entry.unit === option.value && styles.pickerOptionTextSelected,
-                    ]}
+              <ScrollView style={{ maxHeight: 200 }} nestedScrollEnabled>
+                {validUnits.map(option => (
+                  <TouchableOpacity
+                    key={option.value}
+                    style={[styles.pickerOption, entry.unit === option.value && styles.pickerOptionSelected]}
+                    onPress={() => { setEntry({ ...entry, unit: option.value }); setShowUnitPicker(false); }}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: entry.unit === option.value }}
                   >
-                    {option.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                    <Text style={[styles.pickerOptionText, entry.unit === option.value && styles.pickerOptionTextSelected]}>
+                      {option.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             </View>
           )}
         </View>
@@ -277,7 +393,6 @@ export default function ManualEntry() {
             style={styles.pickerButton}
             onPress={() => setShowStartDatePicker(!showStartDatePicker)}
             accessibilityRole="button"
-            accessibilityLabel={t('a11y.manualEntry.startDateLabel', { date: formatDate(entry.periodStart) })}
             accessibilityState={{ expanded: showStartDatePicker }}
           >
             <Text style={styles.pickerButtonText}>{formatDate(entry.periodStart)}</Text>
@@ -290,12 +405,10 @@ export default function ManualEntry() {
                 <TouchableOpacity
                   style={styles.datePresetButton}
                   onPress={() => {
-                    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-                    setEntry({ ...entry, periodStart: firstDay });
+                    setEntry({ ...entry, periodStart: new Date(now.getFullYear(), now.getMonth(), 1) });
                     setShowStartDatePicker(false);
                   }}
                   accessibilityRole="button"
-                  accessibilityLabel={t('a11y.manualEntry.startThisMonthLabel')}
                   hitSlop={{ top: 4, bottom: 4 }}
                 >
                   <Text style={styles.datePresetButtonText}>This Month (1st)</Text>
@@ -307,15 +420,12 @@ export default function ManualEntry() {
                     setShowStartDatePicker(false);
                   }}
                   accessibilityRole="button"
-                  accessibilityLabel={t('a11y.manualEntry.startTodayLabel')}
                   hitSlop={{ top: 4, bottom: 4 }}
                 >
                   <Text style={styles.datePresetButtonText}>Today</Text>
                 </TouchableOpacity>
               </View>
-              <Text style={styles.datePickerNote}>
-                Current: {formatDate(entry.periodStart)}
-              </Text>
+              <Text style={styles.datePickerNote}>Current: {formatDate(entry.periodStart)}</Text>
             </View>
           )}
         </View>
@@ -327,7 +437,6 @@ export default function ManualEntry() {
             style={[styles.pickerButton, errors.periodEnd && styles.inputError]}
             onPress={() => setShowEndDatePicker(!showEndDatePicker)}
             accessibilityRole="button"
-            accessibilityLabel={t('a11y.manualEntry.endDateLabel', { date: formatDate(entry.periodEnd) })}
             accessibilityState={{ expanded: showEndDatePicker }}
           >
             <Text style={styles.pickerButtonText}>{formatDate(entry.periodEnd)}</Text>
@@ -341,13 +450,11 @@ export default function ManualEntry() {
                 <TouchableOpacity
                   style={styles.datePresetButton}
                   onPress={() => {
-                    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-                    setEntry({ ...entry, periodEnd: lastDay });
+                    setEntry({ ...entry, periodEnd: new Date(now.getFullYear(), now.getMonth() + 1, 0) });
                     setShowEndDatePicker(false);
                     setErrors({ ...errors, periodEnd: undefined });
                   }}
                   accessibilityRole="button"
-                  accessibilityLabel={t('a11y.manualEntry.endOfMonthLabel')}
                   hitSlop={{ top: 4, bottom: 4 }}
                 >
                   <Text style={styles.datePresetButtonText}>End of Month</Text>
@@ -355,22 +462,19 @@ export default function ManualEntry() {
                 <TouchableOpacity
                   style={styles.datePresetButton}
                   onPress={() => {
-                    const next30Days = new Date(now);
-                    next30Days.setDate(now.getDate() + 30);
-                    setEntry({ ...entry, periodEnd: next30Days });
+                    const d = new Date(now);
+                    d.setDate(now.getDate() + 30);
+                    setEntry({ ...entry, periodEnd: d });
                     setShowEndDatePicker(false);
                     setErrors({ ...errors, periodEnd: undefined });
                   }}
                   accessibilityRole="button"
-                  accessibilityLabel={t('a11y.manualEntry.end30DaysLabel')}
                   hitSlop={{ top: 4, bottom: 4 }}
                 >
                   <Text style={styles.datePresetButtonText}>30 Days</Text>
                 </TouchableOpacity>
               </View>
-              <Text style={styles.datePickerNote}>
-                Current: {formatDate(entry.periodEnd)}
-              </Text>
+              <Text style={styles.datePickerNote}>Current: {formatDate(entry.periodEnd)}</Text>
             </View>
           )}
         </View>
@@ -379,7 +483,6 @@ export default function ManualEntry() {
         <View style={styles.helpBox}>
           <Text style={styles.helpText}>
             💡 Enter the benefit amounts listed on your WIC card or benefit statement.
-            These amounts will be tracked separately for each benefit period.
           </Text>
         </View>
       </View>
@@ -407,23 +510,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-  },
-  header: {
-    backgroundColor: '#fff',
-    padding: 20,
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2E7D32',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
   },
   form: {
     padding: 16,
@@ -467,6 +553,7 @@ const styles = StyleSheet.create({
   pickerButtonText: {
     fontSize: 16,
     color: '#333',
+    flex: 1,
   },
   placeholderText: {
     color: '#999',
@@ -481,8 +568,6 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 8,
     marginTop: 4,
-    maxHeight: 300,
-    overflow: 'hidden',
   },
   pickerOption: {
     padding: 12,
