@@ -48,10 +48,6 @@ export default function ScanResult() {
     if (!isPlu) {
       loadSightings();
     }
-    // D2: Load cart preference
-    AsyncStorage.getItem('@wic_cart_preference').then(v => {
-      if (v === 'household') setCartPreferenceDismissed(true);
-    });
     // Load cart count for View Cart card
     getCart().then(c => setCartItemCount(c.items.length)).catch(() => {});
   }, [isEligible, category]);
@@ -59,7 +55,13 @@ export default function ScanResult() {
   const loadEligibleParticipants = async () => {
     try {
       setLoading(true);
-      const household = await getBenefits();
+      // Read household + cart preference atomically to avoid race condition
+      const [household, cartPref] = await Promise.all([
+        getBenefits(),
+        AsyncStorage.getItem('@wic_cart_preference'),
+      ]);
+
+      const hasParticipants = household.participants.length > 0;
 
       // Filter participants who have available benefits in this category
       const eligible = household.participants.filter(p => {
@@ -68,12 +70,17 @@ export default function ScanResult() {
       });
 
       setEligibleParticipants(eligible);
-      setHasHousehold(household.participants.length > 0);
-      if (household.participants.length > 0) {
+      setHasHousehold(hasParticipants);
+
+      if (hasParticipants) {
         setFallbackParticipantId(household.participants[0].id);
         // Clear stale "no household" preference flag set by a previous "Continue Anyway"
-        AsyncStorage.removeItem('@wic_cart_preference');
+        if (cartPref === 'household') {
+          await AsyncStorage.removeItem('@wic_cart_preference');
+        }
         setCartPreferenceDismissed(false);
+      } else {
+        setCartPreferenceDismissed(cartPref === 'household');
       }
 
       // Auto-select if only one participant
@@ -92,14 +99,24 @@ export default function ScanResult() {
       if (!hasHousehold) {
         // No household set up at all — show setup prompt (D2)
         if (cartPreferenceDismissed) {
-          Alert.alert(
-            t('result.addedToCart'),
-            'Item noted. Set up your household to track benefits.',
-            [
-              { text: 'Set Up Now', onPress: () => router.push('/benefits/household-setup') },
-              { text: 'OK' },
-            ]
-          );
+          // User previously dismissed the household prompt — add to cart and remind
+          try {
+            setAdding(true);
+            await addToCart(fallbackParticipantId, upc, name, category, 1, 'unit', brand, size);
+            getCart().then(c => setCartItemCount(c.items.length)).catch(() => {});
+            Alert.alert(
+              t('result.addedToCart'),
+              'Item added. Set up your household to track benefits.',
+              [
+                { text: 'Set Up Now', onPress: () => router.push('/benefits/household-setup') },
+                { text: 'OK' },
+              ]
+            );
+          } catch (err: any) {
+            Alert.alert(t('common.error'), err.message || 'Failed to add item to cart');
+          } finally {
+            setAdding(false);
+          }
         } else {
           Alert.alert(
             'Track Your Benefits',
@@ -114,6 +131,10 @@ export default function ScanResult() {
                 onPress: async () => {
                   await AsyncStorage.setItem('@wic_cart_preference', 'household');
                   setCartPreferenceDismissed(true);
+                  try {
+                    await addToCart(fallbackParticipantId, upc, name, category, 1, 'unit', brand, size);
+                    getCart().then(c => setCartItemCount(c.items.length)).catch(() => {});
+                  } catch { /* non-fatal */ }
                   Alert.alert(t('result.addedToCart'), 'Item added to your shopping list.');
                 },
               },

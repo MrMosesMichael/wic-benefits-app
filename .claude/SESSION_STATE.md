@@ -1,15 +1,15 @@
 # Session State
 
 > **Last Updated:** 2026-02-24
-> **Session:** Cart Fix + Scan Result View Cart + Tappable Benefit Cards + Polish (v1.7.1)
+> **Session:** Cart Race Condition Fix (v1.7.2)
 
 ---
 
 ## Current Status
 
-**All work complete and pushed.** Cart bug fixed (backend cart bypassed in favour of AsyncStorage), View Cart card on Scan Result, benefit cards tappable with deep-link to Edit Benefits, Next Month preset in manual entry, cart emoji on home screen. Version 1.7.1.
+**v1.7.2 fixes complete, ready to build.** Two bugs found via UAT on v1.7.1 TestFlight build. Both fixed in `app/app/scanner/result.tsx`. Version bumped to 1.7.2 (buildNumber 2, versionCode 14).
 
-**Next action: Build v1.7.1** — TestFlight + Google Play Console.
+**Next action: Build v1.7.2** — TestFlight + Google Play Console.
 
 ---
 
