@@ -33,7 +33,7 @@ const STATUS_INFO: Record<string, { color: string; bgColor: string; label: strin
   unknown: { color: '#757575', bgColor: '#F5F5F5', label: 'Unknown' },
 };
 
-const CATEGORY_FILTERS = ['all', 'milk', 'cereal', 'infant_formula', 'eggs', 'cheese', 'juice', 'whole_grains'];
+const CATEGORY_FILTERS = ['all', 'milk', 'cereal', 'infant_food', 'eggs', 'cheese', 'juice', 'whole_grains'];
 
 export default function StoreProductList({ storeId, chain }: StoreProductListProps) {
   const t = useTranslation();

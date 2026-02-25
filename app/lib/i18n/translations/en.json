@@ -64,10 +64,8 @@
         "whole_grains": "Whole Grains",
         "juice": "Juice",
         "peanut_butter": "Peanut Butter",
-        "infant_formula": "Infant Formula",
         "cereal": "Infant Cereal",
-        "infant_food": "Infant Fruits & Vegetables",
-        "baby_food_meat": "Baby Food Meat",
+        "infant_food": "Infant Foods",
         "yogurt": "Yogurt",
         "fish": "Fish"
       }
@@ -667,13 +665,11 @@
       "juice": "Juice",
       "cheese": "Cheese",
       "whole_grains": "Whole Grains",
-      "infant_formula": "Infant Formula",
-      "infant_food": "Infant Food",
+      "infant_food": "Infant Foods",
       "fruits_vegetables": "Fruits & Vegetables",
       "yogurt": "Yogurt",
       "legumes": "Beans & Legumes",
       "fish": "Fish",
-      "infant_meats": "Infant Meats",
       "uncategorized": "Other"
     }
   },
@@ -1098,9 +1094,7 @@
       "whole_grains": "Whole Grains (Bread/Rice/Pasta)",
       "fruits_vegetables": "Fruits & Vegetables (CVV)",
       "yogurt": "Low-Fat or Non-Fat Yogurt",
-      "formula": "Infant Formula",
-      "baby_food_fruits_vegetables": "Baby Food (Fruits & Vegetables)",
-      "baby_food_meat": "Baby Food (Meat)",
+      "infant_food": "Infant Foods (Formula, Purees, Meats)",
       "fish": "Fish (canned)"
     },
     "addParticipant": "+ Add Participant",

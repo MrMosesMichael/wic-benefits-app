@@ -32,7 +32,7 @@ function mapCategory(catCode: string, catDesc: string): string {
   if (desc.includes('bean') || desc.includes('legume') || desc.includes('peas') || desc.includes('lentil')) return 'legumes';
   if (desc.includes('fish') || desc.includes('tuna') || desc.includes('salmon') || desc.includes('sardine')) return 'fish';
   if (desc.includes('fruit') || desc.includes('vegetable') || desc.includes('produce')) return 'fruits_vegetables';
-  if (desc.includes('formula')) return 'infant_formula';
+  if (desc.includes('formula')) return 'infant_food';
   if (desc.includes('infant') && (desc.includes('food') || desc.includes('cereal') || desc.includes('meat'))) return 'infant_food';
   if (desc.includes('yogurt')) return 'yogurt';
   if (desc.includes('tofu') || desc.includes('soy beverage')) return 'tofu';
@@ -49,7 +49,7 @@ function mapCategory(catCode: string, catDesc: string): string {
     case '8': return 'legumes';
     case '9': return 'fish';
     case '10': return 'fruits_vegetables';
-    case '11': return 'infant_formula';
+    case '11': return 'infant_food';
     case '12': return 'infant_food';
     default: return 'other';
   }

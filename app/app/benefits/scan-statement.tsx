@@ -141,10 +141,8 @@ export default function ScanStatement() {
       whole_grains: 'Whole Grains',
       juice: 'Juice',
       peanut_butter: 'Peanut Butter/Beans',
-      infant_formula: 'Infant Formula',
       cereal: 'Infant Cereal',
-      infant_food: 'Infant Food',
-      baby_food_meat: 'Baby Food Meat',
+      infant_food: 'Infant Foods',
       yogurt: 'Yogurt',
       fish: 'Fish',
     };

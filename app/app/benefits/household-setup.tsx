@@ -36,9 +36,7 @@ const BENEFIT_CATEGORIES = [
   { category: 'whole_grains', unit: 'oz', common: true },
   { category: 'fruits_vegetables', unit: 'dollars', common: true },
   { category: 'yogurt', unit: 'oz', common: true },
-  { category: 'formula', unit: 'oz', common: false },
-  { category: 'baby_food_fruits_vegetables', unit: 'oz', common: false },
-  { category: 'baby_food_meat', unit: 'oz', common: false },
+  { category: 'infant_food', unit: 'oz', common: false },
   { category: 'fish', unit: 'oz', common: false },
 ];
 

@@ -73,7 +73,7 @@ function mapCategory(catCode: string, catDesc: string, subcatDesc: string): stri
     return 'whole_grains';
   }
   if (desc.includes('formula') || subdesc.includes('formula')) {
-    return 'infant_formula';
+    return 'infant_food';
   }
   if (desc.includes('infant food') || desc.includes('baby food')) {
     return 'infant_food';

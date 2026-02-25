@@ -24,10 +24,8 @@ const CATEGORY_OPTIONS: { value: BenefitCategory; label: string }[] = [
   { value: 'whole_grains', label: 'Whole Grains (Bread, Cereal, Rice, Pasta)' },
   { value: 'juice', label: 'Juice' },
   { value: 'peanut_butter', label: 'Peanut Butter / Beans / Legumes' },
-  { value: 'infant_formula', label: 'Infant Formula' },
   { value: 'cereal', label: 'Infant Cereal' },
-  { value: 'infant_food', label: 'Infant Fruits & Vegetables' },
-  { value: 'baby_food_meat', label: 'Baby Food Meat' },
+  { value: 'infant_food', label: 'Infant Foods' },
   { value: 'yogurt', label: 'Yogurt' },
   { value: 'fish', label: 'Fish (canned)' },
 ];
@@ -220,10 +218,8 @@ export default function LogPurchase() {
       whole_grains: 'oz',
       juice: 'oz',
       peanut_butter: 'oz',
-      infant_formula: 'can',
       cereal: 'oz',
-      infant_food: 'oz',
-      baby_food_meat: 'oz',
+      infant_food: 'can',
       yogurt: 'oz',
       fish: 'can',
     };

@@ -239,10 +239,10 @@ function parseBenefitsFromText(ocrText: string): OCRBenefit[] {
       confidence: 85
     },
 
-    // Infant Formula
+    // Infant Formula → infant_food (merged)
     {
       regex: /\b(?:infant\s*)?formula[:\s\-]*(\d+(?:\.\d+)?)\s*(?:oz|ounce|ounces|can|cans)/gi,
-      category: 'infant_formula',
+      category: 'infant_food',
       unit: 'oz',
       confidence: 90
     },
@@ -263,10 +263,10 @@ function parseBenefitsFromText(ocrText: string): OCRBenefit[] {
       confidence: 85
     },
 
-    // Baby Food Meat
+    // Baby Food Meat → infant_food (merged)
     {
       regex: /\bbaby\s*(?:food\s*)?meat[:\s\-]*(\d+(?:\.\d+)?)\s*(?:oz|ounce|ounces|jar|jars)/gi,
-      category: 'baby_food_meat',
+      category: 'infant_food',
       unit: 'oz',
       confidence: 85
     },
@@ -346,10 +346,8 @@ function isValidAmount(amount: number, category: string): boolean {
     juice: { min: 32, max: 256 },
     peanut_butter: { min: 8, max: 36 },
     yogurt: { min: 8, max: 64 },
-    infant_formula: { min: 16, max: 512 },
     infant_cereal: { min: 8, max: 48 },
-    infant_food: { min: 8, max: 128 },
-    baby_food_meat: { min: 2, max: 32 },
+    infant_food: { min: 2, max: 512 },
     fish: { min: 8, max: 64 },
   };
 
@@ -450,10 +448,8 @@ function calculateConfidence(
     juice: { min: 64, max: 192, optimal: 144 },
     peanut_butter: { min: 8, max: 36, optimal: 18 },
     yogurt: { min: 8, max: 64, optimal: 32 },
-    infant_formula: { min: 32, max: 512, optimal: 256 },
     infant_cereal: { min: 8, max: 48, optimal: 16 },
-    infant_food: { min: 16, max: 128, optimal: 64 },
-    baby_food_meat: { min: 4, max: 32, optimal: 16 },
+    infant_food: { min: 4, max: 512, optimal: 64 },
     fish: { min: 8, max: 64, optimal: 30 },
   };
 

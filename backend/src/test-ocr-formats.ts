@@ -92,7 +92,7 @@ Infant Cereal: 16 oz
 Infant Food: 64 oz
 Baby Food Meat: 8 oz`,
     expectedBenefits: 4,
-    expectedCategories: ['infant_formula', 'infant_cereal', 'infant_food', 'baby_food_meat']
+    expectedCategories: ['infant_food', 'infant_cereal', 'infant_food', 'infant_food']
   },
 
   {

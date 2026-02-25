@@ -64,10 +64,8 @@
         "whole_grains": "Granos Integrales",
         "juice": "Jugo",
         "peanut_butter": "Mantequilla de Maní",
-        "infant_formula": "Fórmula Infantil",
         "cereal": "Cereal Infantil",
-        "infant_food": "Frutas y Verduras para Bebé",
-        "baby_food_meat": "Carne para Bebé",
+        "infant_food": "Alimentos para Bebé",
         "yogurt": "Yogurt",
         "fish": "Pescado"
       }
@@ -667,13 +665,11 @@
       "juice": "Jugo",
       "cheese": "Queso",
       "whole_grains": "Granos Integrales",
-      "infant_formula": "Fórmula Infantil",
-      "infant_food": "Comida para Bebé",
+      "infant_food": "Alimentos para Bebé",
       "fruits_vegetables": "Frutas y Verduras",
       "yogurt": "Yogur",
       "legumes": "Frijoles y Legumbres",
       "fish": "Pescado",
-      "infant_meats": "Carnes para Bebé",
       "uncategorized": "Otros"
     }
   },
@@ -1098,9 +1094,7 @@
       "whole_grains": "Granos Integrales (Pan/Arroz/Pasta)",
       "fruits_vegetables": "Frutas y Verduras (CVV)",
       "yogurt": "Yogur Bajo en Grasa o Sin Grasa",
-      "formula": "Fórmula Infantil",
-      "baby_food_fruits_vegetables": "Comida para Bebé (Frutas y Verduras)",
-      "baby_food_meat": "Comida para Bebé (Carne)",
+      "infant_food": "Alimentos para Bebé (Fórmula, Purés, Carnes)",
       "fish": "Pescado (enlatado)"
     },
     "addParticipant": "+ Agregar Participante",

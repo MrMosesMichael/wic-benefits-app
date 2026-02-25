@@ -147,10 +147,8 @@ function getCategoryLabel(category: string): string {
     whole_grains: 'Whole Grains (Bread, Cereal, Rice, Pasta)',
     juice: 'Juice',
     peanut_butter: 'Peanut Butter / Beans / Legumes',
-    infant_formula: 'Infant Formula',
     infant_cereal: 'Infant Cereal',
-    infant_food: 'Infant Fruits & Vegetables',
-    baby_food_meat: 'Baby Food Meat',
+    infant_food: 'Infant Foods',
     yogurt: 'Yogurt',
     fish: 'Fish (canned)',
   };

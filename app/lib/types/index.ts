@@ -28,10 +28,8 @@ export type BenefitCategory =
   | 'whole_grains'
   | 'juice'
   | 'peanut_butter'
-  | 'infant_formula'
   | 'cereal'
   | 'infant_food'
-  | 'baby_food_meat'
   | 'yogurt'
   | 'fish';
 

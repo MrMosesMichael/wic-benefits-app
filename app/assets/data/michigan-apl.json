@@ -64173,7 +64173,7 @@
     "upc": "7613034788214",
     "brand": "Alfamino",
     "description": "Infant PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Alfamino Infant 14.1 oz PWD",
     "size": "CAN",
     "unit": "$$$"
@@ -64182,7 +64182,7 @@
     "upc": "70074575131",
     "brand": "Alimentum",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Alimentum 32 oz RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64191,7 +64191,7 @@
     "upc": "50428446072",
     "brand": "CVS Health Hypoaller",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "12.6oz Hypoallergenic Store Brand PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64200,7 +64200,7 @@
     "upc": "70074546667",
     "brand": "EleCare",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Elecare Infant 14.1 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64209,7 +64209,7 @@
     "upc": "70074535111",
     "brand": "EleCare",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Elecare Infant 14.1 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64218,7 +64218,7 @@
     "upc": "300875123669",
     "brand": "Enf NeuroPro EnfCare",
     "description": "Ready To Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "32oz Enfamil NeuroPro EnfaCare",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64227,7 +64227,7 @@
     "upc": "300870019448",
     "brand": "EnfaCare",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Enfamil Enfacare",
     "size": "CAN",
     "unit": "CAN"
@@ -64236,7 +64236,7 @@
     "upc": "300875102985",
     "brand": "EnfaCare",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "8 oz RTF EnfaCare",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64245,7 +64245,7 @@
     "upc": "300871287419",
     "brand": "EnfaCare LIPIL",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "32 oz EnfaCare",
     "size": "CAN",
     "unit": "CAN"
@@ -64254,7 +64254,7 @@
     "upc": "300871287013",
     "brand": "EnfaCare LIPIL",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "32 oz EnfaCare",
     "size": "CAN",
     "unit": "CAN"
@@ -64263,7 +64263,7 @@
     "upc": "300875103005",
     "brand": "Enfamil AR",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "8 oz RTF Enfamil AR",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64272,7 +64272,7 @@
     "upc": "300870203731",
     "brand": "Enfamil AR",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "CAN 32 oz RTF Enfamil AR",
     "size": "CAN",
     "unit": "CAN"
@@ -64281,7 +64281,7 @@
     "upc": "300870201652",
     "brand": "Enfamil AR",
     "description": "PWD 19.5oz",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "12.9 oz PWD Enfamil AR",
     "size": "CAN",
     "unit": "CAN"
@@ -64290,7 +64290,7 @@
     "upc": "300870201423",
     "brand": "Enfamil AR",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "12.9 oz PWD Enfamil AR",
     "size": "CAN",
     "unit": "CAN"
@@ -64299,7 +64299,7 @@
     "upc": "300875121542",
     "brand": "Enfamil Infant",
     "description": "Ready To Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "32 oz RTF Enfamil Infant",
     "size": "CAN",
     "unit": "CAN"
@@ -64308,7 +64308,7 @@
     "upc": "300875115602",
     "brand": "Enfamil Infant",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "32 oz RTF Enfamil Infant",
     "size": "CAN",
     "unit": "CAN"
@@ -64317,7 +64317,7 @@
     "upc": "300871459427",
     "brand": "Enfamil Infant",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "32 oz RTF Enfamil Infant",
     "size": "CAN",
     "unit": "OZ"
@@ -64326,7 +64326,7 @@
     "upc": "300871367418",
     "brand": "Enfamil Infant",
     "description": "Concentrate",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "13 oz Conc Enfamil Infant",
     "size": "CAN",
     "unit": "OZ"
@@ -64335,7 +64335,7 @@
     "upc": "300871273412",
     "brand": "Enfamil LIPIL W/Iron",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "12.5 PWD Enfamil Infant",
     "size": "CAN",
     "unit": "CAN"
@@ -64344,7 +64344,7 @@
     "upc": "300871272415",
     "brand": "Enfamil LIPIL W/Iron",
     "description": "Concentrate",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "13 oz Conc Enfamil Infant",
     "size": "CAN",
     "unit": "CAN"
@@ -64353,7 +64353,7 @@
     "upc": "300871271432",
     "brand": "Enfamil LIPIL W/Iron",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "32 oz RTF Enfamil Infant",
     "size": "CAN",
     "unit": "CAN"
@@ -64362,7 +64362,7 @@
     "upc": "300871459410",
     "brand": "Enfamil Premium",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "8 oz RTF Enfamil NeuroPro Infant",
     "size": "CAN",
     "unit": "CAN"
@@ -64371,7 +64371,7 @@
     "upc": "300875105269",
     "brand": "Enfaport",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Enfaport 6 oz RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64380,7 +64380,7 @@
     "upc": "300875105252",
     "brand": "Enfaport",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Enfaport 6 oz RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64389,7 +64389,7 @@
     "upc": "300871289413",
     "brand": "Enfaport",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Enfaport 6 oz RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64398,7 +64398,7 @@
     "upc": "300871289017",
     "brand": "Enfaport",
     "description": "Ready To Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Enfaport 6 oz RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64407,7 +64407,7 @@
     "upc": "749735012123",
     "brand": "Fortini",
     "description": "Ready To Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Fortini 4 oz RTF",
     "size": "BOX",
     "unit": "BOX"
@@ -64416,7 +64416,7 @@
     "upc": "300878693428",
     "brand": "Gentlease",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "12.4 oz PWD Gentlease",
     "size": "CAN",
     "unit": "CAN"
@@ -64425,7 +64425,7 @@
     "upc": "50000598526",
     "brand": "Good Start Extensive",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Extensive HA 14.1 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64434,7 +64434,7 @@
     "upc": "50000038602",
     "brand": "Good Start Nourish",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "12.6 oz PWD Good Start Nourish",
     "size": "CAN",
     "unit": "CAN"
@@ -64443,7 +64443,7 @@
     "upc": "70074559681",
     "brand": "Isomil Advance",
     "description": "RTF",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Infant Formula RTF",
     "size": "BOTTLE",
     "unit": "CAN"
@@ -64452,7 +64452,7 @@
     "upc": "719283955937",
     "brand": "Meijer Hypoallergeni",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "12.6oz Hypoallergenic Store Brand PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64461,7 +64461,7 @@
     "upc": "749735025956",
     "brand": "Neocate",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Neocate Infant 14.1 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64470,7 +64470,7 @@
     "upc": "749735008041",
     "brand": "Neocate Infant",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Neocate Infant 14.1 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64479,7 +64479,7 @@
     "upc": "749735014363",
     "brand": "Neocate Syneo Infant",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Neocate Syneo Infant 14.1 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64488,7 +64488,7 @@
     "upc": "70074574318",
     "brand": "NeoSure",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Neosure 13.1 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64497,7 +64497,7 @@
     "upc": "300875122082",
     "brand": "NeuroPro EnfaCare",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Enfamil Enfacare",
     "size": "CAN",
     "unit": "CAN"
@@ -64506,7 +64506,7 @@
     "upc": "300875103418",
     "brand": "NeuroPro Gentlease",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "8 oz RTF NeuroPro Gentlease",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64515,7 +64515,7 @@
     "upc": "300875102428",
     "brand": "NeuroPro Infant",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "8 oz RTF Enfamil NeuroPro Infant",
     "size": "CAN",
     "unit": "OZ"
@@ -64524,7 +64524,7 @@
     "upc": "300875131473",
     "brand": "Nutramigen",
     "description": "RTF 6pk 8 oz",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Nutramigen 32 oz RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64533,7 +64533,7 @@
     "upc": "300875115640",
     "brand": "Nutramigen",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Nutramigen 32 oz RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64542,7 +64542,7 @@
     "upc": "300871239456",
     "brand": "Nutramigen",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Nutramigen 19.8 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64551,7 +64551,7 @@
     "upc": "300870498014",
     "brand": "Nutramigen",
     "description": "Concentrate",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Nutramigen 13 oz Conc",
     "size": "CAN",
     "unit": "CAN"
@@ -64560,7 +64560,7 @@
     "upc": "300875102466",
     "brand": "Nutramigen",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "8 oz RTF Nutramigen",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64569,7 +64569,7 @@
     "upc": "300870499011",
     "brand": "Nutramigen LIPIL",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Nutramigen 32 oz RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64578,7 +64578,7 @@
     "upc": "300871239418",
     "brand": "Nutramigen w/En LGG",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Nutramigen 12.6 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64587,7 +64587,7 @@
     "upc": "681131222518",
     "brand": "Part Cho  Hypoallerg",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "12.6oz Hypoallergenic Store Brand PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64596,7 +64596,7 @@
     "upc": "41260385728",
     "brand": "Payton's Comforts Hy",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "12.6oz Hypoallergenic Store Brand PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64605,7 +64605,7 @@
     "upc": "749735001011",
     "brand": "Pepticate",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Pepticate 13.2 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64614,7 +64614,7 @@
     "upc": "300870387011",
     "brand": "Portagen",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "16 oz. Portagen",
     "size": "CAN",
     "unit": "CAN"
@@ -64623,7 +64623,7 @@
     "upc": "300871433410",
     "brand": "Pregestimil",
     "description": "RTF 2 oz",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Pregestimil 20 Cal 2 oz RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64632,7 +64632,7 @@
     "upc": "300870367013",
     "brand": "Pregestimil",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Pregestimil 16 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64641,7 +64641,7 @@
     "upc": "300875123645",
     "brand": "ProSobee",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "32 oz RTF Prosobee",
     "size": "CAN",
     "unit": "DOZ"
@@ -64650,7 +64650,7 @@
     "upc": "300875102503",
     "brand": "ProSobee",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "8 oz RTF Prosobee",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64659,7 +64659,7 @@
     "upc": "300871195417",
     "brand": "ProSobee",
     "description": "Concentrate",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "13 oz Conc Prosobee",
     "size": "CAN",
     "unit": "CAN"
@@ -64668,7 +64668,7 @@
     "upc": "300870309747",
     "brand": "ProSobee",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "32 oz RTF Prosobee",
     "size": "CAN",
     "unit": "CAN"
@@ -64677,7 +64677,7 @@
     "upc": "300875104804",
     "brand": "Puramino",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Puramino 14.1 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64686,7 +64686,7 @@
     "upc": "70074681610",
     "brand": "Sim 360 TotalCar Sen",
     "description": "RTF",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Infant Formula RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64695,7 +64695,7 @@
     "upc": "70074681597",
     "brand": "Sim 360 TotalCar Sen",
     "description": "RTF 6 pk",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Infant Formula RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64704,7 +64704,7 @@
     "upc": "70074569741",
     "brand": "Similac Advance",
     "description": "Conc",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Infant Formula Conc",
     "size": "CAN",
     "unit": "CAN"
@@ -64713,7 +64713,7 @@
     "upc": "70074559582",
     "brand": "Similac Advance",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Infant Formula PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64722,7 +64722,7 @@
     "upc": "70074533643",
     "brand": "Similac Advance",
     "description": "RTF",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Infant Formula RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64731,7 +64731,7 @@
     "upc": "70074578866",
     "brand": "Similac Alimentum",
     "description": "RTF 8oz 6 pk",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Alimentum 32 oz RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64740,7 +64740,7 @@
     "upc": "70074576640",
     "brand": "Similac Alimentum",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Alimentum 12.1 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64749,7 +64749,7 @@
     "upc": "70074647128",
     "brand": "Similac Alimentumm",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Alimentum 12.1 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64758,7 +64758,7 @@
     "upc": "70074574561",
     "brand": "Similac NeoSure w/Ir",
     "description": "Ready to Feed",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Neosure 32 oz RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64767,7 +64767,7 @@
     "upc": "70074608501",
     "brand": "Similac PM 60/40",
     "description": "Powder",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac PM 60/40 14.1 oz PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64776,7 +64776,7 @@
     "upc": "70074575414",
     "brand": "Similac Sensitive",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Infant Formula PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64785,7 +64785,7 @@
     "upc": "70074575346",
     "brand": "Similac Sensitive",
     "description": "RTF",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Infant Formula RTF",
     "size": "BOTTLE",
     "unit": "BTL"
@@ -64794,7 +64794,7 @@
     "upc": "70074569765",
     "brand": "Similac Soy Isomil",
     "description": "Conc",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Infant Formula Conc",
     "size": "CAN",
     "unit": "CAN"
@@ -64803,7 +64803,7 @@
     "upc": "70074559643",
     "brand": "Similac Soy Isomil",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Infant Formula PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64812,7 +64812,7 @@
     "upc": "70074626000",
     "brand": "Similac Total Comfor",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "Similac Infant Formula PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64821,7 +64821,7 @@
     "upc": "36800441392",
     "brand": "Tippy Toes Hypoaller",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "12.6oz Hypoallergenic Store Brand PWD",
     "size": "CAN",
     "unit": "CAN"
@@ -64830,7 +64830,7 @@
     "upc": "311917211985",
     "brand": "Well Beginnings Hypo",
     "description": "PWD",
-    "category": "infant_formula",
+    "category": "infant_food",
     "subcategory": "12.6oz Hypoallergenic Store Brand PWD",
     "size": "CAN",
     "unit": "CAN"
