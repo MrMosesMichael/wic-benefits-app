@@ -189,7 +189,11 @@ Based on impact, effort, and what's unblocked:
    - ✅ v1.5.0 iOS build submitted to TestFlight
    - ✅ v1.5.0 Android build submitted to Google Play Console
    - ✅ v1.7.0 ready to build (all defects fixed, home redesign, i18n complete)
-   - 🔄 TestFlight beta testing (awaiting review)
+   - ✅ v1.7.1 iOS build submitted to TestFlight (Feb 24, 2026)
+   - ✅ v1.7.1 Android build submitted to Google Play Console (Feb 24, 2026)
+   - ✅ v1.7.2 iOS build submitted to TestFlight (Feb 24, 2026) — cart race condition fix
+   - ✅ v1.7.2 Android build submitted to Google Play Console (Feb 24, 2026)
+   - 🔄 TestFlight beta testing (UAT in progress on v1.7.2)
    - 🔄 Google Play Console setup in progress
    - ⏳ Generate store listing screenshots/images (Apple + Android)
    - ⏳ App Store submission preparation (see [iOS Release Checklist](#ios-app-store-release-checklist))

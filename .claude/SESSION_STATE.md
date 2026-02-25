@@ -7,9 +7,9 @@
 
 ## Current Status
 
-**v1.7.2 fixes complete, ready to build.** Two bugs found via UAT on v1.7.1 TestFlight build. Both fixed in `app/app/scanner/result.tsx`. Version bumped to 1.7.2 (buildNumber 2, versionCode 14).
+**v1.7.2 built and submitted.** Two bugs found via UAT on v1.7.1 TestFlight build. Both fixed in `app/app/scanner/result.tsx`. Version bumped to 1.7.2 (buildNumber 2, versionCode 14). Build submitted to Apple TestFlight and Google Play Console.
 
-**Next action: Build v1.7.2** — TestFlight + Google Play Console.
+**Next action:** Continue UAT on v1.7.2 build.
 
 ---
 
