@@ -1,19 +1,26 @@
 # Session State
 
-> **Last Updated:** 2026-02-24
-> **Session:** Cart Race Condition Fix (v1.7.2)
+> **Last Updated:** 2026-02-25
+> **Session:** Category Rename + Feedback Pipeline Fix (v1.7.3)
 
 ---
 
 ## Current Status
 
-**v1.7.2 built and submitted.** Two bugs found via UAT on v1.7.1 TestFlight build. Both fixed in `app/app/scanner/result.tsx`. Version bumped to 1.7.2 (buildNumber 2, versionCode 14). Build submitted to Apple TestFlight and Google Play Console.
+**v1.7.3 built and submitting to TestFlight + Google Play Console.** Merged "Infant Formula", "Infant Meats", and "Baby Food Meat" into a single "Infant Foods" category (GitHub feedback issue #11). Added SessionStart hook to auto-sync feedback issues. Backend deployed to VPS.
 
-**Next action:** Continue UAT on v1.7.2 build.
+**Next action:** Continue UAT on v1.7.3 build.
 
 ---
 
 ## Work Completed This Session
+
+### Session 3 — Category Rename + Feedback Pipeline (v1.7.3)
+
+- **Fix: "Infant Meats" category renamed** — Merged `infant_formula`, `infant_meats`, and `baby_food_meat` into a single `infant_food` category displayed as "Infant Foods" (EN) / "Alimentos para Bebé" (ES). Updated 18 files: type definitions, category data, i18n, UI screens, backend routes, OCR parser, APL import/export scripts, bundled Michigan APL data.
+- **Fix: Feedback sync pipeline** — Ran `sync-feedback.sh` to ingest open GitHub issue #11. Issue fixed and closed.
+- **Feature: SessionStart hook** — Added `.claude/settings.json` with a `SessionStart` hook that auto-runs `sync-feedback.sh` every session. No more manual step.
+- **Version bump** — `1.7.2` → `1.7.3` (patch), buildNumber reset to `"1"`, versionCode `14` → `15`.
 
 ### Session 2 — Cart Fix + Polish (v1.7.1)
 
@@ -65,6 +72,8 @@
 
 | Hash | Description |
 |------|-------------|
+| `b322b66` | fix: merge Infant Formula/Infant Meats into single "Infant Foods" category (fixes #11) |
+| `3ef3744` | chore: bump version to v1.7.3 (buildNumber 1, versionCode 15) |
 | `6b1397a` | feat: fix empty cart, View Cart card, tappable benefit cards, Next Month preset, cart emoji |
 | `05ee527` | fix: WIC Balance heading restyle — mixed-case green title, smaller gray summary |
 | `f3f3cb2` | chore: bump version 1.7.0 → 1.7.1, versionCode 12 → 13 |
@@ -133,7 +142,7 @@
 ## What's Next
 
 ### Immediate
-1. **Build v1.7.1** — TestFlight + Google Play Console
+1. **UAT v1.7.3** — Verify "Infant Foods" category displays correctly in catalog, manual entry, log purchase, household setup
 
 ### Short Term
 1. **iOS & Android App Store Submissions** — Screenshots, metadata, store listings

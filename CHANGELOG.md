@@ -4,6 +4,44 @@
 
 ---
 
+## 2026-02-25 — Category Rename + Feedback Pipeline (v1.7.3)
+
+**Merged "Infant Formula", "Infant Meats", and "Baby Food Meat" into a single "Infant Foods" category. Added auto-sync hook for GitHub feedback issues.**
+
+### Done
+- ✅ **Category merge (fixes [#11](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/11))** — Removed offensive "Infant Meats" name. Merged `infant_formula`, `infant_meats`, `baby_food_meat` → `infant_food` ("Infant Foods" EN / "Alimentos para Bebé" ES). Updated type definitions, category data, i18n (EN+ES), 5 UI screens, backend catalog, OCR parser, APL scripts, and bundled Michigan APL data.
+- ✅ **Feedback sync pipeline** — Ingested and resolved open GitHub issue #11.
+- ✅ **SessionStart hook** — `.claude/settings.json` auto-runs `sync-feedback.sh` on every Claude Code session start.
+- ✅ Bumped to v1.7.3 (buildNumber 1, versionCode 15)
+
+### Files Modified
+- `app/lib/types/index.ts` — removed `infant_formula`, `baby_food_meat` from BenefitCategory
+- `app/lib/data/wic-categories.ts` — removed 2 categories, redirected aliases → `infant_food`
+- `app/lib/i18n/translations/en.json` — "Infant Foods" (3 locations)
+- `app/lib/i18n/translations/es.json` — "Alimentos para Bebé" (3 locations)
+- `app/app/benefits/manual-entry.tsx` — merged category options + units
+- `app/app/benefits/log-purchase.tsx` — same
+- `app/app/benefits/scan-statement.tsx` — updated label map
+- `app/app/benefits/household-setup.tsx` — merged 3 infant templates → 1
+- `app/components/StoreProductList.tsx` — updated category filter
+- `backend/src/routes/product-catalog.ts` — redirected aliases
+- `backend/src/routes/ocr-benefits.ts` — updated display labels
+- `backend/src/services/ocr-parser.ts` — updated OCR categories + ranges
+- `backend/src/scripts/export-apl-to-json.ts` — updated category assignment
+- `backend/src/scripts/import-michigan-apl-v2.ts` — updated category assignment
+- `backend/src/test-ocr-formats.ts` — updated test expectations
+- `app/assets/data/michigan-apl.json` — bulk replaced infant_formula → infant_food
+- `.claude/settings.json` — NEW: SessionStart hook
+- `app/app.json` — v1.7.2 → v1.7.3, versionCode 14 → 15
+
+### Commits
+```
+b322b66 fix: merge Infant Formula/Infant Meats into single "Infant Foods" category (fixes #11)
+3ef3744 chore: bump version to v1.7.3 (buildNumber 1, versionCode 15)
+```
+
+---
+
 ## 2026-02-24 — Cart Fix + Scan Result Polish + Benefit Card Drill-Down (v1.7.1)
 
 **Fixed the root-cause empty cart bug (backend cart bypassed in favour of AsyncStorage), added View Cart card to Scan Result screen, made benefit cards tappable with deep-link to Edit Benefits, added Next Month period preset, and added 🛒 emoji to home screen cart button.**
