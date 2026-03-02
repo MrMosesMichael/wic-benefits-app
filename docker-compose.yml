@@ -53,6 +53,9 @@ services:
     labels:
       # Enable Traefik
       - "traefik.enable=true"
+      # Pin Traefik to nginx-proxy network (container is on two networks;
+      # without this, Traefik may route to the unreachable wic-network IP)
+      - "traefik.docker.network=nginx-proxy"
 
       # HTTP router for /wic/health
       - "traefik.http.routers.wic-health.rule=Host(`mdmichael.com`) && PathPrefix(`/wic/health`)"
