@@ -55,3 +55,13 @@ openspec/
 # Build artifacts
 *.apk
 *.aab
+*.ipa
+
+# Data files (downloaded/generated)
+backend/data/*.zip
+backend/data/*.txt
+
+# Local directories
+CA/
+feedback/
+xlsx/
