@@ -4,7 +4,7 @@
     "slug": "wic-benefits-app",
     "owner": "mrmosesmichael",
     "scheme": "wicbenefits",
-    "version": "1.7.3",
+    "version": "1.7.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -49,11 +49,11 @@
       }
     },
     "android": {
-      "versionCode": 15,
+      "versionCode": 16,
       "package": "com.wicbenefits.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#5399D2"
       },
       "permissions": [
         "CAMERA",

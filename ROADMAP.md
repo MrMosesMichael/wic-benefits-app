@@ -1,6 +1,6 @@
 # WIC Benefits App — Roadmap
 
-> **Last Updated:** February 24, 2026 (v1.7.1)
+> **Last Updated:** March 5, 2026 (v1.7.4)
 > **Current Phase:** Phase 1-5 Complete + Phase 7 In Progress
 > **Production:** https://mdmichael.com/wic/
 
@@ -256,7 +256,7 @@ Based on impact, effort, and what's unblocked:
 | Asset | Status | Notes |
 |-------|--------|-------|
 | **App Screenshots** | ⏳ Todo | Required sizes: 6.7", 6.5", 5.5" iPhones |
-| **App Icon** | ✅ Done | 1024×1024px at `app/assets/icon.png` |
+| **App Icon** | ✅ Done | 1024×1024 + adaptive icon at `app/assets/icon.png` + `adaptive-icon.png` |
 | **App Description** | ⏳ Todo | Max 4,000 characters |
 | **Keywords** | ⏳ Todo | Max 100 characters, comma-separated |
 | **Promotional Text** | ⏳ Todo | 170 characters (updateable without review) |
@@ -521,6 +521,6 @@ See `docs/guides/` for consolidated, actionable implementation patterns.
 
 ---
 
-**Current Version:** 1.5.0 (iOS buildNumber: 1, Android versionCode: 10) — submitted to TestFlight + Google Play
+**Current Version:** 1.7.4 (iOS buildNumber: 1, Android versionCode: 16)
 
 *Last human review: February 17, 2026*

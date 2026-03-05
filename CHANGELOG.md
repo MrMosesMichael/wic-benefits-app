@@ -4,6 +4,23 @@
 
 ---
 
+## 2026-03-05 — App Icon (v1.7.4)
+
+**Added custom app icon replacing the default Expo placeholder. Blue background with milk carton, cereal bowl, and egg carton illustration with "WIC" text.**
+
+### Done
+- Added custom 1024x1024 app icon (`assets/icon.png`) for iOS App Store and home screen
+- Added 432x432 Android adaptive icon foreground (`assets/adaptive-icon.png`) with safe zone padding
+- Updated `app.json` adaptive icon background color to match (`#5399D2`)
+- Bumped to v1.7.4 (buildNumber 1, versionCode 16)
+
+### Files Modified
+- `app/assets/icon.png` — NEW: 1024x1024 main app icon (blue bg, milk/cereal/eggs + WIC text)
+- `app/assets/adaptive-icon.png` — REPLACED: Android adaptive foreground with matching design
+- `app/app.json` — v1.7.3 → v1.7.4, versionCode 15 → 16, adaptiveIcon backgroundColor → #5399D2
+
+---
+
 ## 2026-02-25 — Category Rename + Feedback Pipeline (v1.7.3)
 
 **Merged "Infant Formula", "Infant Meats", and "Baby Food Meat" into a single "Infant Foods" category. Added auto-sync hook for GitHub feedback issues.**
