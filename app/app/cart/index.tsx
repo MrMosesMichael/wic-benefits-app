@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { getCart, removeFromCart, clearCart, checkout, Cart } from '@/lib/services/api';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import NeedHelpLink from '@/components/NeedHelpLink';
+import { colors, fonts, card } from '@/lib/theme';
 
 export default function CartScreen() {
   const router = useRouter();
@@ -125,7 +126,7 @@ export default function CartScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#2E7D32" />
+        <ActivityIndicator size="large" color={colors.header} />
         <Text style={styles.loadingText}>{t('cart.loading')}</Text>
       </View>
     );
@@ -252,29 +253,29 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: colors.header,
   },
   itemCount: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginTop: 4,
   },
   scrollView: {
@@ -283,23 +284,23 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   errorText: {
     fontSize: 16,
-    color: '#C62828',
+    color: colors.danger,
     textAlign: 'center',
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     minWidth: 200,
     alignItems: 'center',
   },
   retryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -310,23 +311,23 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   emptySubtitle: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 24,
   },
   startScanningButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     minWidth: 200,
     alignItems: 'center',
   },
   startScanningButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -343,10 +344,10 @@ const styles = StyleSheet.create({
   participantName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   typeBadge: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.screenBg,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
@@ -354,19 +355,12 @@ const styles = StyleSheet.create({
   typeText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#1976D2',
+    color: colors.dustyBlue,
     textTransform: 'capitalize',
   },
   cartItem: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 8,
+    ...card,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
   },
   itemInfo: {
     flex: 1,
@@ -375,17 +369,17 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   brand: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 2,
   },
   size: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 4,
   },
   itemDetails: {
@@ -396,25 +390,25 @@ const styles = StyleSheet.create({
   },
   category: {
     fontSize: 13,
-    color: '#2E7D32',
+    color: colors.success,
     fontWeight: '500',
     textTransform: 'capitalize',
   },
   quantity: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   removeButton: {
-    backgroundColor: '#FFEBEE',
+    backgroundColor: colors.screenBg,
     padding: 12,
     borderRadius: 6,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#EF9A9A',
+    borderColor: colors.danger,
   },
   removeButtonText: {
-    color: '#C62828',
+    color: colors.danger,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -426,32 +420,32 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   clearButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#C62828',
+    borderColor: colors.danger,
   },
   clearButtonText: {
-    color: '#C62828',
+    color: colors.danger,
     fontSize: 14,
     fontWeight: '600',
   },
   footer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    borderTopColor: colors.border,
   },
   checkoutButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 18,
     borderRadius: 8,
     alignItems: 'center',
   },
   checkoutButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 18,
     fontWeight: '700',
   },

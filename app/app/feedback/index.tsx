@@ -20,6 +20,7 @@ import { useRouter } from 'expo-router';
 import Constants from 'expo-constants';
 import { submitFeedback } from '@/lib/services/api';
 import { useI18n } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 
 type FeedbackCategory = 'bug' | 'feature' | 'question';
 
@@ -176,7 +177,7 @@ export default function FeedbackScreen() {
                 ? t('feedback.placeholderFeature')
                 : t('feedback.placeholderQuestion')
           }
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.muted}
           value={description}
           onChangeText={setDescription}
           maxLength={4000}
@@ -221,7 +222,7 @@ export default function FeedbackScreen() {
           accessibilityState={{ disabled: !canSubmit || submitting }}
         >
           {submitting ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={colors.white} />
           ) : (
             <Text style={styles.submitButtonText}>{t('feedback.submitFeedback')}</Text>
           )}
@@ -241,7 +242,7 @@ export default function FeedbackScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   scrollView: {
     flex: 1,
@@ -251,7 +252,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 20,
     borderRadius: 12,
     marginBottom: 20,
@@ -259,17 +260,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: colors.header,
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginTop: 4,
   },
   sectionLabel: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 10,
     marginTop: 4,
   },
@@ -278,37 +279,37 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   categoryCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 10,
     padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#e0e0e0',
+    borderColor: colors.border,
   },
   categoryCardSelected: {
-    borderColor: '#2E7D32',
-    backgroundColor: '#f0f9f0',
+    borderColor: colors.header,
+    backgroundColor: colors.screenBg,
   },
   categoryIcon: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: colors.screenBg,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
   categoryIconSelected: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
   },
   categoryIconText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#666',
+    color: colors.muted,
   },
   categoryIconTextSelected: {
-    color: '#fff',
+    color: colors.white,
   },
   categoryContent: {
     flex: 1,
@@ -316,29 +317,29 @@ const styles = StyleSheet.create({
   categoryLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   categoryLabelSelected: {
-    color: '#2E7D32',
+    color: colors.header,
   },
   categoryDescription: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginTop: 2,
   },
   textInput: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 10,
     padding: 14,
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
     minHeight: 140,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: colors.border,
   },
   charCount: {
     fontSize: 12,
-    color: '#999',
+    color: colors.muted,
     textAlign: 'right',
     marginTop: 4,
     marginBottom: 16,
@@ -346,7 +347,7 @@ const styles = StyleSheet.create({
   deviceInfoToggle: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 10,
     padding: 14,
     marginBottom: 12,
@@ -356,17 +357,17 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: '#ccc',
+    borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
   checkboxChecked: {
-    backgroundColor: '#2E7D32',
-    borderColor: '#2E7D32',
+    backgroundColor: colors.header,
+    borderColor: colors.header,
   },
   checkmark: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 14,
     fontWeight: 'bold',
   },
@@ -376,56 +377,56 @@ const styles = StyleSheet.create({
   deviceInfoLabel: {
     fontSize: 15,
     fontWeight: '500',
-    color: '#333',
+    color: colors.navy,
   },
   deviceInfoDetail: {
     fontSize: 12,
-    color: '#999',
+    color: colors.muted,
     marginTop: 2,
   },
   privacyNote: {
     fontSize: 12,
-    color: '#999',
+    color: colors.muted,
     textAlign: 'center',
     marginBottom: 16,
     lineHeight: 18,
   },
   submitButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 10,
     alignItems: 'center',
   },
   submitButtonDisabled: {
-    backgroundColor: '#A5D6A7',
+    backgroundColor: colors.border,
   },
   submitButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 17,
     fontWeight: '600',
   },
   validationHint: {
     fontSize: 12,
-    color: '#F44336',
+    color: colors.danger,
     textAlign: 'center',
     marginTop: 8,
   },
   footer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    borderTopColor: colors.border,
   },
   backButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: colors.border,
   },
   backButtonText: {
-    color: '#666',
+    color: colors.muted,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -437,39 +438,39 @@ const styles = StyleSheet.create({
   },
   successIcon: {
     fontSize: 48,
-    color: '#2E7D32',
+    color: colors.success,
     fontWeight: 'bold',
     marginBottom: 16,
     width: 80,
     height: 80,
     lineHeight: 80,
     textAlign: 'center',
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.cardBg,
     borderRadius: 40,
     overflow: 'hidden',
   },
   successTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: colors.success,
     marginBottom: 12,
   },
   successText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 32,
   },
   successButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     paddingHorizontal: 32,
     paddingVertical: 14,
     borderRadius: 8,
     marginBottom: 12,
   },
   successButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -478,7 +479,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   backButtonAltText: {
-    color: '#666',
+    color: colors.muted,
     fontSize: 16,
   },
 });

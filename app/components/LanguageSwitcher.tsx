@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, Pressable } from 'react-native';
 import { useState } from 'react';
 import { useI18n } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 interface LanguageSwitcherProps {
   /** Compact mode shows just a small button with current language code */
@@ -153,18 +154,18 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   compactButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 12,
     fontWeight: '600',
   },
 
   // Full button styles
   fullButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 16,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: colors.border,
   },
   buttonContent: {
     flexDirection: 'row',
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
   },
   buttonLabel: {
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
     fontWeight: '500',
   },
   currentLanguage: {
@@ -183,12 +184,12 @@ const styles = StyleSheet.create({
   },
   languageName: {
     fontSize: 16,
-    color: '#2E7D32',
+    color: colors.header,
     fontWeight: '500',
   },
   chevron: {
     fontSize: 20,
-    color: '#999',
+    color: colors.muted,
   },
 
   // Modal styles
@@ -200,7 +201,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 12,
     padding: 20,
     width: '100%',
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -220,12 +221,12 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     marginBottom: 8,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   languageOptionSelected: {
     backgroundColor: '#E8F5E9',
     borderWidth: 2,
-    borderColor: '#2E7D32',
+    borderColor: colors.header,
   },
   languageOptionContent: {
     flex: 1,
@@ -233,35 +234,35 @@ const styles = StyleSheet.create({
   languageOptionNative: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   languageOptionName: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginTop: 2,
   },
   languageOptionTextSelected: {
-    color: '#2E7D32',
+    color: colors.header,
   },
   languageOptionSubtextSelected: {
-    color: '#4CAF50',
+    color: colors.success,
   },
   checkmark: {
     fontSize: 20,
-    color: '#2E7D32',
+    color: colors.header,
     fontWeight: 'bold',
   },
   closeButton: {
     marginTop: 8,
     padding: 14,
     borderRadius: 8,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
     alignItems: 'center',
   },
   closeButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
 });
 

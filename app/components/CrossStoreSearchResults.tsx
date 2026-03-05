@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Platform, FlatList } from 'react-native';
 import type { CrossStoreResult } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 interface CrossStoreSearchResultsProps {
   results: CrossStoreResult[];
@@ -27,28 +28,28 @@ const getChainIcon = (chain: string): string => {
 const getStatusInfo = (status: string): { color: string; text: string; bgColor: string } => {
   switch (status) {
     case 'in_stock':
-      return { color: '#2E7D32', text: 'In Stock', bgColor: '#E8F5E9' };
+      return { color: colors.success, text: 'In Stock', bgColor: '#E8F5E9' };
     case 'low_stock':
-      return { color: '#EF6C00', text: 'Low Stock', bgColor: '#FFF3E0' };
+      return { color: colors.warning, text: 'Low Stock', bgColor: '#FFF3E0' };
     case 'out_of_stock':
-      return { color: '#C62828', text: 'Out of Stock', bgColor: '#FFEBEE' };
+      return { color: colors.danger, text: 'Out of Stock', bgColor: '#FFEBEE' };
     default:
-      return { color: '#757575', text: 'Unknown', bgColor: '#F5F5F5' };
+      return { color: colors.muted, text: 'Unknown', bgColor: colors.screenBg };
   }
 };
 
 const getLikelihoodInfo = (level: string): { color: string; text: string } => {
   switch (level) {
     case 'always':
-      return { color: '#4CAF50', text: 'Usually carries this formula' };
+      return { color: colors.success, text: 'Usually carries this formula' };
     case 'usually':
       return { color: '#8BC34A', text: 'Often has this formula' };
     case 'sometimes':
-      return { color: '#FF9800', text: 'Sometimes carries' };
+      return { color: colors.warning, text: 'Sometimes carries' };
     case 'rarely':
-      return { color: '#F44336', text: 'Rarely has this' };
+      return { color: colors.danger, text: 'Rarely has this' };
     default:
-      return { color: '#9E9E9E', text: 'Availability unknown' };
+      return { color: colors.consumed, text: 'Availability unknown' };
   }
 };
 
@@ -82,7 +83,7 @@ function StoreCard({ store, onPress }: { store: CrossStoreResult; onPress?: () =
   const likelihoodInfo = store.likelihood ? getLikelihoodInfo(store.likelihood.level) : null;
 
   // Border color based on status or likelihood
-  let borderColor = '#E0E0E0';
+  let borderColor: string = colors.border;
   if (hasAvailability) {
     borderColor = statusInfo!.color;
   } else if (store.likelihood) {
@@ -241,7 +242,7 @@ const styles = StyleSheet.create({
   },
   summaryText: {
     fontSize: 14,
-    color: '#1565C0',
+    color: colors.dustyBlue,
   },
   summaryHighlight: {
     fontWeight: 'bold',
@@ -254,7 +255,7 @@ const styles = StyleSheet.create({
     height: 12,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 12,
     padding: 16,
     borderLeftWidth: 4,
@@ -285,11 +286,11 @@ const styles = StyleSheet.create({
   storeName: {
     fontSize: 17,
     fontWeight: '600',
-    color: '#212121',
+    color: colors.navy,
   },
   distance: {
     fontSize: 13,
-    color: '#757575',
+    color: colors.muted,
     marginTop: 2,
   },
   wicBadge: {
@@ -298,16 +299,16 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#4CAF50',
+    borderColor: colors.success,
   },
   wicBadgeText: {
-    color: '#2E7D32',
+    color: colors.success,
     fontSize: 11,
     fontWeight: '600',
   },
   address: {
     fontSize: 13,
-    color: '#757575',
+    color: colors.muted,
     marginBottom: 12,
   },
   availabilitySection: {
@@ -337,7 +338,7 @@ const styles = StyleSheet.create({
   },
   quantityText: {
     fontSize: 13,
-    color: '#424242',
+    color: colors.navy,
   },
   timeRow: {
     flexDirection: 'row',
@@ -349,11 +350,11 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 12,
-    color: '#757575',
+    color: colors.muted,
   },
   confidenceText: {
     fontSize: 12,
-    color: '#9E9E9E',
+    color: colors.consumed,
     marginLeft: 4,
   },
   likelihoodRow: {
@@ -368,11 +369,11 @@ const styles = StyleSheet.create({
   },
   likelihoodText: {
     fontSize: 13,
-    color: '#616161',
+    color: colors.muted,
   },
   noDataText: {
     fontSize: 13,
-    color: '#9E9E9E',
+    color: colors.consumed,
     fontStyle: 'italic',
   },
   actions: {
@@ -381,7 +382,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -389,11 +390,11 @@ const styles = StyleSheet.create({
   actionButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#424242',
+    color: colors.navy,
   },
   actionButtonPrimary: {
     flex: 1,
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -401,7 +402,7 @@ const styles = StyleSheet.create({
   actionButtonPrimaryText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#fff',
+    color: colors.white,
   },
   emptyContainer: {
     alignItems: 'center',
@@ -413,7 +414,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: '#757575',
+    color: colors.muted,
     textAlign: 'center',
   },
 });

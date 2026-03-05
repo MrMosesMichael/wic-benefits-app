@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 import { BenefitCategory, BenefitUnit } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import { loadHousehold, saveHousehold } from '@/lib/services/householdStorage';
+import { colors, fonts, card } from '@/lib/theme';
 
 // Category options for dropdown
 const CATEGORY_OPTIONS: { value: BenefitCategory; label: string }[] = [
@@ -524,7 +525,7 @@ export default function ManualEntry() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   form: {
     padding: 16,
@@ -536,29 +537,29 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   required: {
-    color: '#C62828',
+    color: colors.danger,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
   },
   inputError: {
-    borderColor: '#C62828',
+    borderColor: colors.danger,
     borderWidth: 2,
   },
   pickerButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     padding: 12,
     flexDirection: 'row',
@@ -567,42 +568,42 @@ const styles = StyleSheet.create({
   },
   pickerButtonText: {
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
     flex: 1,
   },
   placeholderText: {
-    color: '#999',
+    color: colors.muted,
   },
   chevron: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
   },
   pickerOptions: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     marginTop: 4,
   },
   pickerOption: {
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: colors.screenBg,
   },
   pickerOptionSelected: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
   },
   pickerOptionText: {
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
   },
   pickerOptionTextSelected: {
-    color: '#2E7D32',
+    color: colors.header,
     fontWeight: '600',
   },
   errorText: {
     fontSize: 12,
-    color: '#C62828',
+    color: colors.danger,
     marginTop: 4,
   },
   sectionHeader: {
@@ -612,12 +613,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#2E7D32',
+    color: colors.header,
   },
   datePickerContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     padding: 12,
     marginTop: 4,
@@ -629,31 +630,31 @@ const styles = StyleSheet.create({
   },
   datePresetButton: {
     flex: 1,
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
     padding: 10,
     borderRadius: 6,
     alignItems: 'center',
   },
   datePresetButtonText: {
     fontSize: 13,
-    color: '#2E7D32',
+    color: colors.header,
     fontWeight: '600',
   },
   datePickerNote: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
   },
   helpBox: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.cardBg,
     padding: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#BBDEFB',
+    borderColor: colors.dustyBlue,
   },
   helpText: {
     fontSize: 12,
-    color: '#1565C0',
+    color: colors.dustyBlue,
     lineHeight: 18,
   },
   buttonContainer: {
@@ -662,26 +663,26 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   saveButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   saveButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   cancelButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: colors.border,
   },
   cancelButtonText: {
-    color: '#666',
+    color: colors.muted,
     fontSize: 16,
     fontWeight: '600',
   },

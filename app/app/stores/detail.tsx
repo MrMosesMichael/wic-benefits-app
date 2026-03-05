@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Linking, Platform, ScrollView
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useI18n } from '@/lib/i18n/I18nContext';
 import StoreProductList from '@/components/StoreProductList';
+import { colors, fonts, card } from '@/lib/theme';
 
 export default function StoreDetailScreen() {
   const { t } = useI18n();
@@ -106,54 +107,48 @@ export default function StoreDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   content: {
     padding: 16,
     paddingBottom: 40,
   },
   headerCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    ...card,
     padding: 20,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   storeName: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   chain: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 8,
   },
   wicBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
     marginBottom: 8,
   },
   wicBadgeText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 13,
     fontWeight: '700',
   },
   distance: {
     fontSize: 14,
-    color: '#546E7A',
+    color: colors.navy,
     fontWeight: '600',
   },
   infoCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -161,13 +156,13 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
     marginBottom: 6,
     textTransform: 'uppercase',
   },
   infoText: {
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
   },
   actionsCard: {
     flexDirection: 'row',
@@ -176,21 +171,21 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
   },
   actionButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   actionButtonPrimary: {
     flex: 1,
-    backgroundColor: '#546E7A',
+    backgroundColor: colors.navy,
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
@@ -198,7 +193,7 @@ const styles = StyleSheet.create({
   actionButtonPrimaryText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#fff',
+    color: colors.white,
   },
   productsSection: {
     marginTop: 20,

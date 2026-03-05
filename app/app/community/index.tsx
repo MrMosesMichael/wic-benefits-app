@@ -1,13 +1,14 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useI18n } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 
 const NAV_CARDS = [
-  { route: '/community/tips', icon: '\u{1F4A1}', titleKey: 'community.shoppingTips', descKey: 'community.shoppingTipsDesc', color: '#2196F3' },
-  { route: '/community/recipes', icon: '\u{1F373}', titleKey: 'community.recipes', descKey: 'community.recipesDesc', color: '#FF9800' },
-  { route: '/community/rights', icon: '\u2696\uFE0F', titleKey: 'community.knowYourRights', descKey: 'community.knowYourRightsDesc', color: '#9C27B0' },
-  { route: '/community/wic-offices', icon: '\u{1F3E2}', titleKey: 'community.wicOffices', descKey: 'community.wicOfficesDesc', color: '#00897B' },
-  { route: '/community/complaint', icon: '\u{1F4DD}', titleKey: 'community.fileComplaint', descKey: 'community.fileComplaintDesc', color: '#F44336' },
+  { route: '/community/tips', icon: '\u{1F4A1}', titleKey: 'community.shoppingTips', descKey: 'community.shoppingTipsDesc', color: colors.dustyBlue },
+  { route: '/community/recipes', icon: '\u{1F373}', titleKey: 'community.recipes', descKey: 'community.recipesDesc', color: colors.wheat },
+  { route: '/community/rights', icon: '\u2696\uFE0F', titleKey: 'community.knowYourRights', descKey: 'community.knowYourRightsDesc', color: colors.navy },
+  { route: '/community/wic-offices', icon: '\u{1F3E2}', titleKey: 'community.wicOffices', descKey: 'community.wicOfficesDesc', color: colors.header },
+  { route: '/community/complaint', icon: '\u{1F4DD}', titleKey: 'community.fileComplaint', descKey: 'community.fileComplaintDesc', color: colors.danger },
 ];
 
 export default function CommunityHubScreen() {
@@ -50,18 +51,20 @@ export default function CommunityHubScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   content: {
     padding: 16,
   },
   headerCard: {
     flexDirection: 'row',
-    backgroundColor: '#F3E5F5',
+    backgroundColor: colors.cardBg,
     padding: 16,
     borderRadius: 12,
     marginBottom: 20,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   headerIcon: {
     fontSize: 28,
@@ -70,11 +73,11 @@ const styles = StyleSheet.create({
   headerText: {
     flex: 1,
     fontSize: 14,
-    color: '#6A1B9A',
+    color: colors.navy,
     lineHeight: 20,
   },
   navCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -83,7 +86,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.06,
     shadowRadius: 3,
     elevation: 2,
   },
@@ -97,17 +100,17 @@ const styles = StyleSheet.create({
   navTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 3,
   },
   navDesc: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     lineHeight: 18,
   },
   navArrow: {
     fontSize: 18,
-    color: '#999',
+    color: colors.muted,
     marginLeft: 8,
   },
 });

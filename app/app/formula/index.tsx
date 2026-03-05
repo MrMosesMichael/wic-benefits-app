@@ -10,6 +10,7 @@ import { useLocation } from '@/lib/hooks/useLocation';
 import type { StoreResult, WicFormula, ParticipantFormula } from '@/lib/types';
 import Constants from 'expo-constants';
 import { useI18n } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 
 interface FormulaShortage {
   id: string;
@@ -173,10 +174,10 @@ export default function FormulaFinder() {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return '#C62828';
-      case 'severe': return '#E65100';
-      case 'moderate': return '#F57C00';
-      default: return '#757575';
+      case 'critical': return colors.danger;
+      case 'severe': return colors.warning;
+      case 'moderate': return colors.wheat;
+      default: return colors.muted;
     }
   };
 
@@ -209,7 +210,7 @@ export default function FormulaFinder() {
         </View>
 
         {loadingFormula ? (
-          <ActivityIndicator size="small" color="#1976D2" />
+          <ActivityIndicator size="small" color={colors.dustyBlue} />
         ) : assignedFormula ? (
           <View style={styles.selectedFormula}>
             <Text style={styles.formulaBrand}>
@@ -376,7 +377,7 @@ export default function FormulaFinder() {
           accessibilityState={{ disabled: loading || !location || !assignedFormula }}
         >
           {loading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={colors.white} />
           ) : (
             <Text style={styles.searchButtonText}>{t('formula.findFormulaNow')}</Text>
           )}
@@ -392,7 +393,7 @@ export default function FormulaFinder() {
       {/* Results */}
       {loading && (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#1976D2" />
+          <ActivityIndicator size="large" color={colors.dustyBlue} />
           <Text style={styles.loadingText}>{t('formula.searchingStores')}</Text>
         </View>
       )}
@@ -504,17 +505,17 @@ export default function FormulaFinder() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.header,
     padding: 24,
     paddingTop: 60,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
     marginBottom: 4,
   },
   subtitle: {
@@ -522,16 +523,9 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.9)',
   },
   formulaCard: {
-    backgroundColor: '#fff',
+    ...card,
     margin: 16,
     marginBottom: 8,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   formulaCardHeader: {
     flexDirection: 'row',
@@ -542,12 +536,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
     textTransform: 'uppercase',
   },
   editLink: {
     fontSize: 14,
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '600',
   },
   selectedFormula: {
@@ -555,45 +549,45 @@ const styles = StyleSheet.create({
   },
   formulaBrand: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     textTransform: 'uppercase',
   },
   formulaName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginTop: 2,
   },
   formulaMeta: {
     fontSize: 13,
-    color: '#888',
+    color: colors.muted,
     marginTop: 4,
   },
   alternativesButton: {
     marginTop: 12,
-    backgroundColor: '#FFF3E0',
+    backgroundColor: colors.cardBg,
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#FF9800',
+    borderColor: colors.warning,
   },
   alternativesButtonText: {
-    color: '#E65100',
+    color: colors.warning,
     fontSize: 14,
     fontWeight: '600',
   },
   selectFormulaButton: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.screenBg,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#1976D2',
+    borderColor: colors.dustyBlue,
     borderStyle: 'dashed',
   },
   selectFormulaButtonText: {
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontSize: 15,
     fontWeight: '600',
   },
@@ -602,7 +596,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   manageAlertsLinkText: {
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontSize: 14,
     fontWeight: '500',
   },
@@ -610,7 +604,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FFF3E0',
+    backgroundColor: colors.cardBg,
     marginHorizontal: 16,
     marginBottom: 8,
     padding: 12,
@@ -618,11 +612,11 @@ const styles = StyleSheet.create({
   },
   locationErrorText: {
     flex: 1,
-    color: '#E65100',
+    color: colors.warning,
     fontSize: 13,
   },
   retryLink: {
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '600',
     marginLeft: 8,
   },
@@ -631,7 +625,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   shortageAlert: {
-    backgroundColor: '#FFF3E0',
+    backgroundColor: colors.cardBg,
     padding: 12,
     borderRadius: 8,
     marginBottom: 8,
@@ -645,44 +639,38 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   severityBadgeText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 11,
     fontWeight: '700',
   },
   shortageProductName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   shortageStatText: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
   },
   shortageAlternativesButton: {
     marginTop: 10,
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 6,
     alignSelf: 'flex-start',
   },
   shortageAlternativesButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 13,
     fontWeight: '600',
   },
   searchCard: {
-    backgroundColor: '#fff',
+    ...card,
     margin: 16,
     marginTop: 8,
     padding: 20,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   radiusButtons: {
     flexDirection: 'row',
@@ -694,38 +682,38 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     alignItems: 'center',
   },
   radiusButtonActive: {
-    borderColor: '#1976D2',
-    backgroundColor: '#E3F2FD',
+    borderColor: colors.dustyBlue,
+    backgroundColor: colors.screenBg,
   },
   radiusButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
   radiusButtonTextActive: {
-    color: '#1976D2',
+    color: colors.dustyBlue,
   },
   searchButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   searchButtonDisabled: {
-    backgroundColor: '#90CAF9',
+    backgroundColor: colors.border,
   },
   searchButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 18,
     fontWeight: '700',
   },
   helpText: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     marginTop: 12,
   },
@@ -736,13 +724,12 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   emptyState: {
-    backgroundColor: '#fff',
+    ...card,
     margin: 16,
     padding: 32,
-    borderRadius: 12,
     alignItems: 'center',
   },
   emptyIcon: {
@@ -752,22 +739,22 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   emptyText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     marginBottom: 24,
   },
   emptyButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     padding: 14,
     borderRadius: 8,
   },
   emptyButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -777,11 +764,11 @@ const styles = StyleSheet.create({
   resultsHeader: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 16,
   },
   reportPrompt: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.screenBg,
     padding: 20,
     borderRadius: 12,
     alignItems: 'center',
@@ -789,41 +776,40 @@ const styles = StyleSheet.create({
   },
   reportPromptText: {
     fontSize: 16,
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '600',
     marginBottom: 12,
     textAlign: 'center',
   },
   reportPromptButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
   },
   reportPromptButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   infoCard: {
-    backgroundColor: '#fff',
+    ...card,
     margin: 16,
     padding: 20,
-    borderRadius: 12,
   },
   infoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 12,
   },
   infoText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     lineHeight: 20,
   },
   floatingReportButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     marginHorizontal: 16,
     padding: 16,
     borderRadius: 12,
@@ -835,21 +821,17 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   floatingReportButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '700',
   },
   advancedSearchCard: {
-    backgroundColor: '#fff',
+    ...card,
     margin: 16,
     marginTop: 8,
-    padding: 16,
-    borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderWidth: 2,
-    borderColor: '#E3F2FD',
     borderStyle: 'dashed',
   },
   advancedSearchContent: {
@@ -867,16 +849,16 @@ const styles = StyleSheet.create({
   advancedSearchTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1976D2',
+    color: colors.dustyBlue,
   },
   advancedSearchSubtitle: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginTop: 2,
   },
   advancedSearchArrow: {
     fontSize: 20,
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: 'bold',
   },
 });

@@ -14,6 +14,7 @@ import FormulaAlternatives from '@/components/FormulaAlternatives';
 import { useLocation } from '@/lib/hooks/useLocation';
 import type { FormulaAlternative, FormulaAlternativesResponse } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 
 export default function FormulaAlternativesScreen() {
   const router = useRouter();
@@ -78,7 +79,7 @@ export default function FormulaAlternativesScreen() {
       {/* Content */}
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#1976D2" />
+          <ActivityIndicator size="large" color={colors.dustyBlue} />
           <Text style={styles.loadingText}>{t('alternatives.searchingAlternatives')}</Text>
         </View>
       ) : error ? (
@@ -136,10 +137,10 @@ export default function FormulaAlternativesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.header,
     padding: 20,
     paddingTop: 60,
     paddingBottom: 24,
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
     lineHeight: 32,
   },
   loadingContainer: {
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   errorContainer: {
     flex: 1,
@@ -181,24 +182,24 @@ const styles = StyleSheet.create({
   errorTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
     textAlign: 'center',
   },
   errorText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     marginBottom: 24,
   },
   retryButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 8,
   },
   retryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -206,34 +207,27 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   primaryCard: {
-    backgroundColor: '#fff',
-    padding: 16,
+    ...card,
     margin: 16,
     marginBottom: 8,
-    borderRadius: 12,
     borderLeftWidth: 4,
-    borderLeftColor: '#1976D2',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderLeftColor: colors.dustyBlue,
   },
   primaryLabel: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     textTransform: 'uppercase',
     marginBottom: 8,
   },
   primaryBrand: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textTransform: 'uppercase',
   },
   primaryName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginTop: 4,
     marginBottom: 8,
   },
@@ -245,10 +239,10 @@ const styles = StyleSheet.create({
   },
   primaryDetailText: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   contractBadge: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
@@ -256,7 +250,7 @@ const styles = StyleSheet.create({
   contractBadgeText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#fff',
+    color: colors.white,
     textTransform: 'uppercase',
   },
   scrollView: {
@@ -276,13 +270,13 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
     textAlign: 'center',
   },
   emptyText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     lineHeight: 24,
   },

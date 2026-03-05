@@ -20,6 +20,7 @@ import LocationPrompt from '@/components/LocationPrompt';
 import { useLocation } from '@/lib/hooks/useLocation';
 import type { CrossStoreResult, CrossStoreSearchRequest, WicFormula, FormulaBrand, FormulaType } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 
 type ViewMode = 'list' | 'map';
 
@@ -203,7 +204,7 @@ export default function CrossStoreSearchScreen() {
             onChangeText={setSearchQuery}
             onSubmitEditing={handleSearch}
             returnKeyType="search"
-            placeholderTextColor="#9E9E9E"
+            placeholderTextColor={colors.muted}
             accessibilityLabel={t('a11y.crossStoreSearch.searchInputLabel')}
             accessibilityRole="search"
           />
@@ -220,7 +221,7 @@ export default function CrossStoreSearchScreen() {
           contentContainerStyle={styles.chipContainer}
         >
           {loadingBrands ? (
-            <ActivityIndicator size="small" color="#1976D2" />
+            <ActivityIndicator size="small" color={colors.dustyBlue} />
           ) : (
             brands.map((brand) => (
               <TouchableOpacity
@@ -375,7 +376,7 @@ export default function CrossStoreSearchScreen() {
           accessibilityState={{ disabled: loading || loadingLocation || !location }}
         >
           {loading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={colors.white} />
           ) : (
             <Text style={styles.searchButtonText}>
               {loadingLocation ? t('crossStoreSearch.gettingLocation') : t('crossStoreSearch.searchButton')}
@@ -414,7 +415,7 @@ export default function CrossStoreSearchScreen() {
       <View style={styles.resultsContainer}>
         {loading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#1976D2" />
+            <ActivityIndicator size="large" color={colors.dustyBlue} />
             <Text style={styles.loadingText}>{t('crossStoreSearch.searchingStores')}</Text>
           </View>
         ) : searchPerformed ? (
@@ -486,10 +487,10 @@ export default function CrossStoreSearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.header,
     padding: 20,
     paddingTop: 60,
   },
@@ -503,7 +504,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
     marginBottom: 4,
   },
   subtitle: {
@@ -514,7 +515,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FFF3E0',
+    backgroundColor: colors.cardBg,
     padding: 12,
     marginHorizontal: 16,
     marginTop: 16,
@@ -522,24 +523,17 @@ const styles = StyleSheet.create({
   },
   locationErrorText: {
     flex: 1,
-    color: '#E65100',
+    color: colors.warning,
     fontSize: 13,
   },
   retryLink: {
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '600',
     marginLeft: 8,
   },
   searchSection: {
-    backgroundColor: '#fff',
+    ...card,
     margin: 16,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   modeSelector: {
     flexDirection: 'row',
@@ -550,29 +544,29 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10,
     borderRadius: 8,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     alignItems: 'center',
   },
   modeButtonActive: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.borderLight,
   },
   modeButtonText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#757575',
+    color: colors.muted,
   },
   modeButtonTextActive: {
-    color: '#1976D2',
+    color: colors.dustyBlue,
   },
   searchInputContainer: {
     marginBottom: 16,
   },
   searchInput: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     borderRadius: 8,
     padding: 14,
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
   },
   chipScroll: {
     marginBottom: 16,
@@ -586,13 +580,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 20,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     gap: 6,
   },
   chipActive: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.borderLight,
     borderWidth: 2,
-    borderColor: '#1976D2',
+    borderColor: colors.dustyBlue,
   },
   chipIcon: {
     fontSize: 16,
@@ -600,16 +594,16 @@ const styles = StyleSheet.create({
   chipText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#616161',
+    color: colors.muted,
   },
   chipTextActive: {
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '600',
   },
   chipCount: {
     fontSize: 12,
-    color: '#9E9E9E',
-    backgroundColor: '#E0E0E0',
+    color: colors.muted,
+    backgroundColor: colors.border,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 10,
@@ -628,74 +622,74 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 6,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
   },
   radiusButtonActive: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
   },
   radiusButtonText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#757575',
+    color: colors.muted,
   },
   radiusButtonTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
   filterToggle: {
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 6,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
   },
   filterToggleActive: {
-    backgroundColor: '#E8F5E9',
-    borderColor: '#4CAF50',
+    backgroundColor: colors.borderLight,
+    borderColor: colors.success,
   },
   filterToggleText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#757575',
+    color: colors.muted,
   },
   filterToggleTextActive: {
-    color: '#2E7D32',
+    color: colors.success,
   },
   searchButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   searchButtonDisabled: {
-    backgroundColor: '#90CAF9',
+    backgroundColor: colors.border,
   },
   searchButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 18,
     fontWeight: '700',
   },
   formulaInfoCard: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.borderLight,
     padding: 12,
     borderRadius: 8,
     marginBottom: 16,
   },
   formulaInfoLabel: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 4,
   },
   formulaInfoName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2E7D32',
+    color: colors.success,
   },
   viewToggle: {
     flexDirection: 'row',
     marginHorizontal: 16,
     marginBottom: 8,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     borderRadius: 8,
     padding: 2,
   },
@@ -706,15 +700,15 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   viewToggleButtonActive: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
   },
   viewToggleText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#757575',
+    color: colors.muted,
   },
   viewToggleTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
   resultsContainer: {
     flex: 1,
@@ -727,7 +721,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   initialState: {
     alignItems: 'center',
@@ -740,26 +734,26 @@ const styles = StyleSheet.create({
   initialTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   initialText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     lineHeight: 22,
   },
   matchedInfo: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.screenBg,
     padding: 10,
     alignItems: 'center',
   },
   matchedInfoText: {
     fontSize: 13,
-    color: '#1565C0',
+    color: colors.dustyBlue,
   },
   quickReportButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     margin: 16,
     padding: 16,
     borderRadius: 12,
@@ -771,7 +765,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   quickReportButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '700',
   },

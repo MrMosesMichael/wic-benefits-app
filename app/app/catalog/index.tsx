@@ -14,6 +14,7 @@ import { getCategories, CatalogCategory } from '@/lib/services/catalogService';
 import { WIC_CATEGORIES, getCategoryMeta, normalizeCategoryId } from '@/lib/data/wic-categories';
 import CategoryCard from '@/components/CategoryCard';
 import LocationPrompt from '@/components/LocationPrompt';
+import { colors, fonts, card } from '@/lib/theme';
 
 export default function CatalogScreen() {
   const router = useRouter();
@@ -96,7 +97,7 @@ export default function CatalogScreen() {
       {/* Loading */}
       {loading && (
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color="#00897B" />
+          <ActivityIndicator size="large" color={colors.navy} />
           <Text style={styles.loadingText}>{t('catalog.loading')}</Text>
         </View>
       )}
@@ -135,18 +136,18 @@ export default function CatalogScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
   },
   centerContainer: {
     flex: 1,
@@ -157,11 +158,11 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   errorText: {
     fontSize: 16,
-    color: '#F44336',
+    color: colors.danger,
     textAlign: 'center',
   },
   emptyIcon: {
@@ -171,12 +172,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   emptyText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
   },
   grid: {

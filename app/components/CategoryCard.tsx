@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import { formatCategoryName } from '@/lib/data/wic-categories';
+import { colors } from '@/lib/theme';
 
 interface CategoryCardProps {
   categoryId: string;
@@ -37,7 +38,7 @@ export default function CategoryCard({ categoryId, icon, color, labelKey, count,
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -59,12 +60,12 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     textAlign: 'center',
     marginBottom: 4,
   },
   count: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
   },
 });

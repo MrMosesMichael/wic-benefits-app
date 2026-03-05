@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } fr
 import notificationService, { type NotificationSubscription } from '@/lib/services/notificationService';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import Constants from 'expo-constants';
+import { colors } from '@/lib/theme';
 
 interface FormulaAlertButtonProps {
   userId: string;
@@ -144,7 +145,7 @@ export default function FormulaAlertButton({
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="small" color="#2196F3" />
+        <ActivityIndicator size="small" color={colors.dustyBlue} />
       </View>
     );
   }
@@ -158,7 +159,7 @@ export default function FormulaAlertButton({
         accessibilityLabel={t('a11y.formulaAlert.loadingLabel')}
         accessibilityState={{ disabled: true }}
       >
-        <ActivityIndicator size="small" color="#fff" />
+        <ActivityIndicator size="small" color={colors.white} />
         <Text style={styles.buttonText}>{t('formulaAlerts.loading')}</Text>
       </TouchableOpacity>
     );
@@ -211,19 +212,19 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   buttonInactive: {
-    backgroundColor: '#2196F3',
+    backgroundColor: colors.dustyBlue,
   },
   buttonActive: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
   },
   buttonLoading: {
-    backgroundColor: '#9E9E9E',
+    backgroundColor: colors.consumed,
   },
   buttonIcon: {
     fontSize: 18,
   },
   buttonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },

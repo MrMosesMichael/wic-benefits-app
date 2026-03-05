@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { useI18n } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 import { useLocation } from '@/lib/hooks/useLocation';
 import { getComplaintTypes, getWicOffice, ComplaintType } from '@/lib/services/advocacyService';
 
@@ -85,7 +86,7 @@ export default function ComplaintScreen() {
           <TextInput
             style={styles.detailsInput}
             placeholder={t('complaint.detailsPlaceholder')}
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.muted}
             value={details}
             onChangeText={setDetails}
             multiline
@@ -130,25 +131,25 @@ export default function ComplaintScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  container: { flex: 1, backgroundColor: colors.screenBg },
   content: { padding: 16 },
-  privacyBanner: { flexDirection: 'row', backgroundColor: '#E3F2FD', padding: 14, borderRadius: 12, marginBottom: 20, alignItems: 'center' },
+  privacyBanner: { flexDirection: 'row', backgroundColor: colors.cardBg, padding: 14, borderRadius: 12, marginBottom: 20, alignItems: 'center', borderWidth: 1, borderColor: colors.border },
   privacyIcon: { fontSize: 20, marginRight: 10 },
-  privacyText: { flex: 1, fontSize: 13, color: '#1565C0', lineHeight: 18 },
-  stepTitle: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 12 },
-  typeCard: { backgroundColor: '#fff', borderRadius: 10, padding: 14, marginBottom: 8, borderWidth: 2, borderColor: '#E0E0E0' },
-  typeCardSelected: { borderColor: '#F44336', backgroundColor: '#FFEBEE' },
-  typeText: { fontSize: 15, color: '#333', fontWeight: '500' },
-  typeTextSelected: { color: '#C62828', fontWeight: '600' },
-  detailsInput: { backgroundColor: '#fff', borderRadius: 10, padding: 14, fontSize: 15, color: '#333', minHeight: 100, borderWidth: 1, borderColor: '#E0E0E0' },
-  templateCard: { backgroundColor: '#fff', borderRadius: 12, padding: 16, borderWidth: 1, borderColor: '#E0E0E0' },
-  templateText: { fontSize: 14, color: '#333', lineHeight: 22, marginBottom: 12 },
-  copyButton: { backgroundColor: '#F44336', paddingVertical: 12, borderRadius: 8, alignItems: 'center' },
-  copyButtonText: { color: '#fff', fontSize: 15, fontWeight: '700' },
-  contactCard: { backgroundColor: '#fff', borderRadius: 12, padding: 16, marginTop: 20, borderLeftWidth: 4, borderLeftColor: '#F44336' },
-  contactTitle: { fontSize: 14, fontWeight: '600', color: '#666', marginBottom: 8 },
-  contactName: { fontSize: 16, fontWeight: 'bold', color: '#333', marginBottom: 4 },
-  contactPhone: { fontSize: 16, color: '#F44336', fontWeight: '600', marginBottom: 4 },
-  contactEmail: { fontSize: 14, color: '#666', marginBottom: 8 },
-  contactNote: { fontSize: 13, color: '#666', fontStyle: 'italic', lineHeight: 18 },
+  privacyText: { flex: 1, fontSize: 13, color: colors.dustyBlue, lineHeight: 18 },
+  stepTitle: { fontSize: 16, fontWeight: '700', color: colors.navy, marginBottom: 12 },
+  typeCard: { backgroundColor: colors.cardBg, borderRadius: 10, padding: 14, marginBottom: 8, borderWidth: 2, borderColor: colors.border },
+  typeCardSelected: { borderColor: colors.danger, backgroundColor: colors.screenBg },
+  typeText: { fontSize: 15, color: colors.navy, fontWeight: '500' },
+  typeTextSelected: { color: colors.danger, fontWeight: '600' },
+  detailsInput: { backgroundColor: colors.white, borderRadius: 10, padding: 14, fontSize: 15, color: colors.navy, minHeight: 100, borderWidth: 1, borderColor: colors.border },
+  templateCard: { ...card },
+  templateText: { fontSize: 14, color: colors.navy, lineHeight: 22, marginBottom: 12 },
+  copyButton: { backgroundColor: colors.danger, paddingVertical: 12, borderRadius: 8, alignItems: 'center' },
+  copyButtonText: { color: colors.white, fontSize: 15, fontWeight: '700' },
+  contactCard: { backgroundColor: colors.cardBg, borderRadius: 12, padding: 16, marginTop: 20, borderLeftWidth: 4, borderLeftColor: colors.danger },
+  contactTitle: { fontSize: 14, fontWeight: '600', color: colors.muted, marginBottom: 8 },
+  contactName: { fontSize: 16, fontWeight: 'bold', color: colors.navy, marginBottom: 4 },
+  contactPhone: { fontSize: 16, color: colors.danger, fontWeight: '600', marginBottom: 4 },
+  contactEmail: { fontSize: 14, color: colors.muted, marginBottom: 8 },
+  contactNote: { fontSize: 13, color: colors.muted, fontStyle: 'italic', lineHeight: 18 },
 });

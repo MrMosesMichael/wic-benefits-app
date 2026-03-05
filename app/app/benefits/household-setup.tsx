@@ -18,6 +18,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { saveHousehold, loadHousehold, clearHousehold } from '@/lib/services/householdStorage';
 import { Household, Participant, BenefitAmount } from '@/lib/services/api';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 
 type ParticipantType = 'pregnant' | 'postpartum' | 'breastfeeding' | 'infant' | 'child';
 
@@ -520,23 +521,23 @@ export default function HouseholdSetup() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 20,
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: colors.header,
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginTop: 4,
   },
   content: {
@@ -544,11 +545,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   participantCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
+    ...card,
   },
   participantHeader: {
     flexDirection: 'row',
@@ -559,11 +556,11 @@ const styles = StyleSheet.create({
   participantName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
   },
   participantType: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginTop: 4,
   },
   participantBenefits: {
@@ -573,64 +570,60 @@ const styles = StyleSheet.create({
   },
   benefitCount: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
   },
   editBenefitsButton: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 6,
   },
   editBenefitsButtonText: {
-    color: '#2E7D32',
+    color: colors.header,
     fontSize: 14,
     fontWeight: '600',
   },
   removeButton: {
-    color: '#C62828',
+    color: colors.danger,
     fontSize: 14,
     fontWeight: '600',
   },
   addParticipantButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#2E7D32',
+    borderColor: colors.header,
     borderStyle: 'dashed',
   },
   addParticipantButtonText: {
-    color: '#2E7D32',
+    color: colors.header,
     fontSize: 16,
     fontWeight: '600',
   },
   addParticipantForm: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    ...card,
     gap: 12,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   input: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
   },
   pickerButton: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     padding: 12,
     flexDirection: 'row',
@@ -639,30 +632,30 @@ const styles = StyleSheet.create({
   },
   pickerButtonText: {
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
   },
   placeholderText: {
-    color: '#999',
+    color: colors.muted,
   },
   chevron: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
   },
   pickerOptions: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     overflow: 'hidden',
   },
   pickerOption: {
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: colors.screenBg,
   },
   pickerOptionText: {
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -671,35 +664,35 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     flex: 1,
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
   },
   saveButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 14,
     fontWeight: '600',
   },
   cancelButton: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
   },
   cancelButtonText: {
-    color: '#666',
+    color: colors.muted,
     fontSize: 14,
     fontWeight: '600',
   },
   benefitCard: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: colors.cardBg,
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: colors.border,
   },
   benefitHeader: {
     flexDirection: 'row',
@@ -710,30 +703,30 @@ const styles = StyleSheet.create({
   benefitTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
   },
   pickerContainer: {
     marginBottom: 12,
   },
   categoryChip: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     marginRight: 8,
   },
   categoryChipSelected: {
-    backgroundColor: '#2E7D32',
-    borderColor: '#2E7D32',
+    backgroundColor: colors.header,
+    borderColor: colors.header,
   },
   categoryChipText: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
   },
   categoryChipTextSelected: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '600',
   },
   amountRow: {
@@ -743,29 +736,29 @@ const styles = StyleSheet.create({
   },
   amountInput: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
   },
   unitText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     fontWeight: '600',
   },
   addBenefitButton: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#2E7D32',
+    borderColor: colors.header,
     borderStyle: 'dashed',
   },
   addBenefitButtonText: {
-    color: '#2E7D32',
+    color: colors.header,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -774,26 +767,26 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   primaryButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   clearButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#C62828',
+    borderColor: colors.danger,
   },
   clearButtonText: {
-    color: '#C62828',
+    color: colors.danger,
     fontSize: 16,
     fontWeight: '600',
   },

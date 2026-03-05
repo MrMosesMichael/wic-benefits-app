@@ -7,6 +7,7 @@ import FormulaCard from '@/components/FormulaCard';
 import { useLocation } from '@/lib/hooks/useLocation';
 import type { WicFormula, FormulaType } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 
 const FORMULA_TYPE_KEYS: { value: FormulaType | 'all'; key: string }[] = [
   { value: 'all', key: 'formulaTypes.all' },
@@ -106,7 +107,7 @@ export default function FormulaSelect() {
           placeholder={t('formulaSelect.searchPlaceholder')}
           value={searchQuery}
           onChangeText={setSearchQuery}
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.muted}
           accessibilityLabel={t('a11y.formula.searchLabel')}
           accessibilityRole="search"
         />
@@ -148,7 +149,7 @@ export default function FormulaSelect() {
       {/* Formula List */}
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#1976D2" />
+          <ActivityIndicator size="large" color={colors.dustyBlue} />
           <Text style={styles.loadingText}>{t('formulaSelect.loading')}</Text>
         </View>
       ) : (
@@ -191,7 +192,7 @@ export default function FormulaSelect() {
             accessibilityState={{ disabled: saving }}
           >
             {saving ? (
-              <ActivityIndicator color="#fff" size="small" />
+              <ActivityIndicator color={colors.white} size="small" />
             ) : (
               <Text style={styles.confirmButtonText}>{t('formulaSelect.confirmSelection')}</Text>
             )}
@@ -205,17 +206,17 @@ export default function FormulaSelect() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.header,
     padding: 20,
     paddingTop: 60,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
     marginBottom: 4,
   },
   subtitle: {
@@ -224,19 +225,19 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    borderBottomColor: colors.border,
   },
   searchInput: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
   },
   filterScroll: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     maxHeight: 60,
   },
   filterContainer: {
@@ -248,21 +249,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: colors.screenBg,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
   },
   filterChipActive: {
-    backgroundColor: '#E3F2FD',
-    borderColor: '#1976D2',
+    backgroundColor: colors.borderLight,
+    borderColor: colors.dustyBlue,
   },
   filterChipText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     fontWeight: '500',
   },
   filterChipTextActive: {
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '600',
   },
   loadingContainer: {
@@ -274,7 +275,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   listContainer: {
     flex: 1,
@@ -293,22 +294,22 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
   },
   confirmContainer: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: colors.border,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
@@ -320,25 +321,25 @@ const styles = StyleSheet.create({
   },
   selectedLabel: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 2,
   },
   selectedName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   confirmButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   confirmButtonDisabled: {
-    backgroundColor: '#A5D6A7',
+    backgroundColor: colors.border,
   },
   confirmButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 18,
     fontWeight: '700',
   },

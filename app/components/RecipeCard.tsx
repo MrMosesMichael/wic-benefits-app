@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 interface RecipeCardProps {
   title: string;
@@ -21,15 +22,15 @@ const CATEGORY_ICONS: Record<string, string> = {
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
-  easy: '#4CAF50',
-  medium: '#FF9800',
-  hard: '#F44336',
+  easy: colors.success,
+  medium: colors.warning,
+  hard: colors.danger,
 };
 
 export default function RecipeCard({ title, category, prepTime, servings, difficulty, wicIngredientCount, onPress }: RecipeCardProps) {
   const t = useTranslation();
   const icon = CATEGORY_ICONS[category] || '\u{1F372}';
-  const diffColor = DIFFICULTY_COLORS[difficulty] || '#666';
+  const diffColor = DIFFICULTY_COLORS[difficulty] || colors.muted;
 
   return (
     <TouchableOpacity
@@ -60,7 +61,7 @@ export default function RecipeCard({ title, category, prepTime, servings, diffic
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 12,
     padding: 14,
     marginBottom: 10,
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   metaRow: {
@@ -92,11 +93,11 @@ const styles = StyleSheet.create({
   },
   meta: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
   },
   metaDot: {
     fontSize: 12,
-    color: '#ccc',
+    color: colors.borderLight,
     marginHorizontal: 6,
   },
   difficulty: {
@@ -113,6 +114,6 @@ const styles = StyleSheet.create({
   wicBadgeText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#2E7D32',
+    color: colors.success,
   },
 });

@@ -4,6 +4,7 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { getBenefits, Household } from '@/lib/services/api';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import NeedHelpLink from '@/components/NeedHelpLink';
+import { colors, fonts, card } from '@/lib/theme';
 
 export default function Benefits() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function Benefits() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#2E7D32" />
+        <ActivityIndicator size="large" color={colors.header} />
         <Text style={styles.loadingText}>{t('benefits.loading')}</Text>
       </View>
     );
@@ -241,7 +242,7 @@ export default function Benefits() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   centerContainer: {
     flex: 1,
@@ -250,10 +251,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
   },
   headerTop: {
     flexDirection: 'row',
@@ -264,59 +265,59 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   setupButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 6,
   },
   setupButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 14,
     fontWeight: '600',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: colors.header,
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginTop: 4,
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   errorText: {
     fontSize: 16,
-    color: '#C62828',
+    color: colors.danger,
     textAlign: 'center',
     marginBottom: 20,
   },
   emptyTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     textAlign: 'center',
     marginBottom: 8,
   },
   emptyText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     marginBottom: 24,
   },
   primaryButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     paddingHorizontal: 24,
     paddingVertical: 14,
     borderRadius: 8,
     marginBottom: 12,
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -333,7 +334,7 @@ const styles = StyleSheet.create({
   participantName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   typeBadgeRow: {
     flexDirection: 'row',
@@ -341,20 +342,20 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   typeBadge: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.screenBg,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
   },
   editHint: {
     fontSize: 13,
-    color: '#2E7D32',
+    color: colors.header,
     fontWeight: '500',
   },
   typeText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#1976D2',
+    color: colors.dustyBlue,
     textTransform: 'capitalize',
   },
   benefitsList: {
@@ -363,27 +364,20 @@ const styles = StyleSheet.create({
   },
   noBenefitsText: {
     fontSize: 14,
-    color: '#999',
+    color: colors.muted,
     fontStyle: 'italic',
     textAlign: 'center',
     paddingVertical: 20,
   },
   benefitCard: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 8,
+    ...card,
     borderLeftWidth: 4,
-    borderLeftColor: '#2E7D32',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    borderLeftColor: colors.header,
   },
   categoryName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   progressBarContainer: {
@@ -394,19 +388,19 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     overflow: 'hidden',
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.border,
   },
   progressSegment: {
     height: '100%',
   },
   consumedSegment: {
-    backgroundColor: '#9E9E9E',
+    backgroundColor: colors.consumed,
   },
   inCartSegment: {
-    backgroundColor: '#FFA000',
+    backgroundColor: colors.warning,
   },
   availableSegment: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.success,
   },
   stateLabels: {
     marginTop: 8,
@@ -423,17 +417,17 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   consumedDot: {
-    backgroundColor: '#9E9E9E',
+    backgroundColor: colors.consumed,
   },
   inCartDot: {
-    backgroundColor: '#FFA000',
+    backgroundColor: colors.warning,
   },
   availableDot: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.success,
   },
   stateLabelText: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
   },
   amounts: {
     flexDirection: 'row',
@@ -444,29 +438,29 @@ const styles = StyleSheet.create({
   available: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: colors.success,
   },
   total: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginTop: 8,
   },
   expiration: {
     fontSize: 12,
-    color: '#999',
+    color: colors.muted,
     marginTop: 4,
   },
   notice: {
     margin: 16,
     padding: 12,
-    backgroundColor: '#FFF3CD',
+    backgroundColor: colors.cardBg,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#FFECB5',
+    borderColor: colors.warning,
   },
   noticeText: {
     fontSize: 12,
-    color: '#856404',
+    color: colors.warning,
     lineHeight: 18,
   },
   helpLinkContainer: {
@@ -479,65 +473,65 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   periodButton: {
-    backgroundColor: '#7B1FA2',
+    backgroundColor: colors.softPink,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   periodButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   addBenefitButton: {
-    backgroundColor: '#1565C0',
+    backgroundColor: colors.dustyBlue,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   addBenefitButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   scanButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   scanButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   homeButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: colors.border,
   },
   homeButtonText: {
-    color: '#666',
+    color: colors.muted,
     fontSize: 16,
     fontWeight: '600',
   },
   button: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     minWidth: 200,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   retryButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     marginTop: 16,
@@ -545,7 +539,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   retryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },

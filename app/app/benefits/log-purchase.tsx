@@ -14,6 +14,7 @@ import {
 import { useRouter } from 'expo-router';
 import { BenefitCategory, BenefitUnit } from '@/lib/types';
 import { getBenefits, logPurchase, type Household, type Participant } from '@/lib/services/api';
+import { colors, fonts, card } from '@/lib/theme';
 
 // Category options for dropdown - based on specs/wic-benefits-app/specs/benefits/spec.md
 const CATEGORY_OPTIONS: { value: BenefitCategory; label: string }[] = [
@@ -232,7 +233,7 @@ export default function LogPurchase() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#2E7D32" />
+        <ActivityIndicator size="large" color={colors.header} />
         <Text style={styles.loadingText}>Loading household...</Text>
       </View>
     );
@@ -442,7 +443,7 @@ export default function LogPurchase() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   centerContainer: {
     flex: 1,
@@ -451,35 +452,35 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 20,
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: colors.header,
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginTop: 4,
     textAlign: 'center',
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   errorText: {
     fontSize: 12,
-    color: '#C62828',
+    color: colors.danger,
     marginTop: 4,
   },
   retryButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     marginTop: 16,
@@ -487,7 +488,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   retryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -501,29 +502,29 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   required: {
-    color: '#C62828',
+    color: colors.danger,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
   },
   inputError: {
-    borderColor: '#C62828',
+    borderColor: colors.danger,
     borderWidth: 2,
   },
   pickerButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     padding: 12,
     flexDirection: 'row',
@@ -532,20 +533,20 @@ const styles = StyleSheet.create({
   },
   pickerButtonText: {
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
     flex: 1,
   },
   placeholderText: {
-    color: '#999',
+    color: colors.muted,
   },
   chevron: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
   },
   pickerOptions: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     marginTop: 4,
     maxHeight: 250,
@@ -557,22 +558,22 @@ const styles = StyleSheet.create({
   pickerOption: {
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: colors.screenBg,
   },
   pickerOptionSelected: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
   },
   pickerOptionText: {
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
   },
   pickerOptionTextSelected: {
-    color: '#2E7D32',
+    color: colors.header,
     fontWeight: '600',
   },
   participantType: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     marginTop: 2,
     textTransform: 'capitalize',
   },
@@ -585,34 +586,34 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   unitBadge: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#C8E6C9',
+    borderColor: colors.border,
   },
   unitText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#2E7D32',
+    color: colors.header,
   },
   helpText: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     marginTop: 4,
     fontStyle: 'italic',
   },
   helpBox: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.cardBg,
     padding: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#BBDEFB',
+    borderColor: colors.dustyBlue,
   },
   helpBoxText: {
     fontSize: 12,
-    color: '#1565C0',
+    color: colors.dustyBlue,
     lineHeight: 18,
   },
   buttonContainer: {
@@ -621,26 +622,26 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   logButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   logButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   cancelButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: colors.border,
   },
   cancelButtonText: {
-    color: '#666',
+    color: colors.muted,
     fontSize: 16,
     fontWeight: '600',
   },

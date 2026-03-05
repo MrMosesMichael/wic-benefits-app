@@ -15,6 +15,7 @@ import {
 import type { FAQItem, FAQCategory } from '@/lib/types/faq';
 import { getCategoryInfo } from '@/lib/services/faqService';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -138,11 +139,11 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     fontStyle: 'italic',
   },
   itemContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     marginBottom: 12,
     borderRadius: 12,
     shadowColor: '#000',
@@ -168,14 +169,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   categoryBadgeText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 11,
     fontWeight: '600',
   },
   questionText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     lineHeight: 22,
   },
   expandIcon: {
@@ -190,17 +191,17 @@ const styles = StyleSheet.create({
   },
   expandIconText: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
   },
   answerContainer: {
     paddingHorizontal: 16,
     paddingBottom: 16,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: colors.borderLight,
   },
   answerText: {
     fontSize: 14,
-    color: '#555',
+    color: colors.muted,
     lineHeight: 22,
     marginTop: 12,
   },

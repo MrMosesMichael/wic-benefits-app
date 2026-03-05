@@ -1,16 +1,19 @@
 import { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
+import Constants from 'expo-constants';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import { loadHousehold } from '@/lib/services/householdStorage';
 import type { Household } from '@/lib/services/householdStorage';
+import { colors, fonts, card } from '@/lib/theme';
+
+const appVersion = Constants.expoConfig?.version ?? '?';
 
 /** Build a short benefit summary string, e.g. "Eggs, Cereal, Milk, and 9 other items" */
 function buildBalanceSummary(
   household: Household,
   t: (key: string, options?: Record<string, unknown>) => string
 ): string {
-  // Deduplicate by category so the same item type isn't listed twice
   const seen = new Set<string>();
   const unique = household.participants
     .flatMap(p => p.benefits)
@@ -22,7 +25,6 @@ function buildBalanceSummary(
     });
   if (unique.length === 0) return '';
   const MAX_NAMED = 3;
-  // Use translation key for category name; fall back to stored categoryLabel if key missing
   const named = unique.slice(0, MAX_NAMED).map(b => {
     const key = `home.balance.categories.${b.category}`;
     const translated = t(key);
@@ -52,7 +54,6 @@ export default function Home() {
   const t = useTranslation();
   const [household, setHousehold] = useState<Household | null>(null);
 
-  // Reload WIC balance whenever screen comes into focus
   useFocusEffect(
     useCallback(() => {
       loadHousehold().then(h => setHousehold(h));
@@ -66,7 +67,7 @@ export default function Home() {
   return (
     <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.container}>
 
-      {/* UI1: WIC Balance Summary (replaces title + subtitle) */}
+      {/* WIC Balance Summary */}
       <TouchableOpacity
         style={styles.balanceCard}
         onPress={() => router.push('/benefits')}
@@ -92,105 +93,135 @@ export default function Home() {
       </TouchableOpacity>
 
       <View style={styles.buttonContainer}>
-        {/* UI2+UI3: Scan Product first, with camera icon */}
+        {/* Scan — forest green (the cornucopia horn) */}
         <TouchableOpacity
-          style={styles.primaryButton}
+          style={[styles.cardButton, { borderLeftColor: '#3A7D5C', borderLeftWidth: 4 }]}
           onPress={() => router.push('/scanner')}
           accessibilityRole="button"
           accessibilityHint={t('a11y.home.scanHint')}
         >
-          <Text style={styles.buttonText}>📷 {t('home.scanProduct')}</Text>
+          <Text style={styles.cardEmoji}>📷</Text>
+          <View style={styles.cardTextWrap}>
+            <Text style={styles.cardTitle}>{t('home.scanProduct')}</Text>
+          </View>
         </TouchableOpacity>
 
-        {/* UI2: Find Formula second */}
+        {/* Formula — coral (the apple) */}
         <TouchableOpacity
-          style={styles.formulaButton}
+          style={[styles.cardButton, styles.formulaCard]}
           onPress={() => router.push('/formula')}
           accessibilityRole="button"
           accessibilityLabel={t('a11y.home.findFormulaLabel')}
           accessibilityHint={t('a11y.home.findFormulaHint')}
         >
-          <Text style={styles.buttonText}>🍼 {t('home.findFormula')}</Text>
-          <Text style={styles.buttonSubtext}>{t('home.findFormulaSubtext')}</Text>
+          <Text style={styles.cardEmoji}>🍼</Text>
+          <View style={styles.cardTextWrap}>
+            <Text style={styles.cardTitle}>{t('home.findFormula')}</Text>
+            <Text style={styles.cardSubtext}>{t('home.findFormulaSubtext')}</Text>
+          </View>
         </TouchableOpacity>
 
-        {/* UI2: Shopping Cart third */}
+        {/* Cart — golden wheat (the banana) */}
         <TouchableOpacity
-          style={styles.cartButton}
+          style={[styles.cardButton, { borderLeftColor: colors.wheat, borderLeftWidth: 4 }]}
           onPress={() => router.push('/cart')}
           accessibilityRole="button"
           accessibilityHint={t('a11y.home.cartHint')}
         >
-          <Text style={styles.buttonText}>🛒 {t('home.shoppingCart')}</Text>
+          <Text style={styles.cardEmoji}>🛒</Text>
+          <View style={styles.cardTextWrap}>
+            <Text style={styles.cardTitle}>{t('home.shoppingCart')}</Text>
+          </View>
         </TouchableOpacity>
 
-        {/* UI4: View Benefits removed — WIC Balance card at top replaces it */}
-
-        {/* Remaining cards in original order */}
+        {/* Food Banks — warm orange (the carrot) */}
         <TouchableOpacity
-          style={styles.foodBankButton}
+          style={[styles.cardButton, { borderLeftColor: '#D4874D', borderLeftWidth: 4 }]}
           onPress={() => router.push('/foodbanks')}
           accessibilityRole="button"
           accessibilityLabel={t('a11y.home.foodBanksLabel')}
           accessibilityHint={t('a11y.home.foodBanksHint')}
         >
-          <Text style={styles.buttonText}>🏠 {t('home.findFoodBanks')}</Text>
-          <Text style={styles.buttonSubtext}>{t('home.findFoodBanksSubtext')}</Text>
+          <Text style={styles.cardEmoji}>🏠</Text>
+          <View style={styles.cardTextWrap}>
+            <Text style={styles.cardTitle}>{t('home.findFoodBanks')}</Text>
+            <Text style={styles.cardSubtext}>{t('home.findFoodBanksSubtext')}</Text>
+          </View>
         </TouchableOpacity>
 
+        {/* Catalog — teal (horn stripe) */}
         <TouchableOpacity
-          style={styles.catalogButton}
+          style={[styles.cardButton, { borderLeftColor: colors.dustyBlue, borderLeftWidth: 4 }]}
           onPress={() => router.push('/catalog')}
           accessibilityRole="button"
           accessibilityLabel={t('a11y.home.catalogLabel')}
           accessibilityHint={t('a11y.home.catalogHint')}
         >
-          <Text style={styles.buttonText}>📋 {t('home.productCatalog')}</Text>
-          <Text style={styles.buttonSubtext}>{t('home.productCatalogSubtext')}</Text>
+          <Text style={styles.cardEmoji}>📋</Text>
+          <View style={styles.cardTextWrap}>
+            <Text style={styles.cardTitle}>{t('home.productCatalog')}</Text>
+            <Text style={styles.cardSubtext}>{t('home.productCatalogSubtext')}</Text>
+          </View>
         </TouchableOpacity>
 
+        {/* Store Finder — deep green (broccoli) */}
         <TouchableOpacity
-          style={styles.storeFinderButton}
+          style={[styles.cardButton, { borderLeftColor: '#2D6B4F', borderLeftWidth: 4 }]}
           onPress={() => router.push('/stores')}
           accessibilityRole="button"
           accessibilityLabel={t('a11y.home.storeFinderLabel')}
           accessibilityHint={t('a11y.home.storeFinderHint')}
         >
-          <Text style={styles.buttonText}>🗺️ {t('home.storeFinder')}</Text>
-          <Text style={styles.buttonSubtext}>{t('home.storeFinderSubtext')}</Text>
+          <Text style={styles.cardEmoji}>🗺️</Text>
+          <View style={styles.cardTextWrap}>
+            <Text style={styles.cardTitle}>{t('home.storeFinder')}</Text>
+            <Text style={styles.cardSubtext}>{t('home.storeFinderSubtext')}</Text>
+          </View>
         </TouchableOpacity>
 
+        {/* Community — warm amber (golden light) */}
         <TouchableOpacity
-          style={styles.communityButton}
+          style={[styles.cardButton, { borderLeftColor: colors.amber, borderLeftWidth: 4 }]}
           onPress={() => router.push('/community')}
           accessibilityRole="button"
           accessibilityLabel={t('a11y.home.communityLabel')}
           accessibilityHint={t('a11y.home.communityHint')}
         >
-          <Text style={styles.buttonText}>🤝 {t('home.communityHub')}</Text>
-          <Text style={styles.buttonSubtext}>{t('home.communityHubSubtext')}</Text>
+          <Text style={styles.cardEmoji}>🤝</Text>
+          <View style={styles.cardTextWrap}>
+            <Text style={styles.cardTitle}>{t('home.communityHub')}</Text>
+            <Text style={styles.cardSubtext}>{t('home.communityHubSubtext')}</Text>
+          </View>
         </TouchableOpacity>
 
+        {/* Help — dusty blue (milk carton) */}
         <TouchableOpacity
-          style={styles.helpButton}
+          style={[styles.cardButton, { borderLeftColor: colors.dustyBlue, borderLeftWidth: 4 }]}
           onPress={() => router.push('/help')}
           accessibilityRole="button"
           accessibilityHint={t('a11y.home.helpHint')}
         >
-          <Text style={styles.helpButtonText}>❓ {t('home.helpFaq')}</Text>
+          <Text style={styles.cardEmoji}>❓</Text>
+          <View style={styles.cardTextWrap}>
+            <Text style={styles.cardTitle}>{t('home.helpFaq')}</Text>
+          </View>
         </TouchableOpacity>
 
+        {/* Location — muted sage */}
         <TouchableOpacity
-          style={styles.settingsButton}
+          style={[styles.cardButton, { borderLeftColor: colors.muted, borderLeftWidth: 4 }]}
           onPress={() => router.push('/settings/location')}
           accessibilityRole="button"
           accessibilityHint={t('a11y.home.locationHint')}
         >
-          <Text style={styles.settingsButtonText}>{t('home.locationSettings')}</Text>
+          <Text style={styles.cardEmoji}>📍</Text>
+          <View style={styles.cardTextWrap}>
+            <Text style={styles.cardTitle}>{t('home.locationSettings')}</Text>
+          </View>
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.footer}>{t('app.version')}</Text>
+      <Text style={styles.footer}>{t('app.version', { version: appVersion })}</Text>
     </ScrollView>
   );
 }
@@ -198,131 +229,77 @@ export default function Home() {
 const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.screenBg,
   },
   container: {
     alignItems: 'center',
     padding: 20,
     paddingTop: 24,
   },
-  // UI1: WIC Balance — text-based, stands apart from card buttons
+  // WIC Balance — text-based header area
   balanceCard: {
     width: '100%',
     paddingVertical: 4,
     paddingBottom: 20,
     marginBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    borderBottomColor: colors.border,
   },
   balanceTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#2E7D32',
+    color: colors.header,
     marginBottom: 4,
   },
   balanceSummary: {
     fontSize: 15,
     fontWeight: '500',
-    color: '#999',
+    color: colors.dustyBlue,
     lineHeight: 22,
   },
   balanceExpiry: {
     fontSize: 13,
-    color: '#888',
+    color: colors.amber,
     marginTop: 4,
   },
   balanceSetup: {
     fontSize: 16,
-    color: '#2E7D32',
+    color: colors.dustyBlue,
     fontWeight: '500',
   },
   buttonContainer: {
     width: '100%',
-    gap: 16,
+    gap: 12,
   },
-  primaryButton: {
-    backgroundColor: '#2E7D32',
-    padding: 16,
-    borderRadius: 8,
+  // Outlined / soft fill card buttons
+  cardButton: {
+    ...card,
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 14,
   },
-  cartButton: {
-    backgroundColor: '#FFA000',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
+  cardEmoji: {
+    fontSize: 24,
   },
-  foodBankButton: {
-    backgroundColor: '#4CAF50',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
+  cardTextWrap: {
+    flex: 1,
   },
-  catalogButton: {
-    backgroundColor: '#00897B',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
+  cardTitle: {
+    ...fonts.button,
   },
-  storeFinderButton: {
-    backgroundColor: '#546E7A',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
+  cardSubtext: {
+    ...fonts.secondary,
+    marginTop: 2,
   },
-  communityButton: {
-    backgroundColor: '#7B1FA2',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  formulaButton: {
-    backgroundColor: '#E91E63',
-    padding: 20,
-    borderRadius: 12,
-    alignItems: 'center',
-    borderWidth: 3,
-    borderColor: '#AD1457',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  buttonSubtext: {
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontSize: 13,
-    marginTop: 4,
-  },
-  helpButton: {
-    backgroundColor: '#fff',
-    padding: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#1976D2',
-  },
-  helpButtonText: {
-    color: '#1976D2',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  settingsButton: {
-    backgroundColor: '#fff',
-    padding: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#666',
-  },
-  settingsButtonText: {
-    color: '#666',
-    fontSize: 16,
-    fontWeight: '600',
+  // Formula — coral accent, slightly more prominent
+  formulaCard: {
+    borderLeftColor: '#E07B5F',
+    borderLeftWidth: 4,
+    borderColor: '#E07B5F',
+    borderWidth: 1.5,
   },
   footer: {
     marginTop: 40,
-    fontSize: 12,
-    color: '#999',
+    ...fonts.secondary,
   },
 });

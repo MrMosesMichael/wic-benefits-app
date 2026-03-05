@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import { useLocation } from '@/lib/hooks/useLocation';
 import LocationPrompt from '@/components/LocationPrompt';
+import { colors, fonts, card } from '@/lib/theme';
 
 // API base URL - would come from config
 const API_BASE = __DEV__
@@ -264,7 +265,7 @@ export default function FoodBankFinderScreen() {
         {/* Loading */}
         {loading && (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#4CAF50" />
+            <ActivityIndicator size="large" color={colors.success} />
             <Text style={styles.loadingText}>{t('foodBanks.searching')}</Text>
           </View>
         )}
@@ -453,10 +454,10 @@ export default function FoodBankFinderScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     padding: 20,
     paddingTop: 60,
     paddingBottom: 24,
@@ -471,7 +472,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
     marginBottom: 4,
   },
   subtitle: {
@@ -484,11 +485,13 @@ const styles = StyleSheet.create({
   },
   messageCard: {
     flexDirection: 'row',
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
   messageIcon: {
     fontSize: 24,
@@ -497,24 +500,17 @@ const styles = StyleSheet.create({
   messageText: {
     flex: 1,
     fontSize: 14,
-    color: '#2E7D32',
+    color: colors.success,
     lineHeight: 20,
   },
   filtersCard: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 12,
+    ...card,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   filterTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
     marginBottom: 8,
   },
   radiusButtons: {
@@ -527,41 +523,41 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     alignItems: 'center',
   },
   radiusButtonActive: {
-    borderColor: '#4CAF50',
-    backgroundColor: '#E8F5E9',
+    borderColor: colors.success,
+    backgroundColor: colors.screenBg,
   },
   radiusButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
   radiusButtonTextActive: {
-    color: '#4CAF50',
+    color: colors.success,
   },
   toggleButton: {
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     alignItems: 'center',
     marginBottom: 12,
   },
   toggleButtonActive: {
-    borderColor: '#4CAF50',
-    backgroundColor: '#E8F5E9',
+    borderColor: colors.success,
+    backgroundColor: colors.screenBg,
   },
   toggleButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
   toggleButtonTextActive: {
-    color: '#4CAF50',
+    color: colors.success,
   },
   serviceFilters: {
     flexDirection: 'row',
@@ -576,12 +572,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    backgroundColor: '#fff',
+    borderColor: colors.border,
+    backgroundColor: colors.cardBg,
   },
   serviceChipActive: {
-    borderColor: '#4CAF50',
-    backgroundColor: '#E8F5E9',
+    borderColor: colors.success,
+    backgroundColor: colors.screenBg,
   },
   serviceChipIcon: {
     fontSize: 16,
@@ -589,20 +585,20 @@ const styles = StyleSheet.create({
   },
   serviceChipText: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   serviceChipTextActive: {
-    color: '#4CAF50',
+    color: colors.success,
     fontWeight: '600',
   },
   searchButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
   },
   searchButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '700',
   },
@@ -613,7 +609,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   errorContainer: {
     padding: 40,
@@ -625,18 +621,18 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
   },
   retryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -651,12 +647,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   emptyText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
   },
   resultsContainer: {
@@ -665,19 +661,12 @@ const styles = StyleSheet.create({
   resultsHeader: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 12,
   },
   foodBankCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    ...card,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   cardHeader: {
     marginBottom: 8,
@@ -691,12 +680,12 @@ const styles = StyleSheet.create({
   foodBankName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     flex: 1,
     marginRight: 8,
   },
   openBadge: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -704,7 +693,7 @@ const styles = StyleSheet.create({
   openBadgeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#fff',
+    color: colors.white,
     textTransform: 'uppercase',
   },
   cardMetaRow: {
@@ -714,16 +703,16 @@ const styles = StyleSheet.create({
   },
   organizationType: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   distance: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#4CAF50',
+    color: colors.success,
   },
   address: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 12,
   },
   servicesRow: {
@@ -735,7 +724,7 @@ const styles = StyleSheet.create({
   serviceBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     paddingVertical: 4,
     paddingHorizontal: 8,
     borderRadius: 6,
@@ -746,38 +735,40 @@ const styles = StyleSheet.create({
   },
   serviceBadgeText: {
     fontSize: 11,
-    color: '#666',
+    color: colors.muted,
   },
   moreServices: {
     fontSize: 12,
-    color: '#4CAF50',
+    color: colors.success,
     fontWeight: '600',
     alignSelf: 'center',
     marginLeft: 4,
   },
   wicBadge: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.screenBg,
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 6,
     alignSelf: 'flex-start',
     marginTop: 4,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
   wicBadgeText: {
     fontSize: 12,
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '600',
   },
   expandedContent: {
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: colors.border,
   },
   sectionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   hoursSection: {
@@ -790,16 +781,16 @@ const styles = StyleSheet.create({
   },
   hoursDay: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   hoursTime: {
     fontSize: 13,
-    color: '#333',
+    color: colors.navy,
     fontWeight: '500',
   },
   hoursNotes: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     fontStyle: 'italic',
     marginTop: 8,
   },
@@ -808,7 +799,7 @@ const styles = StyleSheet.create({
   },
   eligibilityText: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     lineHeight: 18,
   },
   documentsSection: {
@@ -816,7 +807,7 @@ const styles = StyleSheet.create({
   },
   documentItem: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginLeft: 8,
   },
   actionsRow: {
@@ -827,36 +818,36 @@ const styles = StyleSheet.create({
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
   },
   actionButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 14,
     fontWeight: '600',
   },
   expandIndicator: {
     fontSize: 12,
-    color: '#4CAF50',
+    color: colors.success,
     textAlign: 'center',
     marginTop: 12,
   },
   infoCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 16,
     borderRadius: 12,
   },
   infoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   infoText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     lineHeight: 20,
   },
 });

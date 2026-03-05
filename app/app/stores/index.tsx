@@ -14,6 +14,7 @@ import { useI18n } from '@/lib/i18n/I18nContext';
 import { useLocation } from '@/lib/hooks/useLocation';
 import { searchStores, getChains, StoreFinderStore } from '@/lib/services/storeFinderService';
 import LocationPrompt from '@/components/LocationPrompt';
+import { colors, fonts, card } from '@/lib/theme';
 
 export default function StoreFinderScreen() {
   const router = useRouter();
@@ -204,7 +205,7 @@ export default function StoreFinderScreen() {
         {/* Loading */}
         {loading && (
           <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color="#546E7A" />
+            <ActivityIndicator size="large" color={colors.navy} />
             <Text style={styles.loadingText}>{t('storeFinder.searching')}</Text>
           </View>
         )}
@@ -287,13 +288,13 @@ export default function StoreFinderScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   toggleRow: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
     padding: 8,
     gap: 8,
   },
@@ -302,38 +303,31 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: colors.screenBg,
   },
   toggleBtnActive: {
-    backgroundColor: '#546E7A',
+    backgroundColor: colors.navy,
   },
   toggleBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
   toggleBtnTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
   content: {
     flex: 1,
     padding: 16,
   },
   filtersCard: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 12,
+    ...card,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   filterTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
     marginBottom: 8,
   },
   radiusRow: {
@@ -346,41 +340,41 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     alignItems: 'center',
   },
   radiusBtnActive: {
-    borderColor: '#546E7A',
-    backgroundColor: '#ECEFF1',
+    borderColor: colors.navy,
+    backgroundColor: colors.screenBg,
   },
   radiusBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
   radiusBtnTextActive: {
-    color: '#546E7A',
+    color: colors.navy,
   },
   toggleFilter: {
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     alignItems: 'center',
     marginBottom: 12,
   },
   toggleFilterActive: {
-    borderColor: '#546E7A',
-    backgroundColor: '#ECEFF1',
+    borderColor: colors.navy,
+    backgroundColor: colors.screenBg,
   },
   toggleFilterText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
   toggleFilterTextActive: {
-    color: '#546E7A',
+    color: colors.navy,
   },
   chainScroll: {
     marginBottom: 16,
@@ -389,28 +383,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: colors.screenBg,
     marginRight: 8,
   },
   chainChipActive: {
-    backgroundColor: '#546E7A',
+    backgroundColor: colors.navy,
   },
   chainChipText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#666',
+    color: colors.muted,
   },
   chainChipTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
   searchButton: {
-    backgroundColor: '#546E7A',
+    backgroundColor: colors.navy,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
   },
   searchButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '700',
   },
@@ -421,10 +415,10 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   mapContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 12,
     padding: 40,
     alignItems: 'center',
@@ -432,7 +426,7 @@ const styles = StyleSheet.create({
   },
   mapPlaceholder: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
   },
   emptyContainer: {
@@ -446,12 +440,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   emptyText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
   },
   resultsContainer: {
@@ -460,19 +454,12 @@ const styles = StyleSheet.create({
   resultsHeader: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 12,
   },
   storeCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    ...card,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -489,29 +476,29 @@ const styles = StyleSheet.create({
   storeName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     flex: 1,
     marginRight: 8,
   },
   wicBadge: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 4,
   },
   wicBadgeText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 11,
     fontWeight: 'bold',
   },
   distance: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#546E7A',
+    color: colors.navy,
   },
   address: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 12,
   },
   actionsRow: {
@@ -520,7 +507,7 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',
@@ -528,11 +515,11 @@ const styles = StyleSheet.create({
   actionBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   actionBtnPrimary: {
     flex: 1,
-    backgroundColor: '#546E7A',
+    backgroundColor: colors.navy,
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',
@@ -540,6 +527,6 @@ const styles = StyleSheet.create({
   actionBtnPrimaryText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#fff',
+    color: colors.white,
   },
 });

@@ -13,6 +13,7 @@ import {
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 
 // API base URL
 const API_BASE = __DEV__
@@ -227,7 +228,7 @@ export default function PrivacySettingsScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#2E7D32" />
+        <ActivityIndicator size="large" color={colors.header} />
         <Text style={styles.loadingText}>{t('common.loading')}</Text>
       </View>
     );
@@ -249,7 +250,7 @@ export default function PrivacySettingsScreen() {
             accessibilityState={{ disabled: exporting }}
           >
             {exporting ? (
-              <ActivityIndicator color="#fff" size="small" />
+              <ActivityIndicator color={colors.white} size="small" />
             ) : (
               <>
                 <Text style={styles.actionButtonIcon} accessible={false} importantForAccessibility="no">📥</Text>
@@ -270,7 +271,7 @@ export default function PrivacySettingsScreen() {
             accessibilityState={{ disabled: deleting }}
           >
             {deleting ? (
-              <ActivityIndicator color="#fff" size="small" />
+              <ActivityIndicator color={colors.white} size="small" />
             ) : (
               <>
                 <Text style={styles.actionButtonIcon} accessible={false} importantForAccessibility="no">🗑️</Text>
@@ -365,21 +366,21 @@ export default function PrivacySettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   header: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 20,
     paddingTop: 60,
     paddingBottom: 24,
@@ -394,7 +395,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
     marginBottom: 4,
   },
   subtitle: {
@@ -406,26 +407,19 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    ...card,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 12,
   },
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     marginBottom: 12,
@@ -438,7 +432,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   actionButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -450,12 +444,12 @@ const styles = StyleSheet.create({
   deleteButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#D32F2F',
+    backgroundColor: colors.danger,
     padding: 16,
     borderRadius: 8,
   },
   deleteButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -465,15 +459,8 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   expandableCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    ...card,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   expandableHeader: {
     flexDirection: 'row',
@@ -482,43 +469,43 @@ const styles = StyleSheet.create({
   },
   expandIcon: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
   },
   expandedContent: {
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: colors.border,
   },
   dataItem: {
     marginBottom: 16,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: colors.borderLight,
   },
   dataCategory: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   dataDescription: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 4,
   },
   dataRetention: {
     fontSize: 12,
-    color: '#999',
+    color: colors.muted,
     fontStyle: 'italic',
   },
   listItem: {
     fontSize: 14,
-    color: '#4CAF50',
+    color: colors.success,
     marginBottom: 8,
   },
   neverSoldBadge: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
     padding: 12,
     borderRadius: 8,
     marginBottom: 12,
@@ -526,27 +513,27 @@ const styles = StyleSheet.create({
   neverSoldText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#2E7D32',
+    color: colors.success,
     textAlign: 'center',
   },
   sharingSummary: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     lineHeight: 20,
   },
   contactText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 8,
   },
   contactEmail: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1976D2',
+    color: colors.dustyBlue,
   },
   lastUpdated: {
     fontSize: 12,
-    color: '#999',
+    color: colors.muted,
     textAlign: 'center',
     marginTop: 8,
   },

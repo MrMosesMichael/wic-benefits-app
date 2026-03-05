@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useI18n } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 import { useLocation } from '@/lib/hooks/useLocation';
 import { getAllWicOffices, WicOffice } from '@/lib/services/advocacyService';
 import { getNearbyWicClinics } from '@/lib/services/api';
@@ -119,7 +120,7 @@ export default function WicOfficesScreen() {
 
       {loadingClinics && (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="small" color="#00897B" />
+          <ActivityIndicator size="small" color={colors.header} />
           <Text style={styles.loadingText}>{t('wicOffices.searchingClinics')}</Text>
         </View>
       )}
@@ -316,18 +317,18 @@ export default function WicOfficesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  container: { flex: 1, backgroundColor: colors.screenBg },
   content: { padding: 16 },
   sectionHeader: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 12,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 12,
   },
   loadingContainer: {
@@ -337,7 +338,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 8,
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   emptyContainer: {
     padding: 20,
@@ -345,7 +346,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
   },
   clinicsContainer: {
@@ -354,19 +355,12 @@ const styles = StyleSheet.create({
   resultsCount: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
     marginBottom: 12,
   },
   clinicCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    ...card,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
   },
   clinicHeader: {
     flexDirection: 'row',
@@ -377,18 +371,18 @@ const styles = StyleSheet.create({
   clinicName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     flex: 1,
     marginRight: 8,
   },
   clinicDistance: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#00897B',
+    color: colors.header,
   },
   clinicAddress: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 8,
   },
   languagesRow: {
@@ -398,21 +392,21 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   langBadge: {
-    backgroundColor: '#E0F2F1',
+    backgroundColor: colors.screenBg,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 10,
   },
   langBadgeText: {
     fontSize: 11,
-    color: '#00897B',
+    color: colors.header,
     fontWeight: '500',
   },
   expandedContent: {
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: colors.border,
   },
   hoursSection: {
     marginBottom: 12,
@@ -420,7 +414,7 @@ const styles = StyleSheet.create({
   detailLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
     marginBottom: 6,
     textTransform: 'uppercase',
   },
@@ -431,16 +425,16 @@ const styles = StyleSheet.create({
   },
   hoursDay: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   hoursTime: {
     fontSize: 13,
-    color: '#333',
+    color: colors.navy,
     fontWeight: '500',
   },
   hoursNotes: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     fontStyle: 'italic',
     marginTop: 6,
   },
@@ -452,7 +446,7 @@ const styles = StyleSheet.create({
   },
   expandIndicator: {
     fontSize: 12,
-    color: '#00897B',
+    color: colors.header,
     textAlign: 'center',
     marginTop: 8,
   },
@@ -466,47 +460,41 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     alignItems: 'center',
   },
   stateBtnActive: {
-    borderColor: '#00897B',
-    backgroundColor: '#E0F2F1',
+    borderColor: colors.header,
+    backgroundColor: colors.cardBg,
   },
   stateBtnText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#666',
+    color: colors.muted,
   },
   stateBtnTextActive: {
-    color: '#00897B',
+    color: colors.header,
   },
   officeCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    ...card,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   officeName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 16,
   },
   infoRow: { marginBottom: 12 },
   infoLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
     marginBottom: 2,
     textTransform: 'uppercase',
   },
-  infoValue: { fontSize: 15, color: '#333' },
+  infoValue: { fontSize: 15, color: colors.navy },
   actionsRow: {
     flexDirection: 'row',
     gap: 12,
@@ -514,7 +502,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -522,11 +510,11 @@ const styles = StyleSheet.create({
   actionButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   actionButtonPrimary: {
     flex: 1,
-    backgroundColor: '#00897B',
+    backgroundColor: colors.header,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -534,22 +522,20 @@ const styles = StyleSheet.create({
   actionButtonPrimaryText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#fff',
+    color: colors.white,
   },
   infoCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    ...card,
   },
   infoCardTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   infoCardText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     lineHeight: 20,
   },
 });

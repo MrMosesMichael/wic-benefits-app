@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Linking, Platform, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Callout, Region } from 'react-native-maps';
 import type { CrossStoreResult } from '@/lib/types';
+import { colors } from '@/lib/theme';
 
 interface FormulaStoreMapProps {
   results: CrossStoreResult[];
@@ -10,12 +11,12 @@ interface FormulaStoreMapProps {
 }
 
 const getMarkerColor = (store: CrossStoreResult): string => {
-  if (!store.availability) return '#9E9E9E'; // gray = unknown
+  if (!store.availability) return colors.consumed;
   switch (store.availability.status) {
-    case 'in_stock': return '#4CAF50';    // green
-    case 'low_stock': return '#FF9800';   // orange
-    case 'out_of_stock': return '#F44336'; // red
-    default: return '#9E9E9E';            // gray
+    case 'in_stock': return colors.success;
+    case 'low_stock': return colors.warning;
+    case 'out_of_stock': return colors.danger;
+    default: return colors.consumed;
   }
 };
 
@@ -115,19 +116,19 @@ export default function FormulaStoreMap({ results, userLocation, onStorePress }:
       {/* Legend */}
       <View style={styles.legend}>
         <View style={styles.legendItem}>
-          <View style={[styles.legendDot, { backgroundColor: '#4CAF50' }]} />
+          <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
           <Text style={styles.legendText}>In Stock</Text>
         </View>
         <View style={styles.legendItem}>
-          <View style={[styles.legendDot, { backgroundColor: '#FF9800' }]} />
+          <View style={[styles.legendDot, { backgroundColor: colors.warning }]} />
           <Text style={styles.legendText}>Low</Text>
         </View>
         <View style={styles.legendItem}>
-          <View style={[styles.legendDot, { backgroundColor: '#F44336' }]} />
+          <View style={[styles.legendDot, { backgroundColor: colors.danger }]} />
           <Text style={styles.legendText}>Out</Text>
         </View>
         <View style={styles.legendItem}>
-          <View style={[styles.legendDot, { backgroundColor: '#9E9E9E' }]} />
+          <View style={[styles.legendDot, { backgroundColor: colors.consumed }]} />
           <Text style={styles.legendText}>Unknown</Text>
         </View>
       </View>
@@ -153,12 +154,12 @@ const styles = StyleSheet.create({
   calloutName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 2,
   },
   calloutDistance: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 6,
   },
   calloutBadge: {
@@ -182,13 +183,13 @@ const styles = StyleSheet.create({
   },
   calloutWic: {
     fontSize: 11,
-    color: '#2E7D32',
+    color: colors.success,
     fontWeight: '600',
     marginBottom: 4,
   },
   calloutAction: {
     fontSize: 11,
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '500',
     marginTop: 4,
   },
@@ -211,6 +212,6 @@ const styles = StyleSheet.create({
   },
   legendText: {
     fontSize: 11,
-    color: '#666',
+    color: colors.muted,
   },
 });

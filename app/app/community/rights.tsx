@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useI18n } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 import { getRightsCards, searchRights, getFederalResources } from '@/lib/services/advocacyService';
 
 export default function RightsScreen() {
@@ -25,7 +26,7 @@ export default function RightsScreen() {
         <TextInput
           style={styles.searchInput}
           placeholder={t('rights.searchPlaceholder')}
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.muted}
           value={searchQuery}
           onChangeText={setSearchQuery}
           autoCapitalize="none"
@@ -85,26 +86,26 @@ export default function RightsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
-  searchContainer: { backgroundColor: '#fff', paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center' },
-  searchInput: { flex: 1, backgroundColor: '#f5f5f5', borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, fontSize: 16, color: '#333' },
+  container: { flex: 1, backgroundColor: colors.screenBg },
+  searchContainer: { backgroundColor: colors.cardBg, paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center' },
+  searchInput: { flex: 1, backgroundColor: colors.screenBg, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, fontSize: 16, color: colors.navy },
   clearButton: { position: 'absolute', right: 24, width: 24, height: 24, alignItems: 'center', justifyContent: 'center' },
-  clearButtonText: { fontSize: 16, color: '#999' },
+  clearButtonText: { fontSize: 16, color: colors.muted },
   scrollView: { flex: 1 },
   scrollContent: { padding: 16, paddingBottom: 32 },
-  infoBanner: { flexDirection: 'row', backgroundColor: '#F3E5F5', padding: 16, borderRadius: 12, marginBottom: 16, alignItems: 'center' },
+  infoBanner: { flexDirection: 'row', backgroundColor: colors.cardBg, padding: 16, borderRadius: 12, marginBottom: 16, alignItems: 'center', borderWidth: 1, borderColor: colors.border },
   infoIcon: { fontSize: 24, marginRight: 12 },
-  infoText: { flex: 1, fontSize: 14, color: '#6A1B9A', lineHeight: 20 },
-  rightCard: { backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 3, elevation: 2 },
+  infoText: { flex: 1, fontSize: 14, color: colors.navy, lineHeight: 20 },
+  rightCard: { ...card, marginBottom: 12 },
   rightHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   rightIcon: { fontSize: 24, marginRight: 10 },
-  rightTitle: { fontSize: 16, fontWeight: '600', color: '#333', flex: 1 },
-  rightContent: { fontSize: 14, color: '#555', lineHeight: 22 },
+  rightTitle: { fontSize: 16, fontWeight: '600', color: colors.navy, flex: 1 },
+  rightContent: { fontSize: 14, color: colors.muted, lineHeight: 22 },
   emptyContainer: { padding: 20, alignItems: 'center' },
-  emptyText: { fontSize: 16, color: '#666', fontStyle: 'italic' },
+  emptyText: { fontSize: 16, color: colors.muted, fontStyle: 'italic' },
   resourcesSection: { marginTop: 20 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#333', marginBottom: 12 },
-  resourceCard: { backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 10, borderLeftWidth: 4, borderLeftColor: '#9C27B0' },
-  resourceName: { fontSize: 15, fontWeight: '600', color: '#333', marginBottom: 4 },
-  resourcePhone: { fontSize: 14, color: '#9C27B0', fontWeight: '600' },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: colors.navy, marginBottom: 12 },
+  resourceCard: { backgroundColor: colors.cardBg, borderRadius: 12, padding: 16, marginBottom: 10, borderLeftWidth: 4, borderLeftColor: colors.navy },
+  resourceName: { fontSize: 15, fontWeight: '600', color: colors.navy, marginBottom: 4 },
+  resourcePhone: { fontSize: 14, color: colors.dustyBlue, fontWeight: '600' },
 });

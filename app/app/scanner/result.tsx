@@ -6,6 +6,7 @@ import { getBenefits, addToCart, getCart, Participant, getSightings, reportSight
 import type { ProductSighting, StockLevel } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import NeedHelpLink from '@/components/NeedHelpLink';
+import { colors, fonts, card } from '@/lib/theme';
 
 export default function ScanResult() {
   const router = useRouter();
@@ -315,7 +316,7 @@ export default function ScanResult() {
         </View>
 
         {loadingSightings ? (
-          <ActivityIndicator color="#1976D2" style={{ marginVertical: 16 }} />
+          <ActivityIndicator color={colors.dustyBlue} style={{ marginVertical: 16 }} />
         ) : sightings.length > 0 ? (
           <View style={styles.sightingsList}>
             {sightings.slice(0, 3).map((sighting) => (
@@ -416,7 +417,7 @@ export default function ScanResult() {
             accessibilityState={{ disabled: loading || adding || (eligibleParticipants.length > 0 && !selectedParticipantId) }}
           >
             {adding ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={colors.white} />
             ) : (
               <Text style={styles.addToCartButtonText}>{t('result.addToCart')}</Text>
             )}
@@ -535,7 +536,7 @@ export default function ScanResult() {
                 accessibilityRole="button"
               >
                 {reporting ? (
-                  <ActivityIndicator color="#fff" />
+                  <ActivityIndicator color={colors.white} />
                 ) : (
                   <Text style={styles.modalButtonSubmitText}>{t('result.submitReport')}</Text>
                 )}
@@ -551,7 +552,7 @@ export default function ScanResult() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   resultCard: {
     margin: 20,
@@ -565,10 +566,10 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   eligible: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.success,
   },
   notEligible: {
-    backgroundColor: '#C62828',
+    backgroundColor: colors.danger,
   },
   statusBadge: {
     width: 80,
@@ -581,13 +582,13 @@ const styles = StyleSheet.create({
   },
   statusIcon: {
     fontSize: 48,
-    color: '#fff',
+    color: colors.white,
     fontWeight: 'bold',
   },
   statusText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
     marginBottom: 4,
   },
   statusSubtext: {
@@ -595,37 +596,31 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.9)',
   },
   detailsCard: {
-    backgroundColor: '#fff',
+    ...card,
     marginHorizontal: 20,
     marginBottom: 20,
     padding: 20,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
   },
   productName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   productBrand: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 8,
   },
   upcLabel: {
     fontSize: 14,
-    color: '#999',
+    color: colors.muted,
     fontFamily: 'monospace',
     marginBottom: 12,
   },
   categoryBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 4,
@@ -634,61 +629,54 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#2E7D32',
+    color: colors.success,
   },
   reasonBox: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     padding: 12,
     borderRadius: 8,
     borderLeftWidth: 4,
-    borderLeftColor: '#2E7D32',
+    borderLeftColor: colors.header,
   },
   reasonText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     lineHeight: 20,
   },
   cvbNote: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
     padding: 12,
     borderRadius: 8,
     borderLeftWidth: 4,
-    borderLeftColor: '#2E7D32',
+    borderLeftColor: colors.success,
     marginTop: 4,
   },
   cvbNoteText: {
     fontSize: 14,
-    color: '#2E7D32',
+    color: colors.success,
     lineHeight: 20,
   },
   participantSelector: {
-    backgroundColor: '#fff',
+    ...card,
     marginHorizontal: 20,
     marginBottom: 20,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
   },
   selectorTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 12,
   },
   participantOption: {
     padding: 12,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     marginBottom: 8,
   },
   participantOptionSelected: {
-    borderColor: '#2E7D32',
-    backgroundColor: '#E8F5E9',
+    borderColor: colors.success,
+    backgroundColor: colors.screenBg,
   },
   participantInfo: {
     marginBottom: 4,
@@ -696,32 +684,32 @@ const styles = StyleSheet.create({
   participantOptionName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   participantOptionType: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     textTransform: 'capitalize',
   },
   participantAvailable: {
     fontSize: 13,
-    color: '#2E7D32',
+    color: colors.success,
     fontWeight: '500',
   },
   viewCartCard: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
     marginHorizontal: 20,
     marginBottom: 12,
     padding: 14,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#2E7D32',
+    borderColor: colors.success,
     alignItems: 'center',
   },
   viewCartText: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#2E7D32',
+    color: colors.success,
   },
   buttonContainer: {
     marginHorizontal: 20,
@@ -729,38 +717,38 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   addToCartButton: {
-    backgroundColor: '#FFA000',
+    backgroundColor: colors.warning,
     padding: 18,
     borderRadius: 8,
     alignItems: 'center',
   },
   addToCartButtonDisabled: {
-    backgroundColor: '#FFD54F',
+    backgroundColor: colors.wheat,
   },
   addToCartButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '700',
   },
   primaryButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   secondaryButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   secondaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -769,27 +757,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textButtonText: {
-    color: '#666',
+    color: colors.muted,
     fontSize: 14,
   },
   helpBox: {
-    backgroundColor: '#FFF3CD',
+    backgroundColor: colors.cardBg,
     marginHorizontal: 20,
     marginBottom: 20,
     padding: 16,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#FFECB5',
+    borderColor: colors.wheat,
   },
   helpTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#856404',
+    color: colors.wheat,
     marginBottom: 8,
   },
   helpText: {
     fontSize: 14,
-    color: '#856404',
+    color: colors.wheat,
     lineHeight: 20,
   },
   helpLinkContainer: {
@@ -797,16 +785,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sightingsCard: {
-    backgroundColor: '#fff',
+    ...card,
     marginHorizontal: 20,
     marginBottom: 20,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
   },
   sightingsHeader: {
     flexDirection: 'row',
@@ -817,16 +798,16 @@ const styles = StyleSheet.create({
   sightingsTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   reportButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
   },
   reportButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 13,
     fontWeight: '600',
   },
@@ -835,10 +816,10 @@ const styles = StyleSheet.create({
   },
   sightingItem: {
     padding: 12,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     borderRadius: 8,
     borderLeftWidth: 4,
-    borderLeftColor: '#1976D2',
+    borderLeftColor: colors.dustyBlue,
   },
   sightingHeader: {
     flexDirection: 'row',
@@ -849,7 +830,7 @@ const styles = StyleSheet.create({
   sightingStore: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     flex: 1,
   },
   stockBadge: {
@@ -858,21 +839,21 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   stockPlenty: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
   },
   stockSome: {
-    backgroundColor: '#FFA000',
+    backgroundColor: colors.warning,
   },
   stockFew: {
-    backgroundColor: '#FF6F00',
+    backgroundColor: colors.wheat,
   },
   stockOut: {
-    backgroundColor: '#9E9E9E',
+    backgroundColor: colors.consumed,
   },
   stockBadgeText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#fff',
+    color: colors.white,
   },
   sightingMeta: {
     flexDirection: 'row',
@@ -880,26 +861,26 @@ const styles = StyleSheet.create({
   },
   sightingAge: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   sightingDistance: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   sightingConfidence: {
     fontSize: 13,
-    color: '#2E7D32',
+    color: colors.success,
     fontWeight: '500',
   },
   sightingsMore: {
     fontSize: 13,
-    color: '#1976D2',
+    color: colors.dustyBlue,
     textAlign: 'center',
     marginTop: 4,
   },
   noSightings: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     paddingVertical: 12,
     fontStyle: 'italic',
@@ -912,7 +893,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 12,
     padding: 24,
     width: '100%',
@@ -921,23 +902,23 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   modalSubtitle: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 20,
   },
   inputLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
@@ -953,20 +934,20 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     alignItems: 'center',
   },
   stockLevelButtonSelected: {
-    borderColor: '#1976D2',
-    backgroundColor: '#E3F2FD',
+    borderColor: colors.dustyBlue,
+    backgroundColor: colors.screenBg,
   },
   stockLevelButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
   stockLevelButtonTextSelected: {
-    color: '#1976D2',
+    color: colors.dustyBlue,
   },
   modalButtons: {
     flexDirection: 'row',
@@ -979,19 +960,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalButtonCancel: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
   },
   modalButtonSubmit: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
   },
   modalButtonCancelText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
   modalButtonSubmitText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#fff',
+    color: colors.white,
   },
 });

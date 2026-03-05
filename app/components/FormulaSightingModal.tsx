@@ -14,6 +14,7 @@ import { reportFormulaSimple, getNearbyStores } from '@/lib/services/api';
 import QuantitySelector from './QuantitySelector';
 import type { QuantitySeen, Store } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 interface FormulaSightingModalProps {
   visible: boolean;
@@ -140,7 +141,7 @@ export default function FormulaSightingModal({
 
       {loadingStores ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#1976D2" />
+          <ActivityIndicator size="large" color={colors.dustyBlue} />
           <Text style={styles.loadingText}>{t('formulaSighting.findingStores')}</Text>
         </View>
       ) : nearbyStores.length === 0 ? (
@@ -205,7 +206,7 @@ export default function FormulaSightingModal({
 
   const renderSubmittingStep = () => (
     <View style={styles.statusContainer}>
-      <ActivityIndicator size="large" color="#1976D2" />
+      <ActivityIndicator size="large" color={colors.dustyBlue} />
       <Text style={styles.statusText}>{t('formulaSighting.submitting')}</Text>
     </View>
   );
@@ -249,14 +250,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modal: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '80%',
     paddingBottom: 20,
   },
   header: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -264,7 +265,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
     marginBottom: 4,
   },
   headerSubtitle: {
@@ -277,7 +278,7 @@ const styles = StyleSheet.create({
   stepTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -288,7 +289,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
   },
   emptyContainer: {
     padding: 20,
@@ -296,7 +297,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -310,11 +311,11 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     marginBottom: 10,
   },
   storeOptionSelected: {
-    borderColor: '#1976D2',
+    borderColor: colors.dustyBlue,
     backgroundColor: '#E3F2FD',
   },
   storeInfo: {
@@ -323,17 +324,17 @@ const styles = StyleSheet.create({
   storeName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   storeAddress: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginTop: 2,
   },
   storeDistance: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#1976D2',
+    color: colors.dustyBlue,
     marginLeft: 8,
   },
   buttonRow: {
@@ -343,7 +344,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -351,11 +352,11 @@ const styles = StyleSheet.create({
   backButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
   submitButton: {
     flex: 2,
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -364,19 +365,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#A5D6A7',
   },
   submitButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '700',
   },
   cancelButton: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 16,
   },
   cancelButtonText: {
-    color: '#666',
+    color: colors.muted,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -387,22 +388,22 @@ const styles = StyleSheet.create({
   statusText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   successIcon: {
     fontSize: 72,
-    color: '#4CAF50',
+    color: colors.success,
     marginBottom: 16,
   },
   successTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   successMessage: {
     fontSize: 15,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     lineHeight: 22,
   },

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Platform } from 'react-native';
 import type { StoreResult, LikelihoodLevel } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 interface StoreResultCardProps {
   store: StoreResult;
@@ -25,20 +26,20 @@ const getChainIcon = (chain: string): string => {
 
 const getLikelihoodInfo = (level: LikelihoodLevel): { color: string; text: string } => {
   switch (level) {
-    case 'always': return { color: '#4CAF50', text: 'Always carries this formula' };
+    case 'always': return { color: colors.success, text: 'Always carries this formula' };
     case 'usually': return { color: '#8BC34A', text: 'Usually has this formula' };
-    case 'sometimes': return { color: '#FF9800', text: 'Sometimes carries this formula' };
-    case 'rarely': return { color: '#F44336', text: 'Rarely has this formula' };
-    default: return { color: '#9E9E9E', text: 'Unknown availability' };
+    case 'sometimes': return { color: colors.warning, text: 'Sometimes carries this formula' };
+    case 'rarely': return { color: colors.danger, text: 'Rarely has this formula' };
+    default: return { color: colors.consumed, text: 'Unknown availability' };
   }
 };
 
 const getStatusInfo = (status: string): { color: string; text: string; icon: string } => {
   switch (status) {
-    case 'in_stock': return { color: '#4CAF50', text: 'In Stock', icon: '✓' };
-    case 'low_stock': return { color: '#FF9800', text: 'Low Stock', icon: '⚠️' };
-    case 'out_of_stock': return { color: '#F44336', text: 'Out of Stock', icon: '✗' };
-    default: return { color: '#9E9E9E', text: 'Unknown', icon: '?' };
+    case 'in_stock': return { color: colors.success, text: 'In Stock', icon: '✓' };
+    case 'low_stock': return { color: colors.warning, text: 'Low Stock', icon: '⚠️' };
+    case 'out_of_stock': return { color: colors.danger, text: 'Out of Stock', icon: '✗' };
+    default: return { color: colors.consumed, text: 'Unknown', icon: '?' };
   }
 };
 
@@ -79,7 +80,7 @@ export default function StoreResultCard({ store, onReport }: StoreResultCardProp
   const likelihoodInfo = store.likelihood ? getLikelihoodInfo(store.likelihood.level) : null;
 
   // Determine border color based on data
-  let borderColor = '#E0E0E0';
+  let borderColor: string = colors.border;
   if (hasCrowdsourcedData) {
     borderColor = statusInfo!.color;
   } else if (store.likelihood) {
@@ -161,7 +162,7 @@ export default function StoreResultCard({ store, onReport }: StoreResultCardProp
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -193,26 +194,26 @@ const styles = StyleSheet.create({
   storeName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
   },
   distance: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   wicBadge: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
   },
   wicBadgeText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 11,
     fontWeight: 'bold',
   },
   address: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 12,
   },
   availabilitySection: {
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   statusBadgeText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 13,
     fontWeight: '700',
   },
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
   },
   likelihoodInfo: {
     flexDirection: 'row',
@@ -249,11 +250,11 @@ const styles = StyleSheet.create({
   },
   likelihoodText: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   noDataText: {
     fontSize: 13,
-    color: '#999',
+    color: colors.muted,
     fontStyle: 'italic',
   },
   actions: {
@@ -262,7 +263,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -270,11 +271,11 @@ const styles = StyleSheet.create({
   actionButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   actionButtonPrimary: {
     flex: 1,
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -282,6 +283,6 @@ const styles = StyleSheet.create({
   actionButtonPrimaryText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#fff',
+    color: colors.white,
   },
 });

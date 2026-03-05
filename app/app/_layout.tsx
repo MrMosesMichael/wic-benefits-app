@@ -5,6 +5,7 @@ import { I18nProvider, useI18n } from '@/lib/i18n/I18nContext';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import notificationService from '@/lib/services/notificationService';
 import * as Notifications from 'expo-notifications';
+import { colors } from '@/lib/theme';
 
 function Navigation() {
   const { t } = useI18n();
@@ -48,14 +49,14 @@ function Navigation() {
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#2E7D32',
+          backgroundColor: colors.header,
         },
-        headerTintColor: '#fff',
+        headerTintColor: '#FFFFFF',
         headerTitleStyle: {
           fontWeight: 'bold',
         },
         headerRight: () => <LanguageSwitcher compact />,
-        contentStyle: { paddingBottom: 16 },
+        contentStyle: { backgroundColor: colors.screenBg, paddingBottom: 16 },
       }}
     >
       <Stack.Screen name="index" options={{ title: t('nav.home') }} />

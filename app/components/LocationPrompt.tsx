@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 interface LocationPromptProps {
   onGPS: () => Promise<void>;
@@ -50,7 +51,7 @@ export default function LocationPrompt({ onGPS, onZipCode, loading, error }: Loc
 
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#2E7D32" />
+          <ActivityIndicator size="large" color={colors.header} />
           <Text style={styles.loadingText}>{t('locationPrompt.detecting')}</Text>
         </View>
       ) : showZipInput ? (
@@ -126,12 +127,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   description: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 24,
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   errorText: {
-    color: '#C62828',
+    color: colors.danger,
     fontSize: 14,
     textAlign: 'center',
   },
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 12,
-    color: '#666',
+    color: colors.muted,
     fontSize: 14,
   },
   buttons: {
@@ -161,26 +162,26 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   gpsButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   gpsButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '700',
   },
   zipButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#2E7D32',
+    borderColor: colors.header,
   },
   zipButtonText: {
-    color: '#2E7D32',
+    color: colors.header,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -189,7 +190,7 @@ const styles = StyleSheet.create({
   },
   zipLabel: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 8,
   },
   zipRow: {
@@ -200,7 +201,7 @@ const styles = StyleSheet.create({
   zipInput: {
     flex: 1,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     borderRadius: 8,
     padding: 12,
     fontSize: 18,
@@ -208,13 +209,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   zipSubmit: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     paddingHorizontal: 24,
     borderRadius: 8,
     justifyContent: 'center',
   },
   zipSubmitText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -222,7 +223,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   switchLink: {
-    color: '#2E7D32',
+    color: colors.header,
     fontSize: 14,
     textAlign: 'center',
   },

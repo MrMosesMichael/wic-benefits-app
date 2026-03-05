@@ -6,6 +6,7 @@ import { checkEligibility } from '@/lib/services/api';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import { useLocation } from '@/lib/hooks/useLocation';
 import { lookupPlu, pluToResultParams, isValidPluFormat } from '@/lib/services/pluLookup';
+import { colors, fonts, card } from '@/lib/theme';
 
 export default function Scanner() {
   const router = useRouter();
@@ -96,7 +97,7 @@ export default function Scanner() {
   if (!permission) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#2E7D32" />
+        <ActivityIndicator size="large" color={colors.header} />
         <Text style={styles.message}>{t('scanner.requestingPermission')}</Text>
       </View>
     );
@@ -184,7 +185,7 @@ export default function Scanner() {
             <TextInput
               style={[styles.pluInput, pluError ? styles.pluInputError : null]}
               placeholder={t('scanner.pluInputPlaceholder')}
-              placeholderTextColor="#999"
+              placeholderTextColor={colors.muted}
               value={pluInput}
               onChangeText={(text) => { setPluInput(text); setPluError(''); }}
               keyboardType="number-pad"
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   permissionButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     marginHorizontal: 40,
@@ -305,7 +306,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 30,
     height: 30,
-    borderColor: '#2E7D32',
+    borderColor: colors.header,
     borderWidth: 4,
   },
   topLeft: {
@@ -382,7 +383,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   pluModalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 12,
     padding: 24,
     width: '100%',
@@ -391,31 +392,31 @@ const styles = StyleSheet.create({
   pluModalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   pluModalSubtitle: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 20,
   },
   pluInput: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     borderRadius: 8,
     padding: 14,
     fontSize: 24,
     textAlign: 'center',
     letterSpacing: 4,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   pluInputError: {
-    borderColor: '#C62828',
+    borderColor: colors.danger,
   },
   pluErrorText: {
-    color: '#C62828',
+    color: colors.danger,
     fontSize: 13,
     marginBottom: 8,
     textAlign: 'center',
@@ -432,19 +433,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pluModalButtonCancel: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
   },
   pluModalButtonCheck: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
   },
   pluModalButtonCancelText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
   pluModalButtonCheckText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#fff',
+    color: colors.white,
   },
 });

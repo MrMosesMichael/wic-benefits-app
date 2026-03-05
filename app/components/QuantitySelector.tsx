@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import type { QuantitySeen } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 interface QuantitySelectorProps {
   value: QuantitySeen | null;
@@ -24,28 +25,28 @@ const options: QuantityOption[] = [
     labelKey: 'quantitySelector.none',
     icon: '❌',
     descriptionKey: 'quantitySelector.noneDescription',
-    color: '#F44336'
+    color: colors.danger
   },
   {
     value: 'few',
     labelKey: 'quantitySelector.few',
     icon: '⚠️',
     descriptionKey: 'quantitySelector.fewDescription',
-    color: '#FF9800'
+    color: colors.warning
   },
   {
     value: 'some',
     labelKey: 'quantitySelector.some',
     icon: '✓',
     descriptionKey: 'quantitySelector.someDescription',
-    color: '#4CAF50'
+    color: colors.success
   },
   {
     value: 'plenty',
     labelKey: 'quantitySelector.plenty',
     icon: '📦',
     descriptionKey: 'quantitySelector.plentyDescription',
-    color: '#2196F3'
+    color: colors.dustyBlue
   }
 ];
 
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 12,
     textAlign: 'center',
   },
@@ -107,12 +108,12 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '47%',
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -129,13 +130,13 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
     textAlign: 'center',
   },
   description: {
     fontSize: 11,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
   },
 });

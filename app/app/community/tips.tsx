@@ -11,6 +11,7 @@ import {
   UIManager,
 } from 'react-native';
 import { useI18n } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 import { getAllTips, getTipsByCategory, searchTips, TIP_CATEGORIES, Tip, TipCategory } from '@/lib/services/tipsService';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -52,7 +53,7 @@ export default function TipsScreen() {
         <TextInput
           style={styles.searchInput}
           placeholder={t('tips.searchPlaceholder')}
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.muted}
           value={searchQuery}
           onChangeText={setSearchQuery}
           autoCapitalize="none"
@@ -146,28 +147,28 @@ export default function TipsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
-  searchContainer: { backgroundColor: '#fff', paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center' },
-  searchInput: { flex: 1, backgroundColor: '#f5f5f5', borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, fontSize: 16, color: '#333' },
+  container: { flex: 1, backgroundColor: colors.screenBg },
+  searchContainer: { backgroundColor: colors.cardBg, paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center' },
+  searchInput: { flex: 1, backgroundColor: colors.screenBg, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, fontSize: 16, color: colors.navy },
   clearButton: { position: 'absolute', right: 24, width: 24, height: 24, alignItems: 'center', justifyContent: 'center' },
-  clearButtonText: { fontSize: 16, color: '#999' },
-  chipScroll: { backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#e0e0e0', maxHeight: 56 },
+  clearButtonText: { fontSize: 16, color: colors.muted },
+  chipScroll: { backgroundColor: colors.cardBg, borderBottomWidth: 1, borderBottomColor: colors.border, maxHeight: 56 },
   chipRow: { paddingHorizontal: 12, paddingVertical: 12, gap: 8, alignItems: 'center' },
-  chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: '#f0f0f0', marginHorizontal: 4, height: 36, justifyContent: 'center' },
-  chipSelected: { backgroundColor: '#2E7D32' },
-  chipText: { fontSize: 13, fontWeight: '500', color: '#666' },
-  chipTextSelected: { color: '#fff' },
+  chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: colors.screenBg, marginHorizontal: 4, height: 36, justifyContent: 'center' },
+  chipSelected: { backgroundColor: colors.header },
+  chipText: { fontSize: 13, fontWeight: '500', color: colors.muted },
+  chipTextSelected: { color: colors.white },
   scrollView: { flex: 1 },
   scrollContent: { padding: 16, paddingBottom: 32 },
-  resultsText: { fontSize: 14, color: '#666', marginBottom: 12 },
+  resultsText: { fontSize: 14, color: colors.muted, marginBottom: 12 },
   emptyContainer: { padding: 20, alignItems: 'center' },
-  emptyText: { fontSize: 16, color: '#666', fontStyle: 'italic' },
-  tipCard: { backgroundColor: '#fff', marginBottom: 12, borderRadius: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 3, elevation: 2, overflow: 'hidden' },
+  emptyText: { fontSize: 16, color: colors.muted, fontStyle: 'italic' },
+  tipCard: { ...card, marginBottom: 12, overflow: 'hidden' },
   tipHeader: { flexDirection: 'row', alignItems: 'center', padding: 16 },
-  tipTitle: { flex: 1, fontSize: 16, fontWeight: '600', color: '#333', lineHeight: 22 },
+  tipTitle: { flex: 1, fontSize: 16, fontWeight: '600', color: colors.navy, lineHeight: 22 },
   expandIcon: { marginLeft: 12, width: 24, height: 24, alignItems: 'center', justifyContent: 'center' },
   expandIconRotated: { transform: [{ rotate: '180deg' }] },
-  expandIconText: { fontSize: 12, color: '#666' },
-  tipContent: { paddingHorizontal: 16, paddingBottom: 16, borderTopWidth: 1, borderTopColor: '#f0f0f0' },
-  tipText: { fontSize: 14, color: '#555', lineHeight: 22, marginTop: 12 },
+  expandIconText: { fontSize: 12, color: colors.muted },
+  tipContent: { paddingHorizontal: 16, paddingBottom: 16, borderTopWidth: 1, borderTopColor: colors.borderLight },
+  tipText: { fontSize: 14, color: colors.muted, lineHeight: 22, marginTop: 12 },
 });

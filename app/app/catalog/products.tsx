@@ -14,6 +14,7 @@ import { useI18n } from '@/lib/i18n/I18nContext';
 import { getProducts, getBrands, lookupUPC, CatalogProduct, CatalogBrand } from '@/lib/services/catalogService';
 import { getCategoryMeta } from '@/lib/data/wic-categories';
 import ProductListItem from '@/components/ProductListItem';
+import { colors, fonts, card } from '@/lib/theme';
 
 export default function ProductsScreen() {
   const { t } = useI18n();
@@ -149,7 +150,7 @@ export default function ProductsScreen() {
     if (!loadingMore) return null;
     return (
       <View style={styles.footerLoader}>
-        <ActivityIndicator size="small" color="#00897B" />
+        <ActivityIndicator size="small" color={colors.navy} />
       </View>
     );
   };
@@ -161,7 +162,7 @@ export default function ProductsScreen() {
         <TextInput
           style={styles.searchInput}
           placeholder={t('catalog.searchPlaceholder')}
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.muted}
           value={searchQuery}
           onChangeText={setSearchQuery}
           autoCapitalize="none"
@@ -298,7 +299,7 @@ export default function ProductsScreen() {
       {/* Loading */}
       {loading && (
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color="#00897B" />
+          <ActivityIndicator size="large" color={colors.navy} />
         </View>
       )}
 
@@ -326,10 +327,10 @@ export default function ProductsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   searchContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     paddingHorizontal: 16,
     paddingVertical: 12,
     flexDirection: 'row',
@@ -337,12 +338,12 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
   },
   clearButton: {
     position: 'absolute',
@@ -354,12 +355,12 @@ const styles = StyleSheet.create({
   },
   clearButtonText: {
     fontSize: 16,
-    color: '#999',
+    color: colors.muted,
   },
   chipScrollView: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
     maxHeight: 56,
   },
   chipContainer: {
@@ -372,30 +373,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: colors.screenBg,
     marginHorizontal: 4,
     height: 36,
     justifyContent: 'center',
   },
   chipSelected: {
-    backgroundColor: '#00897B',
+    backgroundColor: colors.navy,
   },
   chipText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#666',
+    color: colors.muted,
   },
   chipTextSelected: {
-    color: '#fff',
+    color: colors.white,
   },
   brandedToggleRow: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     paddingHorizontal: 12,
     paddingVertical: 8,
     gap: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
   },
   upcBanner: {
     paddingHorizontal: 16,
@@ -405,15 +406,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   upcBannerFound: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
   },
   upcBannerNotFound: {
-    backgroundColor: '#FFF3E0',
+    backgroundColor: colors.cardBg,
   },
   upcBannerText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     textAlign: 'center',
   },
   resultsHeader: {
@@ -422,7 +423,7 @@ const styles = StyleSheet.create({
   },
   resultsCount: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   centerContainer: {
     flex: 1,
@@ -444,7 +445,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
   },
 });

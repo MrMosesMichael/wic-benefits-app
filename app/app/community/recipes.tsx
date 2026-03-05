@@ -17,6 +17,7 @@ import {
   RecipeCategory,
 } from '@/lib/services/recipeService';
 import RecipeCard from '@/components/RecipeCard';
+import { colors, fonts, card } from '@/lib/theme';
 
 export default function RecipesScreen() {
   const router = useRouter();
@@ -54,7 +55,7 @@ export default function RecipesScreen() {
         <TextInput
           style={styles.searchInput}
           placeholder={t('recipes.searchPlaceholder')}
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.muted}
           value={searchQuery}
           onChangeText={setSearchQuery}
           autoCapitalize="none"
@@ -129,26 +130,26 @@ export default function RecipesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
-  searchContainer: { backgroundColor: '#fff', paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center' },
-  searchInput: { flex: 1, backgroundColor: '#f5f5f5', borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, fontSize: 16, color: '#333' },
+  container: { flex: 1, backgroundColor: colors.screenBg },
+  searchContainer: { backgroundColor: colors.cardBg, paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center' },
+  searchInput: { flex: 1, backgroundColor: colors.screenBg, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, fontSize: 16, color: colors.navy },
   clearButton: { position: 'absolute', right: 24, width: 24, height: 24, alignItems: 'center', justifyContent: 'center' },
-  clearButtonText: { fontSize: 16, color: '#999' },
-  chipScroll: { backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#e0e0e0', maxHeight: 56 },
+  clearButtonText: { fontSize: 16, color: colors.muted },
+  chipScroll: { backgroundColor: colors.cardBg, borderBottomWidth: 1, borderBottomColor: colors.border, maxHeight: 56 },
   chipRow: { paddingHorizontal: 12, paddingVertical: 12, gap: 8, alignItems: 'center' },
-  chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: '#f0f0f0', marginHorizontal: 4, height: 36, justifyContent: 'center' },
-  chipSelected: { backgroundColor: '#FF9800' },
-  chipText: { fontSize: 13, fontWeight: '500', color: '#666' },
-  chipTextSelected: { color: '#fff' },
+  chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: colors.screenBg, marginHorizontal: 4, height: 36, justifyContent: 'center' },
+  chipSelected: { backgroundColor: colors.wheat },
+  chipText: { fontSize: 13, fontWeight: '500', color: colors.muted },
+  chipTextSelected: { color: colors.white },
   scrollView: { flex: 1 },
   scrollContent: { padding: 16, paddingBottom: 32 },
   emptyContainer: { padding: 20, alignItems: 'center' },
-  emptyText: { fontSize: 16, color: '#666', fontStyle: 'italic' },
+  emptyText: { fontSize: 16, color: colors.muted, fontStyle: 'italic' },
   fab: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#FF9800',
+    backgroundColor: colors.wheat,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
   fabText: {
     fontSize: 28,
     fontWeight: '300',
-    color: '#fff',
+    color: colors.white,
     marginTop: -2,
   },
 });

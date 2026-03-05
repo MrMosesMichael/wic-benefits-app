@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import type { FormulaAlternative } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 interface FormulaAlternativesProps {
   alternatives: FormulaAlternative[];
@@ -21,7 +22,7 @@ export default function FormulaAlternatives({
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color={colors.dustyBlue} />
         <Text style={styles.loadingText}>{t('alternatives.loading')}</Text>
       </View>
     );
@@ -45,10 +46,10 @@ export default function FormulaAlternatives({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'in_stock': return '#4CAF50';
-      case 'low_stock': return '#FF9800';
-      case 'out_of_stock': return '#F44336';
-      default: return '#9E9E9E';
+      case 'in_stock': return colors.success;
+      case 'low_stock': return colors.warning;
+      case 'out_of_stock': return colors.danger;
+      default: return colors.consumed;
     }
   };
 
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   emptyContainer: {
     padding: 40,
@@ -218,7 +219,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
   },
   disclaimerCard: {
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 16,
     borderLeftWidth: 4,
-    borderLeftColor: '#FF9800',
+    borderLeftColor: colors.warning,
   },
   disclaimerIcon: {
     fontSize: 24,
@@ -254,20 +255,20 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   sectionSubtitle: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
   },
   alternativeCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -275,7 +276,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   alternativeCardInStock: {
-    borderColor: '#4CAF50',
+    borderColor: colors.success,
     backgroundColor: '#F1F8F4',
   },
   badgeRow: {
@@ -290,27 +291,27 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   badgeInStock: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
   },
   badgeContract: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
   },
   badgeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#fff',
+    color: colors.white,
     textTransform: 'uppercase',
   },
   brandText: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     textTransform: 'uppercase',
     marginBottom: 4,
   },
   productNameText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   detailsRow: {
@@ -320,23 +321,23 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   reasonContainer: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     padding: 10,
     borderRadius: 8,
     marginBottom: 8,
   },
   reasonLabel: {
     fontSize: 11,
-    color: '#666',
+    color: colors.muted,
     textTransform: 'uppercase',
     marginBottom: 4,
   },
   reasonText: {
     fontSize: 13,
-    color: '#333',
+    color: colors.navy,
     fontWeight: '500',
   },
   notesContainer: {
@@ -347,19 +348,19 @@ const styles = StyleSheet.create({
   },
   notesText: {
     fontSize: 12,
-    color: '#1565C0',
+    color: colors.dustyBlue,
     fontStyle: 'italic',
   },
   availabilitySection: {
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: colors.border,
   },
   availabilityHeader: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
     marginBottom: 8,
     textTransform: 'uppercase',
   },
@@ -386,21 +387,21 @@ const styles = StyleSheet.create({
   },
   storeNameText: {
     fontSize: 13,
-    color: '#333',
+    color: colors.navy,
     flex: 1,
   },
   distanceText: {
     fontSize: 11,
-    color: '#666',
+    color: colors.muted,
   },
   statusText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#4CAF50',
+    color: colors.success,
   },
   moreLocationsText: {
     fontSize: 12,
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '500',
     marginTop: 4,
     textAlign: 'center',
@@ -411,11 +412,11 @@ const styles = StyleSheet.create({
   },
   tapIndicatorText: {
     fontSize: 13,
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '600',
   },
   footerNote: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     padding: 16,
     borderRadius: 8,
     marginTop: 8,
@@ -423,7 +424,7 @@ const styles = StyleSheet.create({
   },
   footerNoteText: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     lineHeight: 18,
   },

@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 import { useI18n } from '@/lib/i18n/I18nContext';
 import { submitRecipe } from '@/lib/services/api';
 import { RECIPE_CATEGORIES } from '@/lib/services/recipeService';
+import { colors, fonts, card } from '@/lib/theme';
 
 type Step = 'info' | 'wicIngredients' | 'otherIngredients' | 'instructions' | 'review';
 
@@ -141,7 +142,7 @@ export default function AddRecipeScreen() {
         value={title}
         onChangeText={setTitle}
         placeholder={t('addRecipe.titlePlaceholder')}
-        placeholderTextColor="#999"
+        placeholderTextColor={colors.muted}
       />
 
       <Text style={styles.fieldLabel}>{t('addRecipe.category')}</Text>
@@ -167,7 +168,7 @@ export default function AddRecipeScreen() {
             value={prepTime}
             onChangeText={setPrepTime}
             placeholder="30"
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.muted}
             keyboardType="numeric"
           />
         </View>
@@ -178,7 +179,7 @@ export default function AddRecipeScreen() {
             value={servings}
             onChangeText={setServings}
             placeholder="4"
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.muted}
             keyboardType="numeric"
           />
         </View>
@@ -216,7 +217,7 @@ export default function AddRecipeScreen() {
             value={item}
             onChangeText={(v) => updateItem(items, setter, idx, v)}
             placeholder={placeholder}
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.muted}
           />
           {items.length > 1 && (
             <TouchableOpacity
@@ -348,7 +349,7 @@ export default function AddRecipeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  container: { flex: 1, backgroundColor: colors.screenBg },
   content: { padding: 16, paddingBottom: 100 },
   stepIndicator: {
     flexDirection: 'row',
@@ -360,34 +361,34 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.border,
   },
   stepDotActive: {
-    backgroundColor: '#FF9800',
+    backgroundColor: colors.wheat,
   },
   stepTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 20,
     textAlign: 'center',
   },
   fieldLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
     marginBottom: 6,
     marginTop: 12,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 8,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
   },
   row: {
     flexDirection: 'row',
@@ -405,18 +406,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: colors.screenBg,
   },
   optionChipActive: {
-    backgroundColor: '#FF9800',
+    backgroundColor: colors.wheat,
   },
   optionChipText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#666',
+    color: colors.muted,
   },
   optionChipTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
   listItemRow: {
     flexDirection: 'row',
@@ -431,13 +432,13 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#FFEBEE',
+    backgroundColor: colors.screenBg,
     alignItems: 'center',
     justifyContent: 'center',
   },
   removeBtnText: {
     fontSize: 14,
-    color: '#F44336',
+    color: colors.danger,
     fontWeight: '600',
   },
   addBtn: {
@@ -447,29 +448,29 @@ const styles = StyleSheet.create({
   addBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#FF9800',
+    color: colors.wheat,
   },
   reviewTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   reviewMeta: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 16,
   },
   reviewSection: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#333',
+    color: colors.navy,
     marginTop: 16,
     marginBottom: 8,
   },
   reviewItem: {
     fontSize: 14,
-    color: '#555',
+    color: colors.muted,
     lineHeight: 22,
   },
   navRow: {
@@ -480,33 +481,33 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: colors.border,
   },
   backBtn: {
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 8,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
   },
   backBtnText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
   nextBtn: {
     paddingVertical: 14,
     paddingHorizontal: 32,
     borderRadius: 8,
-    backgroundColor: '#FF9800',
+    backgroundColor: colors.wheat,
   },
   nextBtnDisabled: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.border,
   },
   nextBtnText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#fff',
+    color: colors.white,
   },
 });

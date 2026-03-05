@@ -23,6 +23,7 @@ import {
 } from '@/lib/services/faqService';
 import type { FAQCategory } from '@/lib/types/faq';
 import { useI18n } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 
 export default function HelpScreen() {
   const router = useRouter();
@@ -75,7 +76,7 @@ export default function HelpScreen() {
         <TextInput
           style={styles.searchInput}
           placeholder={t('help.searchPlaceholder')}
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.muted}
           value={searchQuery}
           onChangeText={setSearchQuery}
           autoCapitalize="none"
@@ -227,27 +228,27 @@ export default function HelpScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 20,
     paddingTop: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: colors.header,
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginTop: 4,
   },
   searchContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     paddingHorizontal: 16,
     paddingVertical: 12,
     flexDirection: 'row',
@@ -255,12 +256,12 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
   },
   clearButton: {
     position: 'absolute',
@@ -272,12 +273,12 @@ const styles = StyleSheet.create({
   },
   clearButtonText: {
     fontSize: 16,
-    color: '#999',
+    color: colors.muted,
   },
   categoryScrollView: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
   },
   categoryContainer: {
     paddingHorizontal: 12,
@@ -288,19 +289,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: colors.screenBg,
     marginHorizontal: 4,
   },
   categoryChipSelected: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
   },
   categoryChipText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#666',
+    color: colors.muted,
   },
   categoryChipTextSelected: {
-    color: '#fff',
+    color: colors.white,
   },
   scrollView: {
     flex: 1,
@@ -314,66 +315,66 @@ const styles = StyleSheet.create({
   },
   searchResultsText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
   },
   contactSection: {
     marginTop: 24,
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 12,
     padding: 16,
     borderLeftWidth: 4,
-    borderLeftColor: '#2E7D32',
+    borderLeftColor: colors.header,
   },
   contactTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   contactText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     lineHeight: 20,
     marginBottom: 12,
   },
   contactInfo: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
     padding: 12,
     borderRadius: 8,
   },
   contactLabel: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     fontWeight: '600',
   },
   contactValue: {
     fontSize: 16,
-    color: '#2E7D32',
+    color: colors.header,
     fontWeight: '600',
     marginTop: 4,
   },
   footer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    borderTopColor: colors.border,
   },
   backButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: colors.border,
   },
   backButtonText: {
-    color: '#666',
+    color: colors.muted,
     fontSize: 16,
     fontWeight: '600',
   },
   privacyLink: {
     marginTop: 16,
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 12,
     padding: 16,
     flexDirection: 'row',
@@ -389,15 +390,15 @@ const styles = StyleSheet.create({
   privacyLinkTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   privacyLinkText: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginTop: 2,
   },
   privacyLinkArrow: {
     fontSize: 18,
-    color: '#999',
+    color: colors.muted,
   },
 });

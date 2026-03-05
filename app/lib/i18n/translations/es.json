@@ -2,7 +2,7 @@
   "app": {
     "title": "Asistente de Beneficios WIC",
     "subtitle": "Edición de Michigan",
-    "version": "MVP v0.1"
+    "version": "v{{version}}"
   },
   "nav": {
     "home": "Beneficios WIC",

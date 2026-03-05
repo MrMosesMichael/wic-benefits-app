@@ -7,6 +7,7 @@ import QuantitySelector from '@/components/QuantitySelector';
 import { useLocation } from '@/lib/hooks/useLocation';
 import type { WicFormula, Store, QuantitySeen } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 
 type ReportStep = 'scan' | 'confirm' | 'quantity' | 'store' | 'success';
 
@@ -163,7 +164,7 @@ export default function FormulaReport() {
         <ScrollView style={styles.stepContainer}>
           {loading ? (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#1976D2" />
+              <ActivityIndicator size="large" color={colors.dustyBlue} />
               <Text style={styles.loadingText}>{t('formulaReport.lookingUp')}</Text>
             </View>
           ) : formula ? (
@@ -278,7 +279,7 @@ export default function FormulaReport() {
                   accessibilityState={{ disabled: !selectedStore || submitting }}
                 >
                   {submitting ? (
-                    <ActivityIndicator color="#fff" size="small" />
+                    <ActivityIndicator color={colors.white} size="small" />
                   ) : (
                     <Text style={styles.submitButtonText}>{t('formulaReport.submitReport')}</Text>
                   )}
@@ -327,17 +328,17 @@ export default function FormulaReport() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.header,
     padding: 20,
     paddingTop: 60,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
     marginBottom: 4,
   },
   subtitle: {
@@ -349,21 +350,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 40,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   permissionText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     marginBottom: 20,
   },
   permissionButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     padding: 16,
     borderRadius: 8,
   },
   permissionButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -383,13 +384,13 @@ const styles = StyleSheet.create({
     width: 250,
     height: 150,
     borderWidth: 3,
-    borderColor: '#fff',
+    borderColor: colors.white,
     borderRadius: 12,
     backgroundColor: 'transparent',
   },
   scanInstructions: {
     marginTop: 20,
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -404,17 +405,15 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   confirmCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
+    ...card,
   },
   confirmTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -424,18 +423,18 @@ const styles = StyleSheet.create({
   },
   productBrand: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textTransform: 'uppercase',
   },
   productName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginTop: 4,
   },
   productMeta: {
     fontSize: 14,
-    color: '#888',
+    color: colors.muted,
     marginTop: 8,
   },
   confirmButtons: {
@@ -444,7 +443,7 @@ const styles = StyleSheet.create({
   },
   confirmButtonNo: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -452,11 +451,11 @@ const styles = StyleSheet.create({
   confirmButtonNoText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
   },
   confirmButtonYes: {
     flex: 1,
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -464,53 +463,48 @@ const styles = StyleSheet.create({
   confirmButtonYesText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#fff',
+    color: colors.white,
   },
   unknownProduct: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    ...card,
     padding: 24,
     alignItems: 'center',
   },
   unknownTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#F44336',
+    color: colors.danger,
     marginBottom: 8,
   },
   unknownText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     marginBottom: 20,
   },
   tryAgainButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     padding: 14,
     borderRadius: 8,
     paddingHorizontal: 32,
   },
   tryAgainButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   quantityCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
+    ...card,
   },
   stepTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     textAlign: 'center',
     marginBottom: 8,
   },
   storeCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
+    ...card,
   },
   noStores: {
     padding: 20,
@@ -518,7 +512,7 @@ const styles = StyleSheet.create({
   },
   noStoresText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
   },
   storeOption: {
@@ -527,12 +521,12 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     marginTop: 12,
   },
   storeOptionSelected: {
-    borderColor: '#1976D2',
-    backgroundColor: '#E3F2FD',
+    borderColor: colors.dustyBlue,
+    backgroundColor: colors.screenBg,
   },
   storeOptionInfo: {
     flex: 1,
@@ -540,30 +534,30 @@ const styles = StyleSheet.create({
   storeOptionName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   storeOptionAddress: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginTop: 2,
   },
   storeOptionDistance: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1976D2',
+    color: colors.dustyBlue,
   },
   submitButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 24,
   },
   submitButtonDisabled: {
-    backgroundColor: '#A5D6A7',
+    backgroundColor: colors.border,
   },
   submitButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 18,
     fontWeight: '700',
   },
@@ -575,23 +569,23 @@ const styles = StyleSheet.create({
   },
   successIcon: {
     fontSize: 80,
-    color: '#4CAF50',
+    color: colors.success,
     marginBottom: 20,
   },
   successTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 12,
   },
   successText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     marginBottom: 32,
   },
   successButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     padding: 16,
     borderRadius: 8,
     width: '100%',
@@ -599,19 +593,19 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   successButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   reportAnotherButton: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     padding: 16,
     borderRadius: 8,
     width: '100%',
     alignItems: 'center',
   },
   reportAnotherButtonText: {
-    color: '#333',
+    color: colors.navy,
     fontSize: 16,
     fontWeight: '600',
   },

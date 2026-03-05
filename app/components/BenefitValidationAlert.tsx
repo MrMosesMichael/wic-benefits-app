@@ -8,6 +8,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { DiscrepancyWarning } from '../lib/services/benefitValidation';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 interface BenefitValidationAlertProps {
   warning: DiscrepancyWarning;
@@ -41,9 +42,9 @@ export function BenefitValidationAlert({
   const t = useTranslation();
 
   const severityColors = {
-    low: '#FFA726', // Orange
-    medium: '#FF9800', // Dark Orange
-    high: '#F44336', // Red
+    low: colors.warning,
+    medium: colors.warning,
+    high: colors.danger,
   };
 
   const severityBackgrounds = {
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginVertical: 8,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
   },
   header: {
     flexDirection: 'row',
@@ -216,29 +217,29 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 15,
-    color: '#212121',
+    color: colors.navy,
     marginBottom: 12,
     lineHeight: 22,
   },
   details: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
   },
   detailLabel: {
     fontSize: 13,
-    color: '#757575',
+    color: colors.muted,
     marginTop: 4,
   },
   detailValue: {
     fontSize: 14,
-    color: '#212121',
+    color: colors.navy,
     fontWeight: '600',
     marginBottom: 8,
   },
   recommendation: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
@@ -246,12 +247,12 @@ const styles = StyleSheet.create({
   recommendationLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#424242',
+    color: colors.navy,
     marginBottom: 4,
   },
   recommendationText: {
     fontSize: 13,
-    color: '#616161',
+    color: colors.muted,
     lineHeight: 20,
   },
   actions: {
@@ -267,12 +268,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dismissButton: {
-    backgroundColor: '#EEEEEE',
+    backgroundColor: colors.screenBg,
   },
   dismissButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#616161',
+    color: colors.muted,
   },
   resolveButton: {
     // backgroundColor set dynamically
@@ -280,7 +281,7 @@ const styles = StyleSheet.create({
   resolveButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: colors.white,
   },
   listContainer: {
     marginVertical: 8,
@@ -294,11 +295,11 @@ const styles = StyleSheet.create({
   listTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#212121',
+    color: colors.navy,
     marginRight: 8,
   },
   badge: {
-    backgroundColor: '#F44336',
+    backgroundColor: colors.danger,
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -308,7 +309,7 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: colors.white,
   },
   listItem: {
     marginBottom: 8,

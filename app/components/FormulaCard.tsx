@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import type { WicFormula, FormulaType } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 interface FormulaCardProps {
   formula: WicFormula;
@@ -11,15 +12,15 @@ interface FormulaCardProps {
 
 const getTypeColor = (type: FormulaType): string => {
   switch (type) {
-    case 'standard': return '#4CAF50';
-    case 'sensitive': return '#FF9800';
-    case 'gentle': return '#2196F3';
+    case 'standard': return colors.success;
+    case 'sensitive': return colors.warning;
+    case 'gentle': return colors.dustyBlue;
     case 'hypoallergenic': return '#9C27B0';
     case 'organic': return '#8BC34A';
     case 'soy': return '#795548';
-    case 'specialty': return '#E91E63';
+    case 'specialty': return colors.softPink;
     case 'store_brand': return '#607D8B';
-    default: return '#9E9E9E';
+    default: return colors.consumed;
   }
 };
 
@@ -108,7 +109,7 @@ export default function FormulaCard({ formula, onPress, selected }: FormulaCardP
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 12,
     padding: 12,
     marginBottom: 12,
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   cardSelected: {
-    borderColor: '#1976D2',
+    borderColor: colors.dustyBlue,
     backgroundColor: '#E3F2FD',
   },
   imageContainer: {
@@ -132,32 +133,32 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 8,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: colors.screenBg,
   },
   imagePlaceholder: {
     width: 70,
     height: 70,
     borderRadius: 8,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
   imagePlaceholderText: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#9E9E9E',
+    color: colors.consumed,
   },
   contractBadge: {
     position: 'absolute',
     top: -4,
     right: -4,
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
   },
   contractBadgeText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 10,
     fontWeight: 'bold',
   },
@@ -166,14 +167,14 @@ const styles = StyleSheet.create({
   },
   brand: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     fontWeight: '600',
     textTransform: 'uppercase',
   },
   productName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginTop: 2,
     marginBottom: 8,
   },
@@ -189,17 +190,17 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   typeBadgeText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 11,
     fontWeight: '600',
   },
   formText: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
   },
   size: {
     fontSize: 12,
-    color: '#888',
+    color: colors.muted,
     marginTop: 4,
   },
   selectedIndicator: {
@@ -209,12 +210,12 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     alignItems: 'center',
     justifyContent: 'center',
   },
   selectedIndicatorText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 14,
     fontWeight: 'bold',
   },

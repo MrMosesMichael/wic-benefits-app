@@ -16,6 +16,7 @@ import {
 } from '@/lib/services/api';
 import { loadHousehold, saveHousehold } from '@/lib/services/householdStorage';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 
 interface PeriodSettings {
   periodStart: Date;
@@ -263,7 +264,7 @@ export default function PeriodSettings() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#2E7D32" />
+        <ActivityIndicator size="large" color={colors.header} />
         <Text style={styles.loadingText}>Loading period settings...</Text>
       </View>
     );
@@ -480,7 +481,7 @@ export default function PeriodSettings() {
           accessibilityState={{ disabled: saving }}
         >
           {saving ? (
-            <ActivityIndicator size="small" color="#fff" />
+            <ActivityIndicator size="small" color={colors.white} />
           ) : (
             <Text style={styles.saveButtonText}>Save Period Dates</Text>
           )}
@@ -508,7 +509,7 @@ export default function PeriodSettings() {
             accessibilityHint={t('a11y.periodSettings.newPeriodHint')}
           >
             {saving ? (
-              <ActivityIndicator size="small" color="#fff" />
+              <ActivityIndicator size="small" color={colors.white} />
             ) : (
               <Text style={styles.rolloverButtonText}>Start New Benefit Period</Text>
             )}
@@ -548,7 +549,7 @@ export default function PeriodSettings() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   centerContainer: {
     flex: 1,
@@ -557,42 +558,42 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 20,
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: colors.header,
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginTop: 4,
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   errorText: {
     fontSize: 16,
-    color: '#C62828',
+    color: colors.danger,
     textAlign: 'center',
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     minWidth: 200,
     alignItems: 'center',
   },
   retryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -602,30 +603,24 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 12,
   },
   statusCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    ...card,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   statusCardActive: {
     borderLeftWidth: 4,
-    borderLeftColor: '#2E7D32',
+    borderLeftColor: colors.success,
   },
   statusCardExpired: {
     borderLeftWidth: 4,
-    borderLeftColor: '#C62828',
+    borderLeftColor: colors.danger,
   },
   statusCardUpcoming: {
     borderLeftWidth: 4,
-    borderLeftColor: '#1976D2',
+    borderLeftColor: colors.dustyBlue,
   },
   statusHeader: {
     flexDirection: 'row',
@@ -636,7 +631,7 @@ const styles = StyleSheet.create({
   statusLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   statusBadge: {
     paddingHorizontal: 12,
@@ -644,13 +639,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   statusBadgeActive: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
   },
   statusBadgeExpired: {
-    backgroundColor: '#FFEBEE',
+    backgroundColor: colors.screenBg,
   },
   statusBadgeUpcoming: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.screenBg,
   },
   statusBadgeText: {
     fontSize: 11,
@@ -662,19 +657,19 @@ const styles = StyleSheet.create({
   },
   periodDateLabel: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 4,
   },
   periodDate: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#333',
+    color: colors.navy,
   },
   progressSection: {
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    borderTopColor: colors.border,
   },
   progressHeader: {
     flexDirection: 'row',
@@ -685,16 +680,16 @@ const styles = StyleSheet.create({
   progressLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   progressValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#2E7D32',
+    color: colors.success,
   },
   progressBarContainer: {
     height: 8,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.border,
     borderRadius: 4,
     overflow: 'hidden',
   },
@@ -704,19 +699,19 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.success,
   },
   progressFillWarning: {
-    backgroundColor: '#F57C00',
+    backgroundColor: colors.warning,
   },
   warningBox: {
     flexDirection: 'row',
-    backgroundColor: '#FFF3CD',
+    backgroundColor: colors.cardBg,
     padding: 12,
     borderRadius: 8,
     marginTop: 12,
     borderWidth: 1,
-    borderColor: '#FFECB5',
+    borderColor: colors.warning,
   },
   warningIcon: {
     fontSize: 18,
@@ -725,17 +720,17 @@ const styles = StyleSheet.create({
   warningText: {
     flex: 1,
     fontSize: 13,
-    color: '#856404',
+    color: colors.warning,
     lineHeight: 18,
   },
   expiredBox: {
     flexDirection: 'row',
-    backgroundColor: '#FFEBEE',
+    backgroundColor: colors.cardBg,
     padding: 12,
     borderRadius: 8,
     marginTop: 12,
     borderWidth: 1,
-    borderColor: '#FFCDD2',
+    borderColor: colors.danger,
   },
   expiredIcon: {
     fontSize: 18,
@@ -744,7 +739,7 @@ const styles = StyleSheet.create({
   expiredText: {
     flex: 1,
     fontSize: 13,
-    color: '#C62828',
+    color: colors.danger,
     lineHeight: 18,
   },
   fieldGroup: {
@@ -753,13 +748,13 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   pickerButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     padding: 12,
     flexDirection: 'row',
@@ -768,16 +763,16 @@ const styles = StyleSheet.create({
   },
   pickerButtonText: {
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
   },
   chevron: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
   },
   datePickerContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
     padding: 12,
     marginTop: 8,
@@ -789,80 +784,80 @@ const styles = StyleSheet.create({
   },
   datePresetButton: {
     flex: 1,
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
     padding: 10,
     borderRadius: 6,
     alignItems: 'center',
   },
   datePresetButtonText: {
     fontSize: 13,
-    color: '#2E7D32',
+    color: colors.header,
     fontWeight: '600',
   },
   datePickerNote: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
   },
   saveButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 8,
   },
   saveButtonDisabled: {
-    backgroundColor: '#A5D6A7',
+    backgroundColor: colors.border,
   },
   saveButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   rolloverButton: {
-    backgroundColor: '#1565C0',
+    backgroundColor: colors.dustyBlue,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 12,
   },
   rolloverButtonDisabled: {
-    backgroundColor: '#90CAF9',
+    backgroundColor: colors.borderLight,
   },
   rolloverButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   infoBox: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.cardBg,
     padding: 12,
     borderRadius: 8,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#BBDEFB',
+    borderColor: colors.dustyBlue,
   },
   infoText: {
     fontSize: 13,
-    color: '#1565C0',
+    color: colors.dustyBlue,
     lineHeight: 18,
   },
   helpBox: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     padding: 16,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
   },
   helpTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   helpText: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     lineHeight: 20,
   },
   buttonContainer: {
@@ -870,15 +865,15 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   cancelButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: colors.border,
   },
   cancelButtonText: {
-    color: '#666',
+    color: colors.muted,
     fontSize: 16,
     fontWeight: '600',
   },

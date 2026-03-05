@@ -14,6 +14,7 @@ import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
 import { BenefitCategory, BenefitUnit } from '@/lib/types';
 import { uploadBenefitStatement, OCRResult } from '@/lib/services/api';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 
 // OCR extracted benefit line item
 interface ExtractedBenefit {
@@ -160,7 +161,7 @@ export default function ScanStatement() {
   if (!permission) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#2E7D32" />
+        <ActivityIndicator size="large" color={colors.header} />
         <Text style={styles.message}>Requesting camera permission...</Text>
       </View>
     );
@@ -201,7 +202,7 @@ export default function ScanStatement() {
 
         {isProcessing ? (
           <View style={styles.processingContainer}>
-            <ActivityIndicator size="large" color="#2E7D32" />
+            <ActivityIndicator size="large" color={colors.header} />
             <Text style={styles.processingText}>Extracting benefits from image...</Text>
             <Text style={styles.processingSubtext}>This may take a few seconds</Text>
           </View>
@@ -381,41 +382,41 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 20,
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: colors.header,
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
   },
   message: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     marginTop: 16,
     paddingHorizontal: 20,
   },
   permissionButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
     marginTop: 20,
   },
   permissionButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -424,7 +425,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   manualEntryButtonText: {
-    color: '#2E7D32',
+    color: colors.header,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -449,12 +450,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   backButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 24,
     fontWeight: 'bold',
   },
   topBarTitle: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 18,
     fontWeight: '600',
   },
@@ -477,7 +478,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 40,
     height: 40,
-    borderColor: '#2E7D32',
+    borderColor: colors.header,
   },
   cornerTopLeft: {
     top: 0,
@@ -510,7 +511,7 @@ const styles = StyleSheet.create({
     maxWidth: 320,
   },
   instructionsTitle: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
@@ -542,17 +543,17 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 4,
-    borderColor: '#2E7D32',
+    borderColor: colors.header,
   },
   captureButtonInner: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
   },
   manualLinkButton: {
     width: 60,
@@ -563,7 +564,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   manualLinkText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 12,
     fontWeight: '600',
   },
@@ -583,24 +584,24 @@ const styles = StyleSheet.create({
   },
   processingText: {
     fontSize: 16,
-    color: '#333',
+    color: colors.navy,
     marginTop: 16,
     fontWeight: '600',
   },
   processingSubtext: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginTop: 4,
   },
   periodSection: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 16,
     marginTop: 16,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#2E7D32',
+    color: colors.header,
     marginBottom: 12,
   },
   periodRow: {
@@ -612,24 +613,20 @@ const styles = StyleSheet.create({
   },
   periodLabel: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 4,
   },
   periodValue: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   benefitsSection: {
     padding: 16,
   },
   benefitCard: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 8,
+    ...card,
     marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
   },
   benefitHeader: {
     flexDirection: 'row',
@@ -642,12 +639,12 @@ const styles = StyleSheet.create({
   benefitCategory: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   benefitAmount: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
   },
   benefitActions: {
     flexDirection: 'row',
@@ -660,41 +657,41 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   confidenceHigh: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
   },
   confidenceMedium: {
-    backgroundColor: '#FFF9C4',
+    backgroundColor: colors.cardBg,
   },
   confidenceLow: {
-    backgroundColor: '#FFEBEE',
+    backgroundColor: colors.cardBg,
   },
   confidenceText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   editButton: {
     paddingHorizontal: 12,
     paddingVertical: 6,
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.screenBg,
     borderRadius: 4,
   },
   editButtonText: {
     fontSize: 12,
-    color: '#1565C0',
+    color: colors.dustyBlue,
     fontWeight: '600',
   },
   helpBox: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.cardBg,
     padding: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#BBDEFB',
+    borderColor: colors.dustyBlue,
     marginTop: 8,
   },
   helpText: {
     fontSize: 12,
-    color: '#1565C0',
+    color: colors.dustyBlue,
     lineHeight: 18,
   },
   buttonContainer: {
@@ -703,37 +700,37 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   confirmButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   confirmButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   retakeButton: {
-    backgroundColor: '#1565C0',
+    backgroundColor: colors.dustyBlue,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   retakeButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   cancelButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: colors.border,
   },
   cancelButtonText: {
-    color: '#666',
+    color: colors.muted,
     fontSize: 16,
     fontWeight: '600',
   },

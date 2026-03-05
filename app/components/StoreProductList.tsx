@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import { getStoreProducts } from '@/lib/services/api';
+import { colors } from '@/lib/theme';
 
 interface StoreProduct {
   upc: string;
@@ -27,10 +28,10 @@ interface StoreProductListProps {
 }
 
 const STATUS_INFO: Record<string, { color: string; bgColor: string; label: string }> = {
-  in_stock: { color: '#2E7D32', bgColor: '#E8F5E9', label: 'In Stock' },
-  low_stock: { color: '#EF6C00', bgColor: '#FFF3E0', label: 'Low Stock' },
-  out_of_stock: { color: '#C62828', bgColor: '#FFEBEE', label: 'Out of Stock' },
-  unknown: { color: '#757575', bgColor: '#F5F5F5', label: 'Unknown' },
+  in_stock: { color: colors.success, bgColor: '#E8F5E9', label: 'In Stock' },
+  low_stock: { color: colors.warning, bgColor: '#FFF3E0', label: 'Low Stock' },
+  out_of_stock: { color: colors.danger, bgColor: '#FFEBEE', label: 'Out of Stock' },
+  unknown: { color: colors.muted, bgColor: colors.screenBg, label: 'Unknown' },
 };
 
 const CATEGORY_FILTERS = ['all', 'milk', 'cereal', 'infant_food', 'eggs', 'cheese', 'juice', 'whole_grains'];
@@ -64,7 +65,7 @@ export default function StoreProductList({ storeId, chain }: StoreProductListPro
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="small" color="#546E7A" />
+        <ActivityIndicator size="small" color={colors.muted} />
         <Text style={styles.loadingText}>{t('storeProducts.loading')}</Text>
       </View>
     );
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 8,
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
   },
   emptyContainer: {
     padding: 20,
@@ -168,12 +169,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   emptyText: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     lineHeight: 18,
   },
@@ -190,22 +191,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
   },
   chipActive: {
-    backgroundColor: '#546E7A',
+    backgroundColor: colors.navy,
   },
   chipText: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#666',
+    color: colors.muted,
   },
   chipTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
   noProductsText: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     fontStyle: 'italic',
     textAlign: 'center',
     padding: 16,
@@ -216,7 +217,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: colors.borderLight,
   },
   productInfo: {
     flex: 1,
@@ -224,12 +225,12 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 14,
-    color: '#333',
+    color: colors.navy,
     fontWeight: '500',
   },
   productSize: {
     fontSize: 12,
-    color: '#888',
+    color: colors.muted,
     marginTop: 2,
   },
   statusBadge: {

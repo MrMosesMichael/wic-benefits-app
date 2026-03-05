@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'expo-router';
 import notificationService, { type NotificationSubscription } from '@/lib/services/notificationService';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors, fonts, card } from '@/lib/theme';
 import Constants from 'expo-constants';
 
 // Demo user ID - would come from auth in production
@@ -119,10 +120,10 @@ export default function FormulaAlertsScreen() {
 
   const getExpiryStatus = (expiresAt: string) => {
     const days = getDaysUntilExpiry(expiresAt);
-    if (days <= 0) return { color: '#F44336', text: t('formulaAlertsList.expired') };
-    if (days <= 3) return { color: '#FF9800', text: t('formulaAlertsList.expiresSoon', { days }) };
-    if (days <= 7) return { color: '#FFC107', text: t('formulaAlertsList.expiresIn', { days }) };
-    return { color: '#4CAF50', text: t('formulaAlertsList.active') };
+    if (days <= 0) return { color: colors.danger, text: t('formulaAlertsList.expired') };
+    if (days <= 3) return { color: colors.warning, text: t('formulaAlertsList.expiresSoon', { days }) };
+    if (days <= 7) return { color: colors.wheat, text: t('formulaAlertsList.expiresIn', { days }) };
+    return { color: colors.success, text: t('formulaAlertsList.active') };
   };
 
   if (loading) {
@@ -135,7 +136,7 @@ export default function FormulaAlertsScreen() {
           <Text style={styles.title} accessibilityRole="header">{t('formulaAlertsList.title')}</Text>
         </View>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#1976D2" />
+          <ActivityIndicator size="large" color={colors.dustyBlue} />
           <Text style={styles.loadingText}>{t('formulaAlertsList.loading')}</Text>
         </View>
       </View>
@@ -266,10 +267,10 @@ export default function FormulaAlertsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.header,
     padding: 20,
     paddingTop: 60,
     paddingBottom: 24,
@@ -284,7 +285,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
     marginBottom: 4,
   },
   subtitle: {
@@ -304,7 +305,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
   },
   errorContainer: {
     padding: 40,
@@ -316,18 +317,18 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
   },
   retryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -342,31 +343,31 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
     textAlign: 'center',
   },
   emptyText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     textAlign: 'center',
     marginBottom: 24,
     lineHeight: 20,
   },
   setupButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: colors.dustyBlue,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
   },
   setupButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   infoCard: {
     flexDirection: 'row',
-    backgroundColor: '#E3F2FD',
+    backgroundColor: colors.borderLight,
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
@@ -379,19 +380,12 @@ const styles = StyleSheet.create({
   infoText: {
     flex: 1,
     fontSize: 14,
-    color: '#1565C0',
+    color: colors.dustyBlue,
     lineHeight: 20,
   },
   subscriptionCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    ...card,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -400,7 +394,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   upcBadge: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 6,
@@ -408,7 +402,7 @@ const styles = StyleSheet.create({
   upcBadgeText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#666',
+    color: colors.muted,
     fontFamily: 'monospace',
   },
   statusBadge: {
@@ -419,7 +413,7 @@ const styles = StyleSheet.create({
   statusBadgeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#fff',
+    color: colors.white,
     textTransform: 'uppercase',
   },
   cardDetails: {
@@ -430,16 +424,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 6,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: colors.borderLight,
   },
   detailLabel: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
   },
   detailValue: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#333',
+    color: colors.navy,
   },
   cardActions: {
     flexDirection: 'row',
@@ -447,25 +441,25 @@ const styles = StyleSheet.create({
   },
   renewButton: {
     flex: 1,
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
   },
   renewButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 14,
     fontWeight: '600',
   },
   deleteButton: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.screenBg,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
   },
   deleteButtonText: {
-    color: '#F44336',
+    color: colors.danger,
     fontSize: 14,
     fontWeight: '600',
   },

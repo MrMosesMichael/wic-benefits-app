@@ -7,6 +7,7 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 interface NeedHelpLinkProps {
   /** Optional FAQ ID to deep link to */
@@ -102,18 +103,18 @@ const styles = StyleSheet.create({
   },
   defaultText: {
     fontSize: 15,
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '500',
   },
   defaultHint: {
     fontSize: 12,
-    color: '#666',
+    color: colors.muted,
     marginTop: 4,
   },
   
   // Card variant
   cardContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 16,
     borderRadius: 12,
     flexDirection: 'row',
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 2,
     borderLeftWidth: 4,
-    borderLeftColor: '#1976D2',
+    borderLeftColor: colors.dustyBlue,
   },
   cardContent: {
     flexDirection: 'row',
@@ -142,16 +143,16 @@ const styles = StyleSheet.create({
   cardLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   cardHint: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginTop: 2,
   },
   cardArrow: {
     fontSize: 18,
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '600',
   },
   
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
   },
   inlineText: {
     fontSize: 14,
-    color: '#1976D2',
+    color: colors.dustyBlue,
     fontWeight: '500',
   },
 });

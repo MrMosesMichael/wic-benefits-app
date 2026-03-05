@@ -15,6 +15,7 @@ import { useLocation } from '@/lib/hooks/useLocation';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import { SUPPORTED_STATES, setLocationPreference, getLocationPreference, LocationPreference } from '@/lib/services/locationService';
 import { useEffect } from 'react';
+import { colors, fonts, card } from '@/lib/theme';
 
 export default function LocationSettingsScreen() {
   const router = useRouter();
@@ -116,7 +117,7 @@ export default function LocationSettingsScreen() {
             accessibilityState={{ disabled: loading }}
           >
             {loading ? (
-              <ActivityIndicator color="#fff" size="small" />
+              <ActivityIndicator color={colors.white} size="small" />
             ) : (
               <Text style={styles.primaryButtonText}>{t('locationSettings.detectMyLocation')}</Text>
             )}
@@ -212,10 +213,10 @@ export default function LocationSettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.screenBg,
   },
   header: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 20,
     paddingTop: 60,
     paddingBottom: 24,
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
     marginBottom: 4,
   },
   subtitle: {
@@ -241,76 +242,71 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    ...card,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   cardTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 4,
   },
   cardDescription: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     marginBottom: 12,
     lineHeight: 20,
   },
   locationInfo: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.screenBg,
     padding: 12,
     borderRadius: 8,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
   locationCity: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: colors.success,
   },
   locationDetail: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginTop: 2,
   },
   unsupportedBanner: {
-    backgroundColor: '#FFF3E0',
+    backgroundColor: colors.cardBg,
     padding: 12,
     borderRadius: 8,
     marginBottom: 12,
     borderLeftWidth: 4,
-    borderLeftColor: '#F57C00',
+    borderLeftColor: colors.warning,
   },
   unsupportedText: {
     fontSize: 13,
-    color: '#E65100',
+    color: colors.warning,
     lineHeight: 18,
   },
   clearButton: {
     paddingVertical: 10,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     borderRadius: 8,
   },
   clearButtonText: {
-    color: '#999',
+    color: colors.muted,
     fontSize: 14,
   },
   primaryButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -324,7 +320,7 @@ const styles = StyleSheet.create({
   zipInput: {
     flex: 1,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     borderRadius: 8,
     padding: 12,
     fontSize: 18,
@@ -332,35 +328,35 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   zipInputError: {
-    borderColor: '#C62828',
+    borderColor: colors.danger,
   },
   zipButton: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.header,
     paddingHorizontal: 24,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   zipButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   errorText: {
-    color: '#C62828',
+    color: colors.danger,
     fontSize: 13,
     marginTop: 4,
   },
   errorBanner: {
-    backgroundColor: '#FFEBEE',
+    backgroundColor: colors.screenBg,
     padding: 12,
     borderRadius: 8,
     marginBottom: 12,
     borderLeftWidth: 4,
-    borderLeftColor: '#C62828',
+    borderLeftColor: colors.danger,
   },
   errorBannerText: {
-    color: '#C62828',
+    color: colors.danger,
     fontSize: 14,
   },
   prefOption: {
@@ -368,7 +364,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: colors.borderLight,
   },
   prefOptionActive: {
     // no special styling needed
@@ -378,12 +374,12 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#CCC',
+    borderColor: colors.border,
     marginRight: 12,
   },
   prefRadioActive: {
-    borderColor: '#2E7D32',
-    backgroundColor: '#2E7D32',
+    borderColor: colors.header,
+    backgroundColor: colors.header,
   },
   prefTextContainer: {
     flex: 1,
@@ -391,30 +387,30 @@ const styles = StyleSheet.create({
   prefLabel: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
   },
   prefLabelActive: {
-    color: '#2E7D32',
+    color: colors.header,
   },
   prefDescription: {
     fontSize: 13,
-    color: '#888',
+    color: colors.muted,
     marginTop: 2,
   },
   infoCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     padding: 16,
     borderRadius: 12,
   },
   infoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.navy,
     marginBottom: 8,
   },
   infoText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.muted,
     lineHeight: 20,
   },
 });

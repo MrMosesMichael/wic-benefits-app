@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { colors } from '@/lib/theme';
 
 interface ProductListItemProps {
   name: string;
@@ -34,7 +35,7 @@ export default function ProductListItem({ name, brand, size, category, upc }: Pr
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.cardBg,
     borderRadius: 12,
     padding: 14,
     marginBottom: 8,
@@ -52,17 +53,17 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: colors.navy,
     lineHeight: 20,
   },
   brand: {
     fontSize: 13,
-    color: '#666',
+    color: colors.muted,
     marginTop: 2,
   },
   size: {
     fontSize: 12,
-    color: '#999',
+    color: colors.muted,
     marginTop: 2,
   },
   badge: {
@@ -75,6 +76,6 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#2E7D32',
+    color: colors.success,
   },
 });

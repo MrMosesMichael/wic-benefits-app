@@ -2,7 +2,7 @@
   "app": {
     "title": "WIC Benefits Assistant",
     "subtitle": "Michigan Edition",
-    "version": "Vertical Slice MVP v0.1"
+    "version": "v{{version}}"
   },
   "nav": {
     "home": "WIC Benefits",
