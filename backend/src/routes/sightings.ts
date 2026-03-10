@@ -1,7 +1,19 @@
 import express, { Request, Response } from 'express';
+import crypto from 'crypto';
 import pool from '../config/database';
 
 const router = express.Router();
+
+/** Hash a device/user ID with SHA-256 for privacy-preserving audit */
+function hashReporter(id: string): string {
+  return crypto.createHash('sha256').update(id).digest('hex');
+}
+
+/** Audit log expiry period (90 days) */
+const AUDIT_EXPIRY_DAYS = 90;
+
+/** Rate limit: max reports per reporter per hour */
+const RATE_LIMIT_PER_HOUR = 30;
 
 /**
  * POST /api/v1/sightings/report
@@ -29,10 +41,27 @@ router.post('/report', async (req: Request, res: Response) => {
   }
 
   try {
+    // Rate-limit check if reporter identified
+    if (reportedBy) {
+      const reporterHash = hashReporter(reportedBy);
+      const rateCheck = await pool.query(
+        `SELECT COUNT(*) as cnt FROM sighting_audit_log
+         WHERE reporter_hash = $1 AND created_at > NOW() - INTERVAL '1 hour'`,
+        [reporterHash]
+      );
+      if (parseInt(rateCheck.rows[0].cnt) >= RATE_LIMIT_PER_HOUR) {
+        return res.status(429).json({
+          success: false,
+          error: 'Too many reports. Please try again later.'
+        });
+      }
+    }
+
+    // Insert sighting WITHOUT user identity (always anonymous)
     const result = await pool.query(
       `INSERT INTO product_sightings
        (upc, store_id, store_name, latitude, longitude, stock_level, reported_by, location_verified)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       VALUES ($1, $2, $3, $4, $5, $6, 'anonymous', $7)
        RETURNING id, reported_at`,
       [
         upc,
@@ -41,10 +70,19 @@ router.post('/report', async (req: Request, res: Response) => {
         latitude || null,
         longitude || null,
         stockLevel,
-        reportedBy || 'anonymous',
         !!(latitude && longitude) // verified if coordinates provided
       ]
     );
+
+    // Write to audit log (hashed ID, no location data) for rate-limiting & abuse prevention
+    if (reportedBy) {
+      const expiresAt = new Date(Date.now() + AUDIT_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+      await pool.query(
+        `INSERT INTO sighting_audit_log (reporter_hash, sighting_id, report_type, store_id, upc, expires_at)
+         VALUES ($1, $2, 'sighting', $3, $4, $5)`,
+        [hashReporter(reportedBy), result.rows[0].id, storeId || null, upc, expiresAt]
+      ).catch(err => console.warn('Failed to write audit log:', err));
+    }
 
     res.json({
       success: true,

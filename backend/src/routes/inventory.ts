@@ -4,9 +4,17 @@
  */
 
 import express, { Request, Response, Router } from 'express';
+import crypto from 'crypto';
 import pool from '../config/database';
 
 const router: Router = express.Router();
+
+/** Hash a device/user ID with SHA-256 for privacy-preserving audit */
+function hashReporter(id: string): string {
+  return crypto.createHash('sha256').update(id).digest('hex');
+}
+
+const AUDIT_EXPIRY_DAYS = 90;
 
 /**
  * GET /api/v1/inventory/store/:storeId/product/:upc
@@ -402,14 +410,23 @@ router.post('/report', async (req: Request, res: Response) => {
       });
     }
 
-    // Log the report for analytics (optional)
+    // Log to audit table (hashed ID, no location) for rate-limiting & abuse prevention
     if (userId) {
+      const expiresAt = new Date(Date.now() + AUDIT_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+      await pool.query(
+        `INSERT INTO sighting_audit_log (reporter_hash, report_type, store_id, upc, expires_at)
+         VALUES ($1, 'inventory', $2, $3, $4)`,
+        [hashReporter(userId), storeId, upc, expiresAt]
+      ).catch(err => {
+        console.warn('Failed to write audit log:', err);
+      });
+
+      // Also log to legacy table (anonymized) for backward compat
       await pool.query(
         `INSERT INTO inventory_reports_log (user_id, store_id, upc, status, reported_at)
-         VALUES ($1, $2, $3, $4, NOW())`,
-        [userId, storeId, upc, status]
+         VALUES ('anonymous', $1, $2, $3, NOW())`,
+        [storeId, upc, status]
       ).catch(err => {
-        // Non-critical - just log the error
         console.warn('Failed to log inventory report:', err);
       });
     }

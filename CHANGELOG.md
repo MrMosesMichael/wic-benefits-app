@@ -4,6 +4,29 @@
 
 ---
 
+## 2026-03-09 — iOS App Store Submission + Privacy (v1.7.5)
+
+**Submitted v1.7.5 to Apple App Store review. Fixed Help & FAQ layout bug, decoupled user identity from location data for stronger privacy.**
+
+### Done
+- ✅ **Fix: Help & FAQ filter chips oversized** — Added `maxHeight`, fixed chip height, alignment to match Product Catalog pattern
+- ✅ **Privacy: Decoupled identity from location** — New `sighting_audit_log` table with SHA-256 hashed device IDs and 90-day auto-expiry. Sightings always stored as 'anonymous'. Rate-limiting (30 reports/hr). Migration 024.
+- ✅ **App Store screenshots** — Resized to 6.5" (1242x2688) + generated iPad 13" via Xcode simulator
+- ✅ **iOS App Store submission** — Data privacy questionnaire completed, screenshots uploaded, v1.7.5 submitted for review
+- ✅ **Regenerated ios/ folder** — `npx expo prebuild` to fix stale native project
+- ✅ Bumped to v1.7.5 (buildNumber 1, versionCode 17)
+
+### Files Modified
+- `app/app/help/index.tsx` — filter chip height fix
+- `app/app.json` — v1.7.5, versionCode 17
+- `backend/migrations/024_decouple_sighting_identity.sql` — NEW: audit log, anonymize existing data
+- `backend/src/routes/sightings.ts` — anonymous sightings + audit log + rate-limiting
+- `backend/src/routes/inventory.ts` — anonymous inventory reports + audit log
+- `backend/src/routes/user.ts` — export/delete via audit log, updated privacy summary
+- `docs/ios-app-submission/` — NEW: screenshots (original + 6.5" resized)
+
+---
+
 ## 2026-03-05 — App Icon (v1.7.4)
 
 **Added custom app icon replacing the default Expo placeholder. Blue background with milk carton, cereal bowl, and egg carton illustration with "WIC" text.**

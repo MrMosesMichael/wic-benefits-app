@@ -1,6 +1,6 @@
 # WIC Benefits App — Roadmap
 
-> **Last Updated:** March 5, 2026 (v1.7.4)
+> **Last Updated:** March 9, 2026 (v1.7.5)
 > **Current Phase:** Phase 1-5 Complete + Phase 7 In Progress
 > **Production:** https://mdmichael.com/wic/
 
@@ -154,7 +154,7 @@ Accessibility, testing, app store submission.
 | **T** | Accessibility (VoiceOver, TalkBack) | ✅ Done |
 | **U** | Additional Languages | ⚠️ Partial (Spanish ~90% complete; minor gaps remain) |
 | **V** | Beta Testing | 🔄 In Progress (iOS TestFlight submitted) |
-| **V** | App Store Submission | 🔄 In Progress (assets needed - see [iOS Release Checklist](#ios-app-store-release-checklist)) |
+| **V** | App Store Submission | 🔄 Submitted (v1.7.5 submitted to App Store review) |
 | **V2** | Google Play Submission | 🔄 In Progress (data safety done, screenshots needed) |
 | **W** | UI Polish (duplicate headers, SafeArea) | ✅ Done |
 | **X** | Register LLC | ⏳ Todo |
@@ -193,10 +193,11 @@ Based on impact, effort, and what's unblocked:
    - ✅ v1.7.1 Android build submitted to Google Play Console (Feb 24, 2026)
    - ✅ v1.7.2 iOS build submitted to TestFlight (Feb 24, 2026) — cart race condition fix
    - ✅ v1.7.2 Android build submitted to Google Play Console (Feb 24, 2026)
-   - 🔄 TestFlight beta testing (UAT in progress on v1.7.2)
+   - ✅ v1.7.5 submitted to Apple App Store review (Mar 9, 2026)
+   - ✅ App Store screenshots generated (5.8" + 6.5" + iPad 13")
+   - ✅ App Store data collection privacy questionnaire completed
    - 🔄 Google Play Console setup in progress
-   - ⏳ Generate store listing screenshots/images (Apple + Android)
-   - ⏳ App Store submission preparation (see [iOS Release Checklist](#ios-app-store-release-checklist))
+   - ⏳ Awaiting Apple App Store review
    - *Status: UAT in progress, screenshots are the main remaining blocker*
 
 2. **Register LLC & Update Org Info**

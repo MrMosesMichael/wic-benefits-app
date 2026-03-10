@@ -1,7 +1,13 @@
 import express, { Request, Response } from 'express';
+import crypto from 'crypto';
 import pool from '../config/database';
 
 const router = express.Router();
+
+/** Hash a device/user ID with SHA-256 (must match sightings/inventory routes) */
+function hashReporter(id: string): string {
+  return crypto.createHash('sha256').update(id).digest('hex');
+}
 
 /**
  * GET /api/v1/user/export
@@ -147,19 +153,17 @@ router.get('/export', async (req: Request, res: Response) => {
     );
     exportData.dataCategories.notificationHistory = notificationHistoryResult.rows;
 
-    // 15. Product sightings (crowdsourced contributions)
-    const sightingsResult = await pool.query(
-      'SELECT * FROM product_sightings WHERE reported_by = $1',
-      [userId]
+    // 15. Sighting audit log (hashed identity — no location data stored here)
+    const reporterHash = hashReporter(userId);
+    const auditResult = await pool.query(
+      `SELECT report_type, store_id, upc, created_at, expires_at
+       FROM sighting_audit_log WHERE reporter_hash = $1 ORDER BY created_at DESC`,
+      [reporterHash]
     );
-    exportData.dataCategories.productSightings = sightingsResult.rows;
-
-    // 16. Inventory reports log
-    const inventoryReportsResult = await pool.query(
-      'SELECT * FROM inventory_reports_log WHERE user_id = $1',
-      [userId]
-    );
-    exportData.dataCategories.inventoryReports = inventoryReportsResult.rows;
+    exportData.dataCategories.sightingAuditLog = auditResult.rows;
+    exportData.dataCategories.sightingAuditNote =
+      'Product sightings are stored anonymously (not linked to your identity). ' +
+      'This audit log shows your report history for rate-limiting purposes only.';
 
     res.json({
       success: true,
@@ -322,16 +326,14 @@ router.delete('/delete', async (req: Request, res: Response) => {
     // 15. Notification batches
     await client.query('DELETE FROM notification_batches WHERE user_id = $1', [userId]);
 
-    // 16. Product sightings - anonymize instead of delete to preserve community data
-    await client.query(
-      "UPDATE product_sightings SET reported_by = 'deleted_user' WHERE reported_by = $1",
-      [userId]
-    );
+    // 16. Product sightings — already anonymous (no action needed)
+    // Sightings no longer store user identity since migration 024.
 
-    // 17. Inventory reports log - anonymize
+    // 17. Delete audit log entries (hashed identity data)
+    const reporterHash = hashReporter(userId);
     await client.query(
-      "UPDATE inventory_reports_log SET user_id = 'deleted_user' WHERE user_id = $1",
-      [userId]
+      'DELETE FROM sighting_audit_log WHERE reporter_hash = $1',
+      [reporterHash]
     );
 
     // 18. Delete user account last
@@ -364,7 +366,7 @@ router.get('/privacy-summary', async (_req: Request, res: Response) => {
   res.json({
     success: true,
     privacySummary: {
-      lastUpdated: '2026-02-03',
+      lastUpdated: '2026-03-09',
       dataCollected: [
         {
           category: 'Account Information',
@@ -393,9 +395,9 @@ router.get('/privacy-summary', async (_req: Request, res: Response) => {
         },
         {
           category: 'Community Contributions',
-          description: 'Product availability reports you submit to help others',
+          description: 'Product availability reports you submit to help others — stored anonymously, not linked to your identity',
           required: false,
-          retention: 'Anonymized if you delete your account',
+          retention: 'Reports are anonymous; rate-limiting audit data auto-expires after 90 days',
         },
         {
           category: 'Notification Preferences',
