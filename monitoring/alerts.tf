@@ -105,6 +105,25 @@ resource "grafana_rule_group" "wic_backend" {
     }
 
     data {
+      ref_id = "B"
+
+      relative_time_range {
+        from = 0
+        to   = 0
+      }
+
+      datasource_uid = "__expr__"
+
+      model = jsonencode({
+        type       = "reduce"
+        refId      = "B"
+        expression = "A"
+        reducer    = "last"
+        settings   = { mode = "dropNN" }
+      })
+    }
+
+    data {
       ref_id = "threshold"
 
       relative_time_range {
@@ -117,7 +136,7 @@ resource "grafana_rule_group" "wic_backend" {
       model = jsonencode({
         type       = "threshold"
         refId      = "threshold"
-        expression = "A"
+        expression = "B"
         conditions = [{
           evaluator = { type = "gt", params = [0.05] }
           operator  = { type = "and" }
@@ -155,6 +174,25 @@ resource "grafana_rule_group" "wic_backend" {
     }
 
     data {
+      ref_id = "B"
+
+      relative_time_range {
+        from = 0
+        to   = 0
+      }
+
+      datasource_uid = "__expr__"
+
+      model = jsonencode({
+        type       = "reduce"
+        refId      = "B"
+        expression = "A"
+        reducer    = "last"
+        settings   = { mode = "dropNN" }
+      })
+    }
+
+    data {
       ref_id = "threshold"
 
       relative_time_range {
@@ -167,7 +205,7 @@ resource "grafana_rule_group" "wic_backend" {
       model = jsonencode({
         type       = "threshold"
         refId      = "threshold"
-        expression = "A"
+        expression = "B"
         conditions = [{
           evaluator = { type = "gt", params = [2] }
           operator  = { type = "and" }
@@ -205,6 +243,25 @@ resource "grafana_rule_group" "wic_backend" {
     }
 
     data {
+      ref_id = "B"
+
+      relative_time_range {
+        from = 0
+        to   = 0
+      }
+
+      datasource_uid = "__expr__"
+
+      model = jsonencode({
+        type       = "reduce"
+        refId      = "B"
+        expression = "A"
+        reducer    = "last"
+        settings   = { mode = "dropNN" }
+      })
+    }
+
+    data {
       ref_id = "threshold"
 
       relative_time_range {
@@ -217,7 +274,7 @@ resource "grafana_rule_group" "wic_backend" {
       model = jsonencode({
         type       = "threshold"
         refId      = "threshold"
-        expression = "A"
+        expression = "B"
         conditions = [{
           evaluator = { type = "gt", params = [5] }
           operator  = { type = "and" }
