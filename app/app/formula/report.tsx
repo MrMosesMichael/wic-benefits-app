@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Linking } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { getFormulaByUpc, getNearbyStores, reportFormulaSimple } from '@/lib/services/api';
@@ -124,14 +124,24 @@ export default function FormulaReport() {
   }
 
   if (!permission.granted && step === 'scan') {
+    const canAskAgain = permission.canAskAgain !== false;
     return (
       <View style={styles.permissionContainer}>
         <Text style={styles.permissionText}>
           {t('formulaReport.cameraPermission')}
         </Text>
-        <TouchableOpacity style={styles.permissionButton} onPress={requestPermission} accessibilityRole="button" accessibilityLabel={t('a11y.report.grantCameraLabel')}>
-          <Text style={styles.permissionButtonText}>{t('formulaReport.grantPermission')}</Text>
-        </TouchableOpacity>
+        {!canAskAgain && (
+          <Text style={styles.permissionSettingsHint}>{t('scanner.permissionSettingsHint')}</Text>
+        )}
+        {canAskAgain ? (
+          <TouchableOpacity style={styles.permissionButton} onPress={requestPermission} accessibilityRole="button" accessibilityLabel={t('a11y.report.grantCameraLabel')}>
+            <Text style={styles.permissionButtonText}>{t('formulaReport.grantPermission')}</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.permissionButton} onPress={() => Linking.openSettings()} accessibilityRole="button">
+            <Text style={styles.permissionButtonText}>{t('scanner.openSettings')}</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   }
@@ -357,6 +367,14 @@ const styles = StyleSheet.create({
     color: colors.muted,
     textAlign: 'center',
     marginBottom: 20,
+  },
+  permissionSettingsHint: {
+    color: '#aaa',
+    fontSize: 14,
+    textAlign: 'center',
+    marginHorizontal: 40,
+    marginBottom: 20,
+    lineHeight: 20,
   },
   permissionButton: {
     backgroundColor: colors.dustyBlue,
