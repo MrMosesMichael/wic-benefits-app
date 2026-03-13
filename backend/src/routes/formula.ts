@@ -702,7 +702,7 @@ router.post('/report', async (req: Request, res: Response) => {
  *
  * Formula-specific optimizations:
  * - Higher base confidence (70 vs 60) - formula reports are critical
- * - Reports tagged as 'formula_sighting' for faster decay
+ * - Reports tagged as 'crowdsourced' with higher confidence for formula
  * - Location verification bonus
  */
 router.post('/report-simple', async (req: Request, res: Response) => {
@@ -791,7 +791,7 @@ router.post('/report-simple', async (req: Request, res: Response) => {
          SET status = $1,
              quantity_range = $2,
              last_updated = CURRENT_TIMESTAMP,
-             source = 'formula_sighting',
+             source = 'crowdsourced',
              confidence = LEAST($3 + (report_count * 5), 95),
              report_count = report_count + 1
          WHERE id = $4
@@ -800,13 +800,13 @@ router.post('/report-simple', async (req: Request, res: Response) => {
       );
     } else {
       // Create new report
-      // Formula sightings get higher confidence and 'formula_sighting' source tag
+      // Formula sightings get higher confidence
       const confidence = baseConfidence + (locationVerified ? 10 : 0);
 
       result = await pool.query(
         `INSERT INTO formula_availability
          (upc, store_name, store_address, latitude, longitude, status, quantity_range, source, confidence, report_count)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, 'formula_sighting', $8, 1)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, 'crowdsourced', $8, 1)
          RETURNING id, last_updated`,
         [
           upc,

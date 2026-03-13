@@ -48,20 +48,11 @@ export default function FormulaAlertButton({
   const handleSubscribe = async () => {
     setSubscribing(true);
     try {
-      // Request permissions and register token
+      // Request permissions (best-effort; don't block subscription on this)
       const hasPermission = await notificationService.requestPermissions();
 
-      if (!hasPermission) {
-        Alert.alert(
-          t('formulaAlerts.permissionRequired'),
-          t('formulaAlerts.permissionMessage'),
-          [{ text: t('common.ok') }]
-        );
-        setSubscribing(false);
-        return;
-      }
-
-      // Create subscription
+      // Create subscription regardless of push permission status
+      // User will still see alerts in-app; push notifications are a bonus
       const newSubscription = await notificationService.subscribeToFormula(
         userId,
         upc,

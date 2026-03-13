@@ -5,8 +5,17 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { getBenefits, addToCart, getCart, Participant, getSightings, reportSighting } from '@/lib/services/api';
 import type { ProductSighting, StockLevel } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { useLocation } from '@/lib/hooks/useLocation';
 import NeedHelpLink from '@/components/NeedHelpLink';
 import { colors, fonts, card } from '@/lib/theme';
+
+const STATE_NAMES: Record<string, string> = {
+  MI: 'Michigan',
+  NC: 'North Carolina',
+  NY: 'New York',
+  OR: 'Oregon',
+  FL: 'Florida',
+};
 
 export default function ScanResult() {
   const router = useRouter();
@@ -22,6 +31,10 @@ export default function ScanResult() {
   const reason = params.reason as string;
   const scanMode = (params.scanMode as string) || 'check';
   const isPlu = params.isPlu === 'true';
+
+  // Get user's detected state for display
+  const { location } = useLocation();
+  const stateName = STATE_NAMES[location?.state || 'MI'] || location?.state || 'Michigan';
 
   const [eligibleParticipants, setEligibleParticipants] = useState<Participant[]>([]);
   const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null);
@@ -265,7 +278,7 @@ export default function ScanResult() {
       <View
         style={[styles.resultCard, isEligible ? styles.eligible : styles.notEligible]}
         accessible={true}
-        accessibilityLabel={isEligible ? t('a11y.result.approvedLabel') : t('a11y.result.notApprovedLabel')}
+        accessibilityLabel={isEligible ? t('a11y.result.approvedLabel', { state: stateName }) : t('a11y.result.notApprovedLabel', { state: stateName })}
       >
         <View style={styles.statusBadge}>
           <Text style={styles.statusIcon} accessible={false}>{isEligible ? '✓' : '✗'}</Text>
@@ -273,7 +286,7 @@ export default function ScanResult() {
         <Text style={styles.statusText} accessibilityRole="header">
           {isEligible ? t('result.wicApproved') : t('result.notApproved')}
         </Text>
-        <Text style={styles.statusSubtext}>{t('result.michigan')}</Text>
+        <Text style={styles.statusSubtext}>{stateName}</Text>
       </View>
 
       {/* Product Details */}
@@ -455,7 +468,7 @@ export default function ScanResult() {
         <View style={styles.helpBox}>
           <Text style={styles.helpTitle}>{t('result.whyNotApproved')}</Text>
           <Text style={styles.helpText}>
-            {t('result.notApprovedExplanation')}
+            {t('result.notApprovedExplanation', { state: stateName })}
           </Text>
         </View>
       )}

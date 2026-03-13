@@ -25,7 +25,7 @@ export default function FormulaSelect() {
   const router = useRouter();
   const t = useTranslation();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ participantId?: string; returnTo?: string }>();
+  const params = useLocalSearchParams<{ participantId?: string; returnTo?: string; searchRadius?: string }>();
 
   const [formulas, setFormulas] = useState<WicFormula[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,13 +86,14 @@ export default function FormulaSelect() {
         setSaving(false);
       }
     } else {
-      // No participant ID - just return the selection
-      // This could be used for standalone formula finder
-      router.push({
+      // No participant ID - return to formula finder with selection
+      // Use replace to avoid stacking duplicate formula screens
+      router.replace({
         pathname: '/formula',
         params: {
           selectedUpc: selectedFormula.upc,
-          selectedName: `${selectedFormula.brand} ${selectedFormula.productName}`
+          selectedName: `${selectedFormula.brand} ${selectedFormula.productName}`,
+          ...(params.searchRadius ? { searchRadius: params.searchRadius } : {}),
         }
       });
     }

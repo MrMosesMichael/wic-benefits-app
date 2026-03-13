@@ -465,7 +465,7 @@ router.post('/', async (req: Request, res: Response) => {
       }
 
       // Get likelihood for this store's chain
-      const likelihood = likelihoodMap[store.chain.toLowerCase()];
+      const likelihood = store.chain ? likelihoodMap[store.chain.toLowerCase()] : null;
 
       // Calculate a composite score for sorting
       let score = 0;

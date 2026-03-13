@@ -25,10 +25,13 @@ interface FormulaShortage {
 export default function FormulaFinder() {
   const router = useRouter();
   const { t } = useI18n();
-  const params = useLocalSearchParams<{ selectedUpc?: string; selectedName?: string }>();
+  const params = useLocalSearchParams<{ selectedUpc?: string; selectedName?: string; searchRadius?: string }>();
 
-  // State
-  const [searchRadius, setSearchRadius] = useState(10);
+  // State — restore searchRadius from params if returning from another screen
+  const [searchRadius, setSearchRadius] = useState(() => {
+    const r = params.searchRadius ? parseInt(params.searchRadius, 10) : NaN;
+    return [5, 10, 25, 50].includes(r) ? r : 10;
+  });
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [storeResults, setStoreResults] = useState<StoreResult[]>([]);
@@ -71,7 +74,14 @@ export default function FormulaFinder() {
       // Load formula details
       loadFormulaDetails(params.selectedUpc);
     }
-  }, [params.selectedUpc, params.selectedName]);
+    // Restore search radius if passed back from another screen
+    if (params.searchRadius) {
+      const r = parseInt(params.searchRadius, 10);
+      if ([5, 10, 25, 50].includes(r)) {
+        setSearchRadius(r);
+      }
+    }
+  }, [params.selectedUpc, params.selectedName, params.searchRadius]);
 
   const initializeScreen = async () => {
     await Promise.all([
@@ -138,7 +148,7 @@ export default function FormulaFinder() {
 
     if (!assignedFormula) {
       Alert.alert(t('formula.selectFormulaAlert'), t('formula.selectFormulaAlertMsg'));
-      router.push('/formula/select');
+      router.push({ pathname: '/formula/select', params: { searchRadius: String(searchRadius) } });
       return;
     }
 
@@ -200,7 +210,7 @@ export default function FormulaFinder() {
         <View style={styles.formulaCardHeader}>
           <Text style={styles.sectionTitle}>{t('formula.findingFormula')}</Text>
           <TouchableOpacity
-            onPress={() => router.push('/formula/select')}
+            onPress={() => router.push({ pathname: '/formula/select', params: { searchRadius: String(searchRadius) } })}
             accessibilityRole="link"
             accessibilityHint={t('a11y.formula.changeHint')}
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
@@ -253,7 +263,13 @@ export default function FormulaFinder() {
             {/* Manage Alerts Link */}
             <TouchableOpacity
               style={styles.manageAlertsLink}
-              onPress={() => router.push('/formula/alerts')}
+              onPress={() => router.push({
+                pathname: '/formula/alerts',
+                params: {
+                  formulaUpc: assignedFormula?.upc,
+                  formulaName: assignedFormula?.details?.productName || assignedFormula?.name,
+                },
+              })}
               accessibilityRole="link"
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
@@ -265,7 +281,7 @@ export default function FormulaFinder() {
         ) : (
           <TouchableOpacity
             style={styles.selectFormulaButton}
-            onPress={() => router.push('/formula/select')}
+            onPress={() => router.push({ pathname: '/formula/select', params: { searchRadius: String(searchRadius) } })}
             accessibilityRole="button"
             accessibilityHint={t('a11y.formula.selectHint')}
           >
@@ -477,7 +493,7 @@ export default function FormulaFinder() {
           if (assignedFormula) {
             setSightingModalVisible(true);
           } else {
-            router.push('/formula/select');
+            router.push({ pathname: '/formula/select', params: { searchRadius: String(searchRadius) } });
           }
         }}
         accessibilityRole="button"

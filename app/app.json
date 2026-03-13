@@ -45,7 +45,8 @@
       "infoPlist": {
         "NSCameraUsageDescription": "We need camera access to scan product barcodes",
         "NSLocationWhenInUseUsageDescription": "We need location access to find nearby stores with formula.",
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "LSApplicationQueriesSchemes": ["comgooglemaps", "waze"]
       }
     },
     "android": {

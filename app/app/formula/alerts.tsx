@@ -9,7 +9,7 @@ import {
   Alert,
   RefreshControl,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import notificationService, { type NotificationSubscription } from '@/lib/services/notificationService';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import { colors, fonts, card } from '@/lib/theme';
@@ -21,6 +21,7 @@ const USER_ID = Constants.expoConfig?.extra?.demoUserId || 'demo-user-001';
 export default function FormulaAlertsScreen() {
   const router = useRouter();
   const t = useTranslation();
+  const params = useLocalSearchParams<{ formulaUpc?: string; formulaName?: string }>();
 
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -167,7 +168,23 @@ export default function FormulaAlertsScreen() {
             <Text style={styles.emptyText}>{t('formulaAlertsList.noAlertsMessage')}</Text>
             <TouchableOpacity
               style={styles.setupButton}
-              onPress={() => router.push('/formula')}
+              onPress={() => {
+                // Pass the previously assigned formula so the Find Formula screen
+                // remembers it (if no alert already exists for that formula)
+                const hasAlertForFormula = params.formulaUpc &&
+                  subscriptions.some(s => s.upc === params.formulaUpc);
+                if (params.formulaUpc && params.formulaName && !hasAlertForFormula) {
+                  router.push({
+                    pathname: '/formula',
+                    params: {
+                      selectedUpc: params.formulaUpc,
+                      selectedName: params.formulaName,
+                    },
+                  });
+                } else {
+                  router.push('/formula');
+                }
+              }}
               accessibilityRole="button"
               accessibilityLabel={t('a11y.alerts.setupLabel')}
               accessibilityHint={t('a11y.alerts.setupHint')}

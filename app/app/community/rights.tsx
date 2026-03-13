@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,10 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Linking,
+  Alert,
 } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { useI18n } from '@/lib/i18n/I18nContext';
 import { colors, fonts, card } from '@/lib/theme';
 import { getRightsCards, searchRights, getFederalResources } from '@/lib/services/advocacyService';
@@ -18,6 +21,29 @@ export default function RightsScreen() {
 
   const rights = searchQuery ? searchRights(searchQuery) : getRightsCards();
   const federalResources = getFederalResources();
+
+  const handlePhonePress = useCallback((phone: string) => {
+    const tel = phone.replace(/[^0-9+]/g, '');
+    Linking.openURL(`tel:${tel}`).catch(() => {
+      // If tel: link fails (e.g. simulator), offer to copy instead
+      Alert.alert(
+        t('rights.callUnavailable'),
+        t('rights.copyPhonePrompt'),
+        [
+          { text: t('common.cancel'), style: 'cancel' },
+          {
+            text: t('rights.copyNumber'),
+            onPress: () => Clipboard.setStringAsync(phone),
+          },
+        ]
+      );
+    });
+  }, [t]);
+
+  const handleCopyPhone = useCallback(async (phone: string) => {
+    await Clipboard.setStringAsync(phone);
+    Alert.alert(t('rights.copied'), phone);
+  }, [t]);
 
   return (
     <View style={styles.container}>
@@ -74,7 +100,26 @@ export default function RightsScreen() {
           {federalResources.map(resource => (
             <View key={resource.phone} style={styles.resourceCard}>
               <Text style={styles.resourceName}>{isEs ? resource.nameEs : resource.name}</Text>
-              <Text style={styles.resourcePhone}>{resource.phone}</Text>
+              <View style={styles.phoneRow}>
+                <TouchableOpacity
+                  onPress={() => handlePhonePress(resource.phone)}
+                  accessibilityRole="link"
+                  accessibilityLabel={`${t('rights.call')} ${resource.phone}`}
+                  style={styles.phoneButton}
+                >
+                  <Text style={styles.phoneIcon} accessible={false}>📞</Text>
+                  <Text style={styles.resourcePhoneLink}>{resource.phone}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleCopyPhone(resource.phone)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${t('rights.copyNumber')} ${resource.phone}`}
+                  style={styles.copyButton}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                >
+                  <Text style={styles.copyButtonText}>{t('rights.copy')}</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           ))}
         </View>
@@ -106,6 +151,11 @@ const styles = StyleSheet.create({
   resourcesSection: { marginTop: 20 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', color: colors.navy, marginBottom: 12 },
   resourceCard: { backgroundColor: colors.cardBg, borderRadius: 12, padding: 16, marginBottom: 10, borderLeftWidth: 4, borderLeftColor: colors.navy },
-  resourceName: { fontSize: 15, fontWeight: '600', color: colors.navy, marginBottom: 4 },
-  resourcePhone: { fontSize: 14, color: colors.dustyBlue, fontWeight: '600' },
+  resourceName: { fontSize: 15, fontWeight: '600', color: colors.navy, marginBottom: 8 },
+  phoneRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  phoneButton: { flexDirection: 'row', alignItems: 'center', flex: 1 },
+  phoneIcon: { fontSize: 16, marginRight: 6 },
+  resourcePhoneLink: { fontSize: 15, color: colors.header, fontWeight: '600', textDecorationLine: 'underline' },
+  copyButton: { backgroundColor: colors.screenBg, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 6, marginLeft: 8 },
+  copyButtonText: { fontSize: 12, fontWeight: '600', color: colors.muted },
 });

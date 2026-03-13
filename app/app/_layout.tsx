@@ -93,6 +93,8 @@ function Navigation() {
       <Stack.Screen name="stores/detail" options={{ title: t('nav.storeDetail') }} />
       <Stack.Screen name="community/index" options={{ title: t('nav.community') }} />
       <Stack.Screen name="community/tips" options={{ title: t('nav.tips') }} />
+      <Stack.Screen name="community/add-tip" options={{ title: t('nav.addTip') }} />
+      <Stack.Screen name="community/add-recipe" options={{ title: t('recipes.addRecipe') }} />
       <Stack.Screen name="community/rights" options={{ title: t('nav.rights') }} />
       <Stack.Screen name="community/wic-offices" options={{ title: t('nav.wicOffices') }} />
       <Stack.Screen name="community/complaint" options={{ title: t('nav.complaint') }} />

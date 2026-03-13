@@ -310,7 +310,7 @@ export default function FormulaReport() {
           </Text>
           <TouchableOpacity
             style={styles.successButton}
-            onPress={() => router.push('/formula')}
+            onPress={() => router.navigate('/formula')}
             accessibilityRole="button"
             accessibilityLabel={t('a11y.report.backToFinderLabel')}
           >

@@ -122,5 +122,5 @@ const styles = StyleSheet.create({
   stepRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 14 },
   stepNumber: { width: 28, height: 28, borderRadius: 14, backgroundColor: colors.wheat, alignItems: 'center', justifyContent: 'center', marginRight: 12, marginTop: 2 },
   stepNumberText: { fontSize: 14, fontWeight: '700', color: colors.white },
-  stepText: { fontSize: 15, color: colors.navy, flex: 1, lineHeight: 22 },
+  stepText: { fontSize: 15, color: colors.navy, flex: 1, lineHeight: 24, minHeight: 48 },
 });

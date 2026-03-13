@@ -7,12 +7,12 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Linking,
-  Platform,
   RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import { useLocation } from '@/lib/hooks/useLocation';
+import { openDirections } from '@/lib/services/directionsService';
 import LocationPrompt from '@/components/LocationPrompt';
 import { colors, fonts, card } from '@/lib/theme';
 
@@ -130,11 +130,7 @@ export default function FoodBankFinderScreen() {
 
   const handleDirections = (foodBank: FoodBank) => {
     const address = `${foodBank.address.street}, ${foodBank.address.city}, ${foodBank.address.state} ${foodBank.address.zipCode}`;
-    const url = Platform.select({
-      ios: `maps:0,0?q=${encodeURIComponent(address)}`,
-      android: `geo:0,0?q=${encodeURIComponent(address)}`,
-    });
-    if (url) Linking.openURL(url);
+    openDirections({ address });
   };
 
   const handleWebsite = (website: string) => {

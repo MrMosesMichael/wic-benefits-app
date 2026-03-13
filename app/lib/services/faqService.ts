@@ -286,6 +286,45 @@ Different participants get different benefits. Setting this up correctly ensures
     relatedIds: ['manual-entry'],
   },
 
+  // SHOPPING - Partial / fractional benefits
+  {
+    id: 'partial-benefits',
+    question: 'What does a partial benefit amount mean (e.g., 0.75 jar)?',
+    answer: `Some WIC benefit amounts are fractions, which can be confusing. Here's what it means and how to use them:
+
+**What Fractional Amounts Mean:**
+Your benefit might say something like "0.75 jar of peanut butter." This means you have three-quarters of a full unit to spend.
+
+**How It Works in Practice:**
+• Fractional benefits represent dollar value, not literal portions of a jar
+• 0.75 of a jar means you can spend 75% of the max price allowed for that item
+• If the max allowed is $4.00, you have $3.00 to spend
+• You buy a WHOLE jar — the system applies your remaining benefit amount
+
+**Common Fractional Scenarios:**
+• You bought some earlier in the month and have a remainder
+• Your benefit period overlapped and was prorated
+• The household setup allocated a partial amount
+
+**What About Dried Beans vs Canned?**
+• WIC lets you choose between dried beans OR canned beans (not both)
+• 1 lb dried beans = 4 cans of beans in benefit value
+• Partial amounts work the same way for both options
+• Check your specific benefit to see which form you have
+
+**Tips for Using Partial Benefits:**
+• Check the app for your exact remaining amount before shopping
+• Choose a product that fits within your remaining benefit value
+• If your partial amount won't cover a full item, it will be combined with your next benefit period (in some states) or you may need to pay the difference out of pocket
+• Ask your WIC office if you're unsure
+
+**Pro Tip:** The app shows your exact remaining amount — use it at the store to avoid surprises at checkout!`,
+    category: 'benefits',
+    tags: ['partial', 'fraction', 'fractional', '0.75', 'peanut butter', 'dried beans', 'remainder', 'amount'],
+    priority: 78,
+    relatedIds: ['benefit-states', 'benefit-period', 'checkout-rejected'],
+  },
+
   // SHOPPING - Reporting sightings
   {
     id: 'report-sighting',

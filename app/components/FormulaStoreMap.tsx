@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, Linking, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Callout, Region } from 'react-native-maps';
 import type { CrossStoreResult } from '@/lib/types';
+import { openDirections } from '@/lib/services/directionsService';
 import { colors } from '@/lib/theme';
 
 interface FormulaStoreMapProps {
@@ -64,11 +65,11 @@ export default function FormulaStoreMap({ results, userLocation, onStorePress }:
 
   const handleDirections = (store: CrossStoreResult) => {
     const address = `${store.address.street}, ${store.address.city}, ${store.address.state} ${store.address.zip}`;
-    const url = Platform.select({
-      ios: `maps://app?daddr=${encodeURIComponent(address)}`,
-      android: `geo:${store.location.latitude},${store.location.longitude}?q=${encodeURIComponent(address)}`,
+    openDirections({
+      address,
+      latitude: store.location.latitude,
+      longitude: store.location.longitude,
     });
-    if (url) Linking.openURL(url);
   };
 
   return (

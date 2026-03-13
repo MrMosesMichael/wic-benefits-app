@@ -24,6 +24,7 @@ import locationRoutes from './routes/location';
 import productCatalogRoutes from './routes/product-catalog';
 import wicClinicsRoutes from './routes/wic-clinics';
 import recipesRoutes from './routes/recipes';
+import tipsRoutes from './routes/tips';
 // Temporarily disabled due to path resolution issues
 // import productsRoutes from './routes/products';
 // import productImagesRoutes from './routes/product-images';
@@ -85,6 +86,7 @@ app.use('/api/v1/location', locationRoutes);
 app.use('/api/v1/product-catalog', productCatalogRoutes);
 app.use('/api/v1/wic-clinics', wicClinicsRoutes);
 app.use('/api/v1/recipes', recipesRoutes);
+app.use('/api/v1/tips', tipsRoutes);
 // Temporarily disabled due to path resolution issues
 // app.use('/api/v1/products', productsRoutes);
 // app.use('/api/v1/product-images', productImagesRoutes);

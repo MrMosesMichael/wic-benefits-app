@@ -150,8 +150,12 @@ export class NotificationService {
     storeIds?: string[]
   ): Promise<NotificationSubscription | null> {
     try {
-      // First ensure push token is registered
-      await this.registerPushToken(userId);
+      // Best-effort push token registration (don't block subscription on failure)
+      try {
+        await this.registerPushToken(userId);
+      } catch (tokenError) {
+        console.warn('Push token registration failed (non-blocking):', tokenError);
+      }
 
       // Create subscription
       const response = await api.post('/notifications/subscribe', {

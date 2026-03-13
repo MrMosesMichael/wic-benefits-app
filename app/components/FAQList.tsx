@@ -1,6 +1,7 @@
 /**
  * FAQ List Component
  * Displays a list of FAQ items with expandable answers
+ * Renders **bold** markdown in answers as actual bold text
  */
 import React, { useState } from 'react';
 import {
@@ -16,6 +17,33 @@ import type { FAQItem, FAQCategory } from '@/lib/types/faq';
 import { getCategoryInfo } from '@/lib/services/faqService';
 import { useTranslation } from '@/lib/i18n/I18nContext';
 import { colors } from '@/lib/theme';
+
+/**
+ * Parses text containing **bold** markdown and returns an array of
+ * Text elements with appropriate styling.
+ */
+function renderBoldMarkdown(text: string, baseStyle: object): React.ReactNode {
+  // Split on **...** patterns, capturing the bold content
+  const parts = text.split(/\*\*([^*]+)\*\*/g);
+  if (parts.length === 1) {
+    // No bold markers found — return plain text
+    return <Text style={baseStyle}>{text}</Text>;
+  }
+  return (
+    <Text style={baseStyle}>
+      {parts.map((part, index) =>
+        // Odd indices are the captured bold groups
+        index % 2 === 1 ? (
+          <Text key={index} style={{ fontWeight: 'bold', color: colors.navy }}>
+            {part}
+          </Text>
+        ) : (
+          <Text key={index}>{part}</Text>
+        )
+      )}
+    </Text>
+  );
+}
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -60,7 +88,7 @@ function FAQListItem({ item, expanded, onToggle, showCategory = false }: FAQList
       
       {expanded && (
         <View style={styles.answerContainer} accessibilityLiveRegion="polite">
-          <Text style={styles.answerText}>{item.answer}</Text>
+          {renderBoldMarkdown(item.answer, styles.answerText)}
         </View>
       )}
     </View>

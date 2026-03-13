@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Linking, Platform, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Linking, FlatList } from 'react-native';
 import type { CrossStoreResult } from '@/lib/types';
 import { useTranslation } from '@/lib/i18n/I18nContext';
+import { openDirections } from '@/lib/services/directionsService';
 import { colors } from '@/lib/theme';
 
 interface CrossStoreSearchResultsProps {
@@ -63,19 +64,12 @@ function StoreCard({ store, onPress }: { store: CrossStoreResult; onPress?: () =
   };
 
   const handleDirections = () => {
-    const { latitude, longitude } = store.location;
     const address = `${store.address.street}, ${store.address.city}, ${store.address.state} ${store.address.zip}`;
-    const encodedAddress = encodeURIComponent(address);
-
-    const url = Platform.select({
-      ios: `maps://app?daddr=${encodedAddress}`,
-      android: `geo:${latitude},${longitude}?q=${encodedAddress}`,
-      default: `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`
+    openDirections({
+      address,
+      latitude: store.location.latitude,
+      longitude: store.location.longitude,
     });
-
-    if (url) {
-      Linking.openURL(url);
-    }
   };
 
   const hasAvailability = store.availability !== null;

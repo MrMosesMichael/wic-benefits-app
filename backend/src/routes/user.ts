@@ -488,7 +488,7 @@ router.get('/privacy-summary', async (_req: Request, res: Response) => {
         },
       ],
       contact: {
-        email: 'privacy@wicbenefits.app',
+        email: 'wic.benefits.app@gmail.com',
         purpose: 'For privacy questions or data requests',
       },
     },

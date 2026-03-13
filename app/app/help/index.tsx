@@ -3,7 +3,7 @@
  * Main help center with searchable FAQs organized by category
  * Supports deep linking to specific FAQ items via ?faqId=xxx
  */
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import FAQList from '@/components/FAQList';
@@ -68,6 +69,19 @@ export default function HelpScreen() {
     setSelectedCategory(category);
     setSearchQuery('');
   };
+
+  const handleSendFeedback = useCallback(() => {
+    try {
+      router.navigate('/feedback' as any);
+    } catch {
+      // Fallback: stay on current screen (navigation error)
+    }
+  }, [router]);
+
+  const handlePhonePress = useCallback((phoneNumber: string) => {
+    const tel = phoneNumber.replace(/[^0-9+]/g, '');
+    Linking.openURL(`tel:${tel}`).catch(() => {});
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -180,16 +194,21 @@ export default function HelpScreen() {
           <Text style={styles.contactText}>
             {t('help.contactLocalWic')}
           </Text>
-          <View style={styles.contactInfo}>
+          <TouchableOpacity
+            style={styles.contactInfo}
+            onPress={() => handlePhonePress('1-800-262-4784')}
+            accessibilityRole="link"
+            accessibilityHint="Calls Michigan WIC"
+          >
             <Text style={styles.contactLabel}>Michigan WIC:</Text>
-            <Text style={styles.contactValue} accessibilityRole="link">1-800-26-BIRTH (1-800-262-4784)</Text>
-          </View>
+            <Text style={[styles.contactValue, styles.phoneLink]}>1-800-26-BIRTH (1-800-262-4784)</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Send Feedback */}
         <TouchableOpacity
           style={styles.privacyLink}
-          onPress={() => router.push('/feedback')}
+          onPress={handleSendFeedback}
           accessibilityRole="link"
           accessibilityHint={t('a11y.help.feedbackHint')}
         >
@@ -356,6 +375,9 @@ const styles = StyleSheet.create({
     color: colors.header,
     fontWeight: '600',
     marginTop: 4,
+  },
+  phoneLink: {
+    textDecorationLine: 'underline',
   },
   footer: {
     backgroundColor: colors.cardBg,

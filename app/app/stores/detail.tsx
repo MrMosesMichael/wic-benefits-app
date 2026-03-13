@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, Linking, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Linking, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useI18n } from '@/lib/i18n/I18nContext';
 import StoreProductList from '@/components/StoreProductList';
+import { openDirections } from '@/lib/services/directionsService';
 import { colors, fonts, card } from '@/lib/theme';
 
 export default function StoreDetailScreen() {
@@ -32,11 +33,11 @@ export default function StoreDetailScreen() {
   };
 
   const handleDirections = () => {
-    const url = Platform.select({
-      ios: `maps://app?daddr=${encodeURIComponent(fullAddress)}`,
-      android: `geo:${params.lat},${params.lng}?q=${encodeURIComponent(fullAddress)}`,
+    openDirections({
+      address: fullAddress,
+      latitude: params.lat ? parseFloat(params.lat) : undefined,
+      longitude: params.lng ? parseFloat(params.lng) : undefined,
     });
-    if (url) Linking.openURL(url);
   };
 
   return (

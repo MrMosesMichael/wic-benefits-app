@@ -3,18 +3,20 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   ActivityIndicator,
   FlatList,
+  TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useI18n } from '@/lib/i18n/I18nContext';
 import { useLocation } from '@/lib/hooks/useLocation';
-import { getCategories, CatalogCategory } from '@/lib/services/catalogService';
-import { WIC_CATEGORIES, getCategoryMeta, normalizeCategoryId } from '@/lib/data/wic-categories';
+import { getCategories, getProducts, CatalogCategory, CatalogProduct } from '@/lib/services/catalogService';
+import { getCategoryMeta, normalizeCategoryId } from '@/lib/data/wic-categories';
 import CategoryCard from '@/components/CategoryCard';
+import ProductListItem from '@/components/ProductListItem';
 import LocationPrompt from '@/components/LocationPrompt';
-import { colors, fonts, card } from '@/lib/theme';
+import { colors } from '@/lib/theme';
 
 export default function CatalogScreen() {
   const router = useRouter();
@@ -25,13 +27,36 @@ export default function CatalogScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Global search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<CatalogProduct[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchTotal, setSearchTotal] = useState(0);
+  const [searchPage, setSearchPage] = useState(1);
+  const [searchHasMore, setSearchHasMore] = useState(false);
+  const [searchLoadingMore, setSearchLoadingMore] = useState(false);
+
   const state = location?.state || 'MI';
+  const isSearching = searchQuery.trim().length > 0;
 
   useEffect(() => {
     if (location) {
       loadCategories();
     }
   }, [location?.state]);
+
+  // Debounced search across all categories
+  useEffect(() => {
+    if (!isSearching) {
+      setSearchResults([]);
+      setSearchTotal(0);
+      return;
+    }
+    const timer = setTimeout(() => {
+      loadSearchResults(1, true);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   const loadCategories = async () => {
     try {
@@ -43,6 +68,41 @@ export default function CatalogScreen() {
       setError(t('catalog.loadError'));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadSearchResults = async (pageNum: number, reset: boolean) => {
+    if (reset) {
+      setSearchLoading(true);
+    } else {
+      setSearchLoadingMore(true);
+    }
+    try {
+      const result = await getProducts({
+        state,
+        q: searchQuery.trim(),
+        page: pageNum,
+        limit: 20,
+      });
+      if (reset) {
+        setSearchResults(result.products);
+      } else {
+        setSearchResults(prev => [...prev, ...result.products]);
+      }
+      setSearchTotal(result.total);
+      setSearchHasMore(result.hasMore);
+      setSearchPage(pageNum);
+    } catch (err) {
+      console.error('Search failed:', err);
+    } finally {
+      setSearchLoading(false);
+      setSearchLoadingMore(false);
+    }
+  };
+
+  const handleSearchLoadMore = () => {
+    if (searchHasMore && !searchLoadingMore) {
+      loadSearchResults(searchPage + 1, false);
     }
   };
 
@@ -75,6 +135,25 @@ export default function CatalogScreen() {
     );
   };
 
+  const renderSearchProduct = ({ item }: { item: CatalogProduct }) => (
+    <ProductListItem
+      name={item.name}
+      brand={item.brand}
+      size={item.size}
+      category={item.category}
+      upc={item.upc}
+    />
+  );
+
+  const renderSearchFooter = () => {
+    if (!searchLoadingMore) return null;
+    return (
+      <View style={styles.footerLoader}>
+        <ActivityIndicator size="small" color={colors.navy} />
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -83,6 +162,33 @@ export default function CatalogScreen() {
           {t('catalog.browsingState', { state: stateNames[state] || state })}
         </Text>
       </View>
+
+      {/* Global Search Bar */}
+      {location && (
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder={t('catalog.searchAllPlaceholder')}
+            placeholderTextColor={colors.muted}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            autoCapitalize="none"
+            autoCorrect={false}
+            accessibilityLabel={t('a11y.catalog.searchLabel')}
+          />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity
+              style={styles.clearButton}
+              onPress={() => setSearchQuery('')}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.catalog.clearSearchLabel')}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
+              <Text style={styles.clearButtonText}>{'\u2715'}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
 
       {/* Location Prompt */}
       {!location && !locationLoading && (
@@ -95,7 +201,7 @@ export default function CatalogScreen() {
       )}
 
       {/* Loading */}
-      {loading && (
+      {loading && !isSearching && (
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={colors.navy} />
           <Text style={styles.loadingText}>{t('catalog.loading')}</Text>
@@ -103,14 +209,14 @@ export default function CatalogScreen() {
       )}
 
       {/* Error */}
-      {error && !loading && (
+      {error && !loading && !isSearching && (
         <View style={styles.centerContainer}>
           <Text style={styles.errorText}>{error}</Text>
         </View>
       )}
 
       {/* No network message */}
-      {!loading && !error && location && categories.length === 0 && (
+      {!loading && !error && location && categories.length === 0 && !isSearching && (
         <View style={styles.centerContainer}>
           <Text style={styles.emptyIcon} accessible={false}>📋</Text>
           <Text style={styles.emptyTitle}>{t('catalog.requiresInternet')}</Text>
@@ -118,8 +224,39 @@ export default function CatalogScreen() {
         </View>
       )}
 
+      {/* Search Results */}
+      {isSearching && searchLoading && (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color={colors.navy} />
+        </View>
+      )}
+
+      {isSearching && !searchLoading && (
+        <>
+          <View style={styles.searchResultsHeader}>
+            <Text style={styles.searchResultsCount}>
+              {t('catalog.productCount', { count: searchTotal })}
+            </Text>
+          </View>
+          <FlatList
+            data={searchResults}
+            renderItem={renderSearchProduct}
+            keyExtractor={(item, index) => `${item.upc}-${index}`}
+            contentContainerStyle={styles.searchListContent}
+            onEndReached={handleSearchLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderSearchFooter}
+            ListEmptyComponent={
+              <View style={styles.centerContainer}>
+                <Text style={styles.emptyText}>{t('catalog.noProducts')}</Text>
+              </View>
+            }
+          />
+        </>
+      )}
+
       {/* Category Grid */}
-      {!loading && categories.length > 0 && (
+      {!loading && !isSearching && categories.length > 0 && (
         <FlatList
           data={categories}
           renderItem={renderCategory}
@@ -179,6 +316,52 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.muted,
     textAlign: 'center',
+  },
+  searchContainer: {
+    backgroundColor: colors.cardBg,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  searchInput: {
+    flex: 1,
+    backgroundColor: colors.screenBg,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: colors.navy,
+  },
+  clearButton: {
+    position: 'absolute',
+    right: 24,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  clearButtonText: {
+    fontSize: 16,
+    color: colors.muted,
+  },
+  searchResultsHeader: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  searchResultsCount: {
+    fontSize: 13,
+    color: colors.muted,
+  },
+  searchListContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+  },
+  footerLoader: {
+    padding: 16,
+    alignItems: 'center',
   },
   grid: {
     padding: 12,

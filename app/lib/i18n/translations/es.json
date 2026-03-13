@@ -29,7 +29,8 @@
     "wicOffices": "Oficinas de WIC",
     "complaint": "Presentar una Queja",
     "recipes": "Recetas WIC",
-    "recipeDetail": "Receta"
+    "recipeDetail": "Receta",
+    "addTip": "Enviar un Consejo"
   },
   "home": {
     "findFormula": "Buscar Fórmula",
@@ -159,7 +160,8 @@
     "enterStoreName": "Por favor ingrese el nombre de la tienda.",
     "thankYou": "¡Gracias!",
     "reportSuccess": "Su avistamiento ha sido reportado y ayudará a otros participantes de WIC.",
-    "submitReport": "Enviar Reporte"
+    "submitReport": "Enviar Reporte",
+    "stateName": "{{state}}"
   },
   "benefits": {
     "title": "Mis Beneficios",
@@ -395,7 +397,8 @@
     "close": "Cerrar",
     "quickReportButton": "Reporte Rápido - ¡Lo Encontré!",
     "selectFormulaFirst": "Seleccione Fórmula para Reportar",
-    "foundThisFormula": "¿Encontró Esta Fórmula? ¡Repórtelo!"
+    "foundThisFormula": "¿Encontró Esta Fórmula? ¡Repórtelo!",
+    "scrollForMore": "Desplácese para ver más tiendas"
   },
   "quantitySelector": {
     "title": "¿Cuánto vio?",
@@ -671,7 +674,8 @@
       "legumes": "Frijoles y Legumbres",
       "fish": "Pescado",
       "uncategorized": "Otros"
-    }
+    },
+    "searchAllPlaceholder": "Buscar todos los productos WIC..."
   },
   "storeFinder": {
     "listView": "Lista",
@@ -734,7 +738,13 @@
     "searchPlaceholder": "Buscar sus derechos...",
     "infoMessage": "Como participante de WIC, tiene derechos importantes. Conocerlos le ayuda a aprovechar al máximo sus beneficios.",
     "noResults": "No se encontró información de derechos que coincida con su búsqueda.",
-    "federalResources": "Recursos Federales"
+    "federalResources": "Recursos Federales",
+    "call": "Llamar",
+    "copy": "Copiar",
+    "copyNumber": "Copiar Número",
+    "copied": "¡Copiado!",
+    "callUnavailable": "Llamada No Disponible",
+    "copyPhonePrompt": "¿Desea copiar el número de teléfono en su lugar?"
   },
   "complaint": {
     "privacyNotice": "Esta herramienta le ayuda a redactar una queja. Nada se envía desde esta aplicación — usted contacta directamente a su oficina de WIC.",
@@ -818,7 +828,8 @@
       "otherIngredients": "Otros Ingredientes",
       "instructions": "Instrucciones",
       "review": "Revisar y Enviar"
-    }
+    },
+    "categoryHint": "Seleccione uno o más tipos de comida"
   },
   "a11y": {
     "needHelpLink": {
@@ -1179,6 +1190,37 @@
     "report-sighting": {
       "question": "¿Cómo reporto la disponibilidad de un producto?",
       "answer": "Ayuda a otras familias de WIC reportando lo que ves en las tiendas:\n\n**Cómo Reportar:**\n1. Escanea un producto\n2. Toca \"Reportar Stock\"\n3. Selecciona tu tienda\n4. Elige el nivel de stock (Bastante, Algo, Poco, Agotado)\n5. Enviar\n\n**Niveles de Stock:**\n• 🟢 Bastante — Buen suministro, varias unidades\n• 🟡 Algo — Cantidad moderada\n• 🟠 Poco — Muy limitado\n• 🔴 Agotado — No hay disponible\n\n**Por Qué Reportar:**\n• Ayuda a otros padres a encontrar productos\n• Construye conocimiento comunitario\n• Reduce viajes en vano\n• ¡Especialmente valioso para fórmula!\n\n**Tus reportes son anónimos** y ayudan a familias en toda tu zona."
+    },
+    "partial-benefits": {
+      "question": "¿Qué significa una cantidad parcial de beneficio (ej. 0.75 frasco)?",
+      "answer": "Algunas cantidades de beneficios WIC son fracciones, lo cual puede ser confuso. Esto es lo que significa y cómo usarlas:\n\n**Qué Significan las Cantidades Fraccionarias:**\nTu beneficio podría decir algo como \"0.75 frasco de crema de maní.\" Esto significa que tienes tres cuartos de una unidad completa para gastar.\n\n**Cómo Funciona en la Práctica:**\n• Los beneficios fraccionarios representan valor en dólares, no porciones literales de un frasco\n• 0.75 de un frasco significa que puedes gastar el 75% del precio máximo permitido para ese artículo\n• Si el máximo permitido es $4.00, tienes $3.00 para gastar\n• Compras un frasco COMPLETO — el sistema aplica tu cantidad de beneficio restante\n\n**Escenarios Fraccionarios Comunes:**\n• Compraste algo antes en el mes y tienes un resto\n• Tu período de beneficios se superpuso y fue prorrateado\n• La configuración del hogar asignó una cantidad parcial\n\n**¿Qué Pasa con Frijoles Secos vs Enlatados?**\n• WIC te permite elegir entre frijoles secos O frijoles enlatados (no ambos)\n• 1 lb de frijoles secos = 4 latas de frijoles en valor de beneficio\n• Las cantidades parciales funcionan igual para ambas opciones\n• Revisa tu beneficio específico para ver qué forma tienes\n\n**Consejos para Usar Beneficios Parciales:**\n• Revisa la app para tu cantidad exacta restante antes de comprar\n• Elige un producto que quepa dentro de tu valor de beneficio restante\n• Si tu cantidad parcial no cubre un artículo completo, se combinará con tu próximo período de beneficios (en algunos estados) o podrías necesitar pagar la diferencia de tu bolsillo\n• Pregunta en tu oficina de WIC si no estás seguro/a\n\n**Consejo:** ¡La app muestra tu cantidad exacta restante — úsala en la tienda para evitar sorpresas en la caja!"
     }
+  },
+  "communityTips": {
+    "sectionTitle": "Consejos de la Comunidad",
+    "official": "Oficial",
+    "community": "Comunidad",
+    "addTip": "Enviar un Consejo",
+    "titleLabel": "Titulo del Consejo",
+    "titlePlaceholder": "ej., Mejor momento para comprar articulos WIC",
+    "contentLabel": "Contenido del Consejo",
+    "contentPlaceholder": "Comparta su experiencia de compras con otras familias WIC...",
+    "categoryLabel": "Categoria",
+    "submit": "Enviar Consejo",
+    "submitting": "Enviando...",
+    "addSuccess": "Consejo Enviado!",
+    "addSuccessMessage": "Su consejo ha sido compartido con la comunidad. Gracias!",
+    "addErrorMessage": "No se pudo enviar su consejo. Por favor intente de nuevo.",
+    "errorTitle": "Error",
+    "upvote": "Votar a favor",
+    "downvote": "Votar en contra",
+    "votes": "{{up}} a favor / {{down}} en contra",
+    "flagTitle": "Reportar Consejo",
+    "flagMessage": "Esta seguro de que desea reportar este consejo como inapropiado?",
+    "flagConfirm": "Reportar",
+    "cancel": "Cancelar",
+    "flaggedTitle": "Reportado",
+    "flaggedMessage": "Gracias. Este consejo ha sido marcado para revision.",
+    "longPressToFlag": "Mantenga presionado para reportar este consejo"
   }
 }

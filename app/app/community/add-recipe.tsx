@@ -30,7 +30,7 @@ export default function AddRecipeScreen() {
 
   // Form state
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('dinner');
+  const [categories, setCategories] = useState<string[]>(['dinner']);
   const [prepTime, setPrepTime] = useState('');
   const [servings, setServings] = useState('');
   const [difficulty, setDifficulty] = useState('easy');
@@ -68,10 +68,21 @@ export default function AddRecipeScreen() {
     setter(list.filter((_, i) => i !== index));
   };
 
+  const toggleCategory = (catId: string) => {
+    setCategories(prev => {
+      if (prev.includes(catId)) {
+        // Don't allow deselecting all — must have at least one
+        if (prev.length <= 1) return prev;
+        return prev.filter(c => c !== catId);
+      }
+      return [...prev, catId];
+    });
+  };
+
   const canProceed = () => {
     switch (currentStep) {
       case 'info':
-        return title.trim() && prepTime && servings;
+        return title.trim() && prepTime && servings && categories.length > 0;
       case 'wicIngredients':
         return wicIngredients.some((i) => i.trim());
       case 'otherIngredients':
@@ -100,7 +111,8 @@ export default function AddRecipeScreen() {
       setSubmitting(true);
       await submitRecipe({
         title: title.trim(),
-        category,
+        category: categories[0],
+        categories,
         prepTime: parseInt(prepTime),
         servings: parseInt(servings),
         difficulty,
@@ -146,14 +158,17 @@ export default function AddRecipeScreen() {
       />
 
       <Text style={styles.fieldLabel}>{t('addRecipe.category')}</Text>
+      <Text style={styles.fieldHint}>{t('addRecipe.categoryHint')}</Text>
       <View style={styles.optionRow}>
         {RECIPE_CATEGORIES.filter((c) => c.id !== 'all').map((cat) => (
           <TouchableOpacity
             key={cat.id}
-            style={[styles.optionChip, category === cat.id && styles.optionChipActive]}
-            onPress={() => setCategory(cat.id)}
+            style={[styles.optionChip, categories.includes(cat.id) && styles.optionChipActive]}
+            onPress={() => toggleCategory(cat.id)}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: categories.includes(cat.id) }}
           >
-            <Text style={[styles.optionChipText, category === cat.id && styles.optionChipTextActive]}>
+            <Text style={[styles.optionChipText, categories.includes(cat.id) && styles.optionChipTextActive]}>
               {cat.icon} {t(cat.labelKey)}
             </Text>
           </TouchableOpacity>
@@ -244,7 +259,7 @@ export default function AddRecipeScreen() {
       <View>
         <Text style={styles.reviewTitle}>{title}</Text>
         <Text style={styles.reviewMeta}>
-          {category} | {prepTime} min | {servings} servings | {difficulty}
+          {categories.join(', ')} | {prepTime} min | {servings} servings | {difficulty}
         </Text>
 
         <Text style={styles.reviewSection}>{t('recipes.wicIngredientsTitle')}</Text>
@@ -379,6 +394,12 @@ const styles = StyleSheet.create({
     color: colors.muted,
     marginBottom: 6,
     marginTop: 12,
+  },
+  fieldHint: {
+    fontSize: 12,
+    color: colors.muted,
+    marginBottom: 6,
+    fontStyle: 'italic',
   },
   input: {
     backgroundColor: colors.white,

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,10 @@ import {
   Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import MapView, { Marker, Callout } from 'react-native-maps';
 import { useI18n } from '@/lib/i18n/I18nContext';
 import { useLocation } from '@/lib/hooks/useLocation';
+import { openDirections } from '@/lib/services/directionsService';
 import { searchStores, getChains, StoreFinderStore } from '@/lib/services/storeFinderService';
 import LocationPrompt from '@/components/LocationPrompt';
 import { colors, fonts, card } from '@/lib/theme';
@@ -28,6 +30,7 @@ export default function StoreFinderScreen() {
   const [searchRadius, setSearchRadius] = useState(10);
   const [selectedChain, setSelectedChain] = useState<string | null>(null);
   const [wicOnly, setWicOnly] = useState(true);
+  const mapRef = useRef<MapView>(null);
 
   useEffect(() => {
     loadChains();
@@ -73,11 +76,11 @@ export default function StoreFinderScreen() {
 
   const handleDirections = (store: StoreFinderStore) => {
     const address = `${store.address.street}, ${store.address.city}, ${store.address.state} ${store.address.zip}`;
-    const url = Platform.select({
-      ios: `maps://app?daddr=${encodeURIComponent(address)}`,
-      android: `geo:${store.location.latitude},${store.location.longitude}?q=${encodeURIComponent(address)}`,
+    openDirections({
+      address,
+      latitude: store.location.latitude,
+      longitude: store.location.longitude,
     });
-    if (url) Linking.openURL(url);
   };
 
   const handleStorePress = (store: StoreFinderStore) => {
@@ -213,7 +216,46 @@ export default function StoreFinderScreen() {
         {/* Map View */}
         {viewMode === 'map' && !loading && location && stores.length > 0 && (
           <View style={styles.mapContainer}>
-            <Text style={styles.mapPlaceholder}>{t('storeFinder.mapNote')}</Text>
+            <MapView
+              ref={mapRef}
+              style={styles.map}
+              initialRegion={{
+                latitude: location.lat,
+                longitude: location.lng,
+                latitudeDelta: searchRadius * 0.03,
+                longitudeDelta: searchRadius * 0.03,
+              }}
+              showsUserLocation
+              showsMyLocationButton
+            >
+              {stores.map((store, idx) => (
+                <Marker
+                  key={`${store.name}-${idx}`}
+                  coordinate={{
+                    latitude: store.location.latitude,
+                    longitude: store.location.longitude,
+                  }}
+                  pinColor={store.wicAuthorized ? colors.success : colors.danger}
+                >
+                  <Callout onPress={() => handleStorePress(store)}>
+                    <View style={styles.callout}>
+                      <Text style={styles.calloutTitle}>{store.name}</Text>
+                      <Text style={styles.calloutAddress}>
+                        {store.address.street}, {store.address.city}
+                      </Text>
+                      {store.distanceMiles != null && (
+                        <Text style={styles.calloutDistance}>
+                          {store.distanceMiles} {t('units.mi')} {t('storeFinder.away')}
+                        </Text>
+                      )}
+                      {store.wicAuthorized && (
+                        <Text style={styles.calloutWic}>{t('storeFinder.wicAuthorized')}</Text>
+                      )}
+                    </View>
+                  </Callout>
+                </Marker>
+              ))}
+            </MapView>
           </View>
         )}
 
@@ -226,7 +268,7 @@ export default function StoreFinderScreen() {
           </View>
         )}
 
-        {!loading && stores.length > 0 && (viewMode === 'list' || viewMode === 'map') && (
+        {!loading && stores.length > 0 && viewMode === 'list' && (
           <View style={styles.resultsContainer}>
             <Text style={styles.resultsHeader} accessibilityRole="header">
               {t('storeFinder.foundCount', { count: stores.length })}
@@ -418,16 +460,40 @@ const styles = StyleSheet.create({
     color: colors.muted,
   },
   mapContainer: {
-    backgroundColor: colors.cardBg,
     borderRadius: 12,
-    padding: 40,
-    alignItems: 'center',
+    overflow: 'hidden',
     marginBottom: 16,
+    height: 400,
   },
-  mapPlaceholder: {
+  map: {
+    flex: 1,
+  },
+  callout: {
+    minWidth: 180,
+    maxWidth: 250,
+    padding: 4,
+  },
+  calloutTitle: {
     fontSize: 14,
+    fontWeight: 'bold',
+    color: colors.navy,
+    marginBottom: 2,
+  },
+  calloutAddress: {
+    fontSize: 12,
     color: colors.muted,
-    textAlign: 'center',
+    marginBottom: 2,
+  },
+  calloutDistance: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.navy,
+    marginBottom: 2,
+  },
+  calloutWic: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: colors.success,
   },
   emptyContainer: {
     padding: 40,

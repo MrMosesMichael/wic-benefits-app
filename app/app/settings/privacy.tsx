@@ -9,7 +9,9 @@ import {
   Alert,
   Share,
   Platform,
+  Linking,
 } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from '@/lib/i18n/I18nContext';
@@ -73,57 +75,87 @@ export default function PrivacySettingsScreen() {
     }
   };
 
-  const getUserId = async (): Promise<string | null> => {
-    // Get user ID from AsyncStorage or device ID
-    const householdData = await AsyncStorage.getItem('@wic_household_data');
-    if (householdData) {
-      const parsed = JSON.parse(householdData);
-      return parsed.userId || parsed.id || null;
+  const getLocalData = async (): Promise<Record<string, any>> => {
+    const localData: Record<string, any> = {
+      exportedAt: new Date().toISOString(),
+      source: 'local_device',
+      dataCategories: {},
+    };
+
+    // Collect all locally stored data
+    const keys = [
+      '@wic_household_data',
+      '@wic_cart',
+      '@wic_location',
+      '@wic_location_preference',
+      '@wic_cart_preference',
+      'wic_app_language',
+    ];
+
+    for (const key of keys) {
+      try {
+        const value = await AsyncStorage.getItem(key);
+        if (value) {
+          try {
+            localData.dataCategories[key] = JSON.parse(value);
+          } catch {
+            localData.dataCategories[key] = value;
+          }
+        }
+      } catch {
+        // Skip keys that can't be read
+      }
     }
-    return null;
+
+    return localData;
   };
 
   const handleExportData = async () => {
-    const userId = await getUserId();
-    if (!userId) {
-      Alert.alert(
-        t('privacy.noDataTitle'),
-        t('privacy.noDataMessage')
-      );
-      return;
-    }
-
     setExporting(true);
     try {
-      const response = await fetch(`${API_BASE}/user/export?user_id=${userId}`);
-      const data = await response.json();
+      // Always export local data — this is the primary data source
+      const localData = await getLocalData();
 
-      if (data.success) {
-        const exportJson = JSON.stringify(data.data, null, 2);
-
-        if (Platform.OS === 'web') {
-          // Web: Create downloadable file
-          const blob = new Blob([exportJson], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `wic-data-export-${new Date().toISOString().split('T')[0]}.json`;
-          a.click();
-        } else {
-          // Mobile: Share the data
-          await Share.share({
-            message: exportJson,
-            title: t('privacy.exportTitle'),
-          });
+      // Try to include server-side data if available
+      const householdData = await AsyncStorage.getItem('@wic_household_data');
+      if (householdData) {
+        const parsed = JSON.parse(householdData);
+        const userId = parsed.userId || parsed.id;
+        if (userId) {
+          try {
+            const response = await fetch(`${API_BASE}/user/export?user_id=${userId}`);
+            const data = await response.json();
+            if (data.success) {
+              localData.serverData = data.data;
+            }
+          } catch {
+            // Backend unavailable — local export still works
+          }
         }
-
-        Alert.alert(
-          t('privacy.exportSuccessTitle'),
-          t('privacy.exportSuccessMessage')
-        );
-      } else {
-        throw new Error(data.error);
       }
+
+      const exportJson = JSON.stringify(localData, null, 2);
+
+      if (Platform.OS === 'web') {
+        // Web: Create downloadable file
+        const blob = new Blob([exportJson], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `wic-data-export-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+      } else {
+        // Mobile: Share the data
+        await Share.share({
+          message: exportJson,
+          title: t('privacy.exportTitle'),
+        });
+      }
+
+      Alert.alert(
+        t('privacy.exportSuccessTitle'),
+        t('privacy.exportSuccessMessage')
+      );
     } catch (error) {
       console.error('Failed to export data:', error);
       Alert.alert(
@@ -136,15 +168,6 @@ export default function PrivacySettingsScreen() {
   };
 
   const handleDeleteAccount = async () => {
-    const userId = await getUserId();
-    if (!userId) {
-      Alert.alert(
-        t('privacy.noDataTitle'),
-        t('privacy.noDataMessage')
-      );
-      return;
-    }
-
     // First confirmation
     Alert.alert(
       t('privacy.deleteTitle'),
@@ -154,14 +177,14 @@ export default function PrivacySettingsScreen() {
         {
           text: t('privacy.deleteConfirm'),
           style: 'destructive',
-          onPress: () => confirmDeletion(userId),
+          onPress: () => confirmDeletion(),
         },
       ]
     );
   };
 
-  const confirmDeletion = (userId: string) => {
-    // Second confirmation with typing requirement
+  const confirmDeletion = () => {
+    // Second confirmation
     Alert.alert(
       t('privacy.finalDeleteTitle'),
       t('privacy.finalDeleteMessage'),
@@ -170,46 +193,58 @@ export default function PrivacySettingsScreen() {
         {
           text: t('privacy.permanentlyDelete'),
           style: 'destructive',
-          onPress: () => performDeletion(userId),
+          onPress: () => performDeletion(),
         },
       ]
     );
   };
 
-  const performDeletion = async (userId: string) => {
+  const performDeletion = async () => {
     setDeleting(true);
     try {
-      const response = await fetch(`${API_BASE}/user/delete`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: userId,
-          confirmation: 'DELETE_MY_ACCOUNT',
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Clear local storage
-        await AsyncStorage.removeItem('@wic_household_data');
-        await AsyncStorage.removeItem('wic_app_language');
-
-        Alert.alert(
-          t('privacy.deletedTitle'),
-          t('privacy.deletedMessage'),
-          [
-            {
-              text: t('common.ok'),
-              onPress: () => router.replace('/'),
-            },
-          ]
-        );
-      } else {
-        throw new Error(data.error);
+      // Try to delete server-side data if we have a user/household ID
+      const householdData = await AsyncStorage.getItem('@wic_household_data');
+      if (householdData) {
+        const parsed = JSON.parse(householdData);
+        const userId = parsed.userId || parsed.id;
+        if (userId) {
+          try {
+            await fetch(`${API_BASE}/user/delete`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                user_id: userId,
+                confirmation: 'DELETE_MY_ACCOUNT',
+              }),
+            });
+          } catch {
+            // Backend unavailable — local deletion still proceeds
+          }
+        }
       }
+
+      // Always clear all local storage
+      await AsyncStorage.multiRemove([
+        '@wic_household_data',
+        '@wic_cart',
+        '@wic_location',
+        '@wic_location_preference',
+        '@wic_cart_preference',
+        'wic_app_language',
+      ]);
+
+      Alert.alert(
+        t('privacy.deletedTitle'),
+        t('privacy.deletedMessage'),
+        [
+          {
+            text: t('common.ok'),
+            onPress: () => router.replace('/'),
+          },
+        ]
+      );
     } catch (error) {
       console.error('Failed to delete account:', error);
       Alert.alert(
@@ -347,7 +382,25 @@ export default function PrivacySettingsScreen() {
           <Text style={styles.contactText}>
             {t('privacy.contactMessage')}
           </Text>
-          <Text style={styles.contactEmail}>privacy@wicbenefits.app</Text>
+          <TouchableOpacity
+            onPress={() => Linking.openURL('mailto:wic.benefits.app@gmail.com')}
+            accessibilityRole="link"
+            accessibilityLabel={t('a11y.privacy.emailLabel') || 'Email wic.benefits.app@gmail.com'}
+            style={styles.contactEmailRow}
+          >
+            <Text style={styles.contactEmail}>wic.benefits.app@gmail.com</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={async () => {
+              await Clipboard.setStringAsync('wic.benefits.app@gmail.com');
+              Alert.alert(t('common.copied') || 'Copied', t('privacy.emailCopied') || 'Email address copied to clipboard');
+            }}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.privacy.copyEmailLabel') || 'Copy email address'}
+            style={styles.copyEmailButton}
+          >
+            <Text style={styles.copyEmailText}>{t('privacy.copyEmail') || 'Copy Email'}</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Last Updated */}
@@ -526,10 +579,27 @@ const styles = StyleSheet.create({
     color: colors.muted,
     marginBottom: 8,
   },
+  contactEmailRow: {
+    marginBottom: 8,
+  },
   contactEmail: {
     fontSize: 16,
     fontWeight: '600',
     color: colors.dustyBlue,
+    textDecorationLine: 'underline',
+  },
+  copyEmailButton: {
+    alignSelf: 'flex-start',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  copyEmailText: {
+    fontSize: 13,
+    color: colors.muted,
+    fontWeight: '500',
   },
   lastUpdated: {
     fontSize: 12,

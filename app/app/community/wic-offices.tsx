@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Linking,
-  Platform,
   ActivityIndicator,
 } from 'react-native';
 import { useI18n } from '@/lib/i18n/I18nContext';
@@ -14,6 +13,7 @@ import { colors, fonts, card } from '@/lib/theme';
 import { useLocation } from '@/lib/hooks/useLocation';
 import { getAllWicOffices, WicOffice } from '@/lib/services/advocacyService';
 import { getNearbyWicClinics } from '@/lib/services/api';
+import { openDirections } from '@/lib/services/directionsService';
 import LocationPrompt from '@/components/LocationPrompt';
 
 interface WicClinic {
@@ -95,11 +95,11 @@ export default function WicOfficesScreen() {
 
   const handleDirections = (clinic: WicClinic) => {
     const address = `${clinic.address.street}, ${clinic.address.city}, ${clinic.address.state} ${clinic.address.zipCode}`;
-    const url = Platform.select({
-      ios: `maps://app?daddr=${encodeURIComponent(address)}`,
-      android: `geo:${clinic.location.latitude},${clinic.location.longitude}?q=${encodeURIComponent(address)}`,
+    openDirections({
+      address,
+      latitude: clinic.location.latitude,
+      longitude: clinic.location.longitude,
     });
-    if (url) Linking.openURL(url);
   };
 
   return (

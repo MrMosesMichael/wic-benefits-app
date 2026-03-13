@@ -5,10 +5,12 @@ import {
   StyleSheet,
   Modal,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   ActivityIndicator,
   ScrollView,
   Alert,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import { reportFormulaSimple, getNearbyStores } from '@/lib/services/api';
 import QuantitySelector from './QuantitySelector';
@@ -32,6 +34,7 @@ export default function FormulaSightingModal({
   preselectedStoreId,
 }: FormulaSightingModalProps) {
   const t = useTranslation();
+  const insets = useSafeAreaInsets();
   const [step, setStep] = useState<'quantity' | 'store' | 'submitting' | 'success'>('quantity');
   const [quantity, setQuantity] = useState<QuantitySeen | null>(null);
   const [nearbyStores, setNearbyStores] = useState<Store[]>([]);
@@ -136,7 +139,7 @@ export default function FormulaSightingModal({
   );
 
   const renderStoreStep = () => (
-    <View style={styles.stepContainer}>
+    <View style={[styles.stepContainer, { flex: 1 }]}>
       <Text style={styles.stepTitle}>{t('formulaSighting.storeQuestion')}</Text>
 
       {loadingStores ? (
@@ -154,7 +157,15 @@ export default function FormulaSightingModal({
           </TouchableOpacity>
         </View>
       ) : (
-        <ScrollView style={styles.storeList} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          style={styles.storeList}
+          showsVerticalScrollIndicator={true}
+          persistentScrollbar={true}
+          indicatorStyle="black"
+        >
+          {nearbyStores.length > 3 && (
+            <Text style={styles.scrollHint}>{t('formulaSighting.scrollForMore')}</Text>
+          )}
           {nearbyStores.map((store) => (
             <TouchableOpacity
               key={store.storeId}
@@ -219,6 +230,9 @@ export default function FormulaSightingModal({
     </View>
   );
 
+  // Leave space for the top bar (~56px) plus safe area inset
+  const topOffset = insets.top + 56;
+
   return (
     <Modal
       visible={visible}
@@ -227,6 +241,9 @@ export default function FormulaSightingModal({
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
+        <TouchableWithoutFeedback onPress={onClose} accessible={false}>
+          <View style={[styles.overlayTouchable, { height: topOffset }]} />
+        </TouchableWithoutFeedback>
         <View style={styles.modal} accessibilityViewIsModal={true}>
           <View style={styles.header}>
             <Text style={styles.headerTitle}>{t('formulaSighting.modalTitle')}</Text>
@@ -249,11 +266,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
+  overlayTouchable: {
+    width: '100%',
+  },
   modal: {
+    flex: 1,
     backgroundColor: colors.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: '80%',
     paddingBottom: 20,
   },
   header: {
@@ -302,7 +322,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   storeList: {
-    maxHeight: 300,
+    flex: 1,
+  },
+  scrollHint: {
+    fontSize: 12,
+    color: colors.muted,
+    textAlign: 'center',
+    marginBottom: 8,
+    fontStyle: 'italic',
   },
   storeOption: {
     flexDirection: 'row',

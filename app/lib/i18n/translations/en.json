@@ -29,7 +29,8 @@
     "wicOffices": "WIC Offices",
     "complaint": "File a Complaint",
     "recipes": "WIC Recipes",
-    "recipeDetail": "Recipe"
+    "recipeDetail": "Recipe",
+    "addTip": "Submit a Tip"
   },
   "home": {
     "findFormula": "Find Formula",
@@ -159,7 +160,8 @@
     "enterStoreName": "Please enter the store name.",
     "thankYou": "Thank You!",
     "reportSuccess": "Your sighting has been reported and will help other WIC participants.",
-    "submitReport": "Submit Report"
+    "submitReport": "Submit Report",
+    "stateName": "{{state}}"
   },
   "benefits": {
     "title": "My Benefits",
@@ -395,7 +397,8 @@
     "close": "Close",
     "quickReportButton": "Quick Report - I Found This!",
     "selectFormulaFirst": "Select Formula to Report",
-    "foundThisFormula": "Found This Formula? Report It!"
+    "foundThisFormula": "Found This Formula? Report It!",
+    "scrollForMore": "Scroll to see more stores"
   },
   "quantitySelector": {
     "title": "How much did you see?",
@@ -671,7 +674,8 @@
       "legumes": "Beans & Legumes",
       "fish": "Fish",
       "uncategorized": "Other"
-    }
+    },
+    "searchAllPlaceholder": "Search all WIC products..."
   },
   "storeFinder": {
     "listView": "List",
@@ -734,7 +738,13 @@
     "searchPlaceholder": "Search your rights...",
     "infoMessage": "As a WIC participant, you have important rights. Knowing them helps you get the most from your benefits.",
     "noResults": "No rights information matches your search.",
-    "federalResources": "Federal Resources"
+    "federalResources": "Federal Resources",
+    "call": "Call",
+    "copy": "Copy",
+    "copyNumber": "Copy Number",
+    "copied": "Copied!",
+    "callUnavailable": "Calling Not Available",
+    "copyPhonePrompt": "Would you like to copy the phone number instead?"
   },
   "complaint": {
     "privacyNotice": "This tool helps you compose a complaint. Nothing is sent from this app — you contact your WIC office directly.",
@@ -818,7 +828,8 @@
       "otherIngredients": "Other Ingredients",
       "instructions": "Instructions",
       "review": "Review & Submit"
-    }
+    },
+    "categoryHint": "Select one or more meal types"
   },
   "a11y": {
     "needHelpLink": {
@@ -1179,6 +1190,37 @@
     "report-sighting": {
       "question": "How do I report product availability?",
       "answer": "Help other WIC families by reporting what you see in stores:\n\n**How to Report:**\n1. Scan a product\n2. Tap \"Report Stock\"\n3. Select your store\n4. Choose stock level (Plenty, Some, Few, Out)\n5. Submit\n\n**Stock Levels:**\n• 🟢 Plenty — Good supply, multiple units\n• 🟡 Some — Moderate amount\n• 🟠 Few — Very limited\n• 🔴 Out — None available\n\n**Why Report:**\n• Helps other parents find products\n• Builds community knowledge\n• Reduces wasted trips\n• Especially valuable for formula!\n\n**Your reports are anonymous** and help families across your area."
+    },
+    "partial-benefits": {
+      "question": "What does a partial benefit amount mean (e.g., 0.75 jar)?",
+      "answer": "Some WIC benefit amounts are fractions, which can be confusing. Here's what it means and how to use them:\n\n**What Fractional Amounts Mean:**\nYour benefit might say something like \"0.75 jar of peanut butter.\" This means you have three-quarters of a full unit to spend.\n\n**How It Works in Practice:**\n• Fractional benefits represent dollar value, not literal portions of a jar\n• 0.75 of a jar means you can spend 75% of the max price allowed for that item\n• If the max allowed is $4.00, you have $3.00 to spend\n• You buy a WHOLE jar — the system applies your remaining benefit amount\n\n**Common Fractional Scenarios:**\n• You bought some earlier in the month and have a remainder\n• Your benefit period overlapped and was prorated\n• The household setup allocated a partial amount\n\n**What About Dried Beans vs Canned?**\n• WIC lets you choose between dried beans OR canned beans (not both)\n• 1 lb dried beans = 4 cans of beans in benefit value\n• Partial amounts work the same way for both options\n• Check your specific benefit to see which form you have\n\n**Tips for Using Partial Benefits:**\n• Check the app for your exact remaining amount before shopping\n• Choose a product that fits within your remaining benefit value\n• If your partial amount won't cover a full item, it will be combined with your next benefit period (in some states) or you may need to pay the difference out of pocket\n• Ask your WIC office if you're unsure\n\n**Pro Tip:** The app shows your exact remaining amount — use it at the store to avoid surprises at checkout!"
     }
+  },
+  "communityTips": {
+    "sectionTitle": "Community Tips",
+    "official": "Official",
+    "community": "Community",
+    "addTip": "Submit a Tip",
+    "titleLabel": "Tip Title",
+    "titlePlaceholder": "e.g., Best time to shop for WIC items",
+    "contentLabel": "Tip Content",
+    "contentPlaceholder": "Share your shopping wisdom with other WIC families...",
+    "categoryLabel": "Category",
+    "submit": "Submit Tip",
+    "submitting": "Submitting...",
+    "addSuccess": "Tip Submitted!",
+    "addSuccessMessage": "Your tip has been shared with the community. Thank you!",
+    "addErrorMessage": "Could not submit your tip. Please try again.",
+    "errorTitle": "Error",
+    "upvote": "Upvote",
+    "downvote": "Downvote",
+    "votes": "{{up}} up / {{down}} down",
+    "flagTitle": "Report Tip",
+    "flagMessage": "Are you sure you want to report this tip as inappropriate?",
+    "flagConfirm": "Report",
+    "cancel": "Cancel",
+    "flaggedTitle": "Reported",
+    "flaggedMessage": "Thank you. This tip has been flagged for review.",
+    "longPressToFlag": "Long press to report this tip"
   }
 }

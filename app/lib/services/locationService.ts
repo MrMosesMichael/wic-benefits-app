@@ -26,7 +26,7 @@ export interface UserLocation {
   timestamp: number;
 }
 
-export const SUPPORTED_STATES = ['MI', 'NC', 'FL', 'OR', 'NY'];
+export const SUPPORTED_STATES = ['MI', 'NC', 'OR', 'NY'];
 
 /**
  * Get saved location from AsyncStorage
