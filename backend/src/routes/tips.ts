@@ -71,7 +71,7 @@ router.get('/', async (req: Request, res: Response) => {
 /**
  * POST /api/v1/tips
  * Submit a new community tip
- * Rate limit: 5 tips/hour per submitted_by
+ * Rate limit: 3 tips/hour per submitter (anonymous uses IP)
  */
 router.post('/', async (req: Request, res: Response) => {
   try {
@@ -101,29 +101,33 @@ router.post('/', async (req: Request, res: Response) => {
 
     const author = submittedBy || 'anonymous';
 
-    // Rate limit: 5 tips/hour per submitter
-    if (author !== 'anonymous') {
-      const rateCheck = await pool.query(
-        `SELECT COUNT(*) as count FROM community_tips
-         WHERE submitted_by = $1 AND created_at > NOW() - INTERVAL '1 hour'`,
-        [author]
-      );
-      if (parseInt(rateCheck.rows[0].count) >= 5) {
-        return res.status(429).json({
-          success: false,
-          error: 'Rate limit exceeded. Maximum 5 tips per hour.',
-        });
-      }
+    // Rate limit: 3 tips/hour per submitter (includes anonymous by IP fallback)
+    const rateLimitId = author !== 'anonymous' ? author : (req.ip || 'unknown');
+    const rateCheck = await pool.query(
+      `SELECT COUNT(*) as count FROM community_tips
+       WHERE submitted_by = $1 AND created_at > NOW() - INTERVAL '1 hour'`,
+      [rateLimitId]
+    );
+    if (parseInt(rateCheck.rows[0].count) >= 3) {
+      return res.status(429).json({
+        success: false,
+        error: 'Rate limit exceeded. Maximum 3 tips per hour.',
+      });
     }
 
     const result = await pool.query(
-      `INSERT INTO community_tips (title, content, category, tags, submitted_by)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO community_tips (title, content, category, tags, submitted_by, status)
+       VALUES ($1, $2, $3, $4, $5, 'pending')
        RETURNING *`,
       [title, content, category, tags || [], author]
     );
 
-    res.status(201).json({ success: true, tip: formatTip(result.rows[0]) });
+    const tip = result.rows[0];
+
+    // Create GitHub issue for review
+    createTipReviewIssue(tip.id, title, content, category, author);
+
+    res.status(201).json({ success: true, tip: formatTip(tip) });
   } catch (error) {
     console.error('Error creating community tip:', error);
     res.status(500).json({ success: false, error: 'Failed to create tip' });
@@ -285,6 +289,27 @@ router.post('/:id/flag', async (req: Request, res: Response) => {
 });
 
 /**
+ * GET /api/v1/tips/pending
+ * Admin endpoint: return all pending tips awaiting review
+ */
+router.get('/pending', async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, title, content, category, tags, submitted_by, status,
+              upvotes, downvotes, net_score, flag_count, created_at
+       FROM community_tips
+       WHERE status = 'pending'
+       ORDER BY created_at ASC`
+    );
+
+    res.json({ success: true, tips: result.rows.map(formatTip) });
+  } catch (error) {
+    console.error('Error fetching pending tips:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch pending tips' });
+  }
+});
+
+/**
  * GET /api/v1/tips/flagged
  * Admin endpoint: return all flagged tips for moderation review
  */
@@ -355,6 +380,71 @@ router.post('/:id/moderate', async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: 'Failed to moderate tip' });
   }
 });
+
+/**
+ * Create a GitHub issue when a new tip is submitted for review
+ */
+function createTipReviewIssue(
+  tipId: number,
+  title: string,
+  content: string,
+  category: string,
+  submittedBy: string
+): void {
+  if (!GITHUB_REPO || !GITHUB_TOKEN) {
+    console.warn('GitHub not configured — skipping tip review issue creation');
+    return;
+  }
+
+  const issueTitle = `[Tip Review] ${title}`;
+
+  let body = `## New Community Tip Submitted\n\n`;
+  body += `**Tip ID:** ${tipId}\n`;
+  body += `**Title:** ${title}\n`;
+  body += `**Category:** ${category}\n`;
+  body += `**Submitted By:** ${submittedBy}\n`;
+  body += `**Content:**\n> ${content}\n\n`;
+  body += `---\n\n`;
+  body += `**Action required:** Review this tip. It will be auto-reviewed by the rule-based moderation script, `;
+  body += `or manually via:\n`;
+  body += `- Approve: \`POST /api/v1/tips/${tipId}/moderate\` with \`{"action":"approve"}\`\n`;
+  body += `- Hide: \`POST /api/v1/tips/${tipId}/moderate\` with \`{"action":"hide"}\`\n`;
+  body += `- Delete: \`POST /api/v1/tips/${tipId}/moderate\` with \`{"action":"delete"}\`\n`;
+
+  const postData = JSON.stringify({ title: issueTitle, body, labels: ['tip-review'] });
+
+  const options = {
+    hostname: 'api.github.com',
+    path: `/repos/${GITHUB_REPO}/issues`,
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      Accept: 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+      'User-Agent': 'WIC-Benefits-App',
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+  };
+
+  const req = https.request(options, (res) => {
+    let data = '';
+    res.on('data', (chunk) => (data += chunk));
+    res.on('end', () => {
+      if (res.statusCode === 201) {
+        console.log(`Review issue created for tip #${tipId}`);
+      } else {
+        console.error(`Failed to create review issue: ${res.statusCode} ${data}`);
+      }
+    });
+  });
+
+  req.on('error', (err) => {
+    console.error('Failed to create tip review GitHub issue:', err.message);
+  });
+
+  req.write(postData);
+  req.end();
+}
 
 /**
  * Create a GitHub issue for moderation when auto-moderation thresholds are crossed

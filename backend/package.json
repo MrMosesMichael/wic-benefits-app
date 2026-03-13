@@ -24,7 +24,8 @@
     "apl-sync": "node dist/scripts/run-apl-sync.js",
     "reimport-apl": "node dist/scripts/reimport-apl.js",
     "enrich-upc": "node dist/scripts/enrich-upc.js",
-    "review-recipes": "node dist/scripts/review-recipes.js",
+    "review-content": "node dist/scripts/review-content.js",
+    "review-recipes": "node dist/scripts/review-content.js -- --recipes",
     "scrape-food-banks": "ts-node src/scripts/scrape-food-banks.ts",
     "scrape-wic-clinics": "ts-node src/scripts/scrape-wic-clinics.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
