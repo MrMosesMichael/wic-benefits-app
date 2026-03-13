@@ -1,4 +1,5 @@
 import recipesData from '../data/recipes.json';
+import { getCommunityRecipes as fetchCommunityRecipesAPI } from './api';
 
 export interface Recipe {
   id: string;
@@ -14,7 +15,38 @@ export interface Recipe {
   nonWicIngredientsEs: string[];
   instructions: string[];
   instructionsEs: string[];
+  /** True for bundled (official) recipes */
+  isBundled?: boolean;
+  /** True for community-submitted recipes */
+  isCommunity?: boolean;
 }
+
+export interface CommunityRecipe {
+  id: number;
+  title: string;
+  titleEs: string | null;
+  category: string;
+  prepTime: number;
+  servings: number;
+  difficulty: string;
+  wicIngredients: string[];
+  nonWicIngredients: string[];
+  instructions: string[];
+  submittedBy: string;
+  isBundled: boolean;
+  status: string;
+  upvotes: number;
+  downvotes: number;
+  netScore: number;
+  flagCount: number;
+  createdAt: string;
+  updatedAt: string;
+  /** Always true for community recipes in merged lists */
+  isCommunity?: boolean;
+}
+
+/** Union type for display: bundled or community */
+export type DisplayRecipe = (Recipe & { isBundled: true; isCommunity?: false }) | (CommunityRecipe & { isCommunity: true; isBundled?: false });
 
 export type RecipeCategory = 'breakfast' | 'lunch' | 'dinner' | 'snacks' | 'baby_food';
 
@@ -28,6 +60,8 @@ export const RECIPE_CATEGORIES: { id: RecipeCategory | 'all'; labelKey: string; 
 ];
 
 const recipes: Recipe[] = recipesData as Recipe[];
+
+// ─── Bundled (static) recipe helpers ────────────────────────
 
 export function getAllRecipes(): Recipe[] {
   return recipes;
@@ -51,4 +85,50 @@ export function searchRecipes(query: string): Recipe[] {
       r.wicIngredients.some(i => i.toLowerCase().includes(q)) ||
       r.nonWicIngredients.some(i => i.toLowerCase().includes(q))
   );
+}
+
+// ─── Community (API) recipe helpers ─────────────────────────
+
+/**
+ * Fetch approved community recipes from the backend API
+ */
+export async function getCommunityRecipes(
+  category?: string
+): Promise<{ recipes: CommunityRecipe[]; total: number }> {
+  try {
+    const options: any = { source: 'community' };
+    if (category && category !== 'all') options.category = category;
+    const result = await fetchCommunityRecipesAPI(options);
+    const communityRecipes: CommunityRecipe[] = (result.recipes || []).map((r: any) => ({
+      ...r,
+      isCommunity: true,
+    }));
+    return { recipes: communityRecipes, total: result.total };
+  } catch (error) {
+    console.error('Failed to fetch community recipes:', error);
+    return { recipes: [], total: 0 };
+  }
+}
+
+/**
+ * Merge bundled recipes with community recipes for display.
+ * Bundled recipes appear first, followed by community recipes (sorted by newest).
+ */
+export async function getAllRecipesWithCommunity(
+  category?: string
+): Promise<DisplayRecipe[]> {
+  // Get bundled recipes
+  const bundled: DisplayRecipe[] = (category && category !== 'all'
+    ? getRecipesByCategory(category as RecipeCategory)
+    : getAllRecipes()
+  ).map(r => ({ ...r, isBundled: true as const }));
+
+  // Get community recipes
+  try {
+    const { recipes: communityRecipes } = await getCommunityRecipes(category);
+    const community: DisplayRecipe[] = communityRecipes.map(r => ({ ...r, isCommunity: true as const }));
+    return [...bundled, ...community];
+  } catch {
+    return bundled;
+  }
 }

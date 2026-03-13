@@ -122,7 +122,7 @@ export default function AddRecipeScreen() {
       });
       Alert.alert(
         t('addRecipe.successTitle'),
-        t('addRecipe.successMessage'),
+        t('addRecipe.submittedForReview'),
         [{ text: 'OK', onPress: () => router.back() }]
       );
     } catch (error) {
@@ -221,22 +221,26 @@ export default function AddRecipeScreen() {
     label: string,
     items: string[],
     setter: (v: string[]) => void,
-    placeholder: string
+    placeholder: string,
+    isMultiline?: boolean
   ) => (
     <View>
       <Text style={styles.fieldLabel}>{label}</Text>
       {items.map((item, idx) => (
-        <View key={idx} style={styles.listItemRow}>
+        <View key={idx} style={[styles.listItemRow, isMultiline && styles.listItemRowMultiline]}>
           <TextInput
-            style={[styles.input, styles.listInput]}
+            style={[styles.input, styles.listInput, isMultiline && styles.multilineInput]}
             value={item}
             onChangeText={(v) => updateItem(items, setter, idx, v)}
             placeholder={placeholder}
             placeholderTextColor={colors.muted}
+            multiline={isMultiline}
+            numberOfLines={isMultiline ? 3 : undefined}
+            textAlignVertical={isMultiline ? 'top' : undefined}
           />
           {items.length > 1 && (
             <TouchableOpacity
-              style={styles.removeBtn}
+              style={[styles.removeBtn, isMultiline && styles.removeBtnMultiline]}
               onPress={() => removeItem(items, setter, idx)}
             >
               <Text style={styles.removeBtnText}>{'\u2715'}</Text>
@@ -307,7 +311,8 @@ export default function AddRecipeScreen() {
           t('recipes.instructions'),
           instructions,
           setInstructions,
-          t('addRecipe.stepPlaceholder')
+          t('addRecipe.stepPlaceholder'),
+          true
         );
       case 'review':
         return renderReview();
@@ -446,8 +451,16 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 8,
   },
+  listItemRowMultiline: {
+    alignItems: 'flex-start',
+  },
   listInput: {
     flex: 1,
+  },
+  multilineInput: {
+    minHeight: 80,
+    textAlignVertical: 'top',
+    paddingTop: 12,
   },
   removeBtn: {
     width: 32,
@@ -456,6 +469,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.screenBg,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  removeBtnMultiline: {
+    marginTop: 12,
   },
   removeBtnText: {
     fontSize: 14,

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useI18n } from '@/lib/i18n/I18nContext';
@@ -13,8 +14,10 @@ import {
   getAllRecipes,
   getRecipesByCategory,
   searchRecipes,
+  getCommunityRecipes,
   RECIPE_CATEGORIES,
   RecipeCategory,
+  CommunityRecipe,
 } from '@/lib/services/recipeService';
 import RecipeCard from '@/components/RecipeCard';
 import { colors, fonts, card } from '@/lib/theme';
@@ -27,7 +30,29 @@ export default function RecipesScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<RecipeCategory | 'all'>('all');
 
-  const displayedRecipes = useMemo(() => {
+  // Community recipes state
+  const [communityRecipes, setCommunityRecipes] = useState<CommunityRecipe[]>([]);
+  const [loadingCommunity, setLoadingCommunity] = useState(true);
+
+  const fetchCommunityRecipes = useCallback(async () => {
+    setLoadingCommunity(true);
+    try {
+      const category = selectedCategory !== 'all' ? selectedCategory : undefined;
+      const result = await getCommunityRecipes(category);
+      setCommunityRecipes(result.recipes);
+    } catch {
+      setCommunityRecipes([]);
+    } finally {
+      setLoadingCommunity(false);
+    }
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    fetchCommunityRecipes();
+  }, [fetchCommunityRecipes]);
+
+  // Bundled recipes
+  const bundledRecipes = useMemo(() => {
     if (searchQuery.trim()) {
       return searchRecipes(searchQuery);
     }
@@ -94,7 +119,7 @@ export default function RecipesScreen() {
 
       {/* Recipe List */}
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        {displayedRecipes.length === 0 && (
+        {bundledRecipes.length === 0 && communityRecipes.length === 0 && !loadingCommunity && (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
               {searchQuery ? t('recipes.noSearchResults') : t('recipes.noRecipes')}
@@ -102,18 +127,55 @@ export default function RecipesScreen() {
           </View>
         )}
 
-        {displayedRecipes.map(recipe => (
-          <RecipeCard
-            key={recipe.id}
-            title={isEs ? recipe.titleEs : recipe.title}
-            category={recipe.category}
-            prepTime={recipe.prepTime}
-            servings={recipe.servings}
-            difficulty={recipe.difficulty}
-            wicIngredientCount={recipe.wicIngredients.length}
-            onPress={() => handleRecipePress(recipe.id)}
-          />
+        {/* Bundled (Official) Recipes */}
+        {bundledRecipes.map(recipe => (
+          <View key={`bundled-${recipe.id}`} style={styles.recipeWrapper}>
+            <RecipeCard
+              title={isEs ? recipe.titleEs : recipe.title}
+              category={recipe.category}
+              prepTime={recipe.prepTime}
+              servings={recipe.servings}
+              difficulty={recipe.difficulty}
+              wicIngredientCount={recipe.wicIngredients.length}
+              onPress={() => handleRecipePress(recipe.id)}
+            />
+            <View style={styles.officialBadge}>
+              <Text style={styles.officialBadgeText}>{t('recipes.official')}</Text>
+            </View>
+          </View>
         ))}
+
+        {/* Community Recipes Section */}
+        {!searchQuery && (
+          <>
+            {communityRecipes.length > 0 && (
+              <Text style={styles.sectionHeader}>{t('recipes.community')}</Text>
+            )}
+
+            {loadingCommunity && (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color={colors.wheat} />
+              </View>
+            )}
+
+            {communityRecipes.map(recipe => (
+              <View key={`community-${recipe.id}`} style={styles.recipeWrapper}>
+                <RecipeCard
+                  title={(isEs && recipe.titleEs) ? recipe.titleEs : recipe.title}
+                  category={recipe.category}
+                  prepTime={recipe.prepTime}
+                  servings={recipe.servings}
+                  difficulty={recipe.difficulty}
+                  wicIngredientCount={recipe.wicIngredients.length}
+                  onPress={() => handleRecipePress(String(recipe.id))}
+                />
+                <View style={styles.communityBadge}>
+                  <Text style={styles.communityBadgeText}>{t('recipes.community')}</Text>
+                </View>
+              </View>
+            ))}
+          </>
+        )}
 
         {/* Add Recipe FAB */}
         <TouchableOpacity
@@ -145,6 +207,13 @@ const styles = StyleSheet.create({
   scrollContent: { padding: 16, paddingBottom: 32 },
   emptyContainer: { padding: 20, alignItems: 'center' },
   emptyText: { fontSize: 16, color: colors.muted, fontStyle: 'italic' },
+  sectionHeader: { fontSize: 16, fontWeight: '600', color: colors.navy, marginTop: 20, marginBottom: 12 },
+  loadingContainer: { padding: 20, alignItems: 'center' },
+  recipeWrapper: { position: 'relative' },
+  officialBadge: { position: 'absolute', top: 8, right: 8, backgroundColor: colors.header, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10 },
+  officialBadgeText: { fontSize: 10, fontWeight: '600', color: colors.white },
+  communityBadge: { position: 'absolute', top: 8, right: 8, backgroundColor: colors.dustyBlue, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10 },
+  communityBadgeText: { fontSize: 10, fontWeight: '600', color: colors.white },
   fab: {
     width: 56,
     height: 56,

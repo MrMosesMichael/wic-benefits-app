@@ -803,7 +803,10 @@
       "snacks": "Meriendas",
       "baby_food": "Comida para Bebé"
     },
-    "addRecipe": "Agregar Receta"
+    "addRecipe": "Agregar Receta",
+    "official": "Oficial",
+    "community": "Comunidad",
+    "pendingReview": "En Revisión"
   },
   "addRecipe": {
     "recipeTitle": "Título de la Receta",
@@ -821,6 +824,7 @@
     "submitting": "Enviando...",
     "successTitle": "¡Receta Enviada!",
     "successMessage": "Su receta ha sido compartida con la comunidad. ¡Gracias!",
+    "submittedForReview": "Su receta ha sido enviada para revisión. Aparecerá en las recetas de la comunidad una vez aprobada. ¡Gracias!",
     "errorTitle": "Error al Enviar",
     "errorMessage": "No se pudo enviar su receta. Por favor intente de nuevo.",
     "steps": {

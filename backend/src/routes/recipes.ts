@@ -4,9 +4,13 @@
  */
 
 import express, { Request, Response } from 'express';
+import https from 'https';
 import pool from '../config/database';
 
 const router = express.Router();
+
+const GITHUB_REPO = process.env.GITHUB_FEEDBACK_REPO || '';
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
 
 /**
  * GET /api/v1/recipes
@@ -94,6 +98,29 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 /**
+ * GET /api/v1/recipes/pending
+ * Admin endpoint: list pending recipes awaiting moderation
+ */
+router.get('/pending', async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, title, title_es, category, prep_time_minutes, servings,
+              difficulty, wic_ingredients, non_wic_ingredients, instructions,
+              submitted_by, is_bundled, status, upvotes, downvotes, net_score,
+              flag_count, created_at, updated_at
+       FROM recipes
+       WHERE status = 'pending'
+       ORDER BY created_at DESC`
+    );
+
+    res.json({ success: true, recipes: result.rows.map(formatRecipe) });
+  } catch (error) {
+    console.error('Error fetching pending recipes:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch pending recipes' });
+  }
+});
+
+/**
  * GET /api/v1/recipes/:id
  */
 router.get('/:id', async (req: Request, res: Response) => {
@@ -145,8 +172,8 @@ router.post('/', async (req: Request, res: Response) => {
     const result = await pool.query(
       `INSERT INTO recipes (
         title, title_es, category, prep_time_minutes, servings, difficulty,
-        wic_ingredients, non_wic_ingredients, instructions, submitted_by, is_bundled
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, FALSE)
+        wic_ingredients, non_wic_ingredients, instructions, submitted_by, is_bundled, status
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, FALSE, 'pending')
       RETURNING *`,
       [
         title,
@@ -162,7 +189,20 @@ router.post('/', async (req: Request, res: Response) => {
       ]
     );
 
-    res.status(201).json({ success: true, recipe: formatRecipe(result.rows[0]) });
+    const recipe = formatRecipe(result.rows[0]);
+
+    // Create GitHub issue for recipe review
+    createRecipeReviewIssue(
+      recipe.id,
+      title,
+      category,
+      wicIngredients,
+      nonWicIngredients || [],
+      instructions,
+      submittedBy || 'anonymous'
+    );
+
+    res.status(201).json({ success: true, recipe });
   } catch (error) {
     console.error('Error creating recipe:', error);
     res.status(500).json({ success: false, error: 'Failed to create recipe' });
@@ -291,6 +331,119 @@ router.post('/:id/flag', async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: 'Failed to flag recipe' });
   }
 });
+
+/**
+ * POST /api/v1/recipes/:id/moderate
+ * Admin endpoint: approve or reject a pending recipe
+ */
+router.post('/:id/moderate', async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id as string;
+    const { action } = req.body;
+
+    if (!action || !['approve', 'reject'].includes(action)) {
+      return res.status(400).json({
+        success: false,
+        error: 'action must be "approve" or "reject"',
+      });
+    }
+
+    const newStatus = action === 'approve' ? 'active' : 'rejected';
+
+    await pool.query(
+      'UPDATE recipes SET status = $1 WHERE id = $2',
+      [newStatus, id]
+    );
+
+    res.json({ success: true, message: `Recipe ${action}d successfully`, status: newStatus });
+  } catch (error) {
+    console.error('Error moderating recipe:', error);
+    res.status(500).json({ success: false, error: 'Failed to moderate recipe' });
+  }
+});
+
+/**
+ * Create a GitHub issue for recipe review when a new recipe is submitted
+ */
+function createRecipeReviewIssue(
+  recipeId: string | number,
+  title: string,
+  category: string,
+  wicIngredients: string[],
+  nonWicIngredients: string[],
+  instructions: string[],
+  submittedBy: string
+): void {
+  if (!GITHUB_REPO || !GITHUB_TOKEN) {
+    console.warn('GitHub not configured — skipping recipe review issue creation');
+    return;
+  }
+
+  const issueTitle = `[Recipe Review] ${title}`;
+
+  let body = `## New Recipe Submission\n\n`;
+  body += `**Recipe ID:** ${recipeId}\n`;
+  body += `**Title:** ${title}\n`;
+  body += `**Category:** ${category}\n`;
+  body += `**Submitted By:** ${submittedBy}\n`;
+  body += `**Submitted At:** ${new Date().toISOString()}\n\n`;
+
+  body += `### WIC Ingredients\n\n`;
+  wicIngredients.forEach((ing, i) => {
+    body += `${i + 1}. ${ing}\n`;
+  });
+
+  if (nonWicIngredients.length > 0) {
+    body += `\n### Other Ingredients\n\n`;
+    nonWicIngredients.forEach((ing, i) => {
+      body += `${i + 1}. ${ing}\n`;
+    });
+  }
+
+  body += `\n### Instructions\n\n`;
+  instructions.forEach((step, i) => {
+    body += `${i + 1}. ${step}\n`;
+  });
+
+  body += `\n---\n\n`;
+  body += `**Action required:** Review this recipe and moderate via the admin API:\n`;
+  body += `- Approve: \`POST /api/v1/recipes/${recipeId}/moderate\` with \`{"action":"approve"}\`\n`;
+  body += `- Reject: \`POST /api/v1/recipes/${recipeId}/moderate\` with \`{"action":"reject"}\`\n`;
+
+  const postData = JSON.stringify({ title: issueTitle, body, labels: ['recipe-review'] });
+
+  const options = {
+    hostname: 'api.github.com',
+    path: `/repos/${GITHUB_REPO}/issues`,
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      Accept: 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+      'User-Agent': 'WIC-Benefits-App',
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+  };
+
+  const req = https.request(options, (res) => {
+    let data = '';
+    res.on('data', (chunk) => (data += chunk));
+    res.on('end', () => {
+      if (res.statusCode === 201) {
+        console.log(`Recipe review issue created for recipe #${recipeId}`);
+      } else {
+        console.error(`Failed to create recipe review issue: ${res.statusCode} ${data}`);
+      }
+    });
+  });
+
+  req.on('error', (err) => {
+    console.error('Failed to create recipe review GitHub issue:', err.message);
+  });
+
+  req.write(postData);
+  req.end();
+}
 
 function formatRecipe(row: any) {
   return {

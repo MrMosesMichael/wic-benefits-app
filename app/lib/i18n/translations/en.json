@@ -803,7 +803,10 @@
       "snacks": "Snacks",
       "baby_food": "Baby Food"
     },
-    "addRecipe": "Add Recipe"
+    "addRecipe": "Add Recipe",
+    "official": "Official",
+    "community": "Community",
+    "pendingReview": "Pending Review"
   },
   "addRecipe": {
     "recipeTitle": "Recipe Title",
@@ -821,6 +824,7 @@
     "submitting": "Submitting...",
     "successTitle": "Recipe Submitted!",
     "successMessage": "Your recipe has been shared with the community. Thank you!",
+    "submittedForReview": "Your recipe has been submitted for review. It will appear in the community recipes once approved. Thank you!",
     "errorTitle": "Submission Failed",
     "errorMessage": "Could not submit your recipe. Please try again.",
     "steps": {

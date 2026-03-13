@@ -1027,13 +1027,14 @@ export async function getNearbyWicClinics(
  * Get community recipes from backend
  */
 export async function getCommunityRecipes(
-  options?: { category?: string; search?: string; sort?: string; limit?: number; offset?: number }
+  options?: { category?: string; search?: string; sort?: string; source?: string; limit?: number; offset?: number }
 ): Promise<{ recipes: any[]; total: number }> {
   try {
     const params = new URLSearchParams();
     if (options?.category) params.append('category', options.category);
     if (options?.search) params.append('search', options.search);
     if (options?.sort) params.append('sort', options.sort);
+    if (options?.source) params.append('source', options.source);
     if (options?.limit) params.append('limit', options.limit.toString());
     if (options?.offset) params.append('offset', options.offset.toString());
 
