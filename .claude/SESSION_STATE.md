@@ -62,11 +62,13 @@
 
 ---
 
+---
+
 ## Feedback Inbox
 
-> Last synced: 2026-03-09 21:04 UTC · [1 open issues](https://github.com/MrMosesMichael/wic-benefits-feedback/issues)
+> Last synced: 2026-03-12 12:07 UTC · [1 open issues](https://github.com/MrMosesMichael/wic-benefits-feedback/issues)
 
 ### Other (1)
 
-**#12** [[Feature] - maybe FAQ topic? How to use partial benefits](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/12)
-`2026-03-02T16:02:31Z` · I just enc
+**#12** [[Feature] - maybe FAQ topic? How to use partial benefits](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/12)  
+`2026-03-02T16:02:31Z` · I just enc  
