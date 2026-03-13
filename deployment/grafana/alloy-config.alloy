@@ -1,0 +1,62 @@
+// Grafana Alloy configuration for WIC Benefits App
+// Scrapes Prometheus metrics from the backend and ships to Grafana Cloud
+
+// ── Prometheus Scrape ──────────────────────────────────────────────
+
+prometheus.scrape "wic_backend" {
+  targets = [{
+    __address__ = "wic-backend:3000",
+  }]
+  metrics_path = "/metrics"
+  scrape_interval = "30s"
+
+  forward_to = [prometheus.remote_write.grafana_cloud.receiver]
+}
+
+// ── Remote Write to Grafana Cloud ─────────────────────────────────
+
+prometheus.remote_write "grafana_cloud" {
+  endpoint {
+    url = env("GRAFANA_PROMETHEUS_URL")
+
+    basic_auth {
+      username = env("GRAFANA_PROMETHEUS_USERNAME")
+      password = env("GRAFANA_API_KEY")
+    }
+  }
+}
+
+// ── Docker Log Discovery ──────────────────────────────────────────
+
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+  filter {
+    name  = "name"
+    values = ["wic-backend", "wic-postgres"]
+  }
+}
+
+// ── Collect Docker Container Logs ─────────────────────────────────
+
+loki.source.docker "wic_logs" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.docker.containers.targets
+  forward_to = [loki.write.grafana_cloud.receiver]
+
+  labels = {
+    app = "wic-benefits",
+  }
+}
+
+// ── Ship Logs to Grafana Cloud Loki ───────────────────────────────
+
+loki.write "grafana_cloud" {
+  endpoint {
+    url = env("GRAFANA_LOKI_URL")
+
+    basic_auth {
+      username = env("GRAFANA_LOKI_USERNAME")
+      password = env("GRAFANA_API_KEY")
+    }
+  }
+}

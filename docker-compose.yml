@@ -84,6 +84,29 @@ services:
       - "traefik.http.routers.wic-api-www.tls.certresolver=letsencrypt"
       - "traefik.http.routers.wic-api-www.middlewares=wic-api-strip"
 
+  # Grafana Alloy — scrapes metrics & logs, ships to Grafana Cloud
+  alloy:
+    image: grafana/alloy:latest
+    container_name: wic-alloy
+    restart: unless-stopped
+    volumes:
+      - ./deployment/grafana/alloy-config.alloy:/etc/alloy/config.alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      GRAFANA_PROMETHEUS_URL: ${GRAFANA_PROMETHEUS_URL}
+      GRAFANA_PROMETHEUS_USERNAME: ${GRAFANA_PROMETHEUS_USERNAME}
+      GRAFANA_LOKI_URL: ${GRAFANA_LOKI_URL}
+      GRAFANA_LOKI_USERNAME: ${GRAFANA_LOKI_USERNAME}
+      GRAFANA_API_KEY: ${GRAFANA_API_KEY}
+    command:
+      - run
+      - /etc/alloy/config.alloy
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - wic-network
+
 networks:
   wic-network:
     driver: bridge

@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import pool from './config/database';
+import { register, metricsMiddleware } from './config/metrics';
 import eligibilityRoutes from './routes/eligibility';
 import benefitsRoutes from './routes/benefits';
 import cartRoutes from './routes/cart';
@@ -37,6 +38,15 @@ app.use(cors({
   origin: process.env.CORS_ORIGIN?.split(',') || false,
 }));
 app.use(express.json());
+
+// Prometheus metrics middleware — track all HTTP requests
+app.use(metricsMiddleware);
+
+// Prometheus metrics endpoint
+app.get('/metrics', async (req: Request, res: Response) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
 
 // Static file serving for local images (development)
 if (process.env.NODE_ENV === 'development') {
@@ -84,4 +94,5 @@ app.listen(port, () => {
   console.log(`🚀 WIC Benefits API server running on port ${port}`);
   console.log(`📍 http://localhost:${port}`);
   console.log(`🏥 Health check: http://localhost:${port}/health`);
+  console.log(`📊 Metrics: http://localhost:${port}/metrics`);
 });
