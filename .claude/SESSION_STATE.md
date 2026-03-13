@@ -1,28 +1,58 @@
 # Session State
 
-> **Last Updated:** 2026-03-09
-> **Session:** iOS App Store Submission + Privacy Improvements (v1.7.5)
+> **Last Updated:** 2026-03-13
+> **Session:** Feedback Triage — 23 issues addressed (v1.8.0 prep)
 
 ---
 
 ## Current Status
 
-**v1.7.5 submitted to Apple App Store review.** Bug fix (Help & FAQ filter chip height), privacy improvement (decoupled user identity from location data in sightings), and App Store submission completed.
+**All 24 open feedback issues addressed.** 19 bug fixes, 4 features implemented, 1 investigation resolved. Backend deploy + migration 025 required. App build in progress.
 
-**Next action:** Monitor Apple review status. Address open feedback issue #12 (partial benefits FAQ). Google Play submission.
+**Next action:** Deploy backend (migration 025_community_tips), build app, verify fixes, close confirmed issues.
 
 ---
 
 ## Work Completed This Session
 
-### Session 4 — iOS App Store Submission + Privacy (v1.7.5)
+### Feedback Pipeline Fixes
+- **Sync script categorization** — Issues now categorized by title prefix (`[bug]`, `[feature]`) when labels are missing
+- **Sync script comments** — Now fetches and displays comment count + latest comment per issue
+- **Backend label fix** — `feature-request` → `enhancement` in feedback.ts to match repo labels
+- **Retroactive labeling** — All 24 existing issues labeled on GitHub (18 bug, 4 enhancement, 1 question)
 
-- **Fix: Help & FAQ filter chips oversized** — Added `maxHeight: 56`, fixed chip `height: 36`, and `alignItems: 'center'` to match Product Catalog pattern.
-- **Privacy: Decoupled user identity from location data** — Created `sighting_audit_log` table with hashed device IDs (SHA-256) and 90-day auto-expiry. Product sightings now always stored as 'anonymous'. Rate-limiting (30/hr) via audit log. Updated user export/delete routes. Migration 024.
-- **App Store screenshots** — Resized iPhone 12 Pro Max screenshots to 6.5" (1242x2688). Generated iPad 13" screenshots via `npx expo run:ios --configuration Release`.
-- **iOS App Store submission** — Completed data collection privacy questionnaire, uploaded screenshots, submitted v1.7.5 for Apple review.
-- **Version bump** — `1.7.4` → `1.7.5` (patch), buildNumber `1`, versionCode `16` → `17`.
-- **Regenerated ios/ folder** — `npx expo prebuild --platform ios` to fix stale native project.
+### Backend Resilience
+- **User route fix** — Added `resolveUserId()` to handle string device IDs (prevents PostgreSQL type error), graceful handling when user doesn't exist server-side
+- **Privacy email fix** — Corrected `privacy@wicbenefits.app` → `wic.benefits.app@gmail.com` in privacy-summary endpoint
+- **hashReporter fix** — Now hashes raw client ID instead of resolved integer for audit log lookups
+
+### Bug Fixes (19 issues)
+- **#13** Formula search radius persists across navigation
+- **#14** Formula alerts screen remembers last assigned formula
+- **#15** Alert subscription no longer gated on push permissions
+- **#16** Cross-store search null chain guard prevents 500
+- **#17** Formula sighting modal expands to near full-screen
+- **#18** Tapping outside sighting modal dismisses it
+- **#19** Sighting store list shows scroll indicator + hint
+- **#20** Formula sighting save fixed (source constraint: 'formula_sighting' → 'crowdsourced')
+- **#22** Formula screen stack uses replace/navigate instead of push
+- **#24** FAQ bold markdown rendered as actual bold `<Text>`
+- **#25** Send Feedback crash fixed (navigate instead of push)
+- **#26** Privacy export works with local-first data collection
+- **#27** Privacy delete clears local data regardless of server state
+- **#28** Contact email corrected + made tappable with copy button
+- **#29** Removed FL from supported states list
+- **#30** Shopping tips card padding reduced
+- **#32** Recipe multi-category select + instruction line height increased
+- **#33** Know Your Rights phone numbers clickable with tel: links
+
+### Features (4 issues)
+- **#12** Partial benefits FAQ added to help system
+- **#21** Map app chooser (Apple Maps/Google Maps/Waze) for directions across 7 screens
+- **#23** Scan result "Why isn't this approved?" uses dynamic state name (was hardcoded to Michigan)
+- **#31** Product catalog global search bar across all categories
+- **#34** Community shopping tips — full-stack: voting, flagging, auto-moderation, GitHub issue on flag threshold
+- **#35** Store Finder map view implemented with react-native-maps
 
 ---
 
@@ -30,47 +60,38 @@
 
 | Hash | Description |
 |------|-------------|
-| `75d74a1` | fix: constrain Help & FAQ filter chips height to prevent oversized row |
-| `a4b2951` | chore: add App Store screenshots with 6.5" resized variants |
-| `6c19c15` | chore: sync session state |
+| `07afc27` | fix: feedback sync categorization, user route resilience, and comment tracking |
+| `c16bbc4` | feat: address 23 feedback issues — bugs, features, and community tips |
 
 ---
 
 ## Files Modified This Session
 
-- `app/app/help/index.tsx` — Fixed filter chip height (maxHeight, fixed chip height, alignment)
-- `app/app.json` — v1.7.4 → v1.7.5, versionCode 16 → 17
-- `backend/migrations/024_decouple_sighting_identity.sql` — NEW: audit log table, anonymize existing data
-- `backend/src/routes/sightings.ts` — Always store 'anonymous', write hashed ID to audit log, rate-limiting
-- `backend/src/routes/inventory.ts` — Same pattern for inventory reports
-- `backend/src/routes/user.ts` — Export/delete use audit log, updated privacy summary
-- `docs/ios-app-submission/` — NEW: Original + 6.5" resized screenshots
+### New Files
+- `app/app/community/add-tip.tsx` — Submit a Tip form
+- `app/lib/services/directionsService.ts` — Centralized map app chooser
+- `backend/migrations/025_community_tips.sql` — Community tips tables
+- `backend/src/routes/tips.ts` — Tips CRUD, voting, flagging, moderation API
+
+### Modified (34 files)
+- `scripts/sync-feedback.sh` — Title-based categorization + comment fetching
+- `backend/src/routes/feedback.ts` — Label fix
+- `backend/src/routes/user.ts` — resolveUserId, email, hashReporter fixes
+- `backend/src/routes/formula.ts` — Source constraint fix
+- `backend/src/routes/cross-store-search.ts` — Null chain guard
+- `backend/src/index.ts` — Register tips route
+- `app/` — 28 app files (screens, components, services, translations)
 
 ---
 
 ## What's Next
 
 ### Immediate
-1. **Monitor Apple App Store review** — Typically 24-48 hours
-2. **Run migration 024** on production VPS (`docker compose exec -T backend ...`)
-3. **Deploy backend** with privacy improvements
+1. **Deploy backend** — `./scripts/deploy-backend.sh` + apply migration 025
+2. **Build app** — Version bump needed before release build
+3. **Verify fixes** — Test each issue, close confirmed ones on GitHub
 
 ### Short Term
-1. **Address feedback issue #12** — Partial benefits FAQ
+1. **Submit to Apple App Store** — After verification
 2. **Google Play submission** — Screenshots + store listing
 3. **Register LLC** — Required for professional store presence
-
----
-
----
-
----
-
-## Feedback Inbox
-
-> Last synced: 2026-03-13 10:03 UTC · [1 open issues](https://github.com/MrMosesMichael/wic-benefits-feedback/issues)
-
-### Other (1)
-
-**#12** [[Feature] - maybe FAQ topic? How to use partial benefits](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/12)  
-`2026-03-02T16:02:31Z` · I just enc  
