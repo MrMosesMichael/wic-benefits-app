@@ -136,7 +136,7 @@ router.post('/', async (req: Request, res: Response) => {
  */
 router.post('/:id/vote', async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { voteType, voterId } = req.body;
 
     if (!voteType || !['up', 'down'].includes(voteType)) {
@@ -227,7 +227,7 @@ router.post('/:id/vote', async (req: Request, res: Response) => {
  */
 router.post('/:id/flag', async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { reason, flaggerId: rawFlaggerId } = req.body;
 
     const flaggerId = rawFlaggerId || 'anonymous';
@@ -311,7 +311,7 @@ router.get('/flagged', async (req: Request, res: Response) => {
  */
 router.post('/:id/moderate', async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { action } = req.body;
 
     if (!action || !['approve', 'hide', 'delete'].includes(action)) {
