@@ -37,7 +37,7 @@ fi
 # ── Fetch ─────────────────────────────────────────────────────────────────────
 echo "Fetching open issues from $REPO..."
 ISSUES=$(gh issue list --repo "$REPO" --state open \
-  --json number,title,labels,createdAt,body --limit 100)
+  --json number,title,labels,createdAt,body,comments --limit 100)
 
 TOTAL=$(echo "$ISSUES" | jq 'length')
 HP=$(echo "$ISSUES" | jq '[.[] | select(.labels | map(.name) | any(. == "priority:high"))] | length')
@@ -75,15 +75,20 @@ build_section() {
   echo "### ${heading} (${count})"
   echo ""
 
-  while IFS=$'\t' read -r num iss_title labels date summary; do
+  while IFS=$'\t' read -r num iss_title labels date comment_count summary latest_comment; do
     local url="https://github.com/${REPO}/issues/${num}"
     # Truncate title to 70 chars
     local short_title="${iss_title:0:70}"
     [[ "${#iss_title}" -gt 70 ]] && short_title="${short_title}…"
     printf '**#%s** [%s](%s)  \n' "$num" "$short_title" "$url"
-    printf '`%s` · %s  \n' "$labels" "${date:0:10}"
+    local meta="\`${labels}\` · ${date:0:10}"
+    [[ "$comment_count" -gt 0 ]] && meta="${meta} · ${comment_count} comment(s)"
+    printf '%s  \n' "$meta"
     if [[ -n "$summary" ]]; then
       printf '> %s\n' "$summary"
+    fi
+    if [[ -n "$latest_comment" && "$latest_comment" != "null" ]]; then
+      printf '> **Latest comment:** %s\n' "$latest_comment"
     fi
     echo ""
   done < <(echo "$filtered" | jq -r '.[] | [
@@ -91,6 +96,7 @@ build_section() {
     .title,
     (.labels | map(.name) | join(", ")),
     .createdAt,
+    (.comments | length | tostring),
     ((.body // "") | split("\n") | map(select(
       length > 0 and
       (startswith("##") | not) and
@@ -99,31 +105,55 @@ build_section() {
       (startswith("**Device") | not) and
       (startswith("**Submitted") | not) and
       (startswith("**Platform") | not)
-    )) | .[0] // "" | .[0:140])
+    )) | .[0] // "" | .[0:140]),
+    (if (.comments | length) > 0 then (.comments | last | .body | split("\n") | map(select(length > 0)) | .[0] // "" | .[0:140]) else null end)
   ] | @tsv')
 }
 
 # ── Categorize ────────────────────────────────────────────────────────────────
+# Uses labels first, then falls back to title prefix patterns like [bug], [feature], etc.
+# This helper checks: has label OR title matches pattern (case-insensitive)
 HIGH=$(echo "$ISSUES"     | jq '[.[] | select(.labels | map(.name) | any(. == "priority:high"))]')
 BUGS=$(echo "$ISSUES"     | jq '[.[] | select(
-  (.labels | map(.name) | any(. == "bug")) and
-  (.labels | map(.name) | any(. == "priority:high") | not)
+  (.labels | map(.name) | any(. == "priority:high") | not) and
+  (
+    (.labels | map(.name) | any(. == "bug")) or
+    ((.labels | length) == 0 and (.title | test("^\\[bugs?\\]"; "i")))
+  )
 )]')
 FEATURES=$(echo "$ISSUES" | jq '[.[] | select(
-  (.labels | map(.name) | any(. == "enhancement" or . == "feature")) and
-  (.labels | map(.name) | any(. == "priority:high") | not)
+  (.labels | map(.name) | any(. == "priority:high") | not) and
+  (
+    (.labels | map(.name) | any(. == "enhancement" or . == "feature")) or
+    ((.labels | length) == 0 and (.title | test("^\\[feature( request)?\\]"; "i")))
+  )
 )]')
 TRANS=$(echo "$ISSUES"    | jq '[.[] | select(
-  (.labels | map(.name) | any(. == "translation")) and
   (.labels | map(.name) | any(. == "priority:high") | not) and
-  (.labels | map(.name) | any(. == "bug") | not)
+  (
+    (.labels | map(.name) | any(. == "translation")) or
+    ((.labels | length) == 0 and (.title | test("^\\[translation\\]"; "i")))
+  ) and
+  (
+    (.labels | map(.name) | any(. == "bug") | not) and
+    (.title | test("^\\[bugs?\\]"; "i") | not)
+  )
 )]')
-# Other: none of the above labels
+# Other: doesn't match any category above
 OTHER=$(echo "$ISSUES"    | jq '[.[] | select(
   (.labels | map(.name) | any(. == "priority:high") | not) and
-  (.labels | map(.name) | any(. == "bug") | not) and
-  (.labels | map(.name) | any(. == "enhancement" or . == "feature") | not) and
-  (.labels | map(.name) | any(. == "translation") | not)
+  (
+    (.labels | map(.name) | any(. == "bug")) or
+    ((.labels | length) == 0 and (.title | test("^\\[bugs?\\]"; "i")))
+  | not) and
+  (
+    (.labels | map(.name) | any(. == "enhancement" or . == "feature")) or
+    ((.labels | length) == 0 and (.title | test("^\\[feature( request)?\\]"; "i")))
+  | not) and
+  (
+    (.labels | map(.name) | any(. == "translation")) or
+    ((.labels | length) == 0 and (.title | test("^\\[translation\\]"; "i")))
+  | not)
 )]')
 
 # ── Build section text ────────────────────────────────────────────────────────

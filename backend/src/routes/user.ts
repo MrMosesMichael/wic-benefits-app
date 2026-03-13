@@ -10,15 +10,32 @@ function hashReporter(id: string): string {
 }
 
 /**
+ * Resolve a user_id param to the integer users.id.
+ * Accepts either a numeric id or a string device_id.
+ * Returns null if the user doesn't exist server-side.
+ */
+async function resolveUserId(rawId: string): Promise<number | null> {
+  // If it looks like an integer, try direct lookup first
+  if (/^\d+$/.test(rawId)) {
+    const result = await pool.query('SELECT id FROM users WHERE id = $1', [rawId]);
+    if (result.rows.length > 0) return result.rows[0].id;
+  }
+  // Otherwise try device_id lookup (handles UUIDs, AsyncStorage IDs, etc.)
+  const result = await pool.query('SELECT id FROM users WHERE device_id = $1', [rawId]);
+  if (result.rows.length > 0) return result.rows[0].id;
+  return null;
+}
+
+/**
  * GET /api/v1/user/export
  * Export all user data for data sovereignty compliance
  * Query params:
- *   - user_id: user identifier (required)
+ *   - user_id: user identifier (required) — accepts numeric id or device_id string
  */
 router.get('/export', async (req: Request, res: Response) => {
-  const userId = req.query.user_id as string;
+  const rawUserId = req.query.user_id as string;
 
-  if (!userId) {
+  if (!rawUserId) {
     return res.status(400).json({
       success: false,
       error: 'user_id query parameter is required',
@@ -26,12 +43,25 @@ router.get('/export', async (req: Request, res: Response) => {
   }
 
   try {
+    const userId = await resolveUserId(rawUserId);
+
     // Collect all user data from various tables
     const exportData: Record<string, any> = {
       exportedAt: new Date().toISOString(),
-      userId,
+      userId: rawUserId,
       dataCategories: {},
     };
+
+    // If user doesn't exist server-side, return empty export (not an error)
+    if (!userId) {
+      exportData.dataCategories.note =
+        'No server-side account found for this ID. Your data may be stored locally on your device only.';
+      return res.json({
+        success: true,
+        message: 'Your data has been exported successfully.',
+        data: exportData,
+      });
+    }
 
     // 1. User account
     const userResult = await pool.query(
@@ -154,7 +184,8 @@ router.get('/export', async (req: Request, res: Response) => {
     exportData.dataCategories.notificationHistory = notificationHistoryResult.rows;
 
     // 15. Sighting audit log (hashed identity — no location data stored here)
-    const reporterHash = hashReporter(userId);
+    // Hash the raw client ID (not the resolved integer) to match what sighting routes store
+    const reporterHash = hashReporter(rawUserId);
     const auditResult = await pool.query(
       `SELECT report_type, store_id, upc, created_at, expires_at
        FROM sighting_audit_log WHERE reporter_hash = $1 ORDER BY created_at DESC`,
@@ -183,13 +214,13 @@ router.get('/export', async (req: Request, res: Response) => {
  * DELETE /api/v1/user/delete
  * Delete all user data for data sovereignty compliance
  * Body:
- *   - user_id: user identifier (required)
+ *   - user_id: user identifier (required) — accepts numeric id or device_id string
  *   - confirmation: must be "DELETE_MY_ACCOUNT" (required)
  */
 router.delete('/delete', async (req: Request, res: Response) => {
-  const { user_id: userId, confirmation } = req.body;
+  const { user_id: rawUserId, confirmation } = req.body;
 
-  if (!userId) {
+  if (!rawUserId) {
     return res.status(400).json({
       success: false,
       error: 'user_id is required',
@@ -200,6 +231,18 @@ router.delete('/delete', async (req: Request, res: Response) => {
     return res.status(400).json({
       success: false,
       error: 'Please confirm deletion by setting confirmation to "DELETE_MY_ACCOUNT"',
+    });
+  }
+
+  const userId = await resolveUserId(rawUserId);
+
+  // If user doesn't exist server-side, return success (nothing to delete is a valid deletion)
+  if (!userId) {
+    return res.json({
+      success: true,
+      message:
+        'No server-side account found for this ID. Your local data should be cleared by the app. ' +
+        'Community contributions (product sightings) are already anonymous.',
     });
   }
 
@@ -330,7 +373,8 @@ router.delete('/delete', async (req: Request, res: Response) => {
     // Sightings no longer store user identity since migration 024.
 
     // 17. Delete audit log entries (hashed identity data)
-    const reporterHash = hashReporter(userId);
+    // Hash the raw client ID (not the resolved integer) to match what sighting routes store
+    const reporterHash = hashReporter(rawUserId);
     await client.query(
       'DELETE FROM sighting_audit_log WHERE reporter_hash = $1',
       [reporterHash]

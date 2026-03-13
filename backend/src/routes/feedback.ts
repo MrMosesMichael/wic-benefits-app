@@ -8,7 +8,7 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
 
 const CATEGORY_LABELS: Record<string, string> = {
   bug: 'bug',
-  feature: 'feature-request',
+  feature: 'enhancement',
   question: 'question',
 };
 
