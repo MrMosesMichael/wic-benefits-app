@@ -1,22 +1,25 @@
 /**
- * Automated Recipe Review Script
+ * Automated Recipe Review Script (Rule-Based)
  *
- * Uses Claude API to review pending community-submitted recipes.
- * For each pending recipe, Claude evaluates whether it's a legitimate,
- * safe, WIC-appropriate recipe and returns approve/reject/flag.
+ * Reviews pending community-submitted recipes using content rules:
+ *  - Spam/gibberish detection (word counts, character patterns)
+ *  - Profanity/inappropriate content blocklist
+ *  - WIC ingredient validation against known categories
+ *  - Sanity checks (prep time, servings, non-empty fields)
+ *
+ * Recipes that pass all checks → auto-approved.
+ * Recipes that fail → stay pending with GitHub comment explaining why.
  *
  * Usage:
  *   npm run review-recipes              # Review and act on pending recipes
  *   npm run review-recipes -- --dry-run # Preview decisions without changes
  *
  * Requires:
- *   ANTHROPIC_API_KEY  — Claude API key
- *   GITHUB_TOKEN       — GitHub personal access token
+ *   GITHUB_TOKEN         — GitHub personal access token (for comments)
  *   GITHUB_FEEDBACK_REPO — e.g. "MrMosesMichael/wic-benefits-feedback"
- *   DATABASE_URL       — PostgreSQL connection string
+ *   DATABASE_URL         — PostgreSQL connection string
  */
 
-import Anthropic from '@anthropic-ai/sdk';
 import https from 'https';
 import pool from '../config/database';
 
@@ -26,6 +29,7 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
 interface ReviewDecision {
   decision: 'approve' | 'reject' | 'flag';
   reason: string;
+  failures: string[];
 }
 
 interface PendingRecipe {
@@ -45,9 +49,204 @@ interface PendingRecipe {
 
 const DRY_RUN = process.argv.includes('--dry-run');
 
+// ─── Content Rules ──────────────────────────────────────────────
+
 /**
- * Fetch all pending recipes from the database
+ * Profanity / inappropriate content blocklist.
+ * Kept intentionally short — catches obvious abuse, not edge cases.
  */
+const BLOCKLIST = [
+  'fuck', 'shit', 'bitch', 'asshole', 'damn', 'crap', 'dick', 'pussy',
+  'nigger', 'faggot', 'retard', 'whore', 'slut',
+  'kill yourself', 'kys', 'die',
+  'viagra', 'cialis', 'casino', 'poker', 'cryptocurrency', 'bitcoin',
+  'click here', 'buy now', 'free money', 'act now', 'limited time',
+  'http://', 'https://', 'www.', '.com/', '.net/',
+];
+
+/**
+ * Known WIC-eligible food categories.
+ * We check that at least one WIC ingredient loosely matches these.
+ */
+const WIC_FOOD_KEYWORDS = [
+  // Dairy
+  'milk', 'cheese', 'yogurt', 'leche', 'queso',
+  // Protein
+  'egg', 'eggs', 'huevo', 'bean', 'beans', 'frijol', 'peanut butter',
+  'crema de mani', 'tofu', 'tuna', 'salmon', 'sardine', 'atun',
+  // Grains
+  'bread', 'pan', 'cereal', 'oat', 'oats', 'avena', 'rice', 'arroz',
+  'tortilla', 'pasta', 'whole grain', 'whole wheat', 'integral',
+  // Fruits & vegetables
+  'fruit', 'fruta', 'vegetable', 'verdura', 'banana', 'apple', 'manzana',
+  'carrot', 'zanahoria', 'spinach', 'espinaca', 'tomato', 'tomate',
+  'orange', 'naranja', 'grape', 'berr', 'lettuce', 'lechuga',
+  'pepper', 'pimiento', 'corn', 'maiz', 'potato', 'papa', 'broccoli',
+  'pea', 'squash', 'sweet potato', 'camote', 'onion', 'cebolla',
+  'cucumber', 'pepino', 'peach', 'durazno', 'pear', 'pera',
+  'melon', 'watermelon', 'sandia', 'mango', 'plum', 'ciruela',
+  'avocado', 'aguacate', 'cabbage', 'col', 'celery', 'apio',
+  // Juice
+  'juice', 'jugo',
+  // Baby food / formula
+  'formula', 'baby food', 'comida para bebe', 'infant',
+  // CVB (cash value benefit — covers fruits & veggies)
+  'cvb', 'fresh',
+];
+
+const VALID_CATEGORIES = ['breakfast', 'lunch', 'dinner', 'snacks', 'baby_food'];
+const VALID_DIFFICULTIES = ['easy', 'medium', 'hard'];
+
+// ─── Review Checks ──────────────────────────────────────────────
+
+function reviewRecipe(recipe: PendingRecipe): ReviewDecision {
+  const failures: string[] = [];
+
+  // 1. Title checks
+  if (!recipe.title || recipe.title.trim().length < 3) {
+    failures.push('Title is too short (min 3 characters)');
+  }
+  if (recipe.title && recipe.title.length > 200) {
+    failures.push('Title is too long (max 200 characters)');
+  }
+
+  // 2. Category & difficulty validation
+  if (!VALID_CATEGORIES.includes(recipe.category)) {
+    failures.push(`Invalid category "${recipe.category}"`);
+  }
+  if (!VALID_DIFFICULTIES.includes(recipe.difficulty)) {
+    failures.push(`Invalid difficulty "${recipe.difficulty}"`);
+  }
+
+  // 3. Prep time sanity (1 min to 8 hours)
+  if (!recipe.prep_time_minutes || recipe.prep_time_minutes < 1 || recipe.prep_time_minutes > 480) {
+    failures.push(`Prep time ${recipe.prep_time_minutes} min is out of range (1-480)`);
+  }
+
+  // 4. Servings sanity (1 to 50)
+  if (!recipe.servings || recipe.servings < 1 || recipe.servings > 50) {
+    failures.push(`Servings ${recipe.servings} is out of range (1-50)`);
+  }
+
+  // 5. Must have at least one WIC ingredient
+  const wicIngredients = recipe.wic_ingredients || [];
+  if (wicIngredients.length === 0) {
+    failures.push('No WIC ingredients listed');
+  }
+
+  // 6. WIC ingredients should contain at least one recognized WIC food
+  if (wicIngredients.length > 0) {
+    const allIngredientsText = wicIngredients.join(' ').toLowerCase();
+    const hasWicFood = WIC_FOOD_KEYWORDS.some(kw => allIngredientsText.includes(kw));
+    if (!hasWicFood) {
+      failures.push('No recognized WIC-eligible food in WIC ingredients list');
+    }
+  }
+
+  // 7. Must have at least one instruction step with meaningful content
+  const instructions = (recipe.instructions || []).filter(s => s.trim().length > 0);
+  if (instructions.length === 0) {
+    failures.push('No instructions provided');
+  } else {
+    // Each step should have at least 5 characters
+    const tooShort = instructions.filter(s => s.trim().length < 5);
+    if (tooShort.length === instructions.length) {
+      failures.push('All instruction steps are too short (min 5 chars each)');
+    }
+  }
+
+  // 8. Total instruction content should have some substance
+  const totalInstructionWords = instructions.join(' ').split(/\s+/).filter(w => w.length > 0).length;
+  if (totalInstructionWords < 5) {
+    failures.push(`Instructions too brief (${totalInstructionWords} words, min 5)`);
+  }
+
+  // 9. Gibberish detection — check for repeated character patterns
+  const allText = [
+    recipe.title,
+    ...wicIngredients,
+    ...(recipe.non_wic_ingredients || []),
+    ...instructions,
+  ].join(' ');
+
+  // Check for excessive repeated characters (e.g., "aaaaaaa", "hahahahaha")
+  if (/(.)\1{6,}/.test(allText)) {
+    failures.push('Contains excessive repeated characters (possible gibberish)');
+  }
+
+  // Check for very low unique character ratio (gibberish like "asdfasdfasdf")
+  const chars = allText.toLowerCase().replace(/\s/g, '');
+  if (chars.length > 20) {
+    const uniqueChars = new Set(chars).size;
+    const ratio = uniqueChars / chars.length;
+    if (ratio < 0.08) {
+      failures.push('Very low character variety (possible gibberish)');
+    }
+  }
+
+  // 10. Profanity / spam / URL check
+  const allTextLower = allText.toLowerCase();
+  for (const term of BLOCKLIST) {
+    if (allTextLower.includes(term)) {
+      failures.push(`Contains blocked content: "${term}"`);
+      break; // One is enough to flag
+    }
+  }
+
+  // 11. Ingredient count sanity — shouldn't have 50 ingredients
+  if (wicIngredients.length > 25) {
+    failures.push(`Too many WIC ingredients (${wicIngredients.length}, max 25)`);
+  }
+  if ((recipe.non_wic_ingredients || []).length > 25) {
+    failures.push(`Too many non-WIC ingredients (${recipe.non_wic_ingredients.length}, max 25)`);
+  }
+
+  // 12. Instruction count sanity
+  if (instructions.length > 30) {
+    failures.push(`Too many instruction steps (${instructions.length}, max 30)`);
+  }
+
+  // ─── Decision logic ───
+
+  if (failures.length === 0) {
+    return {
+      decision: 'approve',
+      reason: 'Passed all content checks — legitimate recipe with valid WIC ingredients',
+      failures: [],
+    };
+  }
+
+  // Hard reject: blocked content (profanity, spam, URLs)
+  const hasBlockedContent = failures.some(f => f.startsWith('Contains blocked content'));
+  if (hasBlockedContent) {
+    return {
+      decision: 'reject',
+      reason: failures.join('; '),
+      failures,
+    };
+  }
+
+  // Hard reject: total gibberish (no real ingredients + no real instructions)
+  const noIngredients = failures.some(f => f.includes('No WIC ingredients'));
+  const noInstructions = failures.some(f => f.includes('No instructions'));
+  if (noIngredients && noInstructions) {
+    return {
+      decision: 'reject',
+      reason: 'Missing both ingredients and instructions — not a valid recipe',
+      failures,
+    };
+  }
+
+  // Everything else: flag for human review
+  return {
+    decision: 'flag',
+    reason: failures.join('; '),
+    failures,
+  };
+}
+
+// ─── Database & GitHub ──────────────────────────────────────────
+
 async function fetchPendingRecipes(): Promise<PendingRecipe[]> {
   const result = await pool.query(
     `SELECT id, title, title_es, category, prep_time_minutes, servings,
@@ -60,84 +259,7 @@ async function fetchPendingRecipes(): Promise<PendingRecipe[]> {
   return result.rows;
 }
 
-/**
- * Ask Claude to review a single recipe
- */
-async function reviewRecipe(
-  client: Anthropic,
-  recipe: PendingRecipe
-): Promise<ReviewDecision> {
-  const prompt = `You are a content moderator for a WIC (Women, Infants, and Children) benefits app.
-Your job is to review community-submitted recipes to ensure they are safe, appropriate, and legitimate.
-
-Review the following recipe and evaluate it against these criteria:
-
-1. **Real food check:** Is this a real, edible recipe with reasonable ingredients and instructions? Not gibberish, jokes, or impossible food.
-2. **WIC ingredient validity:** Are the listed WIC ingredients actually items typically covered by WIC benefits? (Common WIC items: milk, eggs, cheese, whole grains, cereals, bread, fruits, vegetables, beans, peanut butter, juice, yogurt, tofu, canned fish, infant formula, baby food.)
-3. **Content appropriateness:** Is the content free of harmful, offensive, racist, sexual, or otherwise inappropriate material?
-4. **Safety:** Are the cooking instructions safe and followable? No dangerous techniques for a home cook, no raw meat recommendations for vulnerable populations, etc.
-5. **Spam/ad check:** Is this a genuine recipe submission, not spam, an advertisement, SEO content, or gibberish?
-
-Recipe to review:
-- Title: ${recipe.title}${recipe.title_es ? `\n- Title (Spanish): ${recipe.title_es}` : ''}
-- Category: ${recipe.category}
-- Prep Time: ${recipe.prep_time_minutes} minutes
-- Servings: ${recipe.servings}
-- Difficulty: ${recipe.difficulty}
-- WIC Ingredients: ${JSON.stringify(recipe.wic_ingredients)}
-- Other Ingredients: ${JSON.stringify(recipe.non_wic_ingredients)}
-- Instructions: ${JSON.stringify(recipe.instructions)}
-- Submitted By: ${recipe.submitted_by}
-
-Respond with ONLY a JSON object (no markdown, no code fences):
-{"decision": "approve" | "reject" | "flag", "reason": "Brief explanation of your decision"}
-
-Decision guide:
-- "approve": Legitimate recipe, safe, appropriate, WIC ingredients are valid
-- "reject": Clearly spam, gibberish, offensive, dangerous, or entirely non-food content
-- "flag": Borderline — might be okay but needs human review (e.g., unusual ingredients, unclear instructions, minor concerns)`;
-
-  const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 256,
-    messages: [{ role: 'user', content: prompt }],
-  });
-
-  // Extract text from the response
-  const textBlock = message.content.find((block) => block.type === 'text');
-  if (!textBlock || textBlock.type !== 'text') {
-    throw new Error('No text response from Claude');
-  }
-
-  const responseText = textBlock.text.trim();
-
-  // Parse JSON — strip markdown fences if present
-  const jsonStr = responseText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
-  let parsed: any;
-  try {
-    parsed = JSON.parse(jsonStr);
-  } catch {
-    throw new Error(`Failed to parse Claude response as JSON: ${responseText}`);
-  }
-
-  // Validate the decision
-  if (!['approve', 'reject', 'flag'].includes(parsed.decision)) {
-    throw new Error(`Invalid decision "${parsed.decision}" from Claude`);
-  }
-
-  return {
-    decision: parsed.decision,
-    reason: parsed.reason || 'No reason provided',
-  };
-}
-
-/**
- * Update the recipe status in the database
- */
-async function applyDecision(
-  recipeId: number,
-  decision: ReviewDecision
-): Promise<void> {
+async function applyDecision(recipeId: number, decision: ReviewDecision): Promise<void> {
   let newStatus: string;
   switch (decision.decision) {
     case 'approve':
@@ -159,9 +281,6 @@ async function applyDecision(
   ]);
 }
 
-/**
- * Search for the GitHub issue matching a recipe and post a comment
- */
 function commentOnGitHubIssue(
   recipeId: number,
   recipeTitle: string,
@@ -174,8 +293,9 @@ function commentOnGitHubIssue(
       return;
     }
 
-    // Search for the issue by title
-    const searchQuery = encodeURIComponent(`repo:${GITHUB_REPO} is:issue "[Recipe Review] ${recipeTitle}" in:title`);
+    const searchQuery = encodeURIComponent(
+      `repo:${GITHUB_REPO} is:issue "[Recipe Review] ${recipeTitle}" in:title`
+    );
     const searchOptions = {
       hostname: 'api.github.com',
       path: `/search/issues?q=${searchQuery}&per_page=1`,
@@ -199,7 +319,6 @@ function commentOnGitHubIssue(
             resolve();
             return;
           }
-
           const issueNumber = searchResult.items[0].number;
           postComment(issueNumber, recipeId, recipeTitle, decision).then(resolve);
         } catch (err) {
@@ -213,14 +332,10 @@ function commentOnGitHubIssue(
       console.error(`  GitHub search request failed: ${err.message}`);
       resolve();
     });
-
     searchReq.end();
   });
 }
 
-/**
- * Post a comment on a specific GitHub issue
- */
 function postComment(
   issueNumber: number,
   recipeId: number,
@@ -233,15 +348,23 @@ function postComment(
       decision.decision === 'reject' ? '❌' : '⚠️';
 
     const statusLabel =
-      decision.decision === 'approve' ? 'APPROVED' :
+      decision.decision === 'approve' ? 'AUTO-APPROVED' :
       decision.decision === 'reject' ? 'REJECTED' : 'FLAGGED FOR HUMAN REVIEW';
 
     let body = `## ${emoji} Automated Recipe Review\n\n`;
     body += `**Recipe:** #${recipeId} — ${recipeTitle}\n`;
     body += `**Decision:** ${statusLabel}\n`;
-    body += `**Reason:** ${decision.reason}\n\n`;
-    body += `---\n`;
-    body += `*Reviewed automatically by Claude (claude-haiku-4-5-20251001)*`;
+    body += `**Reason:** ${decision.reason}\n`;
+
+    if (decision.failures.length > 0) {
+      body += `\n**Checks failed:**\n`;
+      for (const f of decision.failures) {
+        body += `- ${f}\n`;
+      }
+    }
+
+    body += `\n---\n`;
+    body += `*Reviewed automatically by rule-based content moderation*`;
 
     const postData = JSON.stringify({ body });
 
@@ -281,27 +404,16 @@ function postComment(
   });
 }
 
-/**
- * Main entry point
- */
+// ─── Main ───────────────────────────────────────────────────────
+
 async function main(): Promise<void> {
-  console.log('=== WIC Recipe Review Script ===');
+  console.log('=== WIC Recipe Review Script (Rule-Based) ===');
   console.log(`Timestamp: ${new Date().toISOString()}`);
   if (DRY_RUN) {
     console.log('MODE: DRY RUN (no changes will be made)');
   }
   console.log('');
 
-  // Validate API key
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    console.error('ERROR: ANTHROPIC_API_KEY environment variable is required');
-    process.exit(1);
-  }
-
-  const client = new Anthropic({ apiKey });
-
-  // Fetch pending recipes
   const pendingRecipes = await fetchPendingRecipes();
   console.log(`Found ${pendingRecipes.length} pending recipe(s) to review.`);
   console.log('');
@@ -315,55 +427,35 @@ async function main(): Promise<void> {
   let approved = 0;
   let rejected = 0;
   let flagged = 0;
-  let errors = 0;
 
   for (const recipe of pendingRecipes) {
     console.log(`--- Reviewing Recipe #${recipe.id}: ${recipe.title} ---`);
 
-    try {
-      const decision = await reviewRecipe(client, recipe);
+    const decision = reviewRecipe(recipe);
 
-      // Log the decision
-      const tag = decision.decision.toUpperCase();
-      console.log(`[${tag}] Recipe #${recipe.id}: ${recipe.title} -- ${decision.reason}`);
+    const tag = decision.decision.toUpperCase();
+    console.log(`[${tag}] Recipe #${recipe.id}: ${recipe.title}`);
+    console.log(`  Reason: ${decision.reason}`);
 
-      // Track counts
-      switch (decision.decision) {
-        case 'approve':
-          approved++;
-          break;
-        case 'reject':
-          rejected++;
-          break;
-        case 'flag':
-          flagged++;
-          break;
-      }
-
-      if (!DRY_RUN) {
-        // Apply the decision to the database
-        await applyDecision(recipe.id, decision);
-
-        // Comment on the GitHub issue
-        await commentOnGitHubIssue(recipe.id, recipe.title, decision);
-      }
-
-      console.log('');
-    } catch (err: any) {
-      errors++;
-      console.error(`[ERROR] Recipe #${recipe.id}: ${recipe.title} -- ${err.message}`);
-      console.log('  Skipping this recipe and continuing...');
-      console.log('');
+    switch (decision.decision) {
+      case 'approve': approved++; break;
+      case 'reject': rejected++; break;
+      case 'flag': flagged++; break;
     }
+
+    if (!DRY_RUN) {
+      await applyDecision(recipe.id, decision);
+      await commentOnGitHubIssue(recipe.id, recipe.title, decision);
+    }
+
+    console.log('');
   }
 
-  // Summary
   console.log('=== Review Summary ===');
   console.log(`Total reviewed: ${pendingRecipes.length}`);
   console.log(`Approved: ${approved}`);
   console.log(`Rejected: ${rejected}`);
   console.log(`Flagged for human review: ${flagged}`);
-  console.log(`Errors: ${errors}`);
   if (DRY_RUN) {
     console.log('(Dry run — no changes were made)');
   }
@@ -371,7 +463,6 @@ async function main(): Promise<void> {
   await pool.end();
 }
 
-// Run if called directly
 if (require.main === module) {
   main().catch((err) => {
     console.error('Fatal error:', err);
