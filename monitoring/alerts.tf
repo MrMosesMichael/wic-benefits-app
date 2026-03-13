@@ -48,7 +48,7 @@ resource "grafana_rule_group" "wic_backend" {
       datasource_uid = var.prometheus_datasource_uid
 
       model = jsonencode({
-        expr    = "up{job=\"integrations/wic_backend\"}"
+        expr    = "up{job=\"prometheus.scrape.wic_backend\"}"
         refId   = "A"
         instant = true
       })
@@ -65,20 +65,20 @@ resource "grafana_rule_group" "wic_backend" {
       datasource_uid = "__expr__"
 
       model = jsonencode({
-        type  = "threshold"
-        refId = "threshold"
+        type       = "threshold"
+        refId      = "threshold"
+        expression = "A"
         conditions = [{
           evaluator = { type = "lt", params = [1] }
           operator  = { type = "and" }
           reducer   = { type = "last" }
-          query     = { params = ["A"] }
         }]
       })
     }
 
     for            = "2m"
     no_data_state  = "Alerting"
-    exec_err_state = "Alerting"
+    exec_err_state = "Error"
     annotations    = { summary = "WIC backend is unreachable" }
     labels         = { severity = "critical" }
   }
@@ -115,13 +115,13 @@ resource "grafana_rule_group" "wic_backend" {
       datasource_uid = "__expr__"
 
       model = jsonencode({
-        type  = "threshold"
-        refId = "threshold"
+        type       = "threshold"
+        refId      = "threshold"
+        expression = "A"
         conditions = [{
           evaluator = { type = "gt", params = [0.05] }
           operator  = { type = "and" }
           reducer   = { type = "last" }
-          query     = { params = ["A"] }
         }]
       })
     }
@@ -165,13 +165,13 @@ resource "grafana_rule_group" "wic_backend" {
       datasource_uid = "__expr__"
 
       model = jsonencode({
-        type  = "threshold"
-        refId = "threshold"
+        type       = "threshold"
+        refId      = "threshold"
+        expression = "A"
         conditions = [{
           evaluator = { type = "gt", params = [2] }
           operator  = { type = "and" }
           reducer   = { type = "last" }
-          query     = { params = ["A"] }
         }]
       })
     }
@@ -215,13 +215,13 @@ resource "grafana_rule_group" "wic_backend" {
       datasource_uid = "__expr__"
 
       model = jsonencode({
-        type  = "threshold"
-        refId = "threshold"
+        type       = "threshold"
+        refId      = "threshold"
+        expression = "A"
         conditions = [{
-          evaluator = { type = "gt", params = [0] }
+          evaluator = { type = "gt", params = [5] }
           operator  = { type = "and" }
           reducer   = { type = "last" }
-          query     = { params = ["A"] }
         }]
       })
     }
