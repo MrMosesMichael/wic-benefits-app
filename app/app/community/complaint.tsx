@@ -9,6 +9,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Linking,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { useI18n } from '@/lib/i18n/I18nContext';
@@ -116,7 +117,13 @@ export default function ComplaintScreen() {
             <View style={styles.contactCard}>
               <Text style={styles.contactTitle}>{t('complaint.contactTitle')}</Text>
               <Text style={styles.contactName}>{office.name}</Text>
-              <Text style={styles.contactPhone}>{office.phone}</Text>
+              <TouchableOpacity
+                onPress={() => Linking.openURL(`tel:${office.phone.replace(/[^\d]/g, '')}`).catch(() => {})}
+                accessibilityRole="link"
+                accessibilityLabel={`${t('complaint.contactTitle')}: ${office.phone}`}
+              >
+                <Text style={styles.contactPhone}>{office.phone}</Text>
+              </TouchableOpacity>
               {office.email ? <Text style={styles.contactEmail}>{office.email}</Text> : null}
               <Text style={styles.contactNote}>{t('complaint.contactNote')}</Text>
             </View>

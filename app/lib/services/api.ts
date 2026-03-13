@@ -851,7 +851,7 @@ export async function crossStoreSearch(
   request: CrossStoreSearchRequest
 ): Promise<CrossStoreSearchResponse> {
   try {
-    const response = await api.post('/cross-store-search', request);
+    const response = await api.post('/cross-store-search', request, { timeout: 30000 });
     if (response.data.success) {
       return response.data;
     }

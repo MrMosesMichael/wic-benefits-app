@@ -60,7 +60,7 @@ export default function FormulaAlternativesScreen() {
 
   const handleAlternativePress = (alternative: FormulaAlternative) => {
     // Navigate to cross-store search for this alternative
-    router.push({
+    router.replace({
       pathname: '/formula/cross-store-search',
       params: {
         upc: alternative.upc,

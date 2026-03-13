@@ -134,7 +134,7 @@
     "viewMyBenefits": "Ver Mis Beneficios",
     "backToHome": "Volver al Inicio",
     "whyNotApproved": "¿Por qué no está aprobado?",
-    "notApprovedExplanation": "Este producto puede no estar en la Lista de Productos Aprobados (APL) de WIC de Michigan. Verifique el tamaño, la marca o la categoría del producto - incluso pequeñas diferencias pueden afectar la elegibilidad.",
+    "notApprovedExplanation": "Este producto puede no estar en la Lista de Productos Aprobados (APL) de WIC de {{state}}. Verifique el tamaño, la marca o la categoría del producto - incluso pequeñas diferencias pueden afectar la elegibilidad.",
     "communityReports": "Reportes de la Comunidad",
     "reportSighting": "+ Reportar",
     "inStock": "En Stock",
@@ -225,7 +225,8 @@
     "yes": "Sí",
     "no": "No",
     "confirm": "Confirmar",
-    "ago": "hace"
+    "ago": "hace",
+    "copied": "Copiado"
   },
   "settings": {
     "language": "Idioma",
@@ -546,7 +547,8 @@
     "deletedTitle": "Cuenta Eliminada",
     "deletedMessage": "Su cuenta y todos los datos asociados han sido eliminados permanentemente.",
     "deleteError": "No se pudo eliminar su cuenta. Por favor intente de nuevo.",
-    "copyEmail": "Copiar correo"
+    "copyEmail": "Copiar correo",
+    "emailCopied": "Dirección de correo copiada al portapapeles"
   },
   "feedback": {
     "title": "Enviar Comentarios",

@@ -134,7 +134,7 @@
     "viewMyBenefits": "View My Benefits",
     "backToHome": "Back to Home",
     "whyNotApproved": "Why isn't this approved?",
-    "notApprovedExplanation": "This product may not be on Michigan's WIC Approved Product List (APL). Check the product size, brand, or category - even small differences can affect eligibility.",
+    "notApprovedExplanation": "This product may not be on {{state}}'s WIC Approved Product List (APL). Check the product size, brand, or category - even small differences can affect eligibility.",
     "communityReports": "Community Reports",
     "reportSighting": "+ Report Sighting",
     "inStock": "In Stock",
@@ -225,7 +225,8 @@
     "yes": "Yes",
     "no": "No",
     "confirm": "Confirm",
-    "ago": "ago"
+    "ago": "ago",
+    "copied": "Copied"
   },
   "settings": {
     "language": "Language",
@@ -546,7 +547,8 @@
     "deletedTitle": "Account Deleted",
     "deletedMessage": "Your account and all associated data have been permanently deleted.",
     "deleteError": "Failed to delete your account. Please try again.",
-    "copyEmail": "Copy Email"
+    "copyEmail": "Copy Email",
+    "emailCopied": "Email address copied to clipboard"
   },
   "feedback": {
     "title": "Send Feedback",
