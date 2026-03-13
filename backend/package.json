@@ -24,6 +24,7 @@
     "apl-sync": "node dist/scripts/run-apl-sync.js",
     "reimport-apl": "node dist/scripts/reimport-apl.js",
     "enrich-upc": "node dist/scripts/enrich-upc.js",
+    "review-recipes": "node dist/scripts/review-recipes.js",
     "scrape-food-banks": "ts-node src/scripts/scrape-food-banks.ts",
     "scrape-wic-clinics": "ts-node src/scripts/scrape-wic-clinics.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -33,6 +34,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
     "cheerio": "^1.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
