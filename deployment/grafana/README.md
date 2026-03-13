@@ -84,7 +84,8 @@ docker compose ps alloy
 docker compose logs alloy
 
 # Check metrics endpoint locally
-curl -s http://localhost:3000/metrics | head -20
+# curl -s http://localhost:3000/metrics | head -20
+docker compose exec backend wget -qO- http://localhost:3000/metrics | head -20
 ```
 
 ## Dashboard Setup

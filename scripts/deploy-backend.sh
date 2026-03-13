@@ -71,7 +71,7 @@ echo -e "${GREEN}✅ Code updated${NC}"
 
 echo ""
 echo -e "${BLUE}Step 3: Building and restarting backend...${NC}"
-ssh ${SSH_HOST} "cd ${REMOTE_DIR} && docker compose build backend && docker compose up -d backend"
+ssh ${SSH_HOST} "cd ${REMOTE_DIR} && docker compose build backend && docker compose up -d backend alloy"
 
 echo ""
 echo -e "${BLUE}Step 4: Waiting for backend to be healthy...${NC}"
