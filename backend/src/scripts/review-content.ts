@@ -43,16 +43,24 @@ interface ReviewDecision {
 const BLOCKLIST = [
   'fuck', 'shit', 'bitch', 'asshole', 'damn', 'crap', 'dick', 'pussy',
   'nigger', 'faggot', 'retard', 'whore', 'slut',
-  'kill yourself', 'kys', 'die',
+  'kill yourself', 'kys',
   'viagra', 'cialis', 'casino', 'poker', 'cryptocurrency', 'bitcoin',
   'click here', 'buy now', 'free money', 'act now', 'limited time',
   'http://', 'https://', 'www.', '.com/', '.net/',
 ];
 
+// Terms that need word-boundary matching to avoid false positives (e.g. "dick" in "diced")
+const WORD_BOUNDARY_TERMS = new Set(['dick', 'damn', 'crap', 'kys']);
+
 function checkBlocklist(text: string): string | null {
   const lower = text.toLowerCase();
   for (const term of BLOCKLIST) {
-    if (lower.includes(term)) return term;
+    if (WORD_BOUNDARY_TERMS.has(term)) {
+      const regex = new RegExp(`\\b${term}\\b`);
+      if (regex.test(lower)) return term;
+    } else {
+      if (lower.includes(term)) return term;
+    }
   }
   return null;
 }

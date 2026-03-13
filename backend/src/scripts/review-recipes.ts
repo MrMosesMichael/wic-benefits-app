@@ -58,7 +58,7 @@ const DRY_RUN = process.argv.includes('--dry-run');
 const BLOCKLIST = [
   'fuck', 'shit', 'bitch', 'asshole', 'damn', 'crap', 'dick', 'pussy',
   'nigger', 'faggot', 'retard', 'whore', 'slut',
-  'kill yourself', 'kys', 'die',
+  'kill yourself', 'kys',
   'viagra', 'cialis', 'casino', 'poker', 'cryptocurrency', 'bitcoin',
   'click here', 'buy now', 'free money', 'act now', 'limited time',
   'http://', 'https://', 'www.', '.com/', '.net/',
