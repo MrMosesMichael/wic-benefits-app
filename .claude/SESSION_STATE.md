@@ -128,15 +128,18 @@
 
 ---
 
+---
+
 ## Feedback Inbox
 
-> Last synced: 2026-03-13 19:50 UTC · [24 open issues](https://github.com/MrMosesMichael/wic-benefits-feedback/issues)
+> Last synced: 2026-03-13 21:35 UTC · [25 open issues](https://github.com/MrMosesMichael/wic-benefits-feedback/issues)
 
 ### Bugs (19)
 
 **#35** [[bug] - Store Finder doesn't show Map when clicking on MAp view for th…](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/35)  
-`bug` · 2026-03-13  
+`bug` · 2026-03-13 · 1 comment(s)  
 > We have placeholder text "Map view requires react-nativemaps. use list view for now." We should fully implement this feature.
+> **Latest comment:** Related to Store Finder -> currently only showing Kroger stores. We need to properly source more WIC carrying stores (I've tested for Michig
 
 **#33** [[bug] - Know Your Rights screen - make federal resources  numbers clic…](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/33)  
 `bug` · 2026-03-13  
@@ -167,8 +170,9 @@
 > open Privacy & Data screen -> clikc Export MY Data -> fails with "Error failed to export your data. Please try again."
 
 **#25** [[bug] - Send Feedback on click crashes app](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/25)  
-`bug` · 2026-03-13  
+`bug` · 2026-03-13 · 1 comment(s)  
 > using iOS v18.6.2
+> **Latest comment:** This still causses a crash when clicking "Send Feedback".
 
 **#24** [[bug] - Help & FAQ - why was my item rejected at checkout? replace  **…](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/24)  
 `bug` · 2026-03-13  
@@ -210,7 +214,11 @@
 **#13** [[bug] - Find Formula screen should remember search radius selection](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/13)  
 `bug` · 2026-03-13  
 > Find formula screen - set search radius to 50 mi. Then click Select Formula (or change if already set) - Pick anything -> the Search Radius 
-### Feature Requests (4)
+### Feature Requests (5)
+
+**#36** [[feature] - File a complaint - State WIC office card should be clickab…](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/36)  
+`enhancement` · 2026-03-13  
+> the File A Complaint screen - State WIC office card - the contact number should be clickable to launch the phone app. This currently is not 
 
 **#34** [[feature] - Add ability for users to add their own Shopping Tips](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/34)  
 `enhancement` · 2026-03-13  
