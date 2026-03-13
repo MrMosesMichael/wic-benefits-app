@@ -1,0 +1,15 @@
+appId: com.wicbenefits.app
+name: "Smoke: Scanner (#23 dynamic state name)"
+---
+- launchApp
+- tapOn:
+    text: "Continue"
+    optional: true
+- waitForAnimationToEnd
+- tapOn:
+    text: "Close"
+    optional: true
+- assertVisible: ".*Scan Product.*"
+
+- tapOn: ".*Scan Product.*"
+- takeScreenshot: e2e/screenshots/07_scanner

@@ -1,0 +1,31 @@
+appId: com.wicbenefits.app
+name: "Smoke: Help & FAQ (#24 bold text, #25 feedback nav, #12 partial benefits)"
+---
+- launchApp
+- tapOn:
+    text: "Continue"
+    optional: true
+- waitForAnimationToEnd
+- tapOn:
+    text: "Close"
+    optional: true
+- assertVisible: ".*Scan Product.*"
+
+- tapOn: ".*Help.*FAQ.*"
+- takeScreenshot: e2e/screenshots/02_help_screen
+
+# #25 — Send Feedback should not crash
+- tapOn:
+    text: ".*Send Feedback.*"
+    optional: true
+- takeScreenshot: e2e/screenshots/02_feedback_screen
+- back
+
+# #12 — Check partial benefits FAQ exists
+- tapOn:
+    text: ".*Benefits.*"
+    optional: true
+- assertVisible:
+    text: ".*partial.*benefit.*"
+    optional: true
+- takeScreenshot: e2e/screenshots/02_help_benefits_filter

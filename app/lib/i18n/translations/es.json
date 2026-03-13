@@ -545,7 +545,8 @@
     "permanentlyDelete": "Eliminar Permanentemente",
     "deletedTitle": "Cuenta Eliminada",
     "deletedMessage": "Su cuenta y todos los datos asociados han sido eliminados permanentemente.",
-    "deleteError": "No se pudo eliminar su cuenta. Por favor intente de nuevo."
+    "deleteError": "No se pudo eliminar su cuenta. Por favor intente de nuevo.",
+    "copyEmail": "Copiar correo"
   },
   "feedback": {
     "title": "Enviar Comentarios",
@@ -1010,7 +1011,8 @@
       "exportLabel": "Exportar mis datos",
       "deleteLabel": "Eliminar mi cuenta y datos",
       "dataCollectedLabel": "Datos que recopilamos",
-      "dataNotCollectedLabel": "Datos que no recopilamos"
+      "dataNotCollectedLabel": "Datos que no recopilamos",
+      "copyEmailLabel": "Copiar dirección de correo"
     },
     "location": {
       "clearLabel": "Borrar ubicación",

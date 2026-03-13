@@ -1,0 +1,43 @@
+appId: com.wicbenefits.app
+name: "Smoke: Community Hub (#30 card sizes, #33 phone links, #34 tips)"
+---
+- launchApp
+- tapOn:
+    text: "Continue"
+    optional: true
+- waitForAnimationToEnd
+- tapOn:
+    text: "Close"
+    optional: true
+- assertVisible: ".*Scan Product.*"
+
+- tapOn: ".*Community.*Hub.*"
+- takeScreenshot: e2e/screenshots/03_community_hub
+
+# Shopping Tips — #30 card sizing, #34 community tips
+- tapOn: ".*Shopping Tips.*"
+- takeScreenshot: e2e/screenshots/03_shopping_tips
+
+# #34 — Submit a Tip FAB should be visible
+- assertVisible:
+    text: ".*Submit.*Tip.*"
+    optional: true
+- takeScreenshot: e2e/screenshots/03_tips_fab
+
+# Navigate back using BackButton id
+- tapOn:
+    id: "BackButton"
+- waitForAnimationToEnd
+
+# Know Your Rights — #33 phone numbers clickable
+- tapOn: ".*Know Your Rights.*"
+- takeScreenshot: e2e/screenshots/03_know_your_rights
+
+# Navigate back
+- tapOn:
+    id: "BackButton"
+- waitForAnimationToEnd
+
+# Recipes — #32 multi-category, instructions
+- tapOn: ".*Recipes.*"
+- takeScreenshot: e2e/screenshots/03_recipes

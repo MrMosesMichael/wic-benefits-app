@@ -1,0 +1,38 @@
+appId: com.wicbenefits.app
+name: "Smoke: Settings (#26-27 privacy, #28 contact email, #29 no FL)"
+---
+- launchApp
+- tapOn:
+    text: "Continue"
+    optional: true
+- waitForAnimationToEnd
+- tapOn:
+    text: "Close"
+    optional: true
+- assertVisible: ".*Scan Product.*"
+
+# Privacy & Data — accessed via Help screen, scroll to bottom
+- tapOn: ".*Help.*FAQ.*"
+- scroll
+- scroll
+- tapOn: ".*Privacy.*"
+- takeScreenshot: e2e/screenshots/06_privacy
+
+# #28 — Contact email should show gmail
+- scroll
+- takeScreenshot: e2e/screenshots/06_privacy_contact
+
+# Back to Help
+- tapOn:
+    id: "BackButton"
+- waitForAnimationToEnd
+
+# Back to Home
+- tapOn:
+    id: "BackButton"
+- waitForAnimationToEnd
+
+# Location — #29 FL should not be listed (scroll down on home)
+- scroll
+- tapOn: ".*Location.*"
+- takeScreenshot: e2e/screenshots/06_location

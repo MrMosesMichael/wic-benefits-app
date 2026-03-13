@@ -1,0 +1,38 @@
+appId: com.wicbenefits.app
+name: "Smoke: Store Finder (#35 map view) + Product Catalog (#31 search)"
+---
+- launchApp
+- tapOn:
+    text: "Continue"
+    optional: true
+- waitForAnimationToEnd
+- tapOn:
+    text: "Close"
+    optional: true
+- assertVisible: ".*Scan Product.*"
+
+# Store Finder — #35 map view
+- tapOn: ".*Store Finder.*"
+- takeScreenshot: e2e/screenshots/04_store_finder_list
+
+# Switch to map view
+- tapOn:
+    text: ".*Map.*"
+    optional: true
+- takeScreenshot: e2e/screenshots/04_store_finder_map
+
+# Navigate back to home
+- tapOn:
+    id: "BackButton"
+- waitForAnimationToEnd
+
+# Product Catalog — #31 global search
+- tapOn: ".*Product Catalog.*"
+- takeScreenshot: e2e/screenshots/04_catalog_grid
+
+# Search bar should be visible
+- tapOn:
+    text: ".*Search.*"
+    optional: true
+- inputText: "milk"
+- takeScreenshot: e2e/screenshots/04_catalog_search_results

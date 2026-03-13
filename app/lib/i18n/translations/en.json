@@ -545,7 +545,8 @@
     "permanentlyDelete": "Permanently Delete",
     "deletedTitle": "Account Deleted",
     "deletedMessage": "Your account and all associated data have been permanently deleted.",
-    "deleteError": "Failed to delete your account. Please try again."
+    "deleteError": "Failed to delete your account. Please try again.",
+    "copyEmail": "Copy Email"
   },
   "feedback": {
     "title": "Send Feedback",
@@ -1010,7 +1011,8 @@
       "exportLabel": "Export my data",
       "deleteLabel": "Delete my account and data",
       "dataCollectedLabel": "Data we collect",
-      "dataNotCollectedLabel": "Data we do not collect"
+      "dataNotCollectedLabel": "Data we do not collect",
+      "copyEmailLabel": "Copy email address"
     },
     "location": {
       "clearLabel": "Clear location",

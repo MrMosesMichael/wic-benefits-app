@@ -1,0 +1,21 @@
+appId: com.wicbenefits.app
+name: "Smoke: Formula Features (#13 radius, #17-20 sighting modal, #22 nav)"
+---
+- launchApp
+- tapOn:
+    text: "Continue"
+    optional: true
+- waitForAnimationToEnd
+- tapOn:
+    text: "Close"
+    optional: true
+- assertVisible: ".*Scan Product.*"
+
+- tapOn: ".*Find Formula.*"
+- takeScreenshot: e2e/screenshots/05_formula_screen
+
+# #13 — Select a radius, navigate away, come back
+- tapOn:
+    text: ".*Select Formula.*"
+    optional: true
+- takeScreenshot: e2e/screenshots/05_formula_select

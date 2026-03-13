@@ -33,6 +33,7 @@ yarn-error.log*
 
 # Testing
 coverage/
+e2e/screenshots/
 
 # Expo / React Native
 .expo/

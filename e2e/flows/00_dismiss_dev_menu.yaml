@@ -1,0 +1,14 @@
+appId: com.wicbenefits.app
+name: "Dismiss Expo Dev Menu"
+---
+- launchApp
+- waitForAnimationToEnd
+# Dismiss Expo dev menu if present (onboarding shows once, then dev tools)
+- tapOn:
+    text: "Continue"
+    optional: true
+- waitForAnimationToEnd
+- tapOn:
+    text: "Close"
+    optional: true
+- assertVisible: ".*Scan Product.*"

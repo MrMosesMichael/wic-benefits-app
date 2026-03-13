@@ -1,0 +1,13 @@
+appId: com.wicbenefits.app
+name: "Smoke: Home Screen"
+---
+- launchApp
+- tapOn:
+    text: "Continue"
+    optional: true
+- waitForAnimationToEnd
+- tapOn:
+    text: "Close"
+    optional: true
+- assertVisible: ".*Scan Product.*"
+- takeScreenshot: e2e/screenshots/01_home
