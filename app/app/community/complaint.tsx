@@ -124,7 +124,15 @@ export default function ComplaintScreen() {
               >
                 <Text style={styles.contactPhone}>{office.phone}</Text>
               </TouchableOpacity>
-              {office.email ? <Text style={styles.contactEmail}>{office.email}</Text> : null}
+              {office.email ? (
+                <TouchableOpacity
+                  onPress={() => Linking.openURL(`mailto:${office.email}`).catch(() => {})}
+                  accessibilityRole="link"
+                  accessibilityLabel={`${t('complaint.contactTitle')}: ${office.email}`}
+                >
+                  <Text style={styles.contactEmail}>{office.email}</Text>
+                </TouchableOpacity>
+              ) : null}
               <Text style={styles.contactNote}>{t('complaint.contactNote')}</Text>
             </View>
           )}
@@ -157,6 +165,6 @@ const styles = StyleSheet.create({
   contactTitle: { fontSize: 14, fontWeight: '600', color: colors.muted, marginBottom: 8 },
   contactName: { fontSize: 16, fontWeight: 'bold', color: colors.navy, marginBottom: 4 },
   contactPhone: { fontSize: 16, color: colors.danger, fontWeight: '600', marginBottom: 4 },
-  contactEmail: { fontSize: 14, color: colors.muted, marginBottom: 8 },
+  contactEmail: { fontSize: 14, color: colors.dustyBlue, textDecorationLine: 'underline' as const, marginBottom: 8 },
   contactNote: { fontSize: 13, color: colors.muted, fontStyle: 'italic', lineHeight: 18 },
 });

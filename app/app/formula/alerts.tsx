@@ -174,7 +174,7 @@ export default function FormulaAlertsScreen() {
                 const hasAlertForFormula = params.formulaUpc &&
                   subscriptions.some(s => s.upc === params.formulaUpc);
                 if (params.formulaUpc && params.formulaName && !hasAlertForFormula) {
-                  router.navigate({
+                  router.replace({
                     pathname: '/formula',
                     params: {
                       selectedUpc: params.formulaUpc,
@@ -182,7 +182,7 @@ export default function FormulaAlertsScreen() {
                     },
                   } as any);
                 } else {
-                  router.navigate('/formula' as any);
+                  router.replace('/formula' as any);
                 }
               }}
               accessibilityRole="button"

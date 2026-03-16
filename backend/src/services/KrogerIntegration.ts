@@ -121,12 +121,18 @@ export class KrogerIntegration {
   private async makeRequest<T>(endpoint: string): Promise<T> {
     const token = await this.authenticate();
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/json',
       },
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     if (response.status === 429) {
       throw new Error('Kroger rate limit exceeded');

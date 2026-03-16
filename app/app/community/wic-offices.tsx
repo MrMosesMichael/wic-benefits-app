@@ -278,7 +278,13 @@ export default function WicOfficesScreen() {
           {currentOffice.email ? (
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>{t('wicOffices.email')}</Text>
-              <Text style={styles.infoValue}>{currentOffice.email}</Text>
+              <TouchableOpacity
+                onPress={() => Linking.openURL(`mailto:${currentOffice.email}`).catch(() => {})}
+                accessibilityRole="link"
+                accessibilityLabel={`${t('wicOffices.email')}: ${currentOffice.email}`}
+              >
+                <Text style={[styles.infoValue, { color: colors.dustyBlue, textDecorationLine: 'underline' }]}>{currentOffice.email}</Text>
+              </TouchableOpacity>
             </View>
           ) : null}
 

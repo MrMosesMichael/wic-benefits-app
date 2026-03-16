@@ -108,8 +108,8 @@ export class NotificationRepository {
 
       // Insert or update subscription
       const subResult = await client.query<NotificationSubscription>(
-        `INSERT INTO notification_subscriptions (user_id, upc, radius, enabled)
-         VALUES ($1, $2, $3, true)
+        `INSERT INTO notification_subscriptions (user_id, upc, radius, enabled, expires_at)
+         VALUES ($1, $2, $3, true, CURRENT_TIMESTAMP + INTERVAL '30 days')
          ON CONFLICT (user_id, upc)
          DO UPDATE SET
            radius = COALESCE($3, notification_subscriptions.radius),

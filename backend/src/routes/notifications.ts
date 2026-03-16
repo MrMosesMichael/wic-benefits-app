@@ -92,6 +92,7 @@ router.post('/subscribe', async (req: Request, res: Response) => {
         userId: subscription.user_id,
         upc: subscription.upc,
         radius: subscription.radius,
+        storeIds: storeIds || [],
         enabled: subscription.enabled,
         notificationCount: subscription.notification_count,
         lastNotifiedAt: subscription.last_notified_at,

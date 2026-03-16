@@ -263,13 +263,13 @@ export default function FormulaFinder() {
             {/* Manage Alerts Link */}
             <TouchableOpacity
               style={styles.manageAlertsLink}
-              onPress={() => router.push({
+              onPress={() => router.navigate({
                 pathname: '/formula/alerts',
                 params: {
                   formulaUpc: assignedFormula?.upc,
                   formulaName: assignedFormula?.details?.productName || assignedFormula?.name,
                 },
-              })}
+              } as any)}
               accessibilityRole="link"
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >

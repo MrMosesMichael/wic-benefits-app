@@ -280,7 +280,7 @@ router.post('/', async (req: Request, res: Response) => {
       }
 
       // DB-first: Read pre-synced inventory for Kroger stores before live API calls
-      const staleHours = parseInt(process.env.KROGER_INVENTORY_STALE_HOURS || '4', 10);
+      const staleHours = parseInt(process.env.KROGER_INVENTORY_STALE_HOURS || '12', 10);
       const storesNeedingLive = new Set<string>(); // store_ids that need live API fallback
 
       if (krogerStores.length > 0) {
@@ -344,11 +344,11 @@ router.post('/', async (req: Request, res: Response) => {
         }
       }
 
-      // Live API fallback: only for stores with stale/missing DB data (capped at 5)
+      // Live API fallback: only for stores with stale/missing DB data (capped at 2 to avoid timeout)
       if (storesNeedingLive.size > 0) {
         const storesToEnrich = krogerStores
           .filter((s: any) => storesNeedingLive.has(s.store_id))
-          .slice(0, 5);
+          .slice(0, 2);
 
         // Track which UPCs already have fresh DB data per store to skip redundant calls
         const freshDbKeysForSkip = new Set<string>();

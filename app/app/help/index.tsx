@@ -71,11 +71,7 @@ export default function HelpScreen() {
   };
 
   const handleSendFeedback = useCallback(() => {
-    try {
-      router.navigate('/feedback' as any);
-    } catch {
-      // Fallback: stay on current screen (navigation error)
-    }
+    router.push('/feedback');
   }, [router]);
 
   const handlePhonePress = useCallback((phoneNumber: string) => {

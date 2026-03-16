@@ -458,7 +458,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   multilineInput: {
-    minHeight: 80,
     textAlignVertical: 'top',
     paddingTop: 12,
   },
