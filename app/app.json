@@ -4,7 +4,7 @@
     "slug": "wic-benefits-app",
     "owner": "mrmosesmichael",
     "scheme": "wicbenefits",
-    "version": "1.7.7",
+    "version": "1.7.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -50,7 +50,7 @@
       }
     },
     "android": {
-      "versionCode": 19,
+      "versionCode": 20,
       "package": "com.wicbenefits.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
