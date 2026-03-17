@@ -15,8 +15,8 @@ import { useTranslation } from '@/lib/i18n/I18nContext';
 import { colors, fonts, card } from '@/lib/theme';
 import Constants from 'expo-constants';
 
-// Demo user ID - would come from auth in production
-const USER_ID = Constants.expoConfig?.extra?.demoUserId || 'demo-user-001';
+// Must match the ID used in formula/index.tsx when creating alerts
+const USER_ID = Constants.deviceId || Constants.sessionId || 'demo-user';
 
 export default function FormulaAlertsScreen() {
   const router = useRouter();
