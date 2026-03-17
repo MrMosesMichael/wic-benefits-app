@@ -94,21 +94,18 @@
 
 ---
 
+---
+
 ## Feedback Inbox
 
-> Last synced: 2026-03-16 15:07 UTC · [8 open issues](https://github.com/MrMosesMichael/wic-benefits-feedback/issues)
+> Last synced: 2026-03-17 12:56 UTC · [6 open issues](https://github.com/MrMosesMichael/wic-benefits-feedback/issues)
 
-### Bugs (6)
+### Bugs (4)
 
 **#35** [[bug] - Store Finder doesn't show Map when clicking on MAp view for th…](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/35)  
-`bug` · 2026-03-13 · 2 comment(s)  
+`bug` · 2026-03-13 · 3 comment(s)  
 > We have placeholder text "Map view requires react-nativemaps. use list view for now." We should fully implement this feature.
-> **Latest comment:** We're still missing store data. For instance I don't see the Walmart off of Maple in Troy, MI. We need to expand the data scrape to make sur
-
-**#32** [[bugs] Recipe Details - multiple defects](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/32)  
-`bug` · 2026-03-13 · 2 comment(s)  
-> 1. Currently you can only select a Recipe as pertaining to a single meal type. A meal could pertain to multiple meal types. allow multiple c
-> **Latest comment:** 2. The space now exists. After an instruction is complete and clicking "Add Another", we should be removing excess padding on the "done" sec
+> **Latest comment:** We're still missing stores. For instance the Troy, MI Walmart on Maple is still missing. We may need to create some manual/triggered process
 
 **#25** [[bug] - Send Feedback on click crashes app](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/25)  
 `bug` · 2026-03-13 · 2 comment(s)  
@@ -116,26 +113,22 @@
 > **Latest comment:** This is still occurring. 
 
 **#22** [[bug] - Screen stack issues when using Find Formula](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/22)  
-`bug` · 2026-03-13 · 2 comment(s)  
+`bug` · 2026-03-13 · 3 comment(s)  
 > While testing Find Formula features... as you try different formulas the screens stack up... expectation would be that the screens don't end
-> **Latest comment:** Screen stacking on Find Formula still occurs. Basically as you "select" a Formula, click "Manage alerts" then click "set Up Alert" , click C
-
-**#16** [[bug] - Cross Store Search fails](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/16)  
-`bug` · 2026-03-13 · 4 comment(s)  
-> Open Cross-Store Search screen -> set "By Brand" -> select Similac -> set 25mi and click "Search Stores"
-> **Latest comment:** This issue still occurs. This appears to be an issue with searching for the first time, and needing to cache the store store search data. We
+> **Latest comment:** Still an issue. We should do a walkthrough where i show you how to create in a simulator
 
 **#15** [[bug] - Set Alert on Find Formula fails to set](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/15)  
-`bug` · 2026-03-13 · 2 comment(s)  
+`bug` · 2026-03-13 · 3 comment(s)  
 > Open Find Formula screen -> Set any Formula -> click Set Alert. 
-> **Latest comment:** We now provide a positive message "Formula Alert Set!" however... if you click on "Manage All Formula Alerts"... that list is empty. I did f
-### Feature Requests (2)
+> **Latest comment:** This is still an issue, set alert screen (where alerts as a list can be managed) still doesnt display active alerts
+### Feature Requests (1)
 
 **#40** [[feature] - in Recipe creation add function to select common WIC items…](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/40)  
 `enhancement` · 2026-03-16  
 > On "WIC Ingredients" list... I think it would be ideal if the types of WIC products generally approved are selectable. For instance "Whole w
+### Other (1)
 
-**#36** [[feature] - File a complaint - State WIC office card should be clickab…](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/36)  
-`enhancement` · 2026-03-13 · 1 comment(s)  
-> the File A Complaint screen - State WIC office card - the contact number should be clickable to launch the phone app. This currently is not 
-> **Latest comment:** The number is now clickable, we should also make sure IF there is an email address then they are also clickable in this card as well. 
+**#41** [[Recipe Review] Easy eggs for kids!](https://github.com/MrMosesMichael/wic-benefits-feedback/issues/41)  
+`recipe-review` · 2026-03-16 · 1 comment(s)  
+> **Recipe ID:** 6
+> **Latest comment:** ## ✅ Automated Content Review

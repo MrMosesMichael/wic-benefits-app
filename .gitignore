@@ -64,5 +64,5 @@ backend/data/*.txt
 
 # Local directories
 CA/
-feedback/
+/feedback/
 xlsx/

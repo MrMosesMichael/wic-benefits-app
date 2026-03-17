@@ -159,7 +159,7 @@ export class NotificationRepository {
          COALESCE(array_agg(ss.store_id) FILTER (WHERE ss.store_id IS NOT NULL), '{}') as store_ids
        FROM notification_subscriptions ns
        LEFT JOIN subscription_stores ss ON ns.id = ss.subscription_id
-       WHERE ns.user_id = $1 AND ns.enabled = true AND ns.expires_at > CURRENT_TIMESTAMP
+       WHERE ns.user_id = $1 AND ns.enabled = true AND (ns.expires_at IS NULL OR ns.expires_at > CURRENT_TIMESTAMP)
        GROUP BY ns.id
        ORDER BY ns.created_at DESC`,
       [userId]

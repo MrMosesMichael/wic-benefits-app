@@ -87,15 +87,15 @@ export default function FormulaSelect() {
       }
     } else {
       // No participant ID - return to formula finder with selection
-      // Use replace to avoid stacking duplicate formula screens
-      router.replace({
+      // Use navigate to return to existing formula screen (avoids stacking duplicates)
+      router.navigate({
         pathname: '/formula',
         params: {
           selectedUpc: selectedFormula.upc,
           selectedName: `${selectedFormula.brand} ${selectedFormula.productName}`,
           ...(params.searchRadius ? { searchRadius: params.searchRadius } : {}),
         }
-      });
+      } as any);
     }
   };
 

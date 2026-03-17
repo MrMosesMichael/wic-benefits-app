@@ -169,21 +169,9 @@ export default function FormulaAlertsScreen() {
             <TouchableOpacity
               style={styles.setupButton}
               onPress={() => {
-                // Pass the previously assigned formula so the Find Formula screen
-                // remembers it (if no alert already exists for that formula)
-                const hasAlertForFormula = params.formulaUpc &&
-                  subscriptions.some(s => s.upc === params.formulaUpc);
-                if (params.formulaUpc && params.formulaName && !hasAlertForFormula) {
-                  router.replace({
-                    pathname: '/formula',
-                    params: {
-                      selectedUpc: params.formulaUpc,
-                      selectedName: params.formulaName,
-                    },
-                  } as any);
-                } else {
-                  router.replace('/formula' as any);
-                }
+                // Go back to the formula screen that brought us here
+                // Using back() prevents creating duplicate formula screens in the stack
+                router.back();
               }}
               accessibilityRole="button"
               accessibilityLabel={t('a11y.alerts.setupLabel')}

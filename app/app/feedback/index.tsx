@@ -202,7 +202,7 @@ export default function FeedbackScreen() {
           <View style={styles.deviceInfoContent}>
             <Text style={styles.deviceInfoLabel}>{t('feedback.includeDeviceInfo')}</Text>
             <Text style={styles.deviceInfoDetail}>
-              {Platform.OS} {Platform.Version} / App v{Constants.expoConfig?.version || '1.0.0'}
+              {Platform.OS} {String(Platform.Version)} / App v{Constants.expoConfig?.version || '1.0.0'}
             </Text>
           </View>
         </TouchableOpacity>
